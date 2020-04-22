@@ -1,25 +1,126 @@
 Hamoudeh if I ever die, this is amaneh bra2btak
-Pages:
+Views:
 
-    Sura Map
-    Sura sequenced verses 19 matches
+1-Single Sura views: 
+    1-Sura Map
+    components needed: 
+            Map elements:
+            1-Number of words
+            2-Number of letters
+            3-Number of verses
+            4-Sura Name
+            5-Words occurences chart
+            6-Letters occuerences chart
+            7-Verses number of words frequency chart
+            8-Verses number of letters frequency chart
+            9-Words indexes (positions) table 
+            10-Letters indexes (positions) table 
 
-    All Suras words occ charts/tables
-    All Suras words indexes tables - (some visual representation)
-    All Suras letters occ charts/tables
-    All Suras letters indexes tables - (some visual representation) 
-    All Suras verses numerical values chart
-    All Suras words numerical values chart (if possible to achieve)
+            Verses elements:
+            1-Verses map (abitlity to select certain Verses from Sura)
+            2-Verse map (abitlity to get collective verses maps and count them together)
 
-    Quran number of words chart
-    Quran number of letters chart
-    Quran verses numerical values chart
-    Quran all words indexes table
-    Quran all letters indexes table
-    Quran all verses numerical values
-    Quran all words numerical values
+    2-Sura sequenced verses 19 matches
+    components needed:
+        1-From verse to verse table 
+        2-Sequenced Verses 19 divised component.
+        3-19 calcultaion play ground with each calcultaion for consistent abitlity to identify calcultaions by user
 
 
-    Main search results page (include a table that has all search results from all Quran)
-    Submain search - Verses picker. Pick a verse or serveral verses from anywhere in Quran (memic flight tickets)
-    19 calcultaion play ground
+2-All Suras views:
+    1-All Suras words occ charts/tables
+    components needed:
+        1-Words Occuerences chart
+        2-Words Occuerences table
+        3-iterator on all Suras
+
+    2-All Suras words indexes tables - (some visual representation)
+    components needed:
+        1-Words indexes chart
+        2-Words indexes table
+        3-iterator on all Suras
+
+    3-All Suras letters occ charts/tables
+    components needed:
+        1-Letters Occuerences chart
+        2-Letters Occuerences table
+        3-iterator on all Suras
+
+    4-All Suras letters indexes tables - (some visual representation) 
+    components needed:
+        1-Letters indexes chart
+        2-Letters indexes table
+        3-iterator on all Suras
+
+    5-All Suras verses numerical values chart
+    components needed:
+        1-Verses numerical values chart
+        2-Verses numerical values table
+        3-iterator on all Suras
+
+    6-All Suras words numerical values chart (if possible to achieve)
+    components needed:
+        1-Words numerical values chart
+        2-Words numerical values table
+        3-iterator on all Suras
+    
+
+3-Quran views:
+    1-Quran map (All suras and with suras basic information)
+    components needed:
+        1-QuranIndex (with option to show less/more details)
+
+    2- Quran number of words chart
+    components needed:
+        1-Sura number of Words chart
+        2-iterator on all Suras
+
+    3-Quran number of letters chart
+    components needed:
+        1-Sura number of Words chart
+        2-iterator on all Suras
+
+    4-Quran verses numerical values chart
+    components needed:
+        1-Sura numerical values chart
+        2-Sura numerical values table
+        2-iterator on all Suras
+
+    5-Quran all words indexes table
+    components needed:
+        1-Sura words indexes table
+        2-iterator on all Suras
+        3-Qura words indexes table
+
+    6-Quran all letters indexes table
+    components needed:
+        1-Sura letters indexes table
+        2-iterator on all Suras
+        3-Quran letters indexes table
+
+    7-Quran all verses numerical values //This is to be studied
+    components needed:
+        1-Quran verses numerical values chart
+        2-Quran verses numerical values table
+        2-iterator on all Suras
+
+
+    8-Quran all words numerical values //This is to be studied
+    components needed:
+        1-Quran words numerical values chart
+        2-Quran words numerical values table
+        2-iterator on all Suras
+
+4-Search views:
+    1-Main search results page (include a table that has all search results from all Quran)
+    components needed:
+        1-Global search bra
+        2-Results put into results map table
+
+    2-Submain search - Verses picker. Pick a verse or serveral verses from anywhere in Quran (memic flight tickets)
+    components needed:
+        1-Tickets booking like Verses picker 
+        2-Results put into results map table
+
+    3-19 calcultaion play ground
+    
