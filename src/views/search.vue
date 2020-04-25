@@ -1,6 +1,6 @@
 <template>
-  <div class="home">
-    This is the Home Page
+  <div class="fullBook">
+    This is the Search Page
   </div>
 </template>
 
