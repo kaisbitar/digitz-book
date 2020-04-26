@@ -39,6 +39,11 @@ const routes = [
 
     component: () =>
       import("../views/search.vue")
+  },
+  { 
+    path: "*", 
+    component: () =>
+    import("../pageNotFound.vue")
   }
 ];
 
