@@ -9,9 +9,12 @@
         <v-toolbar-title >الكتاب المرقوم</v-toolbar-title>
       </div>
         <v-text-field
+          solo
+          flat
+          dense
           label="ابحث عن سورة أو آية أو كلمة أو حرف أو رقم في الكتاب"
           single-line
-          class="mr-12 mt-2"
+          class="mr-12 mt-7"
         ></v-text-field>
       <v-spacer></v-spacer>
     </v-app-bar>
@@ -39,3 +42,11 @@ export default {
   })
 };
 </script>
+
+<style lang="scss">
+  @import 'styles/styles.scss';
+
+  .v-application{
+    font-family: $body-font-family !important;
+  }
+</style>

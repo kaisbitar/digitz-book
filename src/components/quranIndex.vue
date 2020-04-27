@@ -1,12 +1,13 @@
 <template>
   <v-container>
-    <v-btn @click="showIndex=!showIndex">القائمة 
-      <v-icon class="mr-2" small>mdi-script-text-outline</v-icon>
+    
+    <v-row class="text-center">
+      <v-btn @click="showIndex=!showIndex">
+      <div v-show="!showIndex">القائمة</div> 
+      <v-icon small>mdi-script-text-outline</v-icon>
     </v-btn>
-    <v-row v-show="showIndex" class="text-center">
       <v-col class="mb-5" cols="12">
-        <v-card justify="center">
-
+        <v-card justify="center" v-show="showIndex" >
           <v-card-title>
             <h2 class="headline font-weight-bold">
               قائمة الكتاب
@@ -20,15 +21,15 @@
             ></v-text-field>
           </v-card-title>
           <v-data-table
-            :item-key="suraIndex" 
             :headers="headers"
             :items="data"
             :loading="loading"
             loading-text="جاري تحميل أسماء السور"
             :search="search"
             :items-per-page="114"
-            :height="300"
+            :height="400"
             fixed-header
+            hide-default-footer
           >
             <template v-slot:item="props">
               <!-- create an item to fix first item index -->
@@ -70,12 +71,13 @@ export default {
     loading:true,
     search: '',
     showIndex: false,
-    selectedId:0,
+    selectedId:1,
     headers:
     [
-       {
+      {
         text:'رقم',
         value: 'suraIndex',
+        width:68
       },
       {
         text:'السورة',
@@ -99,9 +101,7 @@ export default {
     selectSura(sura){
       this.$store.commit('setFileName', sura.fileName)
       this.showIndex = false
-      // this.$set(sura, 'selected', true)
       this.selectedId = sura.suraIndex
-      console.log(this.$emit('item-selected'))
     }
   }
 };
@@ -111,7 +111,7 @@ tr.suraItem{
   cursor: pointer;
 }
 tr.suraItem:hover{
-  background: #BBDEFB !important;
+  background: #21c4bc33 !important;
 }
 tr.suraSelected{
   background: #BBDEFB; 
