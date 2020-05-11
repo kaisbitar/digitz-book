@@ -1,27 +1,21 @@
 <template>
   <v-app>
+    
     <v-navigation-drawer v-model="drawer" app right>
       <siteMenu/>
     </v-navigation-drawer>
+
     <v-app-bar app color="#BBDEFB" >
       <div class="d-flex align-center">
         <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
         <v-toolbar-title >الكتاب المرقوم</v-toolbar-title>
       </div>
-        <v-text-field
-          solo
-          flat
-          dense
-          label="ابحث عن سورة أو آية أو كلمة أو حرف أو رقم في الكتاب"
-          single-line
-          class="mr-12 mt-7"
-        ></v-text-field>
-      <v-spacer></v-spacer>
+      <autoComplete/>
     </v-app-bar>
+
     <v-content>
       <router-view/>
     </v-content>
-
     
     <v-footer>All rights reserved @2020</v-footer>
   </v-app>
@@ -29,12 +23,14 @@
 
 <script>
 import siteMenu from "./components/siteMenu.vue";
+import autoComplete from "./components/autoComplete.vue";
 
 export default {
   name: "App",
 
   components: {
-    siteMenu
+    siteMenu,
+    autoComplete
   },
 
   data: () => ({
@@ -48,5 +44,11 @@ export default {
 
   .v-application{
     font-family: $body-font-family !important;
+  }
+  .v-btn {
+    letter-spacing: 0px !important;
+  }
+  a {
+    text-decoration: none;
   }
 </style>

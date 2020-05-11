@@ -3,8 +3,8 @@
     
     <v-row class="text-center">
       <v-btn @click="showIndex=!showIndex">
-      <div v-show="!showIndex">القائمة</div> 
       <v-icon small>mdi-script-text-outline</v-icon>
+      <div v-show="!showIndex" class="mr-2">القائمة</div> 
     </v-btn>
       <v-col class="mb-5" cols="12">
         <v-card justify="center" v-show="showIndex" >

@@ -1,14 +1,18 @@
 <template>
   <div class="fullBook">
-    This is the Search Page
+    <autoComplete/>
   </div>
 </template>
 
 <script>
+
 // @ is an alias to /src
+import autoComplete from "@/components/autoComplete.vue";
 
 export default {
   name: "Home",
-  components: {  }
+  components: {  
+    autoComplete
+  }
 };
 </script>

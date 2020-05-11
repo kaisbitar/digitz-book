@@ -1,6 +1,7 @@
 <template>
   <div class="singleSura">
-    <h1>سورة {{this.$store.state.fileName}}</h1>
+    <h1 class="text-center">سورة {{this.$store.state.fileName}}</h1>
+    <h1 class="text-center">آية {{this.$store.state.targetedVerse}}</h1>
     
     <quranIndex/>
 

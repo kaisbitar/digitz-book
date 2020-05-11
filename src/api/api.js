@@ -5,3 +5,12 @@ export function fetchQuranIndex(appApi) {
       return response.data;
     });
   }
+export function fetchSearchData(appApi) {
+  return axios
+        .get(appApi + `api/allSurasData/all`)
+        // .then(res => res.clone().json())
+        .then(response => {
+      return response.data;
+  });
+}
+  
