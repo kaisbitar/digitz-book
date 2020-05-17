@@ -13,4 +13,12 @@ export function fetchSearchData(appApi) {
       return response.data;
   });
 }
+export function fetchSuraText(appApi, fileName) {
+  return axios
+        .get(appApi + `api/view/` + fileName)
+        // .then(res => res.clone().json())
+        .then(response => {
+      return response.data;
+  });
+}
   

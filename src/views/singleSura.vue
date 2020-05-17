@@ -1,21 +1,29 @@
 <template>
-  <div class="singleSura">
-    <h1 class="text-center">سورة {{this.$store.state.fileName}}</h1>
-    <h1 class="text-center">آية {{this.$store.state.targetedVerse}}</h1>
+  <div class="singleSura pa-10 pt-0 pb-0">
+      <quranIndex/>
+    <h1 class="text-center titeAndIndex">
+      سورة {{this.$store.state.fileName}}
+    </h1>
     
-    <quranIndex/>
+      <h5 class=" text-center mb-2 headline">بسم الله الرحمن الرحيم</h5>
+    <!-- <div class="text-center">آية {{this.$store.state.targetedVerse}} </div> -->
 
+    <suraText class='suraBlock'/>
+
+    
   </div>
 </template>
 
 
 <script>
 import quranIndex from "../components/quranIndex.vue";
+import suraText from "../components/suraText.vue";
 
 export default {
   name: "App",
   components: {
-    quranIndex
+    quranIndex,
+    suraText
   },
   data: () =>({
   }),
@@ -23,3 +31,11 @@ export default {
   methods:{ }
 }
 </script>
+
+<style scoped>
+  .titeAndIndex{
+    height: 48px;
+  }  
+  
+  
+</style>

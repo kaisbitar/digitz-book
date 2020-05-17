@@ -5,7 +5,7 @@
       <siteMenu/>
     </v-navigation-drawer>
 
-    <v-app-bar app color="#BBDEFB" >
+    <v-app-bar app :height="100" color="#BBDEFB" >
       <div class="d-flex align-center">
         <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
         <v-toolbar-title >الكتاب المرقوم</v-toolbar-title>
@@ -17,7 +17,7 @@
       <router-view/>
     </v-content>
     
-    <v-footer>All rights reserved @2020</v-footer>
+    <v-footer id="footer" href="#footer">All rights reserved @2020</v-footer>
   </v-app>
 </template>
 

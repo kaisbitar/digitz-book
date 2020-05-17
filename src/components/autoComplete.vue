@@ -1,26 +1,21 @@
 <template>
   <div class="d-flex search">
     <v-autocomplete
-      class="mr-12"
+      class="mr-12 mt-8"
+      :value="search"
       v-model="model"
       :items="items"
       :loading="isLoading"
       :search-input.sync="search"
       clearable
-      clear-icon
-      hide-details
       item-text="verseText"
       label="ابحث  في الكتاب.."
       outlined
       flat
-      auto-select-first
-      deletable-chips
-      multiple
-      autofocus
       ref="autocomplete"
       filled 
       color="green darken-4"
-      auto-overflow
+      multiple
       prepend-inner-icon="mdi-magnify"
     >
     <!-- :filter="customFilter" -->
@@ -34,7 +29,7 @@
           class="white--text"
           v-on="on"
           close
-          click:close
+          @click:close="remove(item)"
         >
           <v-icon small left>mdi-text-short</v-icon>
           <span v-text="item.sura"></span>
@@ -76,7 +71,7 @@
         </v-list-item-content>
         <v-list-item-action>
           <v-btn class="green lighten-1 caption" dark @click="runInSura(item)">
-            <!-- فتح في {{item.sura}}  -->
+            <!-- الآية -->
              <v-icon class="" small>mdi-book-open-page-variant</v-icon>
           </v-btn>
         </v-list-item-action>
@@ -103,7 +98,7 @@ export default {
     isLoading: true,
     items: [],
     model: null,
-    search: null
+    search: null,
   }),
   methods:{
     highlight(text) {
@@ -115,24 +110,24 @@ export default {
           return '<span class="highlightText" style="background:"yellow">' + match + '</span>';
       });
     },
+    remove (item) {
+      const index = this.model.indexOf(item.verseText)
+      if (index >= 0) this.model.splice(index, 1)
+    },
     runInSura(item){
-      let fileName = item.sura
-      let suraNumber = item.suraNumber
       let verseNumber = item.verseNumber
-      if(suraNumber <10){
-        fileName = (("00" + suraNumber).slice(-3)) + fileName
-        this.$store.state.fileName = fileName
-      }
-      else if((suraNumber) >10 && (suraNumber <99)){
-        fileName = (("0" + suraNumber).slice(-3)) + fileName
-        this.$store.state.fileName = fileName
-      }
-      else{
-        this.$store.state.fileName = fileName + suraNumber
-      }
-      this.$refs.autocomplete.blur()
+      this.$store.state.fileName = item.sura
       this.$store.commit('setTargetedVerse', verseNumber)
-      //  = true
+      // this.$router.push({name:'Single Sura'})
+      console.log(item)
+      if (this.model !== null) {
+        this.model.push(item)
+        this.model.push(this.search)
+        this.$refs.autocomplete.blur()
+
+      }
+
+
     },
     // customFilter (item, queryText) {
     //   const textOne = item.verseText 
@@ -163,7 +158,7 @@ export default {
 
 <style >
 .search{
-  width: 550px;
+  width: 900px;
 }
 span.highlightText{
   background: yellow;

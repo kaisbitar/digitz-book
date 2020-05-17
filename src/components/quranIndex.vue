@@ -1,57 +1,56 @@
 <template>
-  <v-container>
-    
-    <v-row class="text-center">
-      <v-btn @click="showIndex=!showIndex">
-      <v-icon small>mdi-script-text-outline</v-icon>
-      <div v-show="!showIndex" class="mr-2">القائمة</div> 
-    </v-btn>
-      <v-col class="mb-5" cols="12">
-        <v-card justify="center" v-show="showIndex" >
-          <v-card-title>
-            <h2 class="headline font-weight-bold">
-              قائمة الكتاب
-            </h2>
+  <div class="text-center indexWrap">
+    <v-col justify="center" cols="1" sm="6" md="1">
+      <div  @click="showIndex=!showIndex" class="menuItem d-flex">
+        <v-icon small>mdi-script-text-outline</v-icon>
+        <div v-if="!showIndex" class="mr-2 subtitle-2">القائمة</div> 
+      </div>
+    </v-col>
+    <!-- <v-col class="mb-" cols="12"> -->
+      <v-card justify="center" v-show="showIndex" >
+          <!-- <h2 class="headline font-weight-bold">
+            قائمة الكتاب
+          </h2> -->
+          <v-col cols="12" sm="6" md="12">
             <v-text-field
-              label="ابحث عن اسم سورة أو رقم في قائمة الكتاب"
+              label="ابحث عن اسم سورة أو رقماً فيها.."
               single-line
               class="mr-12"
               v-model="search"
               append-icon="mdi-magnify"
             ></v-text-field>
-          </v-card-title>
-          <v-data-table
-            :headers="headers"
-            :items="data"
-            :loading="loading"
-            loading-text="جاري تحميل أسماء السور"
-            :search="search"
-            :items-per-page="114"
-            :height="400"
-            fixed-header
-            hide-default-footer
-          >
-            <template v-slot:item="props">
-              <!-- create an item to fix first item index -->
-              <div v-show="false">{{data.map(function(x) {return x.id; }).indexOf(props.item.suraIndex)}}</div>
-              <!--  -->
-              <tr 
-                @click="selectSura(props.item)" 
-                :class="{'suraSelected': props.item.suraIndex===selectedId}" 
-                class="suraItem"
-              >
-                <td class="text-right">{{ props.item.suraIndex }}</td>
-                <td class="text-right">{{ props.item.Name }}</td>
-                <td class="text-right">{{ props.item.numberOfVerses }}</td>
-                <td class="text-right">{{ props.item.NumberOfWords }}</td>
-                <td class="text-right">{{ props.item.NumberOfLetters }}</td>
-              </tr>
-            </template>
-          </v-data-table>
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
+          </v-col>
+        <v-data-table
+          :headers="headers"
+          :items="data"
+          :loading="loading"
+          loading-text="جاري تحميل أسماء السور"
+          :search="search"
+          :items-per-page="114"
+          :height="400"
+          fixed-header
+          hide-default-footer
+        >
+          <template v-slot:item="props">
+            <!-- create an item to fix first item index -->
+            <div v-show="false">{{data.map(function(x) {return x.id; }).indexOf(props.item.suraIndex)}}</div>
+            <!--  -->
+            <tr 
+              @click="selectSura(props.item)" 
+              :class="{'suraSelected': props.item.suraIndex===selectedId}" 
+              class="font-weight-medium suraItem"
+            >
+              <td class="text-right">{{ props.item.suraIndex }}</td>
+              <td class="text-right">{{ props.item.Name }}</td>
+              <td class="text-right">{{ props.item.numberOfVerses }}</td>
+              <td class="text-right">{{ props.item.NumberOfWords }}</td>
+              <td class="text-right">{{ props.item.NumberOfLetters }}</td>
+            </tr>
+          </template>
+        </v-data-table>
+      </v-card>
+    <!-- </v-col> -->
+  </div>
 </template>
 
 <script>
@@ -100,6 +99,7 @@ export default {
   methods:{
     selectSura(sura){
       this.$store.commit('setFileName', sura.fileName)
+      this.$store.commit('setTargetedVerse', null)
       this.showIndex = false
       this.selectedId = sura.suraIndex
     }
@@ -107,6 +107,11 @@ export default {
 };
 </script>
 <style scoped>
+.indexWrap{
+    position: absolute;
+    z-index: 2;
+    width: 410px;
+}
 tr.suraItem{
   cursor: pointer;
 }
@@ -116,5 +121,8 @@ tr.suraItem:hover{
 tr.suraSelected{
   background: #BBDEFB; 
   font-size: 50px;
+}
+.menuItem{
+  cursor: pointer;
 }
 </style>
