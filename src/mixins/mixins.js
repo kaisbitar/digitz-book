@@ -1,10 +1,10 @@
 
 export const mixin = {
-  data() {
+  data () {
     return {
     }
   },
   methods: {
-    
-  },
-}     
+
+  }
+}

@@ -1,56 +1,49 @@
-import Vue from "vue";
-import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+import Home from '../views/Home.vue'
 
-Vue.use(VueRouter);
+Vue.use(VueRouter)
 
 const routes = [
   {
-    path: "/",
-    name: "Home",
+    path: '/',
+    name: 'Home',
     component: Home
   },
   {
-    path: "/single-sura",
-    name: "Single Sura",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/singleSura.vue")
+    path: '/single-sura',
+    name: 'Single Sura',
+    component: () => import('../views/singleSura.vue')
   },
   {
-    path: "/group-of-suras",
-    name: "Group of Suras",
-
+    path: '/group-of-suras',
+    name: 'Group of Suras',
     component: () =>
-      import("../views/surasGroup.vue")
+      import('../views/surasGroup.vue')
   },
   {
-    path: "/full-book",
-    name: "Full Book",
-
+    path: '/full-book',
+    name: 'Full Book',
     component: () =>
-      import("../views/fullBook.vue")
+      import('../views/fullBook.vue')
   },
   {
-    path: "/search",
-    name: "Search",
-
+    path: '/search',
+    name: 'Search',
     component: () =>
-      import("../views/search.vue")
+      import('../views/search.vue')
   },
-  { 
-    path: "*", 
+  {
+    path: '*',
     component: () =>
-    import("../pageNotFound.vue")
+      import('../pageNotFound.vue')
   }
-];
+]
 
 const router = new VueRouter({
-  mode: "history",
+  mode: 'history',
   base: process.env.BASE_URL,
   routes
-});
+})
 
-export default router;
+export default router

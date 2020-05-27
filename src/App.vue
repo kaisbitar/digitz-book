@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    
+
     <v-navigation-drawer v-model="drawer" app right>
       <siteMenu/>
     </v-navigation-drawer>
@@ -16,17 +16,17 @@
     <v-content>
       <router-view/>
     </v-content>
-    
+
     <v-footer id="footer" href="#footer">All rights reserved @2020</v-footer>
   </v-app>
 </template>
 
 <script>
-import siteMenu from "./components/siteMenu.vue";
-import autoComplete from "./components/autoComplete.vue";
+import siteMenu from './components/siteMenu.vue'
+import autoComplete from './components/autoComplete.vue'
 
 export default {
-  name: "App",
+  name: 'App',
 
   components: {
     siteMenu,
@@ -36,7 +36,7 @@ export default {
   data: () => ({
     drawer: false
   })
-};
+}
 </script>
 
 <style lang="scss">

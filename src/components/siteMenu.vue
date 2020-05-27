@@ -41,7 +41,7 @@
         </v-list-item-title>
       </v-list-item-content>
     </v-list-item>
-    
+
     <v-list-item>
       <v-list-item-action>
         <v-icon>mdi-book-open-outline</v-icon>
@@ -67,10 +67,9 @@
         </v-list-item-title>
       </v-list-item-content>
     </v-list-item>
-  </v-list>     
-      
-    
-	</div>
+  </v-list>
+
+</div>
 </template>
 
 <script>
@@ -82,5 +81,5 @@ export default {
   data: () => ({
     drawer: false
   })
-};
+}
 </script>

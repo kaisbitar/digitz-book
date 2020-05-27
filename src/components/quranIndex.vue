@@ -1,9 +1,9 @@
 <template>
-  <div class="text-center indexWrap">
+  <v-container class="text-center indexWrap">
     <v-col justify="center" cols="1" sm="6" md="1">
       <div  @click="showIndex=!showIndex" class="menuItem d-flex">
         <v-icon small>mdi-script-text-outline</v-icon>
-        <div v-if="!showIndex" class="mr-2 subtitle-2">القائمة</div> 
+        <div v-if="!showIndex" class="mr-2 subtitle-2">القائمة</div>
       </div>
     </v-col>
     <!-- <v-col class="mb-" cols="12"> -->
@@ -35,9 +35,9 @@
             <!-- create an item to fix first item index -->
             <div v-show="false">{{data.map(function(x) {return x.id; }).indexOf(props.item.suraIndex)}}</div>
             <!--  -->
-            <tr 
-              @click="selectSura(props.item)" 
-              :class="{'suraSelected': props.item.suraIndex===selectedId}" 
+            <tr
+              @click="selectSura(props.item)"
+              :class="{'suraSelected': props.item.suraIndex===selectedId}"
               class="font-weight-medium suraItem"
             >
               <td class="text-right">{{ props.item.suraIndex }}</td>
@@ -50,37 +50,37 @@
         </v-data-table>
       </v-card>
     <!-- </v-col> -->
-  </div>
+  </v-container>
 </template>
 
 <script>
-import { fetchQuranIndex } from "@/api/api.js";
+import { fetchQuranIndex } from '@/api/api.js'
 
 export default {
-  name: "QuraIndex",
-  created(){
-    let appApi = process.env.VUE_APP_API_URL;
+  name: 'QuraIndex',
+  created () {
+    const appApi = process.env.VUE_APP_API_URL
     fetchQuranIndex(appApi).then(data => {
       this.data = data
       this.loading = false
-    });
+    })
   },
   data: () => ({
-    data:[],
-    loading:true,
+    data: [],
+    loading: true,
     search: '',
     showIndex: false,
-    selectedId:1,
+    selectedId: 1,
     headers:
     [
       {
-        text:'رقم',
+        text: 'رقم',
         value: 'suraIndex',
-        width:68
+        width: 68
       },
       {
-        text:'السورة',
-        value: 'Name',
+        text: 'السورة',
+        value: 'Name'
       },
       {
         text: 'الآيات',
@@ -96,15 +96,15 @@ export default {
       }
     ]
   }),
-  methods:{
-    selectSura(sura){
+  methods: {
+    selectSura (sura) {
       this.$store.commit('setFileName', sura.fileName)
       this.$store.commit('setTargetedVerse', null)
       this.showIndex = false
       this.selectedId = sura.suraIndex
     }
   }
-};
+}
 </script>
 <style scoped>
 .indexWrap{
@@ -119,7 +119,7 @@ tr.suraItem:hover{
   background: #21c4bc33 !important;
 }
 tr.suraSelected{
-  background: #BBDEFB; 
+  background: #BBDEFB;
   font-size: 50px;
 }
 .menuItem{
