@@ -1,6 +1,5 @@
 <template>
-  <v-container>
-    <v-row>
+  <v-container>  <v-row>
       <div class="d-flex mt-3" style="width:403px">
         <div>
           <div class="d-none">{{this.$store.state.targetedVerse}}</div>
@@ -16,9 +15,22 @@
           {{items.numberOfLetters}}
         </div>
       </div>
-      <v-row v-show="true" class=" mb-n1">
-          <div class="mt-2"><v-icon @click="nextHighlight('prev')" small>mdi-arrow-right</v-icon></div>
-          <div class="mt-2"><v-icon @click="nextHighlight('next')" small>mdi-arrow-left</v-icon></div>
+      <v-row v-show="true" class=" mb-n1" >
+          <span class="ml-7 mt-2">
+            <v-chip label class="ml-1" style="width:65px">
+
+            آية
+            {{verseNumber}}
+            </v-chip>
+          </span>
+          <span class="d-flex" v-if="foundIndexesLength !== 0">
+            <div class="mt-2">
+              <v-icon @click="nextHighlight('prev')" small>mdi-arrow-right</v-icon>
+            </div>
+            <div class="mt-2">
+              <v-icon @click="nextHighlight('next')" small>mdi-arrow-left</v-icon>
+            </div>
+          </span>
           <span class=" black--text ">
             <v-text-field
             class="mr-4"
@@ -29,21 +41,12 @@
             background-color="#efefef"
             :label="'  ابحث في'+fileName"
             append-icon="mdi-magnify"
-            @keydown="resetFoundIndexes()"
+            @change="searchedStringIndexes()"
           ></v-text-field>
           </span>
           <div class="d-flex mt-3 mr-4 caption"  v-if="foundIndexesLength !== 0">
-            <v-chip label class="ml-1">
-              {{foundIndexesLength}}
+            <v-chip label class="ml-1">{{foundIndexesLength}} آية
             </v-chip>
-            آية
-              {{verseNumber}}
-
-             <!-- {{fileName}} -->
-            <!-- <v-chip label class="mr-3 ml-1">
-              {{searchedCount}}
-            </v-chip>
-            مصحف -->
           </div>
         </v-row>
     </v-row>
@@ -67,7 +70,10 @@
               <div :id="'v' + (index+1)" class="d-inline verse ml-2">
                 <div class=" d-inline blue--text subtitle-2 mb-8 mr-n1">*</div>
                 <div class=" d-inline mb-8">{{index+1}}- </div>
-                <div class=" d-inline" v-html="$options.filters.highlightText(item, searchedString)" >
+                <div v-if="searchedString" class=" d-inline" v-html="$options.filters.highlightVerse(item, searchedString)" >
+                </div>
+                <div v-else class=" d-inline" >
+                  {{item}}
                 </div>
               </div>
             </v-card>
@@ -99,8 +105,9 @@ export default {
     isLoading: true,
     showSura: false,
     fileName: '',
-    searchedString: null,
-    foundIndexes: []
+    searchedString: '',
+    foundIndexes: [],
+    indexPointer: 0
   }),
   components: {},
   computed: {
@@ -117,7 +124,9 @@ export default {
       }
     },
     foundIndexesLength () {
-      if (this.foundIndexes !== null) {
+      if (this.foundIndexes === null) return
+      if (this.items.length === 0) return 0
+      if (this.foundIndexes.length > 0) {
         return this.foundIndexes.length
       } else return 0
     },
@@ -139,11 +148,15 @@ export default {
         this.showSura = true
         this.verseNumber = this.$store.state.targetedVerse
         this.searchedString = this.$store.state.searchedObject.searchedString
+        return items
+      }).then(items => {
+        this.searchedStringIndexes(items)
+        this.scrollToVerse(this.verseNumber)
       })
     },
-    scrollToVerse (verseNumber) {
-      if (verseNumber !== null) {
-        var targetedVerse = this.parseVerse(verseNumber)
+    scrollToVerse (item) {
+      if (item !== null) {
+        var targetedVerse = this.parseVerse(item)
         if (this.fileName === this.$store.state.fileName) {
           this.$vuetify.goTo(targetedVerse, {
             container: '#suraBlock',
@@ -152,8 +165,8 @@ export default {
         }
       }
     },
-    parseVerse (verseNumber) {
-      var target = parseInt(verseNumber)
+    parseVerse (item) {
+      var target = parseInt(item)
       if ((target < 0)) {
         return null
       } else {
@@ -167,52 +180,59 @@ export default {
       } else this.verseNumber = index + 1
     },
     nextHighlight (type) {
-      if (this.foundIndexes === null) {
-        this.foundIndexes = this.searchedStringIndexes()
-        this.indexPointer = 0
-      }
-      var indexCount = this.foundIndexes.length
-      if (this.indexPointer === indexCount - 1) {
-        this.indexPointer = 0
-        this.highlightAndScroll()
-        return
-      }
+      var pointer = this.indexPointer
+      var indexes = this.foundIndexes
       if (type === 'next') {
-        this.indexPointer = this.indexPointer + 1
-        this.highlightAndScroll()
-      } else {
-        if (this.indexPointer === 1) {
-          this.indexPointer = this.foundIndexes[indexCount]
+        if (pointer === this.foundIndexes.length) {
+          pointer = 0
+          this.indexPointer = 0
+          this.indexPointer++
         } else {
-          this.indexPointer = this.indexPointer - 1
-          this.highlightAndScroll()
+          this.indexPointer++
         }
+        this.highlightAndScroll(indexes, pointer)
+      } else {
+        if (pointer === 0) {
+          if (this.foundIndexes.length !== 0) {
+            pointer = this.foundIndexes.length + 1
+            this.indexPointer = pointer
+            this.indexPointer--
+            return
+          } else return
+        } else {
+          pointer = pointer - 1
+          this.indexPointer--
+        }
+        this.highlightAndScroll(indexes, pointer)
       }
     },
-    highlightAndScroll () {
-      this.verseNumber = this.foundIndexes[this.indexPointer]
-      this.verseNumber = this.foundIndexes[this.indexPointer]
+    highlightAndScroll (item, pointer) {
+      this.verseNumber = item[pointer]
+      this.verseNumber = item[pointer]
       this.scrollToVerse(this.verseNumber)
     },
     resetFoundIndexes () {
       this.verseNumber = null
       this.foundIndexes = null
     },
-    searchedStringIndexes () {
-      this.foundIndexes = []
-      this.items.suraString.map(
-        (item, index) => {
-          var check = item.includes(this.searchedString)
-          if (check === true) {
-            this.foundIndexes.push(index + 1)
-          }
+    searchedStringIndexes (items) {
+      if (this.searchedString === null) return
+      if (!items) {
+        items = this.items
+      }
+      var foundItems = []
+      for (var i = 0; i <= items.suraString.length - 1; i++) {
+        var check = items.suraString[i].includes(this.searchedString)
+        if (check === true) {
+          foundItems.push(i + 1)
         }
-      )
-      return this.foundIndexes
+      }
+      this.indexPointer = 0
+      this.foundIndexes = foundItems
     }
   },
   filters: {
-    highlightText: function (text, searchedString) {
+    highlightVerse: function (text, searchedString) {
       if (searchedString == null) return text
       else {
         var qurey = new RegExp(searchedString, 'gi')
@@ -225,16 +245,8 @@ export default {
   created () {
     this.resetFoundIndexes()
     this.fetchSura()
-    this.verseNumber = this.$store.state.targetedVerse
-    // this.scrollToVerse(this.$store.state.targetedVerse)
   },
   updated () {
-    if (this.$store.state.targetedVerse !== null) {
-      this.scrollToVerse(this.verseNumber)
-    }
-    if (this.indexPointer === undefined) {
-      this.scrollToVerse(this.verseNumber)
-    }
   },
   mounted () {
     this.$store.watch(
@@ -244,6 +256,7 @@ export default {
           this.verseNumber = null
         } else {
           this.verseNumber = this.$store.state.targetedVerse
+          this.scrollToVerse(this.verseNumber)
         }
       }
     )

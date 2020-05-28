@@ -1,5 +1,7 @@
 <template>
   <div class="d-flex search">
+    <v-chip label class="mt-10 mr-8 ml-n12 indigo lighten-2 white--text">{{this.$store.state.searchedObject.searchedString}} {{this.$store.state.searchedObject.resultsCount}}</v-chip>
+    <span class="mt-10 mr-8"></span>
     <v-autocomplete
       class="mr-12 mt-8"
       v-model="model"
@@ -20,13 +22,6 @@
       :suffix="resultsCount"
       :auto-select-first=false
     >
-        <!-- <v-chip
-            v-bind="data.attrs"
-            :input-value="data.selected"
-            close
-            @click="data.select"
-            @click:close="remove(data.item)"
-            > -->
       <template v-slot:selection="{ attr, on, item }">
         <v-chip
           v-bind="attr"
@@ -79,11 +74,11 @@
       </template>
     </v-autocomplete>
           <!-- <template v-slot:prepend> -->
-        <v-row v-show="search">
+        <!-- <v-row v-show="search">
         عدد مرات ورود
         "<strong> {{search}}</strong>"
          = "<strong>{{resultsCount}}</strong>"
-      </v-row>
+      </v-row> -->
       <!-- </template> -->
   </div>
 </template>
@@ -130,7 +125,6 @@ export default {
     },
     runSuraText (item) {
       this.$store.state.fileName = item.sura
-
       const verseNumber = item.verseNumber
       this.$store.commit('setTargetedVerse', verseNumber)
 
@@ -152,17 +146,14 @@ export default {
     resultsCount () {
       if (this.search == null) return null
       if (this.$refs.autocomplete.filteredItems.length == null) return null
-
       var count = this.$refs.autocomplete.filteredItems.length + this.searchDuplicates
 
       return count.toString()
     },
     searchDuplicates () {
       if (this.search == null) return null
-
       if (this.search.length >= 3) {
         var duplicates = 0
-
         var results = this.$refs.autocomplete.filteredItems
         results.map(item => {
           var matches = item.verseText.match(new RegExp(this.search, 'gi'))
@@ -172,7 +163,9 @@ export default {
         })
       } else {
         duplicates = 0
-      } return duplicates
+      }
+
+      return duplicates
     }
   },
   watch: { }
