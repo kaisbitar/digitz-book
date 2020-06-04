@@ -1,5 +1,5 @@
 <template>
-  <div class="fullBook">
+  <div>
     <autoComplete/>
   </div>
 </template>
@@ -7,12 +7,12 @@
 <script>
 
 // @ is an alias to /src
-import autoComplete from "@/components/autoComplete.vue";
+import autoComplete from '@/components/autoComplete.vue'
 
 export default {
-  name: "Home",
-  components: {  
+  name: 'Home',
+  components: {
     autoComplete
   }
-};
+}
 </script>

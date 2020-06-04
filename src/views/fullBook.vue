@@ -1,5 +1,5 @@
 <template>
-  <div class="fullBook">
+  <div>
     This is the Full Book Page
   </div>
 </template>

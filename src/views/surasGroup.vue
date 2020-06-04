@@ -1,5 +1,5 @@
 <template>
-  <div class="fullBook">
+  <div>
     This is the Goup of Suras Page
   </div>
 </template>
@@ -8,7 +8,7 @@
 // @ is an alias to /src
 
 export default {
-  name: "Home",
-  components: {  }
-};
+  name: 'Home',
+  components: { }
+}
 </script>

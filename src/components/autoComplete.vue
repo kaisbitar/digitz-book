@@ -1,6 +1,13 @@
 <template>
   <div class="d-flex search">
-    <v-chip label class="mt-10 mr-8 ml-n12 indigo lighten-2 white--text">{{this.$store.state.searchedObject.searchedString}} {{this.$store.state.searchedObject.resultsCount}}</v-chip>
+    <v-chip
+    label
+    class="mt-10 mr-8 ml-n12 indigo lighten-2 white--text"
+    v-if="this.$store.state.searchedObject.searchedString !== null"
+    >
+      {{this.$store.state.searchedObject.searchedString}}
+      {{this.$store.state.searchedObject.resultsCount}}
+    </v-chip>
     <span class="mt-10 mr-8"></span>
     <v-autocomplete
       class="mr-12 mt-8"
@@ -25,15 +32,16 @@
       <template v-slot:selection="{ attr, on, item }">
         <v-chip
           v-bind="attr"
-          color="green lighten-1"
+          color="deep-purple darken-1"
           class="white--text"
           close
           @click:close="remove(item)"
           @click="runSuraText(item)"
         >
           <v-icon small left>mdi-text-short</v-icon>
+          <v-chip label small color="deep-purple lighten-2 white--text" class="mr-n1 ml-2" v-text="item.verseNumber"></v-chip >
           <span v-text="item.sura">{{search}}</span>
-          <span class="mr-2" v-text="item.verseNumber"></span>
+
         </v-chip>
       </template>
 
@@ -55,7 +63,7 @@
         >
           <div class="">آية {{ item.verseNumber }}</div>
         </v-chip>
-        <v-list-item-content>
+        <v-list-item-content >
           <v-list-item-title
             class="blue--text"
             v-html="highlight(item.sura)"
@@ -73,13 +81,6 @@
         </v-list-item-action>
       </template>
     </v-autocomplete>
-          <!-- <template v-slot:prepend> -->
-        <!-- <v-row v-show="search">
-        عدد مرات ورود
-        "<strong> {{search}}</strong>"
-         = "<strong>{{resultsCount}}</strong>"
-      </v-row> -->
-      <!-- </template> -->
   </div>
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-  <v-container>  <v-row>
+  <div>  <v-row>
       <div class="d-flex mt-3" style="width:403px">
         <div>
           <div class="d-none">{{this.$store.state.targetedVerse}}</div>
@@ -38,7 +38,6 @@
             v-model="searchedString"
             autofocus
             dense
-            background-color="#efefef"
             :label="'  ابحث في'+fileName"
             append-icon="mdi-magnify"
             @change="searchedStringIndexes()"
@@ -51,7 +50,7 @@
         </v-row>
     </v-row>
 
-    <v-row class="mt-1 pa-6 grey lighten-2 pt-2" id="suraBlock" outlined>
+    <v-row class="mt-1 pa-6 grey lighten-4 pt-2" id="suraBlock" outlined>
       <div
         class="suraText "
         v-for="(item, index) in items.suraString"
@@ -60,19 +59,20 @@
         @click="handleVerseClick(index)"
       >
         <v-hover v-slot:default="{ hover }" close-delay="50">
-          <div>
+          <div class="ma-1">
             <v-card
+              class="pa-"
               v-if="showSura"
               :color="hover ? 'grey lighten-1 white--text' : ' '"
               :class="{ 'activeVerse': index+1===verseNumber, 'notActive': index+1!==verseNumber, 'normalState': verseNumber===null }"
               flat
             >
               <div :id="'v' + (index+1)" class="d-inline verse ml-2">
-                <div class=" d-inline blue--text subtitle-2 mb-8 mr-n1">*</div>
-                <div class=" d-inline mb-8">{{index+1}}- </div>
+                <!-- <div class=" d-inline blue--text subtitle-2 mb-8 ml-1 mr-n1">*</div> -->
+                <v-chip small label class="d-inline  mb-8 indigo lighten-3 white--text mr-1">{{index+1}} </v-chip>
                 <div v-if="searchedString" class=" d-inline" v-html="$options.filters.highlightVerse(item, searchedString)" >
                 </div>
-                <div v-else class=" d-inline" >
+                <div v-else class="  d-inline" >
                   {{item}}
                 </div>
               </div>
@@ -84,22 +84,22 @@
         <v-progress-circular indeterminate size="64"></v-progress-circular>
       </v-overlay>
     </v-row>
-  </v-container>
+  </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import { fetchSuraText } from '@/api/api.js'
-import * as easings from 'vuetify/es5/services/goto/easing-patterns'
+import * as easeOutBounce from 'vuetify/es5/services/goto/easing-patterns'
 
 export default {
   name: 'suraText',
   data: () => ({
     items: [],
-    duration: 0,
-    offset: 0,
+    duration: 100,
+    offset: 1000,
     easing: 'easeInOutCubic',
-    easings: Object.keys(easings),
+    easings: Object.keys(easeOutBounce),
     isActive: true,
     verseNumber: 0,
     isLoading: true,
@@ -208,7 +208,7 @@ export default {
     },
     highlightAndScroll (item, pointer) {
       this.verseNumber = item[pointer]
-      this.verseNumber = item[pointer]
+      // this.verseNumber = item[pointer]
       this.scrollToVerse(this.verseNumber)
     },
     resetFoundIndexes () {
@@ -229,6 +229,7 @@ export default {
       }
       this.indexPointer = 0
       this.foundIndexes = foundItems
+      // if (foundItems.length > 0) { this.nextHighlight('next') }
     }
   },
   filters: {
@@ -269,6 +270,13 @@ export default {
 }
 </script>
 <style scoped>
+.verseNumber {
+    width: 66px !important;
+    border-radius: 4px;
+    padding-right: 5px;
+    padding-left: 2px;
+    margin-right: -9px;
+}
 .v-chip.v-size--default {
   height: 17px;
 }
@@ -278,20 +286,22 @@ export default {
 }
 .activeVerse {
   background: yellow;
-  /* color: ; */
+  color: black;
 }
 .notActive {
   /* color: #e8e6e6; */
 }
 .normalState {
   color: black;
-  background: #e0e0e0;
+  background: #f7f7f7 ;
 }
 #suraBlock {
-  max-width: 800px;
-  max-height: 450px;
+  /* max-width: 800px; */
+  max-height: 360px;
   overflow-y: auto;
   overflow-x: hidden;
   cursor: default;
+  resize: both;
+  overflow: auto;
 }
 </style>

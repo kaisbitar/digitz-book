@@ -1,13 +1,13 @@
 <template>
-  <v-container class="text-center indexWrap">
-    <v-col justify="center" cols="1" sm="6" md="1">
+  <v-container  class="text-center indexWrap">
+    <!-- <v-col justify="center" cols="1" sm="6" md="1">
       <div  @click="showIndex=!showIndex" class="menuItem d-flex">
         <v-icon small>mdi-script-text-outline</v-icon>
         <div v-if="!showIndex" class="mr-2 subtitle-2">القائمة</div>
       </div>
-    </v-col>
+    </v-col> -->
     <!-- <v-col class="mb-" cols="12"> -->
-      <v-card justify="center" v-show="showIndex" >
+      <v-card justify="center"  >
           <!-- <h2 class="headline font-weight-bold">
             قائمة الكتاب
           </h2> -->
@@ -116,13 +116,13 @@ tr.suraItem{
   cursor: pointer;
 }
 tr.suraItem:hover{
-  background: #21c4bc33 !important;
+  background: #ccc !important;
+  color: #000;
 }
 tr.suraSelected{
-  background: #BBDEFB;
+  background: #676767;
   font-size: 50px;
+  color: white;
 }
-.menuItem{
-  cursor: pointer;
-}
+
 </style>
