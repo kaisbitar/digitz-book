@@ -1,5 +1,7 @@
 <template>
-  <div>  <v-row>
+  <div>
+    <v-card flat>
+    <v-row>
       <div class="d-flex mt-3" style="width:403px">
         <div>
           <div class="d-none">{{this.$store.state.targetedVerse}}</div>
@@ -63,13 +65,12 @@
             <v-card
               class="pa-"
               v-if="showSura"
-              :color="hover ? 'grey lighten-1 white--text' : ' '"
               :class="{ 'activeVerse': index+1===verseNumber, 'notActive': index+1!==verseNumber, 'normalState': verseNumber===null }"
+              :color="handleHover(hover, index)"
               flat
             >
               <div :id="'v' + (index+1)" class="d-inline verse ml-2">
-                <!-- <div class=" d-inline blue--text subtitle-2 mb-8 ml-1 mr-n1">*</div> -->
-                <v-chip small label class="d-inline  mb-8 indigo lighten-3 white--text mr-1">{{index+1}} </v-chip>
+                <v-chip class="indigo lighten-3 white--text"  label >{{index+1}}</v-chip>
                 <div v-if="searchedString" class=" d-inline" v-html="$options.filters.highlightVerse(item, searchedString)" >
                 </div>
                 <div v-else class="  d-inline" >
@@ -80,10 +81,13 @@
           </div>
         </v-hover>
       </div>
-      <v-overlay :absolute=true :opacity=".5" :value="isLoading">
-        <v-progress-circular indeterminate size="64"></v-progress-circular>
+    </v-row>
+    <v-row justify="center">
+      <v-overlay :absolute="absolute" :opacity="0" :value="isLoading">
+        <v-progress-circular color="indigo" indeterminate></v-progress-circular>
       </v-overlay>
     </v-row>
+    </v-card>
   </div>
 </template>
 
@@ -105,16 +109,21 @@ export default {
     isLoading: true,
     showSura: false,
     fileName: '',
-    searchedString: '',
     foundIndexes: [],
-    indexPointer: 0
+    indexPointer: 0,
+    absolute: true
   }),
   components: {},
   computed: {
+    searchedString () {
+      var filteredLists = this.$store.state.filteredSearch[this.$store.state.selectedSearch]
+      if (!filteredLists) return null
+      return filteredLists.searchTerms.searchedText
+    },
     searchedCount () {
       var searchedObject = this.$store.state.searchedObject
       if (searchedObject == null) return ''
-      else return this.$store.state.searchedObject.resultsCount
+      else return this.$store.state.searchedObject
     },
     options () {
       return {
@@ -147,12 +156,17 @@ export default {
         this.isLoading = false
         this.showSura = true
         this.verseNumber = this.$store.state.targetedVerse
-        this.searchedString = this.$store.state.searchedObject.searchedString
+        // this.searchedString = this.$store.state.searchedObject.searchedText
         return items
       }).then(items => {
         this.searchedStringIndexes(items)
         this.scrollToVerse(this.verseNumber)
       })
+    },
+    handleHover (hover, index) {
+      // hover && index + 1 !== verseNumber ? 'grey lighten-1 white--text' : ' '
+      // if (index + 1 === this.verseNumber) return '#000 white--text'
+      // if (hover && index + 1 !== this.verseNumber) return 'grey lighten-1 white--text'
     },
     scrollToVerse (item) {
       if (item !== null) {
@@ -285,8 +299,11 @@ export default {
   line-height: 1.8;
 }
 .activeVerse {
-  background: yellow;
+  background: yellow !important;
   color: black;
+}
+.activeVerse:hover{
+  background: #ffff83 !important;
 }
 .notActive {
   /* color: #e8e6e6; */
@@ -303,5 +320,6 @@ export default {
   cursor: default;
   resize: both;
   overflow: auto;
+  min-height: 200px;
 }
 </style>

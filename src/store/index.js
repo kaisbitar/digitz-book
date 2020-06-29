@@ -7,15 +7,16 @@ export default new Vuex.Store({
   state: {
     fileName: '001الفاتحة',
     targetedVerse: null,
-    searchedObject: {
-      resultsCount: null,
-      searchedString: null
-    }
+    searchedObject: [],
+    filteredSearch: [],
+    selectedSearch: 1
   },
   getters: {
     fileName: state => state.fileName,
     targetedVerse: state => state.targetedVerse,
-    searchedObject: state => state.searchedObject
+    searchedObject: state => state.searchedObject,
+    filteredSearch: state => state.filteredSearch,
+    selectedSearch: state => state.selectedSearch
   },
   mutations: {
     setFileName (state, fileName) {
@@ -25,7 +26,21 @@ export default new Vuex.Store({
       state.targetedVerse = targetedVerse
     },
     setSearchedObject (state, searchedObject) {
-      state.searchedObject = searchedObject
+      state.searchedObject.push(searchedObject)
+    },
+    setSelectedSearch (state, index) {
+      state.selectedSearch = index
+    },
+    removeSearchedItem (state, index) {
+      if (index > -1) {
+        state.searchedObject.splice(index, 1)
+      }
+    },
+    setFilteredSearch (state, filteredSearch) {
+      state.filteredSearch.push(filteredSearch)
+    },
+    removeFilteredItem (state, index) {
+      state.filteredSearch.pop(index)
     }
   },
   actions: {},

@@ -1,25 +1,19 @@
 <template>
-  <v-row
-    id="chart"
-    class=" mt-5"
-  >
-    <v-row  class="radios mb-n6">
-      <v-radio-group @change="fetchData()" v-model="radios" :mandatory="false" row class="mr-auto">
-        <v-radio color="teal lighten-1" label="أحرف" value="NumberOfLetters"></v-radio>
-        <v-radio color="blue lighten-1" label="كلمات" value="NumberOfWords"></v-radio>
-      </v-radio-group>
-    </v-row>
+  <v-card flat>
     <apexchart
       v-on:markerClick="function(seriesIndex, dataPointIndex, config){handleClick(config)}"
       height="450"
-      :width="divChatWidth"
-      min-width="700"
+      :width="chartWidth"
       :options="chartOptions"
       :series="series"
       type= 'area'
       ref="myChart"
     />
-  </v-row>
+    <v-overlay :absolute="true" :opacity=".2" :value="isLoading">
+      <v-progress-circular color="indigo" indeterminate></v-progress-circular>
+    </v-overlay>
+  </v-card>
+
 </template>
 
 <script>
@@ -29,100 +23,28 @@ import VueApexCharts from 'vue-apexcharts'
 
 export default {
   name: 'Chart',
+  props: ['chartOptions', 'dataType', 'seriesLable'],
   components: { apexchart: VueApexCharts },
   data: () => ({
-    showChart: false,
+    isLoading: true,
     series: [],
-    chartOptions: {
-      chart: {
-        id: 'chart2'
-      },
-      fill: {
-        type: 'pattern',
-        pattern: {
-          style: 'verticalLines',
-          width: 1,
-          height: 3
-        }
-      },
-      theme: {
-        palette: 'palette2',
-        mode: 'light'
-      },
-      stroke: {
-        curve: 'smooth',
-        width: 1,
-        colors: ['#000']
-      },
-      xaxis: {
-        title: {
-          text: 'آيات',
-          offsetX: 0,
-          offsetY: 0,
-          style: {
-            fontSize: '24px', fontFamily: '"Roboto", sans-serif !important'
-          }
-        },
-        min: 1,
-        max: undefined
-      },
-      markers: {
-        size: [4, 7]
-      },
-      yaxis: {
-        title: {
-          offsetX: -70,
-          style: {
-            fontSize: '24px', fontFamily: '"Roboto", sans-serif !important'
-          }
-        },
-        min: 0,
-        max: undefined
-      },
-      colors: ['#42A5F5', '#FF8A80'],
-      grid: {
-        show: true,
-        position: 'back',
-        colors: ['#000'],
-        row: {
-          colors: ['#f5f5f5'],
-          opacity: 0.4
-        },
-        padding: {
-          top: 10,
-          right: 10,
-          bottom: 10,
-          left: 20
-        }
-      },
-      tooltip: {
-        x: {
-          show: true,
-          title: 'sadasd'
-        }
-      }
-    },
-    divChatWidth: 200,
-    radios: 'NumberOfWords'
+    chartWidth: 0
   }),
   methods: {
     fetchData () {
-      this.isLoading = true
-      this.showChart = false
       const appApi = process.env.VUE_APP_API_URL
-      fetchChartData(appApi, this.$store.state.fileName, this.radios).then(items => {
-        if (this.radios === 'NumberOfWords') {
-          this.$refs.myChart.chart.axes.w.config.yaxis[0].title.text = 'كلمات'
+      fetchChartData(appApi, this.$store.state.fileName, this.dataType).then(items => {
+        if (this.dataType === 'NumberOfWords') {
+          this.$refs.myChart.chart.axes.w.config.yaxis[0].title.text = this.seriesLable
           this.$refs.myChart.chart.graphics.w.config.colors[0] = '#42A5F5'
-          var seriesLabel = 'عدد الكلمات'
         } else {
-          this.$refs.myChart.chart.axes.w.config.yaxis[0].title.text = 'أحرف'
+          this.$refs.myChart.chart.axes.w.config.yaxis[0].title.text = this.seriesLable
           this.$refs.myChart.chart.graphics.w.config.colors[0] = '#26A69A'
-          seriesLabel = 'عدد الأحرف'
         }
-        var series = [{ name: seriesLabel, data: items }]
+        var series = [{ name: this.seriesLable, data: items }]
         this.series = series
       })
+      this.isLoading = false
     },
     handleClick (chartContext) {
       this.$store.commit('setTargetedVerse', chartContext.dataPointIndex + 1)
@@ -130,12 +52,18 @@ export default {
   },
   computed: { },
   created () {
+    this.isLoading = true
     this.fetchData()
   },
   updated () {
   },
+  watch: {
+    dataType: function () {
+      this.fetchData()
+    }
+  },
   mounted () {
-    this.divChatWidth = document.getElementById('chart').clientWidth
+    this.chartWidth = document.getElementsByClassName('v-application')[0].clientWidth / 2
     this.$store.watch(
       state => state.fileName,
       () => {
@@ -146,15 +74,8 @@ export default {
 </script>
 
 <style >
-.radios{
-  max-width: 510px;
-}
 .apexcharts-toolbar {
   z-index: 1 !important;
-}
-#chart{
-  max-width: 570px;
-  margin: auto;
 }
 .apexcharts-tooltip {
   direction: rtl;

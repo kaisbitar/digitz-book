@@ -1,5 +1,5 @@
 <template>
-  <v-container  class="text-center indexWrap">
+  <div  class="text-center">
     <!-- <v-col justify="center" cols="1" sm="6" md="1">
       <div  @click="showIndex=!showIndex" class="menuItem d-flex">
         <v-icon small>mdi-script-text-outline</v-icon>
@@ -7,7 +7,7 @@
       </div>
     </v-col> -->
     <!-- <v-col class="mb-" cols="12"> -->
-      <v-card justify="center"  >
+      <!-- <v-card justify="center"  > -->
           <!-- <h2 class="headline font-weight-bold">
             قائمة الكتاب
           </h2> -->
@@ -15,7 +15,6 @@
             <v-text-field
               label="ابحث عن اسم سورة أو رقماً فيها.."
               single-line
-              class="mr-12"
               v-model="search"
               append-icon="mdi-magnify"
             ></v-text-field>
@@ -48,9 +47,9 @@
             </tr>
           </template>
         </v-data-table>
-      </v-card>
+      <!-- </v-card> -->
     <!-- </v-col> -->
-  </v-container>
+  </div>
 </template>
 
 <script>
@@ -107,11 +106,7 @@ export default {
 }
 </script>
 <style scoped>
-.indexWrap{
-    position: absolute;
-    z-index: 2;
-    width: 410px;
-}
+
 tr.suraItem{
   cursor: pointer;
 }

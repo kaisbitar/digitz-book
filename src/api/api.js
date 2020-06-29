@@ -41,7 +41,7 @@ export function fetchChartData (appApi, fileName, dataType) {
 }
 export function fetchTableData (appApi, fileName, dataType) {
   return axios
-    .get(appApi + 'api/view/verses/' + dataType + '/' + fileName)
+    .get(appApi + 'api/view/' + dataType + '/' + fileName)
     .then(response => {
       return response.data
     })

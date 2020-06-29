@@ -12,24 +12,24 @@ const routes = [
   },
   {
     path: '/single-sura',
-    name: 'Single Sura',
+    name: 'single',
     component: () => import('../views/singleSura.vue')
   },
   {
     path: '/group-of-suras',
-    name: 'Group of Suras',
+    name: 'group',
     component: () =>
       import('../views/surasGroup.vue')
   },
   {
     path: '/full-book',
-    name: 'Full Book',
+    name: 'full',
     component: () =>
       import('../views/fullBook.vue')
   },
   {
     path: '/search',
-    name: 'Search',
+    name: 'search',
     component: () =>
       import('../views/search.vue')
   },

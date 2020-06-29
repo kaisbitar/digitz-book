@@ -1,48 +1,47 @@
 <template>
   <div class="d-flex search">
-    <v-chip
-    label
-    class="mt-10 mr-8 ml-n12 indigo lighten-2 white--text"
-    v-if="this.$store.state.searchedObject.searchedString !== null"
-    >
-      {{this.$store.state.searchedObject.searchedString}}
-      {{this.$store.state.searchedObject.resultsCount}}
-    </v-chip>
-    <span class="mt-10 mr-8"></span>
+    <!-- <span class="mt-10 mr-8"></span> -->
     <v-autocomplete
       class="mr-12 mt-8"
       v-model="model"
       :items="items"
+      item-value="search"
+      item-text="verseText"
       :loading="isLoading"
       :search-input.sync="search"
       clearable
-      item-text="verseText"
       label="ابحث  في الكتاب.."
       outlined
       flat
       ref="autocomplete"
       filled
       color="green darken-4"
-      multiple
       prepend-inner-icon="mdi-magnify"
-      :disabled="isDisabled"
       :suffix="resultsCount"
       :auto-select-first=false
+      :disabled="isDisabled"
     >
-      <template v-slot:selection="{ attr, on, item }">
-        <v-chip
-          v-bind="attr"
+      <!-- solution to close the list if needed:disabled="isDisabled" -->
+      <template v-slot:selection="">
+        <span
+         :key="index" v-for="(searchItem, index) in searchedObject"
+        >
+          <v-badge
+          color="green white--text"
+          :content="searchItem.resultsCount"
+          class="font-weight-bold title"
+          ></v-badge>
+          <v-chip
+          label=""
           color="deep-purple darken-1"
           class="white--text"
+          @click="showSearch(index)"
+          @click:close="remove(index)"
           close
-          @click:close="remove(item)"
-          @click="runSuraText(item)"
-        >
-          <v-icon small left>mdi-text-short</v-icon>
-          <v-chip label small color="deep-purple lighten-2 white--text" class="mr-n1 ml-2" v-text="item.verseNumber"></v-chip >
-          <span v-text="item.sura">{{search}}</span>
-
-        </v-chip>
+          >
+            <span class="white--text">{{searchItem.searchedText}}</span>
+          </v-chip>
+        </span>
       </template>
 
       <template v-slot:no-data>
@@ -55,30 +54,32 @@
       </template>
 
       <template v-slot:item="{ item }">
-        <v-chip
-          label
-          small
-          color="indigo-lighten-5"
-          class="ml-4 font-weight-light black--text"
-        >
-          <div class="">آية {{ item.verseNumber }}</div>
-        </v-chip>
-        <v-list-item-content >
-          <v-list-item-title
-            class="blue--text"
-            v-html="highlight(item.sura)"
-          ></v-list-item-title>
-          <v-list-item-title style="max-width=200px !important" v-html="highlight(item.verseText)"></v-list-item-title>
-          <v-list-item-subtitle>
-            ترتيب في المصحف: {{item.verseNumberToQuran}}
-          </v-list-item-subtitle>
-        </v-list-item-content>
-        <v-list-item-action>
-          <v-btn class="green lighten-1 caption" dark @click="runSuraText(item)">
-            <!-- الآية -->
-             <v-icon class="" small>mdi-book-open-page-variant</v-icon>
-          </v-btn>
-        </v-list-item-action>
+        <span style="display:contents" @click="captureSearch(item)">
+          <v-chip
+            label
+            small
+            color="indigo-lighten-5"
+            class="ml-4 font-weight-light black--text"
+          >
+            <div class="">آية {{ item.verseNumber }}</div>
+          </v-chip>
+          <v-list-item-content >
+            <v-list-item-title
+              class="blue--text"
+              v-html="highlight(item.sura)"
+            ></v-list-item-title>
+            <v-list-item-title style="max-width=200px !important" v-html="highlight(item.verseText)"></v-list-item-title>
+            <v-list-item-subtitle>
+              ترتيب في المصحف: {{item.verseNumberToQuran}}
+            </v-list-item-subtitle>
+          </v-list-item-content>
+          <v-list-item-action>
+            <v-btn class="green lighten-1 caption" dark @click="runSuraText(item)">
+              <!-- الآية -->
+              <v-icon class="" small>mdi-book-open-page-variant</v-icon>
+            </v-btn>
+          </v-list-item-action>
+        </span>
       </template>
     </v-autocomplete>
   </div>
@@ -103,9 +104,45 @@ export default {
     items: [],
     model: null,
     search: null,
+    searchedText: null,
     isDisabled: false
   }),
   methods: {
+    captureSearch () {
+      // if (this.search == null) { this.runSuraText(item) }
+      if (this.searchedText === this.search) return
+      this.searchedText = this.search
+      var searchedItem = { resultsCount: this.resultsCount, searchedText: this.searchedText }
+      this.$store.commit('setSearchedObject', searchedItem)
+      var filterdSearchItem = this.$refs.autocomplete.filteredItems
+      this.showSearch(this.$store.state.searchedObject.length - 1)
+      filterdSearchItem.searchTerms = (searchedItem)
+      this.$store.commit('setFilteredSearch', filterdSearchItem)
+    },
+    showSearch (index) {
+      // if (this.model !== null) {
+      // if (this.$router.currentRoute.name !== 'search') {
+      //   this.$router.push({ name: 'search' })
+      // }
+      this.$store.commit('setSelectedSearch', index)
+      this.isDisabled = true
+      setTimeout(() => {
+        this.isDisabled = false
+      }, 100)
+      this.$refs.autocomplete.blur()
+    },
+    remove (index) {
+      if (!this.model) return
+      // console.log(index)
+      // if (index >= 0) { this.model.splice(index, 1) }
+      this.$store.commit('removeSearchedItem', index)
+      this.$store.commit('removeFilteredItem', index)
+      this.isDisabled = true
+      setTimeout(() => {
+        this.isDisabled = false
+      }, 100)
+      this.$refs.autocomplete.blur()
+    },
     highlight (text) {
       if (!this.search) {
         return text
@@ -120,19 +157,10 @@ export default {
         return '<span style="background:yellow">' + match + '</span>'
       })
     },
-    remove (item) {
-      const index = this.model.indexOf(item.verseText)
-      if (index >= 0) this.model.splice(index, 1)
-    },
     runSuraText (item) {
       this.$store.state.fileName = item.sura
       const verseNumber = item.verseNumber
       this.$store.commit('setTargetedVerse', verseNumber)
-
-      if (this.search !== null) {
-        var searchedItem = { resultsCount: this.resultsCount, searchedString: this.search }
-        this.$store.commit('setSearchedObject', searchedItem)
-      }
       // this.$router.push({ name: 'Single Sura' })
       if (this.model !== null) {
         this.isDisabled = true
@@ -144,6 +172,11 @@ export default {
     }
   },
   computed: {
+    searchedObject () {
+      if (this.$store.state.searchedObject === null) return null
+      var searchedObject = this.$store.state.searchedObject
+      return searchedObject
+    },
     resultsCount () {
       if (this.search == null) return null
       if (this.$refs.autocomplete.filteredItems.length == null) return null
@@ -181,7 +214,12 @@ export default {
 span.highlightText{
   background: yellow;
 }
-.v-menu__content.theme--light.v-menu__content--fixed.menuable__content__active.v-autocomplete__content {
+/* .v-menu__content.theme--light.v-menu__content--fixed.menuable__content__active.v-autocomplete__content {
     max-width: 500px;
+} */
+.v-badge__wrapper {
+    left: 0px !important;
+    top: -15px !important;
+    z-index: 2;
 }
 </style>

@@ -2,14 +2,13 @@
   <div>
     <!-- <v-card class="cTable mr-5 pa-4" flat v-bind:key="index" v-for="(item,index) in filteredSearchList"> -->
       <!-- {{ this.$store.state.searchedObject}} -->
-      <!-- <cTable
+      <cTable
       :tableData="filteredSearchList"
       :headers="tableHeaders"
       :search="filteredSearchList.searchTerms.searchedText"
-      /> -->
+      />
       <!-- :search="item.searchTerms.searchedText" -->
     <!-- </v-card> -->
-    <searchResult/>
   </div>
 </template>
 
@@ -17,25 +16,26 @@
 
 // @ is an alias to /src
 // import autoComplete from '@/components/autoComplete.vue'
-import searchResult from '../components/searchResult.vue'
+import cTable from './table.vue'
 
 export default {
   name: 'Home',
   components: {
     // autoComplete
-    searchResult
+    cTable
   },
   data: () => ({
     tableHeaders: [
-      { text: 'السورة', value: 'sura', class: 'grey   lighten-2' },
-      { text: 'رقم', value: 'verseIndx', class: 'grey   lighten-2 ' },
-      { text: 'مصحف', value: 'verseNumberToQuran', class: 'grey   lighten-2' },
-      { text: 'نص', value: 'verseText', class: 'grey   lighten-2' }
+      { text: 'نص', value: 'verseText', class: 'grey   lighten-2', width: '200' },
+      { text: 'السورة', value: 'sura', class: 'grey   lighten-2', width: '10' },
+      { text: 'رقم', value: 'verseIndx', class: 'grey   lighten-2 ', width: '10' },
+      { text: 'مصحف', value: 'verseNumberToQuran', class: 'grey   lighten-2', width: '10' }
     ]
   }),
   computed: {
     filteredSearchList () {
       var filteredLists = this.$store.state.filteredSearch[this.$store.state.selectedSearch]
+      if (!filteredLists) return null
       return filteredLists
     }
   },
@@ -47,6 +47,6 @@ export default {
 
 <style scoped>
 .cTable{
-  max-width: 600px;
+  max-width: 700px;
 }
 </style>
