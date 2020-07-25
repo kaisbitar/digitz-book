@@ -1,8 +1,8 @@
 <template>
   <v-card  flat :dark="isDark" class="singleSura ">
-    <v-card flat>
+    <v-card flat class="pb-6">
       <h1 class=" text-center titeAndIndex ">سورة {{this.$store.state.fileName}}</h1>
-      <h5 class=" text-center subtitle-1 mb-n9">بسم الله الرحمن الرحيم</h5>
+      <h5 class=" text-center subtitle-1 mb-n7">بسم الله الرحمن الرحيم</h5>
     </v-card>
       <!-- <v-switch v-model="isDark" label="إضاءة"></v-switch> -->
 
@@ -55,7 +55,7 @@
         </v-radio-group>
         <chart
           :dataType="dataType"
-          :seriesLable="dataType"
+          :seriesLable="'كلمات'"
           :chartOptions="chartOptions"
           />
       </v-card>

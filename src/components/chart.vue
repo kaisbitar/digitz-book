@@ -63,7 +63,11 @@ export default {
     }
   },
   mounted () {
-    this.chartWidth = document.getElementsByClassName('v-application')[0].clientWidth / 2
+    if (document.getElementsByClassName('v-application')[0].clientWidth > 900) {
+      this.chartWidth = document.getElementsByClassName('v-application')[0].clientWidth / 1.6
+    } else {
+      this.chartWidth = document.getElementsByClassName('v-application')[0].clientWidth - 10
+    }
     this.$store.watch(
       state => state.fileName,
       () => {

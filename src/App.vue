@@ -1,17 +1,18 @@
 <template>
   <v-app>
 
-    <v-navigation-drawer v-model="drawer" app right>
+    <!-- <v-navigation-drawer v-model="drawer" app right>
       <siteMenu/>
-    </v-navigation-drawer>
+    </v-navigation-drawer> -->
 
     <v-app-bar  app :height="100" color="#BBDEFB" >
-      <div class="d-flex align-center">
-        <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-        <v-toolbar-title >الكتاب المرقوم</v-toolbar-title>
-      </div>
+      <div class="ma-5 mt-9 align-center">
+        <!-- <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon> -->
+        <div class="text-sm-body-2 " >الكتاب المرقوم</div>
       <autoComplete/>
+      </div>
     </v-app-bar>
+
     <v-content>
       <v-chip label class="mr-2 mt-2 mb-1" v-if="searchedWord" large @click="showSearch= !showSearch">{{searchedWord}}</v-chip>
       <v-card v-if="searchedWord" class="mr-2 mb-n9 searchWrap ">
@@ -32,7 +33,7 @@
 </template>
 
 <script>
-import siteMenu from './components/siteMenu.vue'
+// import siteMenu from './components/siteMenu.vue'
 import autoComplete from './components/autoComplete.vue'
 import searchView from './components/searchResult.vue'
 
@@ -40,7 +41,7 @@ export default {
   name: 'App',
 
   components: {
-    siteMenu,
+    // siteMenu,
     autoComplete,
     searchView
   },

@@ -2,7 +2,6 @@
   <div class="d-flex search">
     <!-- <span class="mt-10 mr-8"></span> -->
     <v-autocomplete
-      class="mr-12 mt-8"
       v-model="model"
       :items="items"
       item-value="search"
@@ -209,7 +208,7 @@ export default {
 <style >
 .search{
   /* width: 900px; */
-  min-width: 413px;
+  min-width: 353px;
 }
 span.highlightText{
   background: yellow;
