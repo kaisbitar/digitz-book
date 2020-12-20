@@ -26,9 +26,9 @@ export default {
   },
   data: () => ({
     tableHeaders: [
-      { text: 'نص', value: 'verseText', class: 'grey   lighten-2', width: '200' },
       { text: 'السورة', value: 'sura', class: 'grey   lighten-2', width: '10' },
-      { text: 'رقم', value: 'verseIndx', class: 'grey   lighten-2 ', width: '10' },
+      { text: 'رقم', value: 'verseIndx', class: 'grey   lighten-2 ', width: '5' },
+      { text: 'نص', value: 'verseText', class: 'grey   lighten-2', width: '200' },
       { text: 'مصحف', value: 'verseNumberToQuran', class: 'grey   lighten-2', width: '10' }
     ]
   }),
@@ -47,6 +47,6 @@ export default {
 
 <style scoped>
 .cTable{
-  max-width: 700px;
+  /* max-width: 700px; */
 }
 </style>

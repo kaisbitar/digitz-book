@@ -1,18 +1,39 @@
 <template>
   <v-card  flat :dark="isDark" class="singleSura ">
-    <v-card flat class="pb-6">
+    <v-card flat class="pb-1 suraTitle">
       <h1 class=" text-center titeAndIndex ">سورة {{this.$store.state.fileName}}</h1>
       <h5 class=" text-center subtitle-1 mb-n7">بسم الله الرحمن الرحيم</h5>
-    </v-card>
-      <!-- <v-switch v-model="isDark" label="إضاءة"></v-switch> -->
 
-    <v-row class="mb-4">
-      <v-col class="pb-0"  sm="3" md="1">
-      <div  :class="{'activeMenu': showIndex===true}" @click="showIndex=!showIndex" class="menuItem d-flex">
-        <v-icon :class="{'blue--tect' : showIndex===true}" small>mdi-format-list-bulleted</v-icon>
-        <div  class="menuItem mr-2 subtitle-2">سور</div>
-      </div>
-       <v-card  class="searchWrap mr-auto">
+      <v-row class=" mt-4">
+        <v-col class="pb-0"  sm="3" md="1">
+        <div  :class="{'activeMenu': showIndex===true}" @click="showIndex=!showIndex" class="menuItem d-flex">
+          <v-icon :class="{'blue--text' : showIndex===true}" small>mdi-format-list-bulleted</v-icon>
+          <div  class="menuItem mr-2 subtitle-2">سور</div>
+        </div>
+
+        </v-col>
+        <v-col class="pb-0" sm="3" md="1">
+            <div   :class="{'activeMenu': showText===true}" @click="showText=!showText" class="menuItem d-flex">
+              <v-icon small>mdi-text-subject</v-icon>
+              <div class="menuItem mr-2 subtitle-2">نص</div>
+            </div>
+        </v-col>
+        <v-col class="pb-0"  sm="3" md="1">
+            <div :class="{'activeMenu': showChart===true}"  @click="showChart=!showChart" class="menuItem d-flex">
+              <v-icon small>mdi-chart-line</v-icon>
+              <div  class="menuItem mr-2 subtitle-2">رسم</div>
+            </div>
+        </v-col>
+        <v-col class="pb-0"  sm="3" md="1">
+            <div  :class="{'activeMenu': showDetail===true}" @click="showDetail=!showDetail" class="menuItem d-flex">
+              <v-icon small>mdi-table-large</v-icon>
+              <div class="menuItem mr-2 subtitle-2">تفصيل</div>
+            </div>
+        </v-col>
+      </v-row>
+    </v-card>
+ <!-- <v-switch v-model="isDark" label="إضاءة"></v-switch> -->
+       <v-card  class="indexWrap mr-3">
        <v-expand-transition>
           <div v-show="showIndex">
             <v-divider></v-divider>
@@ -22,33 +43,11 @@
           </div>
         </v-expand-transition>
       </v-card>
-
-      </v-col>
-      <v-col class="pb-0" sm="3" md="1">
-          <div   :class="{'activeMenu': showText===true}" @click="showText=!showText" class="menuItem d-flex">
-            <v-icon small>mdi-text-subject</v-icon>
-            <div class="menuItem mr-2 subtitle-2">نص</div>
-          </div>
-      </v-col>
-      <v-col class="pb-0"  sm="3" md="1">
-          <div :class="{'activeMenu': showChart===true}"  @click="showChart=!showChart" class="menuItem d-flex">
-            <v-icon small>mdi-chart-line</v-icon>
-            <div  class="menuItem mr-2 subtitle-2">رسم</div>
-          </div>
-      </v-col>
-      <v-col class="pb-0"  sm="3" md="1">
-          <div  :class="{'activeMenu': showDetail===true}" @click="showDetail=!showDetail" class="menuItem d-flex">
-            <v-icon small>mdi-table-large</v-icon>
-            <div class="menuItem mr-2 subtitle-2">تفصيل</div>
-          </div>
-      </v-col>
-    </v-row>
-
     <!-- <v-chip small label class="text-center">آية {{this.$store.state.targetedVerse}} </v-chip> -->
-    <sura-detail v-show="showDetail" />
+    <sura-detail v-if="showDetail" />
     <v-row @click="showIndex=false" >
       <suraText v-show="showText" class='suraBlock'/>
-      <v-card class="ma-auto mt-7" id="chart" flat v-show="showChart">
+      <v-card class="ma-auto mt-7" id="chart" flat v-if="showChart">
         <v-radio-group  v-model="dataType" :mandatory="false" row class="mb-n12 radios">
           <v-radio color="teal lighten-1" label="أحرف" value="NumberOfLetters" ></v-radio>
           <v-radio color="blue lighten-1" label="كلمات" value="NumberOfWords" ></v-radio>
@@ -81,7 +80,7 @@ export default {
     isDark: false,
     showIndex: false,
     showText: true,
-    showChart: true,
+    showChart: false,
     showDetail: false,
     dataType: 'NumberOfWords',
     // chartWidth: 300,
@@ -182,23 +181,34 @@ export default {
 </script>
 
 <style >
-  .titeAndIndex{
-    height: 48px;
-  }
+.titeAndIndex{
+  height: 48px;
+}
 .menuItem{
   cursor: pointer;
   height: 21px;
 }
 .suraBlock{
-  max-width: 570px;
+  /* max-width: 570px; */
   margin-left: auto;
   margin-right: auto;
-
+  padding-left:2em;
+  padding-right:2em;
+  margin-top: 36px;
 }
 #chart{
   /* min-width: 400px; */
   /* margin: auto; */
   /* max-width: 720px; */
+}
+.suraTitle{
+    /* overflow: hidden; */
+    background-color: #333;
+    /* position: fixed; */
+    /* top: 83px; */
+    width: 100%;
+    z-index: 4;
+    /* margin-top: -3px; */
 }
 .activeMenu{
   color: #2196F3 !important;
@@ -215,5 +225,9 @@ export default {
 }
 .menuItem{
   z-index: 1;
+}
+.indexWrap{
+  max-width: 1060px !important;
+  margin-top: 70px;
 }
 </style>

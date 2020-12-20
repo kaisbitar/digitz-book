@@ -1,30 +1,31 @@
 <template>
   <v-app>
 
-    <!-- <v-navigation-drawer v-model="drawer" app right>
+    <v-navigation-drawer v-model="drawer" app right>
       <siteMenu/>
-    </v-navigation-drawer> -->
+    </v-navigation-drawer>
 
-    <v-app-bar  app :height="100" color="#BBDEFB" >
+    <v-app-bar class="topHeader"  app :height="80" color="#BBDEFB" >
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <div class="ma-5 mt-9 align-center">
-        <!-- <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon> -->
         <div class="text-sm-body-2 " >الكتاب المرقوم</div>
       <autoComplete/>
       </div>
     </v-app-bar>
 
     <v-content>
-      <v-chip label class="mr-2 mt-2 mb-1" v-if="searchedWord" large @click="showSearch= !showSearch">{{searchedWord}}</v-chip>
-      <v-card v-if="searchedWord" class="mr-2 mb-n9 searchWrap ">
+
+      <!-- <v-card v-if="searchedWord" class="mr-2 mt-1 searchWrap "> -->
        <v-expand-transition>
-          <div v-show="showSearch">
-            <v-divider></v-divider>
-            <v-card-text class="pa-0">
+          <div v-show="showSearch" class="searchWrap ">
+            <!-- <v-divider></v-divider> -->
+            <!-- <v-card-text class=""> -->
+              <v-label label class="">نتائج بحث: <b>{{searchedWord}}</b></v-label>
               <search-view class="searchComp"/>
-            </v-card-text>
+            <!-- </v-card-text> -->
           </div>
         </v-expand-transition>
-      </v-card>
+      <!-- </v-card> -->
       <span @click="showSearch= false"><router-view/></span>
     </v-content>
 
@@ -33,7 +34,7 @@
 </template>
 
 <script>
-// import siteMenu from './components/siteMenu.vue'
+import siteMenu from './components/siteMenu.vue'
 import autoComplete from './components/autoComplete.vue'
 import searchView from './components/searchResult.vue'
 
@@ -41,7 +42,7 @@ export default {
   name: 'App',
 
   components: {
-    // siteMenu,
+    siteMenu,
     autoComplete,
     searchView
   },
@@ -52,7 +53,9 @@ export default {
   }),
   computed: {
     searchedWord () {
-      var filteredLists = this.$store.state.filteredSearch[this.$store.state.selectedSearch]
+      if (this.$store.getters.filteredSearch.length === 0) return
+      var filteredLists = this.$store.getters.filteredSearch[this.$store.state.selectedSearch]
+      console.log(filteredLists)
       if (!filteredLists) return null
       else return filteredLists.searchTerms.searchedText
     }
@@ -63,6 +66,14 @@ export default {
       () => {
         this.showSearch = false
       })
+    this.$store.watch(
+      state => state.selectedSearch,
+      () => {
+        this.showSearch = true
+      })
+  },
+  created () {
+    this.$store.commit('resetFilteredItems')
   }
 }
 </script>
@@ -79,15 +90,21 @@ export default {
   a {
     text-decoration: none;
   }
+  .topHeader{
+    z-index: 6;
+  }
   .searchWrap{
-    position: absolute !important;
-    width: 455px;
-    z-index: 2;
+    // position: absolute !important;
+    // width: 455px;
+    // z-index: 2;
+    max-width: 1060px !important;
+    margin-top: 19px !important;
+    z-index: 5;
   }
   .searchComp{
     // position: fixed;
     /* width: 500px; */
-    z-index: 5;
+    z-index: 3;
     max-height: 415px;
     // overflow-y: scroll;
     // /* margin-right: 745px;

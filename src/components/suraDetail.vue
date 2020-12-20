@@ -10,8 +10,7 @@
       <chart
       :dataType="dataType"
       :seriesLable="seriesLable"
-      :chartOptions="chartOptions"
-    />
+      :chartOptions="chartOptions"/>
     </v-card>
   </v-row>
 </template>

@@ -34,6 +34,7 @@
           label=""
           color="deep-purple darken-1"
           class="white--text"
+          :class="index-1"
           @click="showSearch(index)"
           @click:close="remove(index)"
           close
@@ -93,14 +94,19 @@ export default {
   components: { },
   created () {
     const appApi = process.env.VUE_APP_API_URL
+    if (this.items.length > 0) {
+      this.isLoading = false
+      return
+    }
     fetchSearchData(appApi).then(items => {
-      this.items = items
+      this.$store.commit('setAutoCompleteItems', items)
+      // this.items = items
       this.isLoading = false
     })
   },
   data: () => ({
     isLoading: true,
-    items: [],
+    // items: [],
     model: null,
     search: null,
     searchedText: null,
@@ -171,6 +177,9 @@ export default {
     }
   },
   computed: {
+    items () {
+      return this.$store.getters.autoCompleteItems
+    },
     searchedObject () {
       if (this.$store.state.searchedObject === null) return null
       var searchedObject = this.$store.state.searchedObject

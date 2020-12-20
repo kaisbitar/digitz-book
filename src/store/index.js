@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-
+import createPersistedState from 'vuex-persistedstate'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -9,14 +9,17 @@ export default new Vuex.Store({
     targetedVerse: null,
     searchedObject: [],
     filteredSearch: [],
-    selectedSearch: 1
+    selectedSearch: 1,
+    autoCompleteItems: []
   },
+  plugins: [createPersistedState()],
   getters: {
     fileName: state => state.fileName,
     targetedVerse: state => state.targetedVerse,
     searchedObject: state => state.searchedObject,
     filteredSearch: state => state.filteredSearch,
-    selectedSearch: state => state.selectedSearch
+    selectedSearch: state => state.selectedSearch,
+    autoCompleteItems: state => state.autoCompleteItems
   },
   mutations: {
     setFileName (state, fileName) {
@@ -41,6 +44,12 @@ export default new Vuex.Store({
     },
     removeFilteredItem (state, index) {
       state.filteredSearch.pop(index)
+    },
+    resetFilteredItems (state) {
+      state.filteredSearch = []
+    },
+    setAutoCompleteItems (state, items) {
+      state.autoCompleteItems = items
     }
   },
   actions: {},
