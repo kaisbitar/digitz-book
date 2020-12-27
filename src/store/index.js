@@ -31,6 +31,9 @@ export default new Vuex.Store({
     setSearchedObject (state, searchedObject) {
       state.searchedObject.push(searchedObject)
     },
+    resetSearchedObject (state) {
+      state.searchedObject = []
+    },
     setSelectedSearch (state, index) {
       state.selectedSearch = index
     },

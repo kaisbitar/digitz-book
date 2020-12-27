@@ -1,19 +1,20 @@
 <template>
   <div>
     <!-- <v-card class="cTable mr-5 pa-4" flat v-bind:key="index" v-for="(item,index) in filteredSearchList"> -->
-      <!-- {{ this.$store.state.searchedObject}} -->
+    <!-- {{ this.$store.state.searchedObject}} -->
+    <div v-if="filteredSearchList">
       <cTable
-      :tableData="filteredSearchList"
-      :headers="tableHeaders"
-      :search="filteredSearchList.searchTerms.searchedText"
+        :tableData="filteredSearchList"
+        :headers="tableHeaders"
+        :search="filteredSearchList.searchTerms.searchedText"
       />
-      <!-- :search="item.searchTerms.searchedText" -->
+    </div>
+    <!-- :search="item.searchTerms.searchedText" -->
     <!-- </v-card> -->
   </div>
 </template>
 
 <script>
-
 // @ is an alias to /src
 // import autoComplete from '@/components/autoComplete.vue'
 import cTable from './table.vue'
@@ -27,26 +28,41 @@ export default {
   data: () => ({
     tableHeaders: [
       { text: 'السورة', value: 'sura', class: 'grey   lighten-2', width: '10' },
-      { text: 'رقم', value: 'verseIndx', class: 'grey   lighten-2 ', width: '5' },
-      { text: 'نص', value: 'verseText', class: 'grey   lighten-2', width: '200' },
-      { text: 'مصحف', value: 'verseNumberToQuran', class: 'grey   lighten-2', width: '10' }
+      {
+        text: 'رقم',
+        value: 'verseIndx',
+        class: 'grey   lighten-2 ',
+        width: '5'
+      },
+      {
+        text: 'نص',
+        value: 'verseText',
+        class: 'grey   lighten-2',
+        width: '200'
+      },
+      {
+        text: 'مصحف',
+        value: 'verseNumberToQuran',
+        class: 'grey   lighten-2',
+        width: '10'
+      }
     ]
   }),
   computed: {
     filteredSearchList () {
-      var filteredLists = this.$store.state.filteredSearch[this.$store.state.selectedSearch]
+      var filteredLists = this.$store.state.filteredSearch[
+        this.$store.state.selectedSearch
+      ]
       if (!filteredLists) return null
       return filteredLists
     }
   },
-  methods: {
-
-  }
+  methods: {}
 }
 </script>
 
 <style scoped>
-.cTable{
+.cTable {
   /* max-width: 700px; */
 }
 </style>

@@ -74,13 +74,16 @@ export default {
   },
   created () {
     this.$store.commit('resetFilteredItems')
+    this.$store.commit('resetSearchedObject')
   }
 }
 </script>
 
 <style lang="scss">
   @import 'styles/styles.scss';
-
+  html{
+    zoom: 1.2;
+  }
   .v-application{
     font-family: $body-font-family !important;
   }
@@ -109,4 +112,8 @@ export default {
     // overflow-y: scroll;
     // /* margin-right: 745px;
   }
+  .v-menu__content.theme--light.v-menu__content--fixed.menuable__content__active.v-autocomplete__content {
+    max-width: 353px;
+    // left: 178px !important;
+}
 </style>

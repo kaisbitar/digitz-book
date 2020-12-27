@@ -1,92 +1,111 @@
 <template>
   <div>
     <v-card flat>
-    <v-row>
-      <div class="d-flex mt-3" style="width:403px">
-        <div>
-          <div class="d-none">{{this.$store.state.targetedVerse}}</div>
-          <strong>آيات:</strong>
-          {{items.numberOfVerses}}
+      <div class="infoBar">
+        <div class="d-flex" style="width: 403px">
+          <h3 class="text-center titeAndIndex">
+            سورة {{ this.$store.state.fileName }}
+          </h3>
+          <div class="mr-4">
+            <div class="d-none">{{ this.$store.state.targetedVerse }}</div>
+            <span class="blue--text title">{{ items.numberOfVerses }}</span>
+            <span class="caption">آية</span>
+          </div>
+          <div class="mr-4">
+            <span class="blue--text title">{{ items.numberOfWords }}</span>
+            <span class="caption">كلمة</span>
+          </div>
+          <div class="mr-4">
+            <span class="blue--text title">{{ items.numberOfLetters }}</span>
+            <span class="caption">حرف</span>
+          </div>
         </div>
-        <div class="mr-4">
-          <strong>كلمات:</strong>
-          {{items.numberOfWords}}
-        </div>
-        <div class="mr-4">
-          <strong>أحرف:</strong>
-          {{items.numberOfLetters}}
-        </div>
-      </div>
-      <v-row v-show="true" class=" mb-n1" >
-          <span class="ml-7 mt-2">
-            <v-chip label class="ml-1" style="width:65px">
-
-            آية
-            {{verseNumber}}
+        <div class="d-flex" v-show="true">
+          <h5 class="ml-3">بسم الله الرحمن الرحيم</h5>
+          <div></div>
+          <span class="mr-4">
+            <v-chip label class="ml-1" style="width: 65px; background:yellow !important;border:1px solid #ccc;">
+              آية
+              {{ verseNumber }}
             </v-chip>
           </span>
           <span class="d-flex" v-if="foundIndexesLength !== 0">
-            <div class="mt-2">
-              <v-icon @click="nextHighlight('prev')" small>mdi-arrow-right</v-icon>
+            <div>
+              <v-icon @click="nextHighlight('prev')" small
+                >mdi-arrow-right</v-icon
+              >
             </div>
-            <div class="mt-2">
-              <v-icon @click="nextHighlight('next')" small>mdi-arrow-left</v-icon>
+            <div>
+              <v-icon @click="nextHighlight('next')" small
+                >mdi-arrow-left</v-icon
+              >
             </div>
           </span>
-          <span class=" black--text ">
+          <span class="black--text mt-n2">
             <v-text-field
-            class="mr-4"
-            single-line
-            v-model="searchedString"
-            autofocus
-            dense
-            :label="'  ابحث في'+fileName"
-            append-icon="mdi-magnify"
-            @change="searchedStringIndexes()"
-          ></v-text-field>
+              class="mr-4"
+              single-line
+              v-model="searchedString"
+              autofocus
+              dense
+              :label="'  ابحث في' + fileName"
+              append-icon="mdi-magnify"
+              @change="searchedStringIndexes()"
+            ></v-text-field>
           </span>
-          <div class="d-flex mt-3 mr-4 caption"  v-if="foundIndexesLength !== 0">
-            <v-chip label class="ml-1">{{foundIndexesLength}} آية
-            </v-chip>
+          <div class="d-flex mt-1 mr-4 caption" v-if="foundIndexesLength !== 0">
+            <v-chip label class="ml-1">في: {{ foundIndexesLength }} آية</v-chip>
           </div>
-        </v-row>
-    </v-row>
-
-    <v-row class="mt-1 pa-6 grey lighten-4 pt-2" id="suraBlock" outlined>
-      <div
-        class="suraText "
-        v-for="(item, index) in items.suraString"
-        :key="index"
-        :class="index-1"
-        @click="handleVerseClick(index)"
-      >
-        <v-hover v-slot:default="{ hover }" close-delay="50">
-          <div class="ma-1">
-            <v-card
-              class="pa-"
-              v-if="showSura"
-              :class="{ 'activeVerse': index+1===verseNumber, 'notActive': index+1!==verseNumber, 'normalState': verseNumber===null }"
-              :color="handleHover(hover, index)"
-              flat
-            >
-              <div :id="'v' + (index+1)" class="d-inline verse ml-2">
-                <v-chip class="indigo lighten-3 white--text"  label >{{index+1}}</v-chip>
-                <div v-if="searchedString" class=" d-inline" v-html="$options.filters.highlightVerse(item, searchedString)" >
-                </div>
-                <div v-else class="  d-inline" >
-                  {{item}}
-                </div>
-              </div>
-            </v-card>
-          </div>
-        </v-hover>
+        </div>
       </div>
-    </v-row>
-    <v-row justify="center">
-      <v-overlay :absolute="absolute" :opacity="0" :value="isLoading">
-        <v-progress-circular color="indigo" indeterminate></v-progress-circular>
-      </v-overlay>
-    </v-row>
+
+      <v-row class="mt-1 pa-6 grey lighten-4 pt-2" id="suraBlock" outlined>
+        <div
+          class="suraText"
+          v-for="(item, index) in items.suraString"
+          :key="index"
+          :class="index - 1"
+          @click="handleVerseClick(index)"
+        >
+          <v-hover v-slot:default="{ hover }" close-delay="50">
+            <div class="ma-1">
+              <v-card
+                class="pa-"
+                v-if="showSura"
+                :class="{
+                  activeVerse: index + 1 === verseNumber,
+                  notActive: index + 1 !== verseNumber,
+                  normalState: verseNumber === null,
+                }"
+                :color="handleHover(hover, index)"
+                flat
+              >
+                <div :id="'v' + (index + 1)" class="d-inline verse ml-2">
+                  <v-chip class="indigo lighten-3 white--text" label>
+                    {{ index + 1 }}
+                  </v-chip>
+                  <div
+                    v-if="searchedString"
+                    class="d-inline"
+                    v-html="
+                      $options.filters.highlightVerse(item, searchedString)
+                    "
+                  ></div>
+                  <div v-else class="d-inline">{{ item }}</div>
+                </div>
+              </v-card>
+            </div>
+          </v-hover>
+        </div>
+      </v-row>
+      <v-row justify="center">
+        <v-overlay :absolute="absolute" :opacity="0" :value="isLoading">
+          <v-progress-circular
+            color="indigo"
+            indeterminate
+          ></v-progress-circular>
+        </v-overlay>
+      </v-row>
     </v-card>
   </div>
 </template>
@@ -116,7 +135,9 @@ export default {
   components: {},
   computed: {
     searchedString () {
-      var filteredLists = this.$store.state.filteredSearch[this.$store.state.selectedSearch]
+      var filteredLists = this.$store.state.filteredSearch[
+        this.$store.state.selectedSearch
+      ]
       if (!filteredLists) return null
       return filteredLists.searchTerms.searchedText
     },
@@ -149,19 +170,21 @@ export default {
       this.isLoading = true
       this.showSura = false
       const appApi = process.env.VUE_APP_API_URL
-      fetchSuraText(appApi, this.$store.state.fileName).then(items => {
-        this.resetFoundIndexes()
-        this.fileName = this.$store.state.fileName
-        this.items = items
-        this.isLoading = false
-        this.showSura = true
-        this.verseNumber = this.$store.state.targetedVerse
-        // this.searchedString = this.$store.state.searchedObject.searchedText
-        return items
-      }).then(items => {
-        this.searchedStringIndexes(items)
-        this.scrollToVerse(this.verseNumber)
-      })
+      fetchSuraText(appApi, this.$store.state.fileName)
+        .then((items) => {
+          this.resetFoundIndexes()
+          this.fileName = this.$store.state.fileName
+          this.items = items
+          this.isLoading = false
+          this.showSura = true
+          this.verseNumber = this.$store.state.targetedVerse
+          // this.searchedString = this.$store.state.searchedObject.searchedText
+          return items
+        })
+        .then((items) => {
+          this.searchedStringIndexes(items)
+          this.scrollToVerse(this.verseNumber)
+        })
     },
     handleHover (hover, index) {
       // hover && index + 1 !== verseNumber ? 'grey lighten-1 white--text' : ' '
@@ -181,7 +204,7 @@ export default {
     },
     parseVerse (item) {
       var target = parseInt(item)
-      if ((target < 0)) {
+      if (target < 0) {
         return null
       } else {
         const value = '#v' + target
@@ -251,8 +274,10 @@ export default {
       if (searchedString == null) return text
       else {
         var qurey = new RegExp(searchedString, 'gi')
-        return text.replace(qurey, match => {
-          return '<span style="background:orange !important">' + match + '</span>'
+        return text.replace(qurey, (match) => {
+          return (
+            '<span style="background:orange !important">' + match + '</span>'
+          )
         })
       }
     }
@@ -261,11 +286,10 @@ export default {
     this.resetFoundIndexes()
     this.fetchSura()
   },
-  updated () {
-  },
+  updated () {},
   mounted () {
     this.$store.watch(
-      state => state.targetedVerse,
+      (state) => state.targetedVerse,
       () => {
         if (this.$store.state.targetedVerse === null) {
           this.verseNumber = null
@@ -276,20 +300,21 @@ export default {
       }
     )
     this.$store.watch(
-      state => state.fileName,
+      (state) => state.fileName,
       () => {
         this.fetchSura()
-      })
+      }
+    )
   }
 }
 </script>
 <style scoped>
 .verseNumber {
-    width: 66px !important;
-    border-radius: 4px;
-    padding-right: 5px;
-    padding-left: 2px;
-    margin-right: -9px;
+  width: 66px !important;
+  border-radius: 4px;
+  padding-right: 5px;
+  padding-left: 2px;
+  margin-right: -9px;
 }
 .v-chip.v-size--default {
   height: 17px;
@@ -302,7 +327,7 @@ export default {
   background: yellow !important;
   color: black;
 }
-.activeVerse:hover{
+.activeVerse:hover {
   background: #ffff83 !important;
 }
 .notActive {
@@ -310,7 +335,7 @@ export default {
 }
 .normalState {
   color: black;
-  background: #f7f7f7 ;
+  background: #f7f7f7;
 }
 #suraBlock {
   /* max-width: 800px; */
@@ -321,5 +346,8 @@ export default {
   resize: both;
   overflow: auto;
   min-height: 200px;
+}
+.infoBar {
+  height: 74px;
 }
 </style>
