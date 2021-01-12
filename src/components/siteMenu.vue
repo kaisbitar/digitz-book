@@ -1,6 +1,6 @@
 <template>
 <div>
-  <v-list dense>
+  <v-list dense class="mainWrap">
     <v-list-item>
       <v-list-item-action>
         <v-icon>mdi-home</v-icon>
@@ -8,13 +8,13 @@
       <v-list-item-content>
         <v-list-item-title>
           <router-link :to="'/'">
-            <h3>الرئيسية</h3>
+            <h4>الرئيسية</h4>
           </router-link>
         </v-list-item-title>
       </v-list-item-content>
     </v-list-item>
 
-    <h4 class="mr-2">البحث في:</h4>
+    <!-- <h4 class="mr-2">البحث في:</h4> -->
 
     <v-list-item>
       <v-list-item-action>
@@ -23,7 +23,7 @@
       <v-list-item-content>
         <v-list-item-title>
           <router-link :to="'/single-sura'">
-            <h3>سورة</h3>
+            <h4>سورة</h4>
           </router-link>
         </v-list-item-title>
       </v-list-item-content>
@@ -36,7 +36,7 @@
       <v-list-item-content>
         <v-list-item-title>
           <router-link :to="'/group-of-suras'">
-            <h3>مجموعة من  السور</h3>
+            <h4>مجموعة من  السور</h4>
           </router-link>
         </v-list-item-title>
       </v-list-item-content>
@@ -49,7 +49,7 @@
       <v-list-item-content>
         <v-list-item-title>
           <router-link :to="'/full-book'">
-            <h3>المصحف كاملاً</h3>
+            <h4>المصحف كاملاً</h4>
           </router-link>
         </v-list-item-title>
       </v-list-item-content>
@@ -62,7 +62,7 @@
       <v-list-item-content>
         <v-list-item-title>
           <router-link :to="'/search'">
-            <h3>المزيد..</h3>
+            <h4>المزيد..</h4>
           </router-link>
         </v-list-item-title>
       </v-list-item-content>
@@ -75,6 +75,7 @@
 <script>
 
 export default {
+  name: 'siteMenu',
   components: {
   },
 
@@ -83,3 +84,9 @@ export default {
   })
 }
 </script>
+
+<style >
+.mainWrap a{
+  color: #000009 !important;
+}
+</style>

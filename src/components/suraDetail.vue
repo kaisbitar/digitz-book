@@ -17,11 +17,12 @@
 
 <script>
 
-import cTable from '../components/table.vue'
+import cTable from '../components/custTable.vue'
 import chart from '../components/chart.vue'
 import { fetchTableData } from '@/api/api.js'
 
 export default {
+  name: 'suraDetail',
   components: {
     cTable,
     chart
@@ -34,10 +35,10 @@ export default {
       { text: 'رقم', value: 'verseIndx', class: 'grey   lighten-2 ' },
       { text: 'مصحف', value: 'bigIndx', class: 'grey   lighten-2' },
       { text: 'نص', value: 'verseText', class: 'grey   lighten-2' },
-      { text: 'كلمات', value: 'NumberOfWords', class: 'grey   lighten-2' },
-      { text: 'أحرف', value: 'NumberOfLetters', class: 'grey   lighten-2' }
+      { text: 'كلمات', value: 'numberOfWords', class: 'grey   lighten-2' },
+      { text: 'أحرف', value: 'numberOfLetters', class: 'grey   lighten-2' }
     ],
-    dataType: 'NumberOfLetters',
+    dataType: 'numberOfLetters',
     tableDataType: 'verses-basics',
     seriesLable: 'أحرف سيريز',
     chartOptions: {

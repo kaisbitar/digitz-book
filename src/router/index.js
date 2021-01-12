@@ -12,24 +12,25 @@ const routes = [
   // },
   {
     path: '/',
-    name: 'single',
+    name: 'singleSura',
     component: () => import('../views/singleSura.vue')
   },
   {
     path: '/group-of-suras',
-    name: 'group',
+    name: 'surasGroup',
     component: () =>
       import('../views/surasGroup.vue')
   },
   {
     path: '/full-book',
-    name: 'full',
+    name: 'fullBook',
     component: () =>
       import('../views/fullBook.vue')
   },
   {
     path: '/search',
     name: 'search',
+    meta: { keepAlive: true },
     component: () =>
       import('../views/search.vue')
   },
@@ -37,6 +38,11 @@ const routes = [
     path: '*',
     component: () =>
       import('../pageNotFound.vue')
+  },
+  {
+    path: '/test',
+    component: () =>
+      import('../test.vue')
   }
 ]
 

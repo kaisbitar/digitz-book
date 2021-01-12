@@ -34,7 +34,7 @@ export default {
     fetchData () {
       const appApi = process.env.VUE_APP_API_URL
       fetchChartData(appApi, this.$store.state.fileName, this.dataType).then(items => {
-        if (this.dataType === 'NumberOfWords') {
+        if (this.dataType === 'numberOfWords') {
           this.$refs.myChart.chart.axes.w.config.yaxis[0].title.text = this.seriesLable
           this.$refs.myChart.chart.graphics.w.config.colors[0] = '#42A5F5'
         } else {
@@ -47,7 +47,8 @@ export default {
       this.isLoading = false
     },
     handleClick (chartContext) {
-      this.$store.commit('setTargetedVerse', chartContext.dataPointIndex + 1)
+      var target = { fileName: this.fileName, verseIndex: chartContext.dataPointIndex + 1 }
+      this.$store.commit('setTarget', target)
     }
   },
   computed: { },

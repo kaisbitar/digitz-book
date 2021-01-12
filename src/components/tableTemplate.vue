@@ -15,6 +15,7 @@
 <script>
 
 export default {
+  name: 'tabelTemplate',
   components: {
   },
   props: ['verseItem', 'search'],
@@ -32,7 +33,7 @@ export default {
       else {
         var qurey = new RegExp(search, 'gi')
         return text.replace(qurey, match => {
-          return '<span style="background:yellow !important">' + match + '</span>'
+          return '<span style="background:yellow accent-1 !important">' + match + '</span>'
         })
       }
     }

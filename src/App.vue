@@ -1,119 +1,107 @@
 <template>
-  <v-app>
-
-    <v-navigation-drawer v-model="drawer" app right>
-      <siteMenu/>
+  <v-app >
+    <v-navigation-drawer v-model="drawer" app right class="grey lighten-4">
+      <!-- <siteMenu /> -->
+      <quranIndex />
     </v-navigation-drawer>
 
-    <v-app-bar class="topHeader"  app :height="80" color="#BBDEFB" >
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-      <div class="ma-5 mt-9 align-center">
-        <div class="text-sm-body-2 " >الكتاب المرقوم</div>
-      <autoComplete/>
-      </div>
+    <v-app-bar
+      class="topHeader brown lighten-5"
+      flat
+      app
+      :height="71"
+    >
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer"> </v-app-bar-nav-icon>
+      <h3 class="titleText ml-2 font-weight-thin">الكتاب المرقوم</h3>
+      <autoComplete class="mt-3" />
     </v-app-bar>
+    <v-main>
+      <!-- <autoCompleteSearchBar /> -->
+      <!-- <keep-alive include="search"> -->
+        <router-view />
+      <!-- </keep-alive> -->
 
-    <v-content>
+    </v-main>
 
-      <!-- <v-card v-if="searchedWord" class="mr-2 mt-1 searchWrap "> -->
-       <v-expand-transition>
-          <div v-show="showSearch" class="searchWrap ">
-            <!-- <v-divider></v-divider> -->
-            <!-- <v-card-text class=""> -->
-              <v-label label class="">نتائج بحث: <b>{{searchedWord}}</b></v-label>
-              <search-view class="searchComp"/>
-            <!-- </v-card-text> -->
-          </div>
-        </v-expand-transition>
-      <!-- </v-card> -->
-      <span @click="showSearch= false"><router-view/></span>
-    </v-content>
-
-    <v-footer id="footer" href="#footer">All rights reserved @2020</v-footer>
+    <!-- <v-footer id="footer" href="#footer" class="caption pa-0"
+      >حقوق النشر غير محفوظة</v-footer -->
+    >
   </v-app>
 </template>
 
 <script>
-import siteMenu from './components/siteMenu.vue'
+// import siteMenu from './components/siteMenu.vue'
 import autoComplete from './components/autoComplete.vue'
-import searchView from './components/searchResult.vue'
-
+import quranIndex from './components/quranIndex.vue'
+// import autoCompleteSearchBar from './components/autoCompleteSearchBar'
 export default {
   name: 'App',
 
   components: {
-    siteMenu,
+    // siteMenu,
     autoComplete,
-    searchView
+    quranIndex
+    // autoCompleteSearchBar
   },
 
   data: () => ({
-    drawer: false,
-    showSearch: true
+    drawer: true
   }),
   computed: {
     searchedWord () {
       if (this.$store.getters.filteredSearch.length === 0) return
-      var filteredLists = this.$store.getters.filteredSearch[this.$store.state.selectedSearch]
-      console.log(filteredLists)
+      var filteredLists = this.$store.getters.filteredSearch[
+        this.$store.state.filterSelectedIndex
+      ].result
       if (!filteredLists) return null
       else return filteredLists.searchTerms.searchedText
     }
   },
-  mounted () {
-    this.$store.watch(
-      state => state.targetedVerse,
-      () => {
-        this.showSearch = false
-      })
-    this.$store.watch(
-      state => state.selectedSearch,
-      () => {
-        this.showSearch = true
-      })
-  },
+  mounted () {},
   created () {
-    this.$store.commit('resetFilteredItems')
-    this.$store.commit('resetSearchedObject')
+    // this.$store.commit('resetFilteredItems')
+    this.$store.commit('resetFilterSelectedIndex')
   }
 }
 </script>
 
 <style lang="scss">
-  @import 'styles/styles.scss';
-  html{
-    zoom: 1.2;
+@import "styles/styles.scss";
+html {
+  // zoom: 1.0;
+}
+.topHeader{
+  height: 58px !important;
+}
+.v-application {
+  font-family: $body-font-family !important;
+}
+.topHeader {
+  z-index: 6;
+}
+#footer {
+  width: 100%;
+  direction: ltr;
+  bottom: 0;
+  left: 0;
+  position: fixed;
+  background: #f5f5f5;
+  z-index: 22;
+  color: black;
+}
+.titleText {
+  width: 148px;
+}
+/************ Responseive***********/
+@media (max-width: 600px) {
+  .titleText {
+    font-size: 15px;
   }
-  .v-application{
-    font-family: $body-font-family !important;
+  .autoAndLogo {
+    display: block !important;
   }
-  .v-btn {
-    letter-spacing: 0px !important;
+  .searcj {
+    margin-top: -44px !important;
   }
-  a {
-    text-decoration: none;
-  }
-  .topHeader{
-    z-index: 6;
-  }
-  .searchWrap{
-    // position: absolute !important;
-    // width: 455px;
-    // z-index: 2;
-    max-width: 1060px !important;
-    margin-top: 19px !important;
-    z-index: 5;
-  }
-  .searchComp{
-    // position: fixed;
-    /* width: 500px; */
-    z-index: 3;
-    max-height: 415px;
-    // overflow-y: scroll;
-    // /* margin-right: 745px;
-  }
-  .v-menu__content.theme--light.v-menu__content--fixed.menuable__content__active.v-autocomplete__content {
-    max-width: 353px;
-    // left: 178px !important;
 }
 </style>

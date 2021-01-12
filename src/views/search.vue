@@ -1,28 +1,18 @@
 <template>
+
   <div>
-    <!-- <v-card class="cTable mr-5 pa-4" flat v-bind:key="index" v-for="(item,index) in filteredSearchList"> -->
-      <!-- {{ this.$store.state.searchedObject}} -->
-      <!-- <cTable
-      :tableData="filteredSearchList"
-      :headers="tableHeaders"
-      :search="filteredSearchList.searchTerms.searchedText"
-      /> -->
-      <!-- :search="item.searchTerms.searchedText" -->
-    <!-- </v-card> -->
     <searchResult/>
   </div>
-</template>
 
+</template>
 <script>
 
 // @ is an alias to /src
-// import autoComplete from '@/components/autoComplete.vue'
 import searchResult from '../components/searchResult.vue'
 
 export default {
-  name: 'Home',
+  name: 'search',
   components: {
-    // autoComplete
     searchResult
   },
   data: () => ({
@@ -35,7 +25,7 @@ export default {
   }),
   computed: {
     filteredSearchList () {
-      var filteredLists = this.$store.state.filteredSearch[this.$store.state.selectedSearch]
+      var filteredLists = this.$store.state.filteredSearch[this.$store.state.filterSelectedIndex]
       return filteredLists
     }
   },
