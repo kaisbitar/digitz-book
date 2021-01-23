@@ -1,62 +1,40 @@
 <template>
-  <div id="wrapper">
-    <div class="infoBar">
-      <suraTextInfoBar
-        :numberOfVerses="items.numberOfVerses"
-        :numberOfWords="items.numberOfWords"
-        :numberOfLetters="items.numberOfLetters"
+  <div class="wrapper">
+    <div  class="d-flex suraHeader">
+      <suraTextInfoBasic
+      :numberOfVerses="numberOfVerses"
+      :numberOfWords="numberOfWords"
+      :numberOfLetters="numberOfLetters"
+      />
+      <suraTextSelectControl
         :selectedVerse="suraTargetedVerse"
         :inputText="inputText"
-        :items="items"
+        style="width:100px"
       />
     </div>
-    <v-card outlined class="mt-2 pa-2  grey lighten-4" id="suraBlock" :style="getheight()">
+    <v-row outlined class="pa-2  grey lighten-4" id="suraBlock" :style="getheight()">
       <suraTextBox
-        v-if="items"
-        :items="items"
         :inputText="inputText"
         :suraTargetedVerse="suraTargetedVerse"
       />
     <v-card class="sadakAllah caption mr-auto elevation-0 pa-2 mt-1">- صدق الله العظيم -</v-card>
-    </v-card>
-    <v-row justify="center">
-      <v-overlay
-        color="white"
-        :absolute="false"
-        :opacity="0.8"
-        :value="isLoading"
-      >
-        <v-progress-circular color="indigo" indeterminate></v-progress-circular>
-      </v-overlay>
     </v-row>
+
   </div>
 </template>
 
 <script>
-import suraTextInfoBar from './suraTextInfoBar.vue'
+import suraTextSelectControl from './suraTextSelectControl.vue'
 import suraTextBox from './suraTextBox.vue'
-
+import suraTextInfoBasic from '../components/suraTextInfoBasic'
 export default {
   name: '',
-  components: { suraTextInfoBar, suraTextBox },
+  components: { suraTextSelectControl, suraTextBox, suraTextInfoBasic },
+  props: ['numberOfVerses', 'numberOfWords', 'numberOfLetters', 'suraTextItems', 'inputText', 'suraTargetedVerse', 'isLoading'],
   data: () => ({
-    items: {},
-    isLoading: true,
     windowHeight: window.innerHeight
   }),
   methods: {
-    fetchSura () {
-      this.isLoading = true
-      this.$store
-        .dispatch('getSura')
-        .then((items) => {
-          this.items = items
-          return items
-        })
-        .then((items) => {
-          this.isLoading = false
-        })
-    },
     scrollOptions () {
       return {
         duration: 1,
@@ -65,32 +43,14 @@ export default {
       }
     },
     getheight () {
-      console.log(this.windowHeight)
-      var heightDif = this.windowHeight - 175
+      var heightDif = this.windowHeight - 180
       var str = 'height:' + heightDif + 'px'
       return str
     }
   },
   computed: {
-    surafileName () {
-      return this.$store.getters.target.fileName
-    },
-    suraTargetedVerse () {
-      return this.$store.getters.target.verseIndex
-    },
     suraselectedSearch () {
       return this.$store.getters.filterSelectedIndex
-    },
-    inputText () {
-      if (
-        this.$store.getters.filteredSearch === [] ||
-        this.$store.getters.filterSelectedIndex === null
-      ) {
-        return
-      }
-      return this.$store.getters.filteredSearch[
-        this.$store.getters.filterSelectedIndex
-      ].inputText
     },
     wrapperHeight () {
       const filterSectionDOM = document.getElementById('wrapper')
@@ -98,21 +58,22 @@ export default {
     }
   },
   watch: {
-    windowHeight () { this.getheight() },
-    surafileName () {
-      this.fetchSura()
-    }
+    windowHeight () { this.getheight() }
+
   },
   created () {
-    console.log(this.wrapperHeight)
+    // this.$store.commit('setDrawerState', true)
+    this.$store.commit('setNumberInfoShow', true)
   },
   mounted () {
-    this.fetchSura()
   }
 }
 </script>
 
 <style>
+.wrapper{
+  /* height: fit-content; */
+}
 #suraBlock{
     padding-right: 9px;
     padding-left: 9px;
@@ -122,5 +83,9 @@ export default {
 }
 .sadakAllah{
   width: 125px;
+  height: 40px;
+}
+.suraHeader{
+  height: 89px;
 }
 </style>

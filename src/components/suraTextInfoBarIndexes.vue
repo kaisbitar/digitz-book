@@ -47,5 +47,6 @@ export default {
 .indexWrapper {
   max-height: 71px;
   max-width: 483px;
+
 }
 </style>

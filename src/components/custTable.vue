@@ -10,7 +10,7 @@
     rounded mt-0"
     autofocus
     background-color="grey lighten-5 mb-0"
-    :label="'ابحث في ' + elementName"
+    :label="'ابحث ' + elementName"
   ></v-text-field>
     <v-data-table
       :search="search"
@@ -18,14 +18,13 @@
       loading-text="جاري تحميل البيانات القرآنية ... الرجاء الانتظار"
       :height="300"
       :loading="isLoading"
-      :items-per-page="100"
-      class="cTable"
+      class="tableStyle"
       selectable-key
       :headers="headers"
       :group-by="groupBy"
+      fixed-header
     >
       <template v-slot:item="{item}">
-        <!--  -->
         <tr
           class="tableRow"
           :class="{'activeRow': item.verseIndx===selectedId}"
@@ -45,11 +44,10 @@ import { appMixin } from '../mixins/mixins'
 
 export default {
   name: 'custTable',
-  props: ['headers', 'tableData', 'search', 'tableType', 'groupBy', 'elementName'],
+  props: ['headers', 'tableData', 'search', 'tableType', 'groupBy', 'elementName', 'isLoading'],
   mixins: [appMixin],
   data: () => ({
     drawer: false,
-    isLoading: true,
     selectedId: 1
   }),
   computed: { },
@@ -62,7 +60,6 @@ export default {
   created () {
   },
   mounted () {
-    this.isLoading = false
   },
   filters: {
     highlightVerse: function (text, search) {

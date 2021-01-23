@@ -42,7 +42,8 @@ export default {
     getClass (index) {
       // if (index === this.filterSelectedIndex) {
       //   return 'activeChip'
-      // } else {
+      // }
+      // else {
       //   return 'notActive'
       // }
     }

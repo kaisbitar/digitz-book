@@ -18,30 +18,30 @@ export function fetchSearchData (appApi) {
       return response.data
     })
 }
+export function fetchSuraBasics (appApi, fileName) {
+  return axios
+    .get(appApi + 'api/view/sura-basics/' + fileName)
+    .then(response => {
+      return response.data
+    })
+}
 export function fetchSuraText (appApi, fileName) {
   return axios
-    .get(appApi + 'api/view/' + fileName)
+    .get(appApi + 'api/view/sura-text/' + fileName)
     .then(response => {
       return response.data
     })
 }
-export function fetchSuraData (appApi, fileName, dataType) {
+export function fetchSuraChartData (appApi, fileName, dataType) {
   return axios
-    .get(appApi + 'api/view/sura/' + dataType + '/' + fileName)
+    .get(appApi + 'api/view/sura-charts/' + fileName)
     .then(response => {
       return response.data
     })
 }
-export function fetchChartData (appApi, fileName, dataType) {
+export function fetchSuraDetails (appApi, fileName) {
   return axios
-    .get(appApi + 'api/view/verses/' + dataType + '/' + fileName)
-    .then(response => {
-      return response.data
-    })
-}
-export function fetchTableData (appApi, fileName, dataType) {
-  return axios
-    .get(appApi + 'api/view/' + dataType + '/' + fileName)
+    .get(appApi + 'api/view/sura-details/' + fileName)
     .then(response => {
       return response.data
     })

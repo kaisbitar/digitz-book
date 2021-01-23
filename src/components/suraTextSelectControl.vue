@@ -1,70 +1,43 @@
 <template>
-  <!-- <v-card> -->
-  <v-row flat class="mt-n3">
-    <v-card flat class="titleWrap">
-      <h1 class="mr-2 ml-3">سورة {{ fileName }}</h1>
-
-      <div class="d-flex">
-        <suraTextInfoBasic
-          class="suraTextInfoBasic"
-          :numberOfVerses="numberOfVerses"
-          :numberOfWords="numberOfWords"
-          :numberOfLetters="numberOfLetters"
-        />
-        <div class="arrowsWrap">
-          <div class="ml-4">
-            <v-icon @click="handleSuraArrowClick('up')">mdi-chevron-up</v-icon>
-          </div>
-          <div>
-            <v-icon @click="handleSuraArrowClick('down')">mdi-chevron-down</v-icon>
-          </div>
-        </div>
-      </div>
-
-      <h5 class="basmaleh">بسم الله الرحمن الرحيم</h5>
-    </v-card>
-
-    <v-row class="mt-2 selectsWrap ">
-      <div class="pillsWrap ">
-        <div v-if="selectedVerse" class="elevation-0 ">
+  <v-row class="selectsWrap">
+    <div class="pillsWrap">
+      <div v-if="selectedVerse" class="elevation-0">
         <v-chip pill small class="yellow accent-1 selectedChip mb-1">
           آية: {{ selectedVerse }}
         </v-chip>
       </div>
 
-      <div v-if="inputText" class="elevation-0 ">
+      <div v-if="inputText" class="elevation-0">
         <v-chip pill small class="orange accent-1 selectedText">
           {{ inputText }}
         </v-chip>
       </div>
-      </div>
+    </div>
 
-      <div class="indexesArrwosWrap" v-if="inputText">
-        <div class="counts">
-          {{ SelectedVerseIndex }}/{{ foundIndexesCount }}
-        </div>
-        <div class="mt-1 indexArrows">
-          <v-icon small @click="handleArrowClick('up')">mdi-chevron-up</v-icon>
-          <v-icon small @click="handleArrowClick('down')">mdi-chevron-down</v-icon>
-        </div>
+    <div class="indexesArrwosWrap" v-if="inputText">
+      <div class="counts">{{ SelectedVerseIndex }}/{{ foundIndexesCount }}</div>
+      <div class="mt-1 indexArrows">
+        <v-icon small @click="handleArrowClick('up')">mdi-chevron-up</v-icon>
+        <v-icon small @click="handleArrowClick('down')"
+          >mdi-chevron-down</v-icon
+        >
       </div>
+    </div>
 
-      <suraTextInfoBarIndexes
+    <suraTextInfoBarIndexes
       class="versesIndexes"
-        :items="foundIndexesArr"
-        :selectedVerse="SelectedVerseIndex"
-      />
-    </v-row>
+      :items="foundIndexesArr"
+      :selectedVerse="SelectedVerseIndex"
+    />
   </v-row>
 </template>
 
 <script>
-import suraTextInfoBasic from './suraTextInfoBasic'
 import suraTextInfoBarIndexes from './suraTextInfoBarIndexes'
 
 export default {
   name: '',
-  components: { suraTextInfoBasic, suraTextInfoBarIndexes },
+  components: { suraTextInfoBarIndexes },
   props: [
     'numberOfVerses',
     'numberOfWords',
@@ -91,24 +64,22 @@ export default {
     },
     SelectedVerseIndex () {
       return this.selectedIndex
+    },
+    SelectedSuraText () {
+      if (!this.$store.state.suras[this.fileName]) return
+      return this.$store.state.suras[this.fileName].suraText
     }
-    // targetedVerse () {
-    //   return this.$store.getters.target.verseIndex
-    // }
   },
   watch: {
     items () {
       this.findInputTextIndexes()
     }
-    // targetedVerse () {
-    //   this.findInputTextIndexes()
-    // }
   },
   methods: {
     findInputTextIndexes () {
       var array = []
-      if (!this.items.suraString) return
-      this.items.suraString.map((verse, index) => {
+      if (!this.SelectedSuraText) return
+      this.SelectedSuraText.map((verse, index) => {
         if (verse.indexOf(this.inputText) > -1) {
           array[index] = index + 1
         }
@@ -164,23 +135,6 @@ export default {
         verseIndex: this.foundIndexesArr[this.foundIndexesArr.length - 1]
       }
       this.$store.commit('setTarget', target)
-    },
-    handleSuraArrowClick (direction) {
-      if (direction === 'up') {
-        var targetrSura = {
-          fileName: this.$store.state.quranIndex[
-            this.$store.state.target.suraNumber - 2
-          ].fileName
-        }
-        this.$store.commit('setTarget', targetrSura)
-        return
-      }
-      targetrSura = {
-        fileName: this.$store.state.quranIndex[
-          this.$store.state.target.suraNumber
-        ].fileName
-      }
-      this.$store.commit('setTarget', targetrSura)
     }
   },
   created () {
@@ -210,65 +164,40 @@ export default {
   margin-top: 2px;
   padding-top: 2px;
 }
-.suraTextInfoBasic {
-  margin-right: 16px;
-}
-h5.basmaleh {
-  /* margin-top: 0px; */
-  margin-right: 12px;
-  margin-bottom: 1px;
-}
-.titleWrap {
-  min-width: 302px;
-  /*grey*/
-  /* border: 1px solid #9e9e9e !important; */
-}
-.arrowsWrap {
-  margin-right: 20px;
-  margin-top: -7px;
-  margin-bottom: -17px;
-}
-.indexArrows{
-  /* display: block; */
-  /* width: 26px; */
-}
-.counts{
+.counts {
   margin-bottom: -10px;
   margin-right: 5px;
   font-size: 14px;
   margin-left: 5px;
 }
+.selectsWrap {
+  margin-right: 27px;
+  margin-top: 9px;
+  height: 68px;
+  overflow-y: auto;
+}
 /************ Responseive***********/
 @media (max-width: 600px) {
-  .basmaleh {
-    /* position: static; */
-    /* text-align: center; */
-    font-size: 12px;
-    margin-top: 0px !important;
-  }
   .infoBar {
     height: 92px !important;
   }
-  .versesIndexes{
+  .versesIndexes {
     display: none !important;
   }
-.selectsWrap {
+  .selectsWrap {
     width: 40px;
     margin-right: 0px;
     padding-top: 55px !important;
   }
-  .pillsWrap{
+  .pillsWrap {
     display: none !important;
   }
-  .indexesArrwosWrap{
+  .indexesArrwosWrap {
     display: flex !important;
   }
   .indexArrows {
     display: flex;
     width: 49px;
-  }
-  .titleWrap {
-    /* text-align: center; */
   }
 }
 </style>

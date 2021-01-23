@@ -1,80 +1,63 @@
 <template>
-  <v-card flat>
-    <apexchart
-      v-on:markerClick="function(seriesIndex, dataPointIndex, config){handleClick(config)}"
-      height="450"
-      :width="chartWidth"
-      :options="chartOptions"
-      :series="series"
-      type= 'area'
-      ref="myChart"
-    />
-    <v-overlay :absolute="true" :opacity=".2" :value="isLoading">
-      <v-progress-circular color="indigo" indeterminate></v-progress-circular>
-    </v-overlay>
-  </v-card>
-
+  <div>
+    <v-card :style="getheight()" outlined>
+      <apexchart
+        v-on:markerClick="handleClick"
+        :options="options"
+        :height="getheight()"
+        :series="series"
+        ref="myChart"
+      />
+      <v-overlay
+        :absolute="true"
+        :opacity="0.6"
+        color="white"
+        :value="isLoading"
+      >
+        <v-progress-circular color="indigo" indeterminate></v-progress-circular>
+      </v-overlay>
+    </v-card>
+  </div>
 </template>
 
 <script>
-
-import { fetchChartData } from '@/api/api.js'
 import VueApexCharts from 'vue-apexcharts'
 
 export default {
   name: 'Chart',
-  props: ['chartOptions', 'dataType', 'seriesLable'],
+  props: ['options', 'series', 'seriesLable', 'isLoading', 'view'],
   components: { apexchart: VueApexCharts },
   data: () => ({
-    isLoading: true,
-    series: [],
-    chartWidth: 0
+    windowHeight: window.innerHeight
   }),
   methods: {
-    fetchData () {
-      const appApi = process.env.VUE_APP_API_URL
-      fetchChartData(appApi, this.$store.state.fileName, this.dataType).then(items => {
-        if (this.dataType === 'numberOfWords') {
-          this.$refs.myChart.chart.axes.w.config.yaxis[0].title.text = this.seriesLable
-          this.$refs.myChart.chart.graphics.w.config.colors[0] = '#42A5F5'
-        } else {
-          this.$refs.myChart.chart.axes.w.config.yaxis[0].title.text = this.seriesLable
-          this.$refs.myChart.chart.graphics.w.config.colors[0] = '#26A69A'
-        }
-        var series = [{ name: this.seriesLable, data: items }]
-        this.series = series
-      })
-      this.isLoading = false
-    },
-    handleClick (chartContext) {
-      var target = { fileName: this.fileName, verseIndex: chartContext.dataPointIndex + 1 }
+    handleClick (seriesIndex, dataPointIndex, chartContext) {
+      var target = {
+        fileName: this.fileName,
+        verseIndex: chartContext.dataPointIndex + 1
+      }
       this.$store.commit('setTarget', target)
+    },
+    getheight () {
+      var heightDif = this.windowHeight - 175
+      return heightDif
     }
   },
-  computed: { },
-  created () {
-    this.isLoading = true
-    this.fetchData()
-  },
-  updated () {
+  computed: {
+    targetedVerse () {
+      return this.$store.getters.target.verseIndex
+    }
   },
   watch: {
-    dataType: function () {
-      this.fetchData()
-    }
+    windowHeight () {
+      this.getheight()
+    },
+    targetedVerse () {}
   },
-  mounted () {
-    if (document.getElementsByClassName('v-application')[0].clientWidth > 900) {
-      this.chartWidth = document.getElementsByClassName('v-application')[0].clientWidth / 1.6
-    } else {
-      this.chartWidth = document.getElementsByClassName('v-application')[0].clientWidth - 10
-    }
-    this.$store.watch(
-      state => state.fileName,
-      () => {
-        this.fetchData()
-      })
-  }
+  created () {
+  },
+  updated () {},
+  mounted () {}
 }
 </script>
 
@@ -86,11 +69,11 @@ export default {
   direction: rtl;
   font-family: '"Roboto", sans-serif !important';
 }
-.apexcharts-tooltip-text-label{
+.apexcharts-tooltip-text-label {
   margin-right: 6px;
   margin-left: 9px;
 }
-.apexcharts-tooltip-marker{
+.apexcharts-tooltip-marker {
   margin-right: -5px;
 }
 </style>

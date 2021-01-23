@@ -1,13 +1,12 @@
 <template>
   <div class="text-center"  >
-    <v-col cols="12" sm="6" md="12" class="searchBox">
       <v-text-field
+        class=" mr-1 ml-5"
         label="ابحث عن اسم سورة أو رقماً فيها.."
         single-line
         v-model="search"
         append-icon="mdi-magnify"
       ></v-text-field>
-    </v-col>
     <div id="indexBlock">
       <v-data-table
         :headers="headers"
@@ -19,31 +18,20 @@
         :height="'84vh'"
         fixed-header
         hide-default-footer
-        class=""
+        class="tableStyle"
         id="indexBlock"
       >
         <template v-slot:item="props">
-          <!-- create an item to fix first item index -->
-          <div v-show="false">
-            {{
-              data
-                .map(function (x) {
-                  return x.id;
-                })
-                .indexOf(props.item.suraIndex)
-            }}
-          </div>
-          <!--  -->
           <tr
             @click="selectSura(props.item)"
-            :class="{ suraSelected: props.item.suraIndex === selectedId }"
-            class="font-weight-medium indexItem"
+            :class="{ active: props.item.suraIndex === selectedId }"
+            class="indexItem"
           >
-            <td class="text-right">{{ props.item.suraIndex }}</td>
+            <td class="text-right" v-html="highlight(props.item.suraIndex, search)"></td>
             <td class="text-right" v-html="highlight(props.item.Name, search)"></td>
-            <td class="text-right">{{ props.item.numberOfVerses }}</td>
-            <td class="text-right">{{ props.item.NumberOfWords }}</td>
-            <td class="text-right">{{ props.item.NumberOfLetters }}</td>
+            <td class="text-right" v-html="highlight(props.item.numberOfVerses, search)"></td>
+            <td class="text-right" v-html="highlight(props.item.NumberOfWords, search)"></td>
+            <td class="text-right" v-html="highlight(props.item.NumberOfLetters, search)"></td>
           </tr>
         </template>
       </v-data-table>
@@ -80,14 +68,16 @@ export default {
         value: 'numberOfVerses',
         width: 90
       },
+
       {
-        text: 'الكلمات',
-        value: 'NumberOfWords',
-        width: 100
+        text: 'كلمات',
+        value: 'numberOfWords',
+        width: 90
       },
+
       {
-        text: 'الحروف',
-        value: 'NumberOfLetters',
+        text: 'حروف',
+        value: 'numberOfLetters',
         width: 90
       }
     ]
@@ -116,7 +106,7 @@ export default {
     },
     scrollToIndex (suraNumber) {
       setTimeout(() => {
-        this.$vuetify.goTo('.suraSelected', {
+        this.$vuetify.goTo('.active', {
           container: '.v-data-table__wrapper',
           options: this.scrollOptions
         })
@@ -137,7 +127,7 @@ export default {
         var qurey = new RegExp(search, 'gi')
         return text.replace(qurey, (match) => {
           return (
-            '<span class="orange">' + match + '</span>'
+            '<span class="orange accent-1">' + match + '</span>'
           )
         })
       }
@@ -169,20 +159,24 @@ th {
   height: 25px !important;
 }
 tr.indexItem {
-  cursor: pointer;
+    cursor: pointer;
+    /* background: white !important; */
+    font-weight: 100;
 }
 tr.indexItem:hover {
   background: #ccc !important;
-  color: #000;
-}
-tr.suraSelected {
-  /* brown lighten-5
-  */
-  background: #EFEBE9 ;
-  font-size: 50px;
+  color: white;
   font-weight: bold !important;
-  color: black;
 }
+tr.active:hover{
+  font-weight: 100 !important;
+}
+.active{
+  color: black !important;
+  font-weight: 500 !important;
+  background: #efebe9 !important;
+}
+
 .searchBox {
   padding-bottom: 0px;
   margin-bottom: -21px;

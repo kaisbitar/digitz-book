@@ -16,16 +16,14 @@
       <autoComplete class="mt-3" />
     </v-app-bar>
     <v-main>
-      <!-- <autoCompleteSearchBar /> -->
-      <!-- <keep-alive include="search"> -->
+      <keep-alive >
         <router-view />
-      <!-- </keep-alive> -->
+      </keep-alive>
 
     </v-main>
 
     <!-- <v-footer id="footer" href="#footer" class="caption pa-0"
       >حقوق النشر غير محفوظة</v-footer -->
-    >
   </v-app>
 </template>
 
@@ -33,7 +31,6 @@
 // import siteMenu from './components/siteMenu.vue'
 import autoComplete from './components/autoComplete.vue'
 import quranIndex from './components/quranIndex.vue'
-// import autoCompleteSearchBar from './components/autoCompleteSearchBar'
 export default {
   name: 'App',
 
@@ -41,11 +38,10 @@ export default {
     // siteMenu,
     autoComplete,
     quranIndex
-    // autoCompleteSearchBar
   },
 
   data: () => ({
-    drawer: true
+    drawer: false
   }),
   computed: {
     searchedWord () {
@@ -55,6 +51,14 @@ export default {
       ].result
       if (!filteredLists) return null
       else return filteredLists.searchTerms.searchedText
+    },
+    drawerFlag () {
+      return this.$store.getters.drawerState
+    }
+  },
+  watch: {
+    drawerFlag () {
+      this.drawer = this.drawerFlag
     }
   },
   mounted () {},

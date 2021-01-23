@@ -1,5 +1,5 @@
 <template>
-  <div fluid>
+  <div fluid class="autoWrap">
     <div>
       <!-- :filter="handleFiltering" -->
       <v-autocomplete
@@ -10,7 +10,6 @@
         item-text="verseText"
         :disabled="isDisabled"
         :suffix="resultsCount"
-        :auto-select-first="false"
         :color="'blue darken-4'"
         prepend-inner-icon="mdi-magnify"
         label="ابحث  في الكتاب.."
@@ -150,6 +149,9 @@ export default {
 <style lang="scss">
 label.v-label.theme--light {
   color: #afafaf;
+}
+.autoWrap{
+  margin-right: 39px;
 }
 // .enlarge {
 //   animation: enlarge .5s linear;

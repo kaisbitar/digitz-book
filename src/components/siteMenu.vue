@@ -1,6 +1,6 @@
 <template>
 <div>
-  <v-list dense class="mainWrap">
+  <!-- <v-list dense class="mainWrap">
     <v-list-item>
       <v-list-item-action>
         <v-icon>mdi-home</v-icon>
@@ -12,10 +12,10 @@
           </router-link>
         </v-list-item-title>
       </v-list-item-content>
-    </v-list-item>
+    </v-list-item> -->
 
     <!-- <h4 class="mr-2">البحث في:</h4> -->
-
+<!--
     <v-list-item>
       <v-list-item-action>
         <v-icon>mdi-book-open-outline</v-icon>
@@ -67,7 +67,7 @@
         </v-list-item-title>
       </v-list-item-content>
     </v-list-item>
-  </v-list>
+  </v-list> -->
 
 </div>
 </template>

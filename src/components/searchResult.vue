@@ -62,6 +62,7 @@ export default {
 </script>
 
 <style scoped>
-.cTable {
+td.pa-0.pr-3 {
+  border: none !important;
 }
 </style>

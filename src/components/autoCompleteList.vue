@@ -1,7 +1,7 @@
 <template>
   <div style="display: contents" @click="handleClick()">
-    <v-chip label small color="" class="ml-4 black--text brown lighten-5">
-      <div class="">آية {{ item.verseIndx }}</div>
+    <v-chip label small color="" class="mt-7 ml-4 black--text brown lighten-5">
+      <div >آية {{ item.verseIndx }}</div>
     </v-chip>
     <v-list-item-content>
       <v-list-item-title
