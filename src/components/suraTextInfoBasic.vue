@@ -1,8 +1,7 @@
 <template>
   <div>
     <div class="titleWrap">
-      <h1 class="suraTitle">{{ fileName }}</h1>
-      <!-- <div> -->
+      <h1 class="suraTitle">{{ title }}</h1>
       <div v-if="numberInfoShow" class="d-flex">
         <div class="d-flex brown--text text--lighten-2 caption ml-3">
           {{ numberOfVerses }}
@@ -20,14 +19,13 @@
         </div>
       </div>
       <h5 class="basmaleh">بسم الله الرحمن الرحيم</h5>
-      <!-- </div> -->
     </div>
     <div class="arrowsWrap">
       <div>
-        <v-icon @click="handleSuraArrowClick('up')">mdi-chevron-up</v-icon>
+        <v-icon @click="arrowClick('up')">mdi-chevron-up</v-icon>
       </div>
       <div>
-        <v-icon class="downArr" @click="handleSuraArrowClick('down')"
+        <v-icon  @click="arrowClick('down')" class="downArr"
           >mdi-chevron-down</v-icon
         >
       </div>
@@ -38,36 +36,19 @@
 <script>
 export default {
   name: 'suraTextInfoBasic',
-  props: ['numberOfVerses', 'numberOfWords', 'numberOfLetters'],
+  props: ['title', 'numberOfVerses', 'numberOfWords', 'numberOfLetters'],
   components: {},
   data: () => ({
     showInfo: true
   }),
   computed: {
-    fileName () {
-      return this.$store.state.target.fileName
-    },
     numberInfoShow () {
       return this.$store.getters.numberInfoShow
     }
   },
   methods: {
-    handleSuraArrowClick (direction) {
-      if (direction === 'up') {
-        var targetrSura = {
-          fileName: this.$store.getters.quranIndex[
-            this.$store.getters.target.suraNumber - 2
-          ].fileName
-        }
-        this.$store.commit('setTarget', targetrSura)
-        return
-      }
-      targetrSura = {
-        fileName: this.$store.state.quranIndex[
-          this.$store.state.target.suraNumber
-        ].fileName
-      }
-      this.$store.commit('setTarget', targetrSura)
+    arrowClick (direction) {
+      this.$emit('arrowClick', direction)
     }
   },
   created () {},

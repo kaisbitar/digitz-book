@@ -46,3 +46,11 @@ export function fetchSuraDetails (appApi, fileName) {
       return response.data
     })
 }
+
+export function fetchSearchResults (appApi, query) {
+  return axios
+    .get(appApi + 'api/view/search/' + query)
+    .then(response => {
+      return response.data
+    })
+}

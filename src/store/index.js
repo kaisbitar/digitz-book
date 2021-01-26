@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import createPersistedState from 'vuex-persistedstate'
+// import createPersistedState from 'vuex-persistedstate'
 import { fetchSuraBasics, fetchSuraDetails, fetchSuraChartData, fetchSuraText } from '../api/api.js'
 // import { compress, decompress } from 'lzma'
 
@@ -21,9 +21,8 @@ export default new Vuex.Store({
     scrollTrigger: false,
     drawerState: true,
     numberInfoShow: true
-    // suraDetailItem: {}
   },
-  plugins: [createPersistedState({ })],
+  // plugins: [createPersistedState({ })],
   getters: {
     target: state => state.target,
     filteredSearch: state => state.filteredSearch,
@@ -33,12 +32,8 @@ export default new Vuex.Store({
     scrollTrigger: state => state.scrollTrigger,
     drawerState: state => state.drawerState,
     numberInfoShow: state => state.numberInfoShow
-    // suraDetailItem: state => state.suraDetailItem
   },
   mutations: {
-    // setSuraDetailItem (state, suraDetailItem) {
-    //   state.suraDetailItem = suraDetailItem
-    // },
     setNumberInfoShow (state, numberInfoShow) {
       state.numberInfoShow = numberInfoShow
     },

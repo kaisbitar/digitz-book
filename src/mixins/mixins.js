@@ -22,8 +22,25 @@ export const appMixin = {
         return '#v' + target
       }
     },
+    setTargetFromArrow (direction) {
+      if (direction === 'up') {
+        var targetrSura = {
+          fileName: this.$store.getters.quranIndex[
+            this.$store.getters.target.suraNumber - 2
+          ].fileName
+        }
+        this.$store.commit('setTarget', targetrSura)
+        return
+      }
+      targetrSura = {
+        fileName: this.$store.state.quranIndex[
+          this.$store.state.target.suraNumber
+        ].fileName
+      }
+      this.$store.commit('setTarget', targetrSura)
+    },
     // try this function for table jump to row
-    jumpToSelection: function () {
+    jumpToSelection () {
       this.$nextTick(() => {
         const selected = this.selected[0]
         const page = Math.ceil((this.products.indexOf(selected) + 1) / this.pagination.rowsPerPage)

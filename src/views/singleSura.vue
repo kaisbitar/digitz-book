@@ -1,10 +1,24 @@
 <template>
   <div class="singleSura">
-    <div class="chartIcon" :class="view === 'suraChart' ? 'chartMargin' : 'textMargin'">
-      <v-icon  @click="getView()" :color="iconColor"
-        >mdi-view-dashboard-variant-outline</v-icon
-      >
-    </div>
+    <v-row>
+      <suraTextInfoBasic
+      :numberOfVerses="numberOfVerses"
+      :numberOfWords="numberOfWords"
+      :numberOfLetters="numberOfLetters"
+      :title="fileName"
+      @arrowClick="setTargetFromArrow"
+      />
+      <div class="chartIcon">
+        <v-switch
+          :color="'info'"
+          @click="getView()"
+          value="secondary"
+          hide-details
+          small
+        ></v-switch>
+      </div>
+    </v-row>
+
     <suraText
       v-if="view === 'suraText'"
       :inputText="inputText"
@@ -13,34 +27,50 @@
       :numberOfWords="numberOfWords"
       :numberOfLetters="numberOfLetters"
     />
-    <suraDashbord
-      v-if="view === 'suraChart'"
+    <dashbord
+      v-if="view === 'suraChart' && details"
+      :title="fileName"
+      @tabChanged="getData"
       :numberOfVerses="numberOfVerses"
       :numberOfWords="numberOfWords"
       :numberOfLetters="numberOfLetters"
+      :isLoading="isLoading"
+      :wordIndexes="details.wordIndexes"
+      :wordOccurrences="details.wordOccurrences"
+      :letterIndexes="details.letterIndexes"
+      :letterOccurrences="details.letterOccurrences"
+      :letterSeries="letterSeries"
+      :wordsSeries="wordsSeries"
     />
   </div>
 </template>
 
 <script>
 import suraText from '../components/suraText.vue'
-import suraDashbord from '../components/suraDashbord.vue'
+import dashbord from '../components/dashbord.vue'
+import suraTextInfoBasic from '../components/suraTextInfoBasic'
+import { appMixin } from '../mixins/mixins'
 
 export default {
   name: 'singleSura',
+  mixins: [appMixin],
   components: {
     suraText,
-    suraDashbord
+    dashbord,
+    suraTextInfoBasic
   },
   data: () => ({
     suraTextItems: {},
-    isLoading: true,
+    isLoading: false,
     view: 'suraChart',
-    suraBasics: null,
     numberOfVerses: null,
     numberOfWords: null,
     numberOfLetters: null,
-    iconColor: 'grey'
+    iconColor: 'grey',
+    details: {},
+    letterSeries: [],
+    wordsSeries: [],
+    currentTab: 'frequency'
   }),
   computed: {
     inputText () {
@@ -62,23 +92,53 @@ export default {
     }
   },
   methods: {
-    fetchSuraBasics () {
-      this.isLoading = true
-      this.$store
-        .dispatch('getSuraBasics')
-        .then((items) => {
-          this.suraBasics = items
+    async fetchSuraBasics () {
+      return new Promise((resolve) => {
+        this.isLoading = true
+        this.$store.dispatch('getSuraBasics').then((items) => {
           this.numberOfVerses = items.numberOfVerses
           this.numberOfWords = items.numberOfWords
           this.numberOfLetters = items.numberOfLetters
+          this.isLoading = false
+          resolve()
         })
+      })
+    },
+    fetchSuraDetails () {
+      this.$store.dispatch('getSuraDetails').then((items) => {
+        this.details = items
+        return items
+      }).then(() => {
+      })
+    },
+    fetchSuraChartData () {
+      this.isLoading = true
+      this.$store
+        .dispatch('getSuraChartData')
         .then((items) => {
+          this.letterSeries = [{ data: items.letters }]
+          this.wordsSeries = [{ data: items.words }]
+        }).then(() => {
           this.isLoading = false
         })
     },
+    getData (tab) {
+      this.currentTab = tab
+      switch (tab) {
+        case 'numberOfVerses':
+          return
+        case 'numberOfWords':
+        case 'numberOfLetters':
+          this.fetchSuraDetails()
+          break
+        case 'frequency':
+          this.fetchSuraChartData()
+          break
+      }
+    },
     getView () {
       if (this.view === 'suraText') {
-        this.iconColor = 'blue'
+        this.iconColor = 'info'
         this.view = 'suraChart'
         return
       }
@@ -88,14 +148,22 @@ export default {
   },
   watch: {
     fileName () {
-      this.fetchSuraBasics()
+      this.isLoading = true
+      this.details = {}
+      setTimeout(() => {
+        this.fetchSuraBasics().then(() => {
+          this.getData(this.currentTab)
+        })
+      }, 200)
     }
   },
   created () {
-    this.fetchSuraBasics()
+    this.fetchSuraBasics().then(() => {
+      this.getData(this.currentTab)
+    })
   },
   mounted () {
-    // this.fetchSuraBasics()
+
   }
 }
 </script>
@@ -142,7 +210,9 @@ h5.basmaleh {
   width: 142px;
 }
 .chartIcon {
-  margin-right: 187px;
+  margin-right: 168px;
   position: fixed;
+  zoom: .8;
+  margin-top: 8px;
 }
 </style>

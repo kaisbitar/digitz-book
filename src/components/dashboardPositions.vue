@@ -2,70 +2,74 @@
   <v-card class="mr-2 webKitWidth" outlined>
     <div class="d-flex ml-1 pa-2" outlined>
       <v-card class="resultBox display-3 text-center pa-3" outlined>
-        <div class="mt-n1">{{ suraDetailElement }}</div>
+        <div class="mt-n1">{{ detailElement }}</div>
       </v-card>
       <span class="display-3 mr-2 ml-2 mt-3">:</span>
       <v-card class="resultBox d-flex text-center pa-3" outlined>
-        <span class="display-3">{{ suraDetailCount }}</span>
+        <span class="display-3">{{ detailCount }}</span>
         <div class="mt-7">مرة</div>
       </v-card>
     </div>
+
     <div class="mt-2 mr-2">المواقع: </div>
     <v-row
       class="wordItemWrap mr-2 mt-4"
     >
       <div
         class="wordItem"
-        :class="getClass()"
         v-for="(item, key) in positions"
         :key="key"
       >
         <span>{{ item }}</span>
       </div>
     </v-row>
+     <v-overlay
+        color="white"
+        :absolute="true"
+        :opacity="0.8"
+        :value="isLoading"
+      >
+      </v-overlay>
   </v-card>
 </template>
 
 <script>
 export default {
-  name: 'suraDashboardDetails',
+  name: 'dashboardPositions',
   props: [
-    'suraDetailElement',
-    'suraDetailCount',
-    'selectedDetailsData'
+    'detailElement',
+    'detailCount',
+    'detailsData',
+    'isLoading'
   ],
   components: {},
   data: () => ({
     positions: null,
     series: [],
-    isLoading: true,
-    windowHeight: window.windowHeight,
     test: 'background: black'
   }),
   methods: {
     extarctItem () {
-      if (this.selectedDetailsData.length === []) return
-      var result = this.selectedDetailsData.filter((obj, key) => {
-        return obj[this.suraDetailElement]
+      if (!this.detailsData) return
+      var result = this.detailsData.filter((obj, key) => {
+        return obj[this.detailElement]
       })
-
       result = result[0]
-      this.positions = result[this.suraDetailElement]
-    },
-    getClass (item) {
-    },
-    getheight () {
-      var heightDif = this.windowHeight - 280
-      return heightDif + 'px'
+      this.positions = result[this.detailElement]
     }
   },
   computed: {},
   watch: {
-    suraDetailElement () {
+    detailsData () {
+      this.extarctItem()
+    },
+    detailElement () {
       this.extarctItem()
     }
   },
-  created () {},
+  created () {
+    this.extarctItem()
+  },
   mounted () {
   }
 }

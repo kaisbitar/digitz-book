@@ -1,41 +1,27 @@
 <template>
-  <v-app >
+  <v-app>
     <v-navigation-drawer v-model="drawer" app right class="grey lighten-4">
-      <!-- <siteMenu /> -->
       <quranIndex />
     </v-navigation-drawer>
 
-    <v-app-bar
-      class="topHeader brown lighten-5"
-      flat
-      app
-      :height="71"
-    >
+    <v-app-bar class="topHeader brown lighten-5" flat app :height="71">
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"> </v-app-bar-nav-icon>
       <h3 class="titleText ml-2 font-weight-thin">الكتاب المرقوم</h3>
       <autoComplete class="mt-3" />
     </v-app-bar>
-    <v-main>
-      <keep-alive >
-        <router-view />
-      </keep-alive>
-
+    <v-main class="mainWrap">
+      <router-view />
     </v-main>
-
-    <!-- <v-footer id="footer" href="#footer" class="caption pa-0"
-      >حقوق النشر غير محفوظة</v-footer -->
   </v-app>
 </template>
 
 <script>
-// import siteMenu from './components/siteMenu.vue'
 import autoComplete from './components/autoComplete.vue'
 import quranIndex from './components/quranIndex.vue'
 export default {
   name: 'App',
 
   components: {
-    // siteMenu,
     autoComplete,
     quranIndex
   },
@@ -43,6 +29,7 @@ export default {
   data: () => ({
     drawer: false
   }),
+  methods: {},
   computed: {
     searchedWord () {
       if (this.$store.getters.filteredSearch.length === 0) return
@@ -63,7 +50,6 @@ export default {
   },
   mounted () {},
   created () {
-    // this.$store.commit('resetFilteredItems')
     this.$store.commit('resetFilterSelectedIndex')
   }
 }
@@ -71,10 +57,10 @@ export default {
 
 <style lang="scss">
 @import "styles/styles.scss";
-html {
-  // zoom: 1.0;
+.mainWrap {
+  margin-top: -2px;
 }
-.topHeader{
+.topHeader {
   height: 58px !important;
 }
 .v-application {

@@ -4,9 +4,9 @@
       class="suraText"
       v-for="(item, index) in suraText"
       :key="index"
-      :class="[index - 1, { TargetedVerse: index + 1 === suraTargetedVerse }]"
+      :class="[index - 1, { targetedVerse: index + 1 === suraTargetedVerse }]"
     >
-      <div ref="vDiv" :id="'v' + (index + 1)" class="d-inline ml-2">
+      <div ref="vDiv" :id="'v' + (index + 1)" class="d-inline ml-2" @click="boxClicked(index+1)">
         <v-chip
           class="numChip"
           label
@@ -56,7 +56,7 @@ export default {
           .then((items) => {
             this.suraText = items
           })
-          .then((items) => {
+          .then(() => {
             this.isLoading = false
           })
       }, 100)
@@ -80,23 +80,11 @@ export default {
         duration: 0,
         easing: 'easingIn'
       }
+    },
+    boxClicked (index) {
+      var target = { fileName: this.$store.getters.target.fileName, verseIndex: index }
+      this.$store.commit('setTarget', target)
     }
-    // searchDuplicates () {
-    //   if (this.inputText == null) return null
-    //   if (this.inputText.length >= 3) {
-    //     var duplicates = 0
-    //     var results = this.$refs.autocomplete.filteredItems
-    //     results.map((item) => {
-    //       var matches = item.verseText.match(new RegExp(this.search, 'gi'))
-    //       if (matches !== null) {
-    //         duplicates = matches.length - 1
-    //       }
-    //     })
-    //   } else {
-    //     duplicates = 0
-    //   }
-    //   return duplicates
-    // }
   },
   computed: {
     scrollTrigger () {
@@ -153,7 +141,7 @@ export default {
   padding-right: 12px;
   padding-left: 12px;
 }
-.TargetedVerse {
+.targetedVerse {
   /* yellow accent-1 */
   background: #ffff8d;
 }
@@ -163,3 +151,20 @@ export default {
   background: #757575 !important;
 }
 </style>
+
+    searchDuplicates () {
+      if (this.inputText == null) return null
+      if (this.inputText.length >= 3) {
+        var duplicates = 0
+        var results = this.$refs.autocomplete.filteredItems
+        results.map((item) => {
+          var matches = item.verseText.match(new RegExp(this.search, 'gi'))
+          if (matches !== null) {
+            duplicates = matches.length - 1
+          }
+        })
+      } else {
+        duplicates = 0
+      }
+      return duplicates
+    }

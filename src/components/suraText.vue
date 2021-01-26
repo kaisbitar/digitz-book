@@ -1,11 +1,7 @@
 <template>
   <div class="wrapper">
     <div  class="d-flex suraHeader">
-      <suraTextInfoBasic
-      :numberOfVerses="numberOfVerses"
-      :numberOfWords="numberOfWords"
-      :numberOfLetters="numberOfLetters"
-      />
+
       <suraTextSelectControl
         :selectedVerse="suraTargetedVerse"
         :inputText="inputText"
@@ -26,11 +22,13 @@
 <script>
 import suraTextSelectControl from './suraTextSelectControl.vue'
 import suraTextBox from './suraTextBox.vue'
-import suraTextInfoBasic from '../components/suraTextInfoBasic'
+import { appMixin } from '../mixins/mixins'
+
 export default {
   name: '',
-  components: { suraTextSelectControl, suraTextBox, suraTextInfoBasic },
+  components: { suraTextSelectControl, suraTextBox },
   props: ['numberOfVerses', 'numberOfWords', 'numberOfLetters', 'suraTextItems', 'inputText', 'suraTargetedVerse', 'isLoading'],
+  mixins: [appMixin],
   data: () => ({
     windowHeight: window.innerHeight
   }),
@@ -55,6 +53,9 @@ export default {
     wrapperHeight () {
       const filterSectionDOM = document.getElementById('wrapper')
       return filterSectionDOM ? filterSectionDOM.offsetHeight : 'auto'
+    },
+    fileName () {
+      return this.$store.state.target.fileName
     }
   },
   watch: {

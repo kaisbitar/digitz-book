@@ -1,10 +1,10 @@
 <template>
   <div>
-    <v-card :style="getheight()" outlined>
+    <v-card outlined>
       <apexchart
-        v-on:markerClick="handleClick"
+        :markerClick="handleClick"
         :options="options"
-        :height="getheight()"
+        :height="getHeight()"
         :series="series"
         ref="myChart"
       />
@@ -38,8 +38,8 @@ export default {
       }
       this.$store.commit('setTarget', target)
     },
-    getheight () {
-      var heightDif = this.windowHeight - 175
+    getHeight () {
+      var heightDif = this.windowHeight - 177
       return heightDif
     }
   },
@@ -50,7 +50,7 @@ export default {
   },
   watch: {
     windowHeight () {
-      this.getheight()
+      this.getHeight()
     },
     targetedVerse () {}
   },

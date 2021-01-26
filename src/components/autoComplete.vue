@@ -112,12 +112,11 @@ export default {
       }
     },
     handleFiltering (item, queryText, itemText) {
-      // console.log(itemText.indexOf(queryText) > -1)
       // return new RegExp('\\b' + queryText + '\\b').test(itemText)
       // queryText = '\\b' + queryText + '\\b'
       // var match = [...itemText.matchAll(queryText)]
       // return (match) || (match && itemText === match[0])
-      // if (queryText === 'فبأي آ' && match.length !== 0) console.log(match)
+      // if (queryText === 'فبأي آ' && match.length !== 0)
     }
   },
   computed: {
