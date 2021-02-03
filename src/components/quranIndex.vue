@@ -24,7 +24,7 @@
         <template v-slot:item="props">
           <tr
             @click="selectSura(props.item)"
-            :class="{ active: props.item.suraIndex === selectedId }"
+            :class="{ active: props.item.suraIndex === selectedId +1}"
             class="indexItem"
           >
             <td class="text-right" v-html="highlight(props.item.suraIndex, search)"></td>
@@ -120,6 +120,7 @@ export default {
       }
     },
     highlight (text, search) {
+      if (!text) return
       if (search == null) {
         return text
       } else {
@@ -158,17 +159,17 @@ th {
   padding-top: 2px !important;
   height: 25px !important;
 }
-tr.indexItem {
+.indexItem {
     cursor: pointer;
     /* background: white !important; */
     font-weight: 100;
 }
-tr.indexItem:hover {
-  background: #ccc !important;
+.indexItem:hover {
+  background: #ccc ;
   color: white;
   font-weight: bold !important;
 }
-tr.active:hover{
+.active:hover{
   font-weight: 100 !important;
 }
 .active{

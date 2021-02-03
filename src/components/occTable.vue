@@ -23,28 +23,28 @@
       selectable-key="selectedRow"
       fixed-header
       :group-by="groupBy"
-      :loader-height=2
-      single-expand
+      :loader-height="2"
     >
-      <template v-slot:[`group.header`]="{ group, isOpen=false, toggle }">
-        <v-btn @click="toggle" icon small>
-          <v-icon>
-            {{ isOpen ? '$minus' : '$plus' }}
-          </v-icon>
-        </v-btn>
-        كلمات ذكرت {{ group }}
+      <template v-if="dataType === 'words'" v-slot:[`group.header`]="{ group, isOpen, toggle }">
+        <div class="groupHeader pt-3 font-weight-bold">
+          <v-btn @click="toggle" icon small :ref="'expand' + group">
+            <v-icon>
+              {{ isOpen ? "$minus" : "$plus" }}
+            </v-icon>
+          </v-btn>
+          <span class="text-center"> كلمات ذكرت <span class="blue--text text--darken-3">{{ group }}</span> مرة</span>
+        </div>
       </template>
 
-      <template v-slot:item="props">
-        <tr
-          @click="$emit('rowClicked',props.index, props.item)"
-          :class="{ active: props.index === selectedId }"
+      <!-- <template v-slot:item="props">
+        <span
+          @click="$emit('rowClicked', props.index, props.item)"
+          :class="{ active: props.item.x === selectedId }"
+          class="indexItem text-right pr-2"
+          v-html="highlight(props.item.x + ' - ', search)"
         >
-          <td class="text-right" v-html="highlight(props.item.x, search)"></td>
-          <td class="text-right">{{ props.item.y }}</td>
-        </tr>
-      </template>
-
+        </span>
+      </template> -->
     </v-data-table>
   </div>
 </template>
@@ -59,7 +59,6 @@ export default {
   props: [
     'tableData',
     'tableHeaders',
-    'search',
     'footerProps',
     'isLoading',
     'groupBy',
@@ -67,20 +66,52 @@ export default {
     'selectedId'
   ],
   data: () => ({
-    windowHeight: window.innerHeight
+    windowHeight: window.innerHeight,
+    search: ''
   }),
   computed: {},
   methods: {
     getheight () {
-      var heightDif = this.windowHeight - 280
+      var heightDif = this.windowHeight - 310
       return heightDif
+    },
+    async collapseHeaders (group) {
+      return new Promise((resolve) => {
+        Object.keys(this.$refs).forEach((k) => {
+          this.$refs[k].$el.click()
+        })
+        resolve()
+      })
     }
   },
   created () {
+    // Object.keys(this.$refs).forEach((k) => {
+    //   this.$refs[k].$el.click()
+    // })
   },
-  mounted () {}
+  mounted () {
+    this.collapseHeaders()
+  }
 }
 </script>
 
-<style>
+<style scoped>
+span.indexItem.text-right.pr-2 {
+  display: inline-block;
+  margin-top: 5px;
+  /* margin-bottom: 10px; */
+}
+.groupHeader {
+  height: 50px;
+}
+.indexItem:hover {
+  /* color: white; */
+  /* font-weight: bold !important; */
+  /* color: #5195d8; */
+}
+.active {
+  color: #006381 !important;
+  background: #ccc !important;
+  font-weight: bold !important;
+}
 </style>

@@ -12,6 +12,8 @@
       <suraTextBox
         :inputText="inputText"
         :suraTargetedVerse="suraTargetedVerse"
+        :suraTextarray="suraTextarray"
+        :isLoading="isLoading"
       />
     <v-card class="sadakAllah caption mr-auto elevation-0 pa-2 mt-1">- صدق الله العظيم -</v-card>
     </v-row>
@@ -25,9 +27,9 @@ import suraTextBox from './suraTextBox.vue'
 import { appMixin } from '../mixins/mixins'
 
 export default {
-  name: '',
+  name: 'suraText',
   components: { suraTextSelectControl, suraTextBox },
-  props: ['numberOfVerses', 'numberOfWords', 'numberOfLetters', 'suraTextItems', 'inputText', 'suraTargetedVerse', 'isLoading'],
+  props: ['numberOfVerses', 'numberOfWords', 'numberOfLetters', 'suraTextarray', 'inputText', 'suraTargetedVerse', 'isLoading'],
   mixins: [appMixin],
   data: () => ({
     windowHeight: window.innerHeight
@@ -86,7 +88,9 @@ export default {
   width: 125px;
   height: 40px;
 }
-.suraHeader{
-  height: 89px;
+.suraHeader {
+  width: 601px;
+  margin-right: 361px;
+  margin-top: -60px;
 }
 </style>

@@ -2,20 +2,31 @@
   <div class="singleSura">
     <v-row>
       <suraTextInfoBasic
-      :numberOfVerses="numberOfVerses"
-      :numberOfWords="numberOfWords"
-      :numberOfLetters="numberOfLetters"
-      :title="fileName"
-      @arrowClick="setTargetFromArrow"
+        class="pr-3"
+        :numberOfVerses="numberOfVerses"
+        :numberOfWords="numberOfWords"
+        :numberOfLetters="numberOfLetters"
+        :title="fileName"
+        @arrowClick="setTargetFromArrow"
       />
-      <div class="chartIcon">
-        <v-switch
+      <div class="charSwitch">
+        <!-- <v-switch
           :color="'info'"
           @click="getView()"
           value="secondary"
           hide-details
           small
-        ></v-switch>
+          append-icon="mdi-"
+          :loading="isLoading"
+        ></v-switch> -->
+        <v-card
+          @click="getView()"
+          outlined
+        >
+          <div class="grey lighten-4 d-flex ma-auto">
+            <div class="switchLabel caption" :class="[{ 'active': view === 'suraChart' }]">تفصيل</div>
+          </div>
+        </v-card>
       </div>
     </v-row>
 
@@ -26,6 +37,8 @@
       :numberOfVerses="numberOfVerses"
       :numberOfWords="numberOfWords"
       :numberOfLetters="numberOfLetters"
+      :suraTextarray="suraTextarray"
+      :isLoading="isLoading"
     />
     <dashbord
       v-if="view === 'suraChart' && details"
@@ -41,6 +54,8 @@
       :letterOccurrences="details.letterOccurrences"
       :letterSeries="letterSeries"
       :wordsSeries="wordsSeries"
+      :suraTextarray="suraTextarray"
+      :versesMap="versesMap"
     />
   </div>
 </template>
@@ -60,7 +75,8 @@ export default {
     suraTextInfoBasic
   },
   data: () => ({
-    suraTextItems: {},
+    suraTextarray: [],
+    versesMap: [],
     isLoading: false,
     view: 'suraChart',
     numberOfVerses: null,
@@ -93,8 +109,8 @@ export default {
   },
   methods: {
     async fetchSuraBasics () {
+      this.isLoading = true
       return new Promise((resolve) => {
-        this.isLoading = true
         this.$store.dispatch('getSuraBasics').then((items) => {
           this.numberOfVerses = items.numberOfVerses
           this.numberOfWords = items.numberOfWords
@@ -105,11 +121,16 @@ export default {
       })
     },
     fetchSuraDetails () {
-      this.$store.dispatch('getSuraDetails').then((items) => {
-        this.details = items
-        return items
-      }).then(() => {
-      })
+      this.isLoading = true
+      this.$store
+        .dispatch('getSuraDetails')
+        .then((items) => {
+          this.details = items
+          return items
+        })
+        .then(() => {
+          this.isLoading = false
+        })
     },
     fetchSuraChartData () {
       this.isLoading = true
@@ -118,7 +139,32 @@ export default {
         .then((items) => {
           this.letterSeries = [{ data: items.letters }]
           this.wordsSeries = [{ data: items.words }]
-        }).then(() => {
+        })
+        .then(() => {
+          this.isLoading = false
+        })
+    },
+    fetchSuraText () {
+      this.isLoading = true
+      this.$store
+        .dispatch('getSuraText')
+        .then((items) => {
+          this.suraTextarray = items
+          return items
+        })
+        .then(() => {
+          this.isLoading = false
+        })
+    },
+    fetchVersesData () {
+      this.isLoading = true
+      this.$store
+        .dispatch('getVersesMap')
+        .then((items) => {
+          this.versesMap = items
+          return items
+        })
+        .then(() => {
           this.isLoading = false
         })
     },
@@ -126,6 +172,7 @@ export default {
       this.currentTab = tab
       switch (tab) {
         case 'numberOfVerses':
+          this.fetchVersesData()
           return
         case 'numberOfWords':
         case 'numberOfLetters':
@@ -137,6 +184,7 @@ export default {
       }
     },
     getView () {
+      console.log(this.view)
       if (this.view === 'suraText') {
         this.iconColor = 'info'
         this.view = 'suraChart'
@@ -144,6 +192,7 @@ export default {
       }
       this.iconColor = 'grey'
       this.view = 'suraText'
+      this.fetchSuraText()
     }
   },
   watch: {
@@ -153,18 +202,24 @@ export default {
       setTimeout(() => {
         this.fetchSuraBasics().then(() => {
           this.getData(this.currentTab)
+          if (this.view === 'suraText') {
+            this.fetchSuraText()
+          }
         })
       }, 200)
     }
+    // view () {
+    //   if (this.view === 'suraText') {
+    //     this.fetchVersesData()
+    //   }
+    // }
   },
   created () {
     this.fetchSuraBasics().then(() => {
       this.getData(this.currentTab)
     })
   },
-  mounted () {
-
-  }
+  mounted () {}
 }
 </script>
 
@@ -180,12 +235,9 @@ export default {
   width: 181.5px;
   display: flex;
 }
-.compWrap {
-  /* margin-top: 96px; */
-}
 .arrowsWrap {
-  margin-right: auto;
   width: -webkit-fit-content;
+  margin-right: auto;
   margin-top: -85px;
 }
 .numberInfo {
@@ -193,26 +245,27 @@ export default {
   margin-top: -9px;
 }
 .titleWrap {
-  /* min-width: 241px; */
   width: 259px;
-  margin-right: -12px;
   height: 94px;
-  /* border: 1px solid #9e9e9e !important; */
-  /* position: absolute; */
+  margin-right: -12px;
   margin-top: -9px;
-  /* margin-bottom: 9px; */
 }
 .downArr {
   margin-top: 18px !important;
 }
 h5.basmaleh {
-  /* margin-top: -36px; */
   width: 142px;
 }
-.chartIcon {
-  margin-right: 168px;
-  position: fixed;
-  zoom: .8;
-  margin-top: 8px;
+.charSwitch {
+  margin-right: 56px;
+  width: 72px;
+  z-index: 2;
+  margin-top: 14px;
+}
+.switchLabel {
+  margin: auto;
+  width: fit-content;
+  /* grey lighten-1*/
+  color: #BDBDBD
 }
 </style>

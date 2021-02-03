@@ -10,7 +10,8 @@
         {{ value }}
       </span>
       {{title}}
-    </div></v-card
+    </div>
+    </v-card
   >
 </template>
 

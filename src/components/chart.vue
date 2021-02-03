@@ -22,10 +22,9 @@
 
 <script>
 import VueApexCharts from 'vue-apexcharts'
-
 export default {
   name: 'Chart',
-  props: ['options', 'series', 'seriesLable', 'isLoading', 'view'],
+  props: ['options', 'series', 'isLoading', 'includeTab'],
   components: { apexchart: VueApexCharts },
   data: () => ({
     windowHeight: window.innerHeight
@@ -39,7 +38,9 @@ export default {
       this.$store.commit('setTarget', target)
     },
     getHeight () {
-      var heightDif = this.windowHeight - 177
+      var tabHeight = 0
+      if (this.includeTab) { tabHeight = -20 }
+      var heightDif = this.windowHeight - 185 + tabHeight
       return heightDif
     }
   },
@@ -50,7 +51,7 @@ export default {
   },
   watch: {
     windowHeight () {
-      this.getHeight()
+      // this.getHeight()
     },
     targetedVerse () {}
   },

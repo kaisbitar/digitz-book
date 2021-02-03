@@ -10,7 +10,6 @@
         <div class="mt-7">مرة</div>
       </v-card>
     </div>
-
     <div class="mt-2 mr-2">المواقع: </div>
     <v-row
       class="wordItemWrap mr-2 mt-4"
@@ -51,11 +50,7 @@ export default {
   methods: {
     extarctItem () {
       if (!this.detailsData) return
-      var result = this.detailsData.filter((obj, key) => {
-        return obj[this.detailElement]
-      })
-      result = result[0]
-      this.positions = result[this.detailElement]
+      this.positions = this.detailsData[this.detailElement]
     }
   },
   computed: {},
@@ -68,9 +63,10 @@ export default {
     }
   },
   created () {
-    this.extarctItem()
+
   },
   mounted () {
+    this.extarctItem()
   }
 }
 </script>

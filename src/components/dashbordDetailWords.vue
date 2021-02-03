@@ -1,32 +1,11 @@
 <template>
   <label>
-    <div class="webKitWidth">
-      <div class="absoluteBtn">
-        <v-icon
-          v-if="hasChart"
-          @click="showChart = !showChart"
-          :color="showChart === true ? 'grey' : 'blue'"
-          small
-          >mdi-table-headers-eye</v-icon
-        >
-      </div>
-      <!-- this is only for letters -->
-      <chart
-        class="mr-1 pa-0 ml-2 webKitWidth lettersChart"
-        :dataType="'letters'"
-        :series="series"
-        :isLoading="isLoading"
-        :options="chartOptions"
-        v-if="showChart && hasChart"
-      />
-    </div>
-    <div class="d-flex s" :style="getHeight()">
-      <v-card v-if="!showChart || !hasChart" outlined>
+    <div class="d-flex" :style="getHeight()">
+      <v-card v-if="!showChart" outlined>
         <occTable
-        :tableData="tableData"
+        :tableData="occurrences"
         :dataType="dataType"
         :tableHeaders="tableHeaders"
-        :search="search"
         :footerProps="footerProps"
         :isLoading="isLoading"
         :groupBy="groupBy"
@@ -35,10 +14,10 @@
         />
       </v-card>
       <dashboardPositions
-        v-if="!showChart || !hasChart"
+        v-if="!showChart"
         :detailElement="detailElement"
         :detailCount="detailCount"
-        :detailsData="detailsData"
+        :detailsData="indexes"
         :isLoading="isLoading"
       />
     </div>
@@ -47,53 +26,70 @@
 
 <script>
 import dashboardPositions from './dashboardPositions.vue'
-import chart from './chart.vue'
-import chartOptions from '../assets/numbersOfLettersOptions.js'
+// import chart from './chart.vue'
+import chartOptions from '../assets/numbersOfWordsOptions.js'
 import OccTable from './occTable.vue'
 
 export default {
-  name: 'suraDashboardDetails',
-  components: { dashboardPositions, chart, OccTable },
+  name: 'letterDetails',
+  components: {
+    dashboardPositions,
+    // chart,
+    OccTable
+  },
   props: [
-    'dataType',
-    'detailsData',
-    'tableData',
-    'groupBy',
-    'hasChart',
-    'series',
+    'indexes',
+    'occurrences',
     'isLoading'
   ],
   data: () => ({
+    dataType: 'words',
     detailElement: '',
     detailCount: 0,
-    search: '',
     footerProps: { 'items-per-page-text': '' },
-    selectedId: 0,
+    selectedId: '',
     chartOptions: chartOptions,
     tableHeaders: [
-      { text: 'كلمة', value: 'x', class: ' lighten-4 black--text' },
-      { text: 'تكرار', value: 'y', class: ' lighten-4 black--text' }
+      { text: 'كلمة', value: 'x', class: ' lighten-4 black--text' }
+      // { value: 'y', class: ' lighten-4 black--text' }
     ],
     wordsGroup: null,
-    showChart: true,
-    windowHeight: window.innerHeight
+    showChart: false,
+    windowHeight: window.innerHeight,
+    groupBy: 'y'
   }),
   computed: {
     fileName () {
       return this.$store.getters.target.fileName
+    },
+    series () {
+      return [{ data: this.occurrences }]
+    },
+    seriesB () {
+      var result = []
+      for (var i = 0; i < this.occurrences.length; i++) {
+        var word = this.occurrences[i].x
+        for (var j = 0; j < this.indexes[word].length; j++) {
+          var obj = {}
+          obj.y = this.occurrences[i].y
+          obj.x = this.indexes[word][j]
+          result.push(obj)
+        }
+      }
+
+      return [{ data: result }]
     }
   },
   methods: {
     setDetailItem (index, item) {
-      this.selectedId = index
+      this.selectedId = item.x
       this.detailElement = item.x
       this.detailCount = item.y
     },
     setInitialItem () {
       this.selectedId = 0
-      this.detailElement = this.tableData[0].x
-      this.detailCount = this.tableData[0].y
-      this.tableHeaders[0].text = this.dataType
+      this.detailElement = this.occurrences[0].x
+      this.detailCount = this.occurrences[0].y
     },
     getHeight () {
       var heightDif = this.windowHeight - 155
@@ -101,14 +97,13 @@ export default {
     }
   },
   watch: {
-    detailsData () {
-      if (!this.tableData) return
+    indexes () {
+      if (!this.occurrences) return
       this.setInitialItem(0)
     }
   },
   created () {
-    this.showChart = this.hasChart
-    if (!this.tableData) return
+    if (!this.occurrences) return
     this.setInitialItem(0)
   },
   mounted () {
@@ -127,12 +122,12 @@ export default {
 .resultBox {
   height: 85px;
 }
-.absoluteBtn {
+/* .absoluteBtn {
   position: absolute;
   z-index: 2;
   margin-right: 16px;
   margin-top: 24px;
-}
+} */
 .searchField {
   width: 150px;
 }

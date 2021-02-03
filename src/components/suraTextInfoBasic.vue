@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <label>
     <div class="titleWrap">
       <h1 class="suraTitle">{{ title }}</h1>
       <div v-if="numberInfoShow" class="d-flex">
@@ -30,7 +30,7 @@
         >
       </div>
     </div>
-  </div>
+  </label>
 </template>
 
 <script>

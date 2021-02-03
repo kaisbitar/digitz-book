@@ -29,7 +29,9 @@ export default {
   data: () => ({
     drawer: false
   }),
-  methods: {},
+  methods: {
+
+  },
   computed: {
     searchedWord () {
       if (this.$store.getters.filteredSearch.length === 0) return
@@ -48,6 +50,7 @@ export default {
       this.drawer = this.drawerFlag
     }
   },
+  updated () {},
   mounted () {},
   created () {
     this.$store.commit('resetFilterSelectedIndex')

@@ -1,58 +1,52 @@
 <template>
   <label>
-    <div class="d-flex">
-      <v-row class="numbersBlock mb-2 mr-2 mt-n1">
-        <dashboardTab
-          v-for="(item, index) in tabs"
-          :key="index"
-          :title="item.title"
-          :value="item.value"
-          :active="activeEl === item.name"
-          @selected="activate(item.name)"
-        />
-      </v-row>
-    </div>
+    <v-row class="dashboardTab">
+      <dashboardTab
+        v-for="(item, index) in tabs"
+        :key="index"
+        :title="item.title"
+        :value="item.value"
+        :active="activeEl === item.name"
+        @selected="activate(item.name)"
+      />
+    </v-row>
     <v-row>
       <div class="chartRow" v-if="activeEl === 'frequency'">
         <v-row>
           <v-radio-group class="d-flex chartTitleWrap" v-model="view" row
             >تواتر
-            <v-radio label="كلمات" color="blue" value="words"></v-radio>
-            <v-radio value="letters" label="حروف" color="blue"></v-radio>
+            <v-radio value="words" label="كلمات"  color="blue"></v-radio>
+            <v-radio value="letters" label="حروف"  color="blue"></v-radio>
           </v-radio-group>
         </v-row>
         <chart
-          :dataType="'letters'"
-          :height="getHeight()"
           :isLoading="isLoading"
           :series="view === 'letters' ? letterSeries : wordsSeries"
-          :view="view"
           :options="options"
         />
       </div>
-      <dashboardDetails
+      <dashbordDetailWords
         class="chartRow"
         v-if="activeEl === 'numberOfWords'"
-        :dataType="'الكلمة'"
         :numberOfWords="numberOfWords"
         :numberOfLetters="numberOfLetters"
-        :detailsData="wordIndexes"
-        :tableData="wordOccurrences"
-        :groupBy="'y'"
-        :hasChart="false"
+        :indexes="wordIndexes"
+        :occurrences="wordOccurrences"
         :isLoading="isLoading"
       />
-      <dashboardDetails
+      <dashbordDetailLetters
         class="chartRow"
         v-if="activeEl === 'numberOfLetters'"
-        :dataType="'الحرف'"
         :numberOfWords="numberOfWords"
         :numberOfLetters="numberOfLetters"
-        :detailsData="letterIndexes"
-        :tableData="letterOccurrences"
-        :series="countSeries"
-        :groupBy="null"
-        :hasChart="true"
+        :indexes="letterIndexes"
+        :occurrences="letterOccurrences"
+        :isLoading="isLoading"
+      />
+       <dashbordDetailVerses
+        class="chartRow"
+        v-if="activeEl === 'numberOfVerses'"
+        :versesMap="versesMap"
         :isLoading="isLoading"
       />
     </v-row>
@@ -61,13 +55,15 @@
 
 <script>
 import chart from '../components/chart.vue'
-import dashboardDetails from './dashboardDetails.vue'
+import dashbordDetailLetters from './dashbordDetailLetters.vue'
+import dashbordDetailWords from './dashbordDetailWords.vue'
+import dashbordDetailVerses from './dashbordDetailVerses.vue'
 import chartOptions from '../assets/suraDashbordChartOptions.js'
 import dashboardTab from './dashboardTab'
 
 export default {
-  name: 'suraDashbord',
-  components: { chart, dashboardDetails, dashboardTab },
+  name: 'dashbord',
+  components: { chart, dashbordDetailLetters, dashboardTab, dashbordDetailWords, dashbordDetailVerses },
   props: [
     'title',
     'numberOfVerses',
@@ -79,7 +75,9 @@ export default {
     'letterIndexes',
     'letterOccurrences',
     'letterSeries',
-    'wordsSeries'
+    'wordsSeries',
+    'suraTextarray',
+    'versesMap'
   ],
   data: () => ({
     activeEl: 'frequency',
@@ -92,17 +90,9 @@ export default {
     activate (el) {
       this.activeEl = el
       this.$emit('tabChanged', el)
-    },
-    getHeight () {
-      var heightDif = this.windowHeight - 175
-      return heightDif
     }
   },
   computed: {
-    countSeries () {
-      if (!this.letterOccurrences) return [{ data: [] }]
-      return [{ data: this.letterOccurrences }]
-    },
     tabs () {
       var tabs = [
         { title: 'آية', value: this.numberOfVerses, name: 'numberOfVerses' },
@@ -125,10 +115,13 @@ export default {
 .suraInfoSingleBox {
   padding: 24px;
   margin-left: 9px;
-  width: 169.5px;
+  width: 130.5px;
   display: flex;
   color: #fff;
   opacity: 0.5;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: center;
 }
 .suraInfoSingleBox.active {
   opacity: 1;
@@ -143,5 +136,21 @@ export default {
   z-index: 3;
   margin-top: 3px !important;
   margin-right: 250px;
+}
+.dashboardTab{
+  margin-right: 395px;
+  margin-top: -55px;
+  margin-bottom: 23px;
+}
+@media (max-width: 978px) {
+  .dashboardTab{
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 10px;
+  }
+  .suraInfoSingleBox {
+  padding: 5px;
+  margin-bottom: 5px;
+  }
 }
 </style>

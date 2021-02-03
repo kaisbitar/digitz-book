@@ -2,7 +2,7 @@
   <div>
     <div
       class="suraText"
-      v-for="(item, index) in suraText"
+      v-for="(item, index) in suraTextarray"
       :key="index"
       :class="[index - 1, { targetedVerse: index + 1 === suraTargetedVerse }]"
     >
@@ -40,27 +40,13 @@ import { appMixin } from '../mixins/mixins'
 
 export default {
   name: 'suraTextBox',
-  props: ['inputText', 'suraTargetedVerse'],
+  props: ['inputText', 'suraTargetedVerse', 'suraTextarray', 'isLoading'],
   components: {},
   mixins: [appMixin],
   data: () => ({
-    suraText: [],
-    isLoading: true
+    suraText: []
   }),
   methods: {
-    fetchSuraText () {
-      this.isLoading = true
-      setTimeout(() => {
-        this.$store
-          .dispatch('getSuraText')
-          .then((items) => {
-            this.suraText = items
-          })
-          .then(() => {
-            this.isLoading = false
-          })
-      }, 100)
-    },
     scrollToVerse (timeOut) {
       if (!this.suraTargetedVerse) {
         var verse = this.prepareToScroll(1)
@@ -100,9 +86,6 @@ export default {
     },
     suraTargetedVerse () {
       this.scrollToVerse(0)
-    },
-    fileName () {
-      this.fetchSuraText()
     }
   },
   filters: {
@@ -117,7 +100,6 @@ export default {
     }
   },
   created () {
-    this.fetchSuraText()
   },
   mounted () {
     this.scrollToVerse(1500)

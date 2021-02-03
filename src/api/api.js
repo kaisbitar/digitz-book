@@ -32,6 +32,13 @@ export function fetchSuraText (appApi, fileName) {
       return response.data
     })
 }
+export function fetchVersesMap (appApi, fileName) {
+  return axios
+    .get(appApi + 'api/verses-map/' + fileName)
+    .then(response => {
+      return response.data
+    })
+}
 export function fetchSuraChartData (appApi, fileName, dataType) {
   return axios
     .get(appApi + 'api/view/sura-charts/' + fileName)
