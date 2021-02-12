@@ -2,7 +2,7 @@
   <v-card
     class="suraInfoSingleBox"
     @click="$emit('selected')"
-    :class="{ active: active}"
+    :class="{ active: activeTab}"
     outlined
   >
     <div class="d-flex ma-auto">
@@ -19,7 +19,7 @@
 export default {
   name: 'dashboardTab',
   components: {},
-  props: ['active', 'value', 'title'],
+  props: ['activeTab', 'value', 'title'],
   data: () => ({}),
   computed: {},
   methods: {},

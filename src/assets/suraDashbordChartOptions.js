@@ -39,7 +39,6 @@ const chartOptions = {
     labels: {
       show: true,
       style: {
-        fontSize: '18px',
         fontFamily: '"Roboto", sans-serif !important'
       }
     },
@@ -72,16 +71,16 @@ const chartOptions = {
         fontSize: '18px',
         fontFamily: '"Roboto", sans-serif !important'
       }
-    }
-    // min: 0,
-    // max: undefined,
-    // axisTicks: {
-    //   autoskip: true,
-    //   maxTicksLimit: 100,
-    //   interval: 300
-    // },
-    // tickAmount: undefined,
-    // tickPlacement: 'between'
+    },
+    min: 1,
+    max: undefined,
+    axisTicks: {
+      show: true,
+      maxTicksLimit: 2,
+      interval: 2
+    },
+    tickAmount: 1,
+    tickPlacement: 'between'
   },
   colors: ['#000'],
   grid: {

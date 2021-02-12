@@ -16,7 +16,7 @@ export default new Vuex.Store({
     filteredSearch: [],
     filterSelectedIndex: 0,
     autoCompleteItems: [],
-    quranIndex: [],
+    tableQuranIndex: [],
     suras: {},
     scrollTrigger: false,
     drawerState: true,
@@ -28,7 +28,7 @@ export default new Vuex.Store({
     filteredSearch: state => state.filteredSearch,
     filterSelectedIndex: state => state.filterSelectedIndex,
     autoCompleteItems: state => state.autoCompleteItems,
-    quranIndex: state => state.quranIndex,
+    tableQuranIndex: state => state.tableQuranIndex,
     scrollTrigger: state => state.scrollTrigger,
     drawerState: state => state.drawerState,
     numberInfoShow: state => state.numberInfoShow,
@@ -49,6 +49,9 @@ export default new Vuex.Store({
     setFilterSelectedIndex (state, index) {
       state.filterSelectedIndex = index
     },
+    resetFilterSelectedIndex (state) {
+      state.filterSelectedIndex = 0
+    },
     resetSuras (state) {
       state.suras = {}
     },
@@ -64,8 +67,8 @@ export default new Vuex.Store({
     setAutoCompleteItems (state, items) {
       state.autoCompleteItems = items
     },
-    setQuranIndex (state, items) {
-      state.quranIndex = items
+    settableQuranIndex (state, items) {
+      state.tableQuranIndex = items
     },
     setDrawerState (state, drawerState) {
       state.drawerState = drawerState
@@ -88,12 +91,10 @@ export default new Vuex.Store({
   },
   actions: {
     checkLocalStorage () {
-      console.log('s')
-
-      for (var _x in localStorage) {
-        if (_x.substr(0, 50) === 'vuex') {
-          var _xLen = ((localStorage[_x].length + _x.length) * 2)
-          var storedSize = (_xLen / 1024).toFixed(0)
+      for (var value in localStorage) {
+        if (value.substr(0, 50) === 'vuex') {
+          var valueLen = ((localStorage[value].length + value.length) * 2)
+          var storedSize = (valueLen / 1024).toFixed(0)
         }
         if (storedSize < 9500) {
           return
@@ -180,10 +181,10 @@ export default new Vuex.Store({
       }
       return new Promise((resolve, reject) => {
         if (!state.suras[state.target.fileName].versesMap) {
+          this.dispatch('checkLocalStorage')
           const appApi = process.env.VUE_APP_API_URL
           fetchVersesMap(appApi, state.target.fileName).then(versesMap => {
             var obj = { versesMap: versesMap }
-            this.dispatch('checkLocalStorage')
             commit('setVersesMap', obj)
             resolve(versesMap)
           })

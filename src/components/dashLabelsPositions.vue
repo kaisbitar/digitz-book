@@ -1,15 +1,11 @@
 <template>
-  <v-card class="mr-2 webKitWidth" outlined>
-    <div class="d-flex ml-1 pa-2" outlined>
-      <v-card class="resultBox display-3 text-center pa-3" outlined>
-        <div class="mt-n1">{{ detailElement }}</div>
-      </v-card>
-      <span class="display-3 mr-2 ml-2 mt-3">:</span>
-      <v-card class="resultBox d-flex text-center pa-3" outlined>
-        <span class="display-3">{{ detailCount }}</span>
-        <div class="mt-7">مرة</div>
-      </v-card>
-    </div>
+  <v-card class="webKitWidth" flat>
+      <dashLabels
+        :detailElement="detailElement"
+        :detailCount="detailCount"
+        :isLoading="isLoading"
+        :showPosition="false"
+      />
     <div class="mt-2 mr-2">المواقع: </div>
     <v-row
       class="wordItemWrap mr-2 mt-4"
@@ -33,15 +29,17 @@
 </template>
 
 <script>
+import dashLabels from './dashLabels'
 export default {
-  name: 'dashboardPositions',
+  name: 'dashLabelsPositions',
   props: [
     'detailElement',
     'detailCount',
     'detailsData',
-    'isLoading'
+    'isLoading',
+    'showPosition'
   ],
-  components: {},
+  components: { dashLabels },
   data: () => ({
     positions: null,
     series: [],

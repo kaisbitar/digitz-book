@@ -1,6 +1,6 @@
-const chartOptions = {
+var chartOptions = {
   chart: {
-    type: 'bar',
+    type: 'line',
     toolbar: {
       show: true,
       offsetY: 2
@@ -31,7 +31,7 @@ const chartOptions = {
     }
   },
   dataLabels: {
-    enabled: false,
+    enabled: true,
     style: { colors: ['grey'], fontFamily: '"Roboto", sans-serif !important', fontSize: '15px' },
     offsetY: -35
     // a0a0a0de
@@ -44,12 +44,12 @@ const chartOptions = {
     }
   },
   stroke: {
-    curve: 'smooth',
-    width: 1.2,
+    curve: 'stepline',
+    width: 0,
     colors: ['#7c7c7c']
   },
   markers: {
-    size: [0, 0]
+    size: 10
   },
   xaxis: {
     labels: {
@@ -73,7 +73,8 @@ const chartOptions = {
         fontSize: '18px', fontFamily: '"Roboto", sans-serif !important'
       }
     },
-    min: 0
+    min: 0,
+    max: 6200
   },
   yaxis: {
     labels: {
@@ -89,15 +90,15 @@ const chartOptions = {
         fontFamily: '"Roboto", sans-serif !important'
       }
     },
-    min: 1
-    // max: undefined,
-    // axisTicks: {
-    //   autoskip: true,
-    //   maxTicksLimit: 100,
-    //   interval: 300
-    // },
-    // tickAmount: undefined,
-    // tickPlacement: 'between'
+    min: 0,
+    max: 19,
+    axisTicks: {
+      autoskip: true,
+      maxTicksLimit: 100,
+      interval: 300
+    },
+    tickAmount: undefined,
+    tickPlacement: 'between'
   },
   grid: {
     show: false,

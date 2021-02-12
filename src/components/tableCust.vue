@@ -43,7 +43,7 @@
 import { appMixin } from '../mixins/mixins'
 
 export default {
-  name: 'custTable',
+  name: 'tableCust',
   props: ['headers', 'tableData', 'search', 'tableType', 'groupBy', 'elementName', 'isLoading'],
   mixins: [appMixin],
   data: () => ({

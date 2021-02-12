@@ -24,7 +24,7 @@
         <template v-slot:item="props">
           <tr
             @click="selectSura(props.item)"
-            :class="{ active: props.item.suraIndex === selectedId +1}"
+            :class="{ active: props.item.suraIndex === selectedId }"
             class="indexItem"
           >
             <td class="text-right" v-html="highlight(props.item.suraIndex, search)"></td>
@@ -42,11 +42,11 @@
 </template>
 
 <script>
-import { fetchQuranIndex } from '@/api/api.js'
+import { fetchtableQuranIndex } from '@/api/api.js'
 import { appMixin } from '../mixins/mixins'
 
 export default {
-  name: 'QuranIndex',
+  name: 'tableQuranIndex',
   mixins: [appMixin],
   data: () => ({
     loading: true,
@@ -84,7 +84,7 @@ export default {
   }),
   computed: {
     data () {
-      return this.$store.getters.quranIndex
+      return this.$store.getters.tableQuranIndex
     },
     fileName () {
       return this.$store.state.target.fileName
@@ -136,8 +136,8 @@ export default {
   },
   created () {
     const appApi = process.env.VUE_APP_API_URL
-    fetchQuranIndex(appApi).then((data) => {
-      this.$store.commit('setQuranIndex', data)
+    fetchtableQuranIndex(appApi).then((data) => {
+      this.$store.commit('settableQuranIndex', data)
       this.loading = false
     })
     if (this.fileName !== this.$store.state.fileName) {
@@ -166,8 +166,6 @@ th {
 }
 .indexItem:hover {
   background: #ccc ;
-  color: white;
-  font-weight: bold !important;
 }
 .active:hover{
   font-weight: 100 !important;

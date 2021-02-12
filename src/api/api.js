@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-export function fetchQuranIndex (appApi) {
+export function fetchtableQuranIndex (appApi) {
   return axios.get(appApi + 'api/quran-index').then(response => {
     return response.data
   })
@@ -34,7 +34,7 @@ export function fetchSuraText (appApi, fileName) {
 }
 export function fetchVersesMap (appApi, fileName) {
   return axios
-    .get(appApi + 'api/verses-map/' + fileName)
+    .get(appApi + 'api/view/verses-basics/' + fileName)
     .then(response => {
       return response.data
     })
@@ -54,7 +54,7 @@ export function fetchSuraDetails (appApi, fileName) {
     })
 }
 
-export function fetchSearchResults (appApi, query) {
+export function fetchtableSearchs (appApi, query) {
   return axios
     .get(appApi + 'api/view/search/' + query)
     .then(response => {

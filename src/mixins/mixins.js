@@ -6,7 +6,7 @@ export const appMixin = {
   },
   methods: {
     handleTableClick (rowItem, tableType) {
-      if (tableType === 'searchResult') {
+      if (tableType === 'tableSearch') {
         var target = { fileName: rowItem.sura, verseIndex: rowItem.verseIndx }
         this.$store.commit('setTarget', target)
         if (this.$router.currentRoute.name !== 'singleSura') {
@@ -25,16 +25,16 @@ export const appMixin = {
     setTargetFromArrow (direction) {
       if (direction === 'up') {
         var targetrSura = {
-          fileName: this.$store.getters.quranIndex[
-            this.$store.getters.target.suraNumber - 2
+          fileName: this.$store.getters.tableQuranIndex[
+            this.$store.getters.target.suraNumber - 1
           ].fileName
         }
         this.$store.commit('setTarget', targetrSura)
         return
       }
       targetrSura = {
-        fileName: this.$store.state.quranIndex[
-          this.$store.state.target.suraNumber
+        fileName: this.$store.state.tableQuranIndex[
+          this.$store.state.target.suraNumber + 1
         ].fileName
       }
       this.$store.commit('setTarget', targetrSura)
@@ -52,11 +52,11 @@ export const appMixin = {
     },
     highlight (text, searchValue) {
       if (!searchValue) {
-        return text
+        if (text.length < 50) { return text } else { return text.slice(0, 20) + '...' }
       }
       var searchWordPosition = (text.indexOf(searchValue))
-      if (searchWordPosition > 50) {
-        var suraChunk = '..' + text.slice(searchWordPosition - 20, 300)
+      if (searchWordPosition > 20) {
+        var suraChunk = '..' + text.slice(searchWordPosition - 200, 300)
       } else {
         suraChunk = text
       }

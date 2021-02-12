@@ -1,11 +1,11 @@
 <template>
   <div>
     <div v-if="filteredSearchList">
-        <cust-table
+        <tableCust
           :tableData="filteredSearchList.result"
           :headers="tableHeaders"
           :search="filteredSearchList.inputText"
-          :tableType="'searchResult'"
+          :tableType="'tableSearch'"
           :groupBy="null"
           :elementName="fileName"
         />
@@ -15,12 +15,12 @@
 
 <script>
 // @ is an alias to /src
-import custTable from './custTable.vue'
+import tableCust from './tableCust.vue'
 
 export default {
-  name: 'searchResult',
+  name: 'tableSearch',
   components: {
-    custTable
+    tableCust
   },
   computed: {
     filteredSearchList () {

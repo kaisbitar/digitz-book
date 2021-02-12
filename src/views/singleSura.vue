@@ -10,20 +10,11 @@
         @arrowClick="setTargetFromArrow"
       />
       <div class="charSwitch">
-        <!-- <v-switch
-          :color="'info'"
-          @click="getView()"
-          value="secondary"
-          hide-details
-          small
-          append-icon="mdi-"
-          :loading="isLoading"
-        ></v-switch> -->
         <v-card
           @click="getView()"
           outlined
         >
-          <div class="grey lighten-4 d-flex ma-auto">
+          <div class="grey lighten-4 d-flex">
             <div class="switchLabel caption" :class="[{ 'active': view === 'suraChart' }]">تفصيل</div>
           </div>
         </v-card>
@@ -55,7 +46,8 @@
       :letterSeries="letterSeries"
       :wordsSeries="wordsSeries"
       :suraTextarray="suraTextarray"
-      :versesMap="versesMap"
+      :versesBasics="versesBasics"
+      :activeTab="activeTab"
     />
   </div>
 </template>
@@ -76,7 +68,7 @@ export default {
   },
   data: () => ({
     suraTextarray: [],
-    versesMap: [],
+    versesBasics: [],
     isLoading: false,
     view: 'suraChart',
     numberOfVerses: null,
@@ -86,13 +78,13 @@ export default {
     details: {},
     letterSeries: [],
     wordsSeries: [],
-    currentTab: 'frequency'
+    activeTab: 'numberOfWords'
   }),
   computed: {
     inputText () {
       if (
-        this.$store.getters.filteredSearch === [] ||
-        this.$store.getters.filterSelectedIndex === null
+        this.$store.getters.filteredSearch.length === 0 ||
+        this.$store.getters.filterSelectedIndex === 0
       ) {
         return
       }
@@ -161,7 +153,7 @@ export default {
       this.$store
         .dispatch('getVersesMap')
         .then((items) => {
-          this.versesMap = items
+          this.versesBasics = items
           return items
         })
         .then(() => {
@@ -169,7 +161,7 @@ export default {
         })
     },
     getData (tab) {
-      this.currentTab = tab
+      this.activeTab = tab
       switch (tab) {
         case 'numberOfVerses':
           this.fetchVersesData()
@@ -184,7 +176,6 @@ export default {
       }
     },
     getView () {
-      console.log(this.view)
       if (this.view === 'suraText') {
         this.iconColor = 'info'
         this.view = 'suraChart'
@@ -201,22 +192,21 @@ export default {
       this.details = {}
       setTimeout(() => {
         this.fetchSuraBasics().then(() => {
-          this.getData(this.currentTab)
           if (this.view === 'suraText') {
             this.fetchSuraText()
+            return
           }
+          this.getData(this.activeTab)
         })
       }, 200)
+    },
+    view () {
+      this.getData(this.activeTab)
     }
-    // view () {
-    //   if (this.view === 'suraText') {
-    //     this.fetchVersesData()
-    //   }
-    // }
   },
   created () {
     this.fetchSuraBasics().then(() => {
-      this.getData(this.currentTab)
+      this.getData(this.activeTab)
     })
   },
   mounted () {}

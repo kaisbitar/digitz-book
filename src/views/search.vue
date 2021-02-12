@@ -1,7 +1,7 @@
 <template>
 
   <div>
-    <!-- <searchResult/> -->
+    <!-- <tableSearch/> -->
     <dashbord
       v-if="!isLoading"
       :title="filteredSearchList.inputText"
@@ -23,9 +23,9 @@
 <script>
 
 // @ is an alias to /src
-// import searchResult from '../components/searchResult.vue'
+// import tableSearch from '../components/tableSearch.vue'
 import dashbord from '../components/dashbord.vue'
-import { fetchSearchResults } from '../api/api'
+import { fetchtableSearchs } from '../api/api'
 
 export default {
   name: 'search',
@@ -59,7 +59,7 @@ export default {
   methods: {
     fetchResults () {
       const appApi = process.env.VUE_APP_API_URL
-      fetchSearchResults(appApi, this.filteredSearchList.inputText).then(results => {
+      fetchtableSearchs(appApi, this.filteredSearchList.inputText).then(results => {
         this.details = results
         this.letterSeries = [{ data: results.letterOccurrences }]
         this.wordsSeries = [{ data: results.wordOccurrences }]

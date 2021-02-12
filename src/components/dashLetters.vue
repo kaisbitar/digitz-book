@@ -7,11 +7,6 @@
     <v-tabs-items v-model="tab">
       <v-tab-item value="tab-1">
         <div class="webKitWidth">
-          <div class="showIcon">
-            <v-icon :color="showChart === true ? 'grey' : 'blue'" small
-              >mdi-table-headers-eye</v-icon
-            >
-          </div>
           <chart
             class="mr-1 pa-0 ml-2 webKitWidth lettersChart"
             :dataType="'letters'"
@@ -20,13 +15,14 @@
             :options="chartOptions"
             :includeTab="true"
             v-if="showChart"
+            :height="getHeight()"
           />
         </div>
       </v-tab-item>
       <v-tab-item value="tab-2">
         <div class="d-flex s">
           <v-card  outlined>
-            <occTable
+            <tableOccurrences
               :tableData="occurrences"
               :dataType="dataType"
               :tableHeaders="tableHeaders"
@@ -38,7 +34,7 @@
               @rowClicked="setDetailItem"
             />
           </v-card>
-          <dashboardPositions
+          <dashLabelsPositions
             :detailElement="detailElement"
             :detailCount="detailCount"
             :detailsData="indexes"
@@ -51,67 +47,29 @@
 </template>
 
 <script>
-import dashboardPositions from './dashboardPositions.vue'
+import dashLabelsPositions from './dashLabelsPositions.vue'
 import chart from './chart.vue'
 import chartOptions from '../assets/numbersOfLettersOptions.js'
-import OccTable from './occTable.vue'
+import tableOccurrences from './tableOccurrences.vue'
+import { detailMixin } from '../mixins/detailMixin'
 
 export default {
   name: 'letterDetails',
-  components: { dashboardPositions, chart, OccTable },
-  props: ['indexes', 'occurrences', 'isLoading'],
+  components: { dashLabelsPositions, chart, tableOccurrences },
+  mixins: [detailMixin],
   data: () => ({
     dataType: 'letters',
-    detailElement: '',
-    detailCount: 0,
-    search: '',
-    footerProps: { 'items-per-page-text': '' },
-    selectedId: 0,
     chartOptions: chartOptions,
     tableHeaders: [
       { text: 'الحروف', value: 'x', class: ' lighten-4 black--text' }
-      // { text: 'تكرار', value: 'y', class: ' lighten-4 black--text' }
     ],
-    wordsGroup: null,
-    showChart: true,
-    windowHeight: window.innerHeight,
-    groupBy: 'y',
-    tab: null
+    wordsGroup: null
   }),
-  computed: {
-    fileName () {
-      return this.$store.getters.target.fileName
-    },
-    series () {
-      if (!this.occurrences) return
-      return [{ data: this.occurrences }]
-    }
-  },
   methods: {
-    setDetailItem (index, item) {
-      this.selectedId = item.x
-
-      this.detailElement = item.x
-      this.detailCount = item.y
-    },
-    setInitialItem () {
-      this.selectedId = this.occurrences[0].x
-      this.detailElement = this.occurrences[0].x
-      this.detailCount = this.occurrences[0].y
+    getHeight () {
+      var heightDif = this.windowHeight - 240
+      return heightDif
     }
-  },
-  watch: {
-    indexes () {
-      if (!this.occurrences) return null
-      this.setInitialItem(0)
-    }
-  },
-  created () {
-
-  },
-  mounted () {
-    if (!this.occurrences) return null
-    this.setInitialItem(0)
   }
 }
 </script>
@@ -122,9 +80,6 @@ export default {
 }
 .tableStyle {
   width: 270px;
-}
-.resultBox {
-  height: 85px;
 }
 .showIcon {
   position: absolute;

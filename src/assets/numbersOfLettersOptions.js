@@ -32,7 +32,7 @@ const chartOptions = {
   },
   dataLabels: {
     enabled: true,
-    style: { colors: ['grey'], fontFamily: '"Roboto", sans-serif !important', fontSize: '15px' },
+    style: { colors: ['grey'], fontFamily: '"Tajawal", sans-serif !important', fontSize: '15px' },
     offsetY: -35
     // a0a0a0de
   },
@@ -48,15 +48,12 @@ const chartOptions = {
     width: 1.2,
     colors: ['#7c7c7c']
   },
-  markers: {
-    size: [0, 0]
-  },
   xaxis: {
     labels: {
       show: true,
       style: {
-        fontSize: '15px',
-        fontFamily: '"Roboto", sans-serif !important'
+        fontSize: '16px',
+        fontFamily: '"Tajawal", sans-serif !important'
       }
     },
     axisTicks: {
@@ -70,7 +67,7 @@ const chartOptions = {
       show: false,
       // text: 'آيات',
       style: {
-        fontSize: '18px', fontFamily: '"Roboto", sans-serif !important'
+        fontSize: '18px', fontFamily: '"Tajawal", sans-serif !important'
       }
     },
     min: 1
@@ -79,14 +76,14 @@ const chartOptions = {
     labels: {
       show: true,
       style: {
-        fontFamily: '"Roboto", sans-serif !important'
+        fontFamily: '"Tajawal", sans-serif !important'
       }
     },
     title: {
       offsetX: -50,
       style: {
         fontSize: '18px',
-        fontFamily: '"Roboto", sans-serif !important'
+        fontFamily: '"Tajawal", sans-serif !important'
       }
     }
     // min: 0,

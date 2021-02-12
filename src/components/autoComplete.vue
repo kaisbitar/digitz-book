@@ -1,15 +1,15 @@
 <template>
-  <div fluid class="autoWrap">
+  <v-row fluid class="autoWrap">
     <div>
-      <!-- :filter="handleFiltering" -->
       <v-autocomplete
-        v-model="model"
+        :filter="handleFiltering"
         :items="storedItems"
         :search-input.sync="inputText"
         :hide-no-data="!inputText"
         item-text="verseText"
+        item-value="verseNumberToQuran"
         :disabled="isDisabled"
-        :suffix="resultsCount"
+        :prefix="resultsCount()"
         :color="'blue darken-4'"
         prepend-inner-icon="mdi-magnify"
         label="ابحث  في الكتاب.."
@@ -17,23 +17,27 @@
         v-on:keyup.enter="handleShowAll()"
         @click:clear="handleRemoveAllChips()"
         clearable
-        selection.disabled="true"
+        selection.disabled="false"
       >
         <template v-slot:no-data>
           <p class="pa-1 red--text">لا يوجد معلومات تطابق البحث!</p>
         </template>
 
-        <!-- <template v-slot:append>
-              <v-btn @click="handleShowAll()" v-if="inputText"
-                >جميع النتائج</v-btn
-              >
-            </template> -->
         <template v-slot:selection disabled> </template>
 
         <template v-slot:prepend-inner>
           <div class="d-flex" @click.prevent="disableInputBox()">
             <autoCompleteSearchBar />
           </div>
+           <v-icon
+            small
+            v-if="inputText"
+            @click="matchAll = !matchAll"
+            :color="matchAll === false ? 'grey lighten-1' : 'blue'"
+            class="mt-1"
+          >
+            mdi-format-letter-matches
+          </v-icon>
         </template>
 
         <template v-slot:item="{ item }">
@@ -42,8 +46,16 @@
           </div>
         </template>
       </v-autocomplete>
-    </div>
-  </div>
+
+    </div><div v-if="inputText">
+          <v-btn
+            small
+            @click="handleShowAll()"
+            class="green lighten-2 white--text caption mt-4"
+            >جميع النتائج</v-btn
+          >
+        </div>
+  </v-row>
 </template>
 
 <script>
@@ -60,7 +72,7 @@ export default {
     isLoading: true,
     inputText: null,
     isDisabled: false,
-    model: null
+    matchAll: false
   }),
   methods: {
     handleClickWithInput () {
@@ -103,6 +115,7 @@ export default {
         this.isDisabled = false
       }, 100)
       this.$refs.autocomplete.blur()
+      this.inputText = null
     },
     handleRemoveAllChips () {
       this.$store.commit('resetFilteredItems')
@@ -112,20 +125,24 @@ export default {
       }
     },
     handleFiltering (item, queryText, itemText) {
-      // return new RegExp('\\b' + queryText + '\\b').test(itemText)
-      // queryText = '\\b' + queryText + '\\b'
-      // var match = [...itemText.matchAll(queryText)]
-      // return (match) || (match && itemText === match[0])
-      // if (queryText === 'فبأي آ' && match.length !== 0)
+      itemText = ' ' + itemText + ' '
+      if (!this.matchAll && (itemText.match(queryText) !== null)) {
+        return itemText
+      }
+      // var regex = new RegExp('([^،-٩]+' + queryText + '[^،-٩]+)', 'gim')
+      var regex = new RegExp('([^\u0621-\u064A]+' + queryText + '[^\u0621-\u064A]+)', 'gim')
+      var match = itemText.match(regex)
+
+      return match
+    },
+    resultsCount () {
+      if (!this.$refs.autocomplete) return
+      return (this.$refs.autocomplete.filteredItems.length).toString()
     }
   },
   computed: {
     storedItems () {
       return this.$store.getters.autoCompleteItems
-    },
-    resultsCount () {
-      if (!this.$refs.autocomplete) return
-      return this.$refs.autocomplete.filteredItems.length
     }
   },
   created () {
@@ -149,8 +166,12 @@ export default {
 label.v-label.theme--light {
   color: #afafaf;
 }
-.autoWrap{
+.autoWrap {
   margin-right: 39px;
+}
+.v-text-field__prefix {
+    /* font-style: italic; */
+    color: #b3b3b3;
 }
 // .enlarge {
 //   animation: enlarge .5s linear;

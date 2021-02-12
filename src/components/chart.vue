@@ -1,10 +1,10 @@
 <template>
   <div>
-    <v-card outlined>
+    <v-card outlined flat>
       <apexchart
         :markerClick="handleClick"
         :options="options"
-        :height="getHeight()"
+        :height="height"
         :series="series"
         ref="myChart"
       />
@@ -24,7 +24,7 @@
 import VueApexCharts from 'vue-apexcharts'
 export default {
   name: 'Chart',
-  props: ['options', 'series', 'isLoading', 'includeTab'],
+  props: ['height', 'options', 'series', 'isLoading', 'includeTab'],
   components: { apexchart: VueApexCharts },
   data: () => ({
     windowHeight: window.innerHeight

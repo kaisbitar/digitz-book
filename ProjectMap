@@ -68,7 +68,7 @@ Views:
 3-Quran views:
     1-Quran map (All suras and with suras basic information)
     components needed:
-        1-QuranIndex (with option to show less/more details)
+        1-tableQuranIndex (with option to show less/more details)
 
     2- Quran number of words chart
     components needed:

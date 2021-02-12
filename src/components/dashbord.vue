@@ -6,47 +6,41 @@
         :key="index"
         :title="item.title"
         :value="item.value"
-        :active="activeEl === item.name"
+        :activeTab="activeTab === item.name"
         @selected="activate(item.name)"
       />
     </v-row>
     <v-row>
-      <div class="chartRow" v-if="activeEl === 'frequency'">
-        <v-row>
-          <v-radio-group class="d-flex chartTitleWrap" v-model="view" row
-            >تواتر
-            <v-radio value="words" label="كلمات"  color="blue"></v-radio>
-            <v-radio value="letters" label="حروف"  color="blue"></v-radio>
-          </v-radio-group>
-        </v-row>
-        <chart
-          :isLoading="isLoading"
-          :series="view === 'letters' ? letterSeries : wordsSeries"
-          :options="options"
+        <chartFrequency
+        v-if="activeTab === 'frequency'"
+        :isLoading="isLoading"
+        :letterSeries="letterSeries"
+        :wordsSeries="wordsSeries"
+        :height="getHeight()"
         />
-      </div>
-      <dashbordDetailWords
+
+      <dashWords
         class="chartRow"
-        v-if="activeEl === 'numberOfWords'"
+        v-if="activeTab === 'numberOfWords'"
         :numberOfWords="numberOfWords"
         :numberOfLetters="numberOfLetters"
         :indexes="wordIndexes"
         :occurrences="wordOccurrences"
         :isLoading="isLoading"
       />
-      <dashbordDetailLetters
+      <dashLetters
         class="chartRow"
-        v-if="activeEl === 'numberOfLetters'"
+        v-if="activeTab === 'numberOfLetters'"
         :numberOfWords="numberOfWords"
         :numberOfLetters="numberOfLetters"
         :indexes="letterIndexes"
         :occurrences="letterOccurrences"
         :isLoading="isLoading"
       />
-       <dashbordDetailVerses
+       <dashVerses
         class="chartRow"
-        v-if="activeEl === 'numberOfVerses'"
-        :versesMap="versesMap"
+        v-if="activeTab === 'numberOfVerses'"
+        :versesBasics="versesBasics"
         :isLoading="isLoading"
       />
     </v-row>
@@ -54,16 +48,15 @@
 </template>
 
 <script>
-import chart from '../components/chart.vue'
-import dashbordDetailLetters from './dashbordDetailLetters.vue'
-import dashbordDetailWords from './dashbordDetailWords.vue'
-import dashbordDetailVerses from './dashbordDetailVerses.vue'
-import chartOptions from '../assets/suraDashbordChartOptions.js'
+import dashLetters from './dashLetters.vue'
+import dashWords from './dashWords.vue'
+import dashVerses from './dashVerses.vue'
 import dashboardTab from './dashboardTab'
+import chartFrequency from './chartFrequency'
 
 export default {
   name: 'dashbord',
-  components: { chart, dashbordDetailLetters, dashboardTab, dashbordDetailWords, dashbordDetailVerses },
+  components: { dashLetters, dashboardTab, dashWords, dashVerses, chartFrequency },
   props: [
     'title',
     'numberOfVerses',
@@ -77,19 +70,23 @@ export default {
     'letterSeries',
     'wordsSeries',
     'suraTextarray',
-    'versesMap'
+    'versesBasics',
+    'activeTab'
   ],
   data: () => ({
-    activeEl: 'frequency',
     dataType: 'الكلمة',
-    view: 'words',
-    options: chartOptions,
     windowHeight: window.innerHeight
   }),
   methods: {
     activate (el) {
-      this.activeEl = el
+      // this.activeTab = el
       this.$emit('tabChanged', el)
+    },
+    getHeight () {
+      // var tabHeight = 0
+      // if (this.includeTab) { tabHeight = -20 }
+      var heightDif = this.windowHeight - 210
+      return heightDif
     }
   },
   computed: {

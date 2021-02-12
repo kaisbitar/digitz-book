@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-navigation-drawer v-model="drawer" app right class="grey lighten-4">
-      <quranIndex />
+      <tableQuranIndex />
     </v-navigation-drawer>
 
     <v-app-bar class="topHeader brown lighten-5" flat app :height="71">
@@ -17,13 +17,13 @@
 
 <script>
 import autoComplete from './components/autoComplete.vue'
-import quranIndex from './components/quranIndex.vue'
+import tableQuranIndex from './components/tableQuranIndex.vue'
 export default {
   name: 'App',
 
   components: {
     autoComplete,
-    quranIndex
+    tableQuranIndex
   },
 
   data: () => ({
