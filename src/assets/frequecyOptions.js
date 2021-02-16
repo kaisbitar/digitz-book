@@ -1,63 +1,51 @@
-var chartOptions = {
+const chartOptions = {
   chart: {
-    type: 'line',
+    type: 'area',
+    offsetY: 20,
     toolbar: {
       show: true,
       offsetY: 2
     }
   },
-  fill: {
-    type: 'gradient',
-    gradient: {
-      shade: 'light',
-      type: 'horizontal',
-      shadeIntensity: 0.25,
-      gradientToColors: undefined,
-      inverseColors: true,
-      opacityFrom: 0.85,
-      opacityTo: 0.85,
-      stops: [50, 0, 100]
-    }
-  },
   zoom: {
-    enabled: false
+    enabled: true
   },
   plotOptions: {
     bar: {
       dataLabels: {
         position: 'top'
       }
-
     }
   },
   dataLabels: {
-    enabled: true,
-    style: { colors: ['grey'], fontFamily: '"Roboto", sans-serif !important', fontSize: '15px' },
-    offsetY: -35
-    // a0a0a0de
+    enabled: true
+    // style: { colors: ['grey'] }
   },
   theme: {
     monochrome: {
       enabled: true,
-      color: '#cccccc'
+      color: '#9E9E9E'
       // A1887F
     }
   },
   stroke: {
-    curve: 'stepline',
-    width: 0,
-    colors: ['#7c7c7c']
+    curve: 'smooth',
+    width: 1.2,
+    colors: ['#0000001f']
   },
   markers: {
-    size: 10
+    size: [0, 0],
+    color: '#000',
+    hover: {
+      size: 9,
+      sizeOffset: 3,
+      color: '#000'
+
+    }
   },
   xaxis: {
     labels: {
-      show: true,
-      style: {
-        fontSize: '15px',
-        fontFamily: '"Roboto", sans-serif !important'
-      }
+      show: true
     },
     axisTicks: {
       show: true,
@@ -67,14 +55,14 @@ var chartOptions = {
     tickAmount: undefined,
     tickPlacement: 'between',
     title: {
-      show: false,
-      // text: 'آيات',
+      show: true,
+      text: 'تواتر الآيات',
+      offsetY: 10,
       style: {
         fontSize: '18px', fontFamily: '"Roboto", sans-serif !important'
       }
     },
-    min: 0,
-    max: 6200
+    min: 1
   },
   yaxis: {
     labels: {
@@ -90,16 +78,17 @@ var chartOptions = {
         fontFamily: '"Roboto", sans-serif !important'
       }
     },
-    min: 0,
-    max: 19,
+    min: 1,
+    max: undefined,
     axisTicks: {
-      autoskip: true,
-      maxTicksLimit: 100,
-      interval: 300
+      show: true,
+      maxTicksLimit: 2,
+      interval: 2
     },
-    tickAmount: undefined,
+    tickAmount: 1,
     tickPlacement: 'between'
   },
+  colors: ['#000'],
   grid: {
     show: false,
     padding: {

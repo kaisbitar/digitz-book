@@ -1,5 +1,5 @@
 <template>
-  <v-card class="webKitWidth" flat>
+  <v-card  class="webKitWidth" flat>
       <dashLabels
         :detailElement="detailElement"
         :detailCount="detailCount"

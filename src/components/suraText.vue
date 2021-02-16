@@ -15,7 +15,7 @@
         :suraTextarray="suraTextarray"
         :isLoading="isLoading"
       />
-    <v-card class="sadakAllah caption mr-auto elevation-0 pa-2 mt-1">- صدق الله العظيم -</v-card>
+    <v-card  class="sadakAllah caption mr-auto elevation-0 pa-2 mt-1">- صدق الله العظيم -</v-card>
     </v-row>
 
   </div>

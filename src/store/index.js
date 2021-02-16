@@ -181,9 +181,9 @@ export default new Vuex.Store({
       }
       return new Promise((resolve, reject) => {
         if (!state.suras[state.target.fileName].versesMap) {
-          this.dispatch('checkLocalStorage')
           const appApi = process.env.VUE_APP_API_URL
           fetchVersesMap(appApi, state.target.fileName).then(versesMap => {
+            this.dispatch('checkLocalStorage')
             var obj = { versesMap: versesMap }
             commit('setVersesMap', obj)
             resolve(versesMap)

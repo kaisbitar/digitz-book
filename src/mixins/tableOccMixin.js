@@ -10,12 +10,12 @@ export const tableOccMixin = {
     'isLoading',
     'groupBy',
     'dataType',
-    'selectedId',
-    'search'
+    'selectedId'
   ],
   data: () => ({
     windowHeight: window.innerHeight,
-    collapseDone: false
+    collapseDone: false,
+    search: ''
   }),
   computed: {},
   methods: {
@@ -39,9 +39,5 @@ export const tableOccMixin = {
   created () {
   },
   mounted () {
-    // setTimeout(() => {
-    //   if (this.collapseDone) return
-    //   this.collapseHeaders()
-    // }, 3000)
   }
 }

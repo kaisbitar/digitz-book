@@ -1,7 +1,8 @@
 <template>
   <v-app>
-    <v-navigation-drawer v-model="drawer" app right class="grey lighten-4">
-      <tableQuranIndex />
+
+    <v-navigation-drawer :width="drawerWidth" v-model="drawer" app right class="grey lighten-4">
+      <tableQuranIndex @showDetailToggle="calculateWidth"/>
     </v-navigation-drawer>
 
     <v-app-bar class="topHeader brown lighten-5" flat app :height="71">
@@ -27,10 +28,14 @@ export default {
   },
 
   data: () => ({
-    drawer: false
+    drawer: true,
+    drawerWidth: 250
   }),
   methods: {
-
+    calculateWidth (showDetail) {
+      if (showDetail === false) this.drawerWidth = 250
+      if (showDetail === true) this.drawerWidth = 440
+    }
   },
   computed: {
     searchedWord () {

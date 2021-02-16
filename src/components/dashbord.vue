@@ -11,14 +11,14 @@
       />
     </v-row>
     <v-row>
-        <chartFrequency
+        <dashFrequency
         v-if="activeTab === 'frequency'"
         :isLoading="isLoading"
         :letterSeries="letterSeries"
         :wordsSeries="wordsSeries"
-        :height="getHeight()"
+        :versesText="suraTextarray"
+        :height="height"
         />
-
       <dashWords
         class="chartRow"
         v-if="activeTab === 'numberOfWords'"
@@ -52,11 +52,11 @@ import dashLetters from './dashLetters.vue'
 import dashWords from './dashWords.vue'
 import dashVerses from './dashVerses.vue'
 import dashboardTab from './dashboardTab'
-import chartFrequency from './chartFrequency'
+import dashFrequency from './dashFrequency'
 
 export default {
   name: 'dashbord',
-  components: { dashLetters, dashboardTab, dashWords, dashVerses, chartFrequency },
+  components: { dashLetters, dashboardTab, dashWords, dashVerses, dashFrequency },
   props: [
     'title',
     'numberOfVerses',
@@ -79,15 +79,9 @@ export default {
   }),
   methods: {
     activate (el) {
-      // this.activeTab = el
       this.$emit('tabChanged', el)
-    },
-    getHeight () {
-      // var tabHeight = 0
-      // if (this.includeTab) { tabHeight = -20 }
-      var heightDif = this.windowHeight - 210
-      return heightDif
     }
+
   },
   computed: {
     tabs () {
@@ -98,10 +92,16 @@ export default {
         { title: 'تواتر', name: 'frequency' }
       ]
       return tabs
+    },
+    height () {
+      // var tabgetHeight ()Height = 0
+      // if (this.includeTab) { tabHeight = -20 }
+      var heightDif = this.windowHeight - 210
+      return heightDif
     }
   },
   watch: {},
-  created () {},
+  created () { },
   mounted () {
     this.$store.commit('setNumberInfoShow', false)
   }

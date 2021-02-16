@@ -40,7 +40,7 @@ import dashLabels from './dashLabels.vue'
 import tableOccurrences from './tableOccurrences.vue'
 import chart from './chart.vue'
 import { detailMixin } from '../mixins/detailMixin'
-import chartOptions from '../assets/numbersOfLettersOptions.js'
+import chartOptions from '../assets/wordChartOptions.js'
 
 export default {
   name: 'wordDetails',
@@ -63,7 +63,6 @@ export default {
   methods: {
     rowClickedActions (index, item) {
       this.setDetailItem(index, item)
-      this.embedOptions()
       this.highlightOnChart(this.indexes[this.detailElement], 0)
     },
     highlightOnChart (positions, occurrence) {
@@ -76,121 +75,63 @@ export default {
           }
         )
       }
-      this.options.dataLabels = {
-        formatter: function (val, opt) {
-          return opt.w.globals.seriesX[0][opt.dataPointIndex]
-        },
-        background: {
-          enabled: true,
-          foreColor: '#fff',
-          padding: 4,
-          borderRadius: 2,
-          borderWidth: 1,
-          borderColor: '#616161'
-        },
-        offsetY: -10
-      }
-      // this.options.tooltip = {
-      //   y: {
-      //     title: {
-      //       formatter: () => {
-      //         return null
-      //       }
-      //     },
-      //     formatter: () => {
-      //       return this.detailElement
-      //     }
-      //   },
-      //   x: {
-      //     formatter: (val) => {
-      //       return 'الموقع: ' + val
-      //     }
-      //   },
-      //   style: {
-      //     fontSize: '16px',
-      //     fontFamily: '"Tajwal", sans-serif !important'
-      //   }
-      // }
       this.seriesC = [{ data: points }]
+    },
+    setXaxis () {
+      var x = {}
+      x.title = {
+        offsetY: 9,
+        text: 'المواقع',
+        style: {
+          fontSize: '18px',
+          fontFamily: '"Tajawal", sans-serif !important'
+        }
+      }
+      x.max = this.numberOfWords
+      x.min = 1
+      x.tickAmount = undefined
+      x.tickPlacement = 'between'
+      this.options = {
+        ...this.options,
+        ...{ xaxis: x }
+      }
+    },
+    setToolTip () {
+      var x = {
+        custom: (obj) => {
+          return '<div class="d-flex pt-2 pa-2">' +
+                    '<div class=" tipInfo  tipInfo2 ">' + this.detailElement + '</div>' +
+                    '<div class=" tipInfo ">الموقع: ' + obj.w.globals.seriesX[0][obj.dataPointIndex] + '</div>' +
+                  '</div>'
+        }
+      }
+      this.options = {
+        ...this.options,
+        ...{ tooltip: x }
+      }
     },
     getHeight () {
       var heightDif = this.windowHeight - 270
       return heightDif
-    },
-    embedOptions () {
-      this.options = {
-        theme: {
-          palette: 'palette3',
-          monochrome: {
-            enabled: true,
-            color: '#616161'
-          }
-        },
-        xaxis: {
-          title: {
-            offsetY: 13,
-            text: 'المواقع'
-          },
-          max: this.numberOfWords,
-          min: 1
-        },
-        yaxis: {
-          show: false
-        },
-        chart: {
-          offsetY: -10,
-          type: 'scatter',
-          toolbar: {
-            show: false
-          }
-        },
-        markers: {
-          offsetY: 0,
-          size: 5,
-          shape: 'circle',
-          hover: {
-            size: 7
-          }
-        },
-        tooltip: {
-          y: {
-            title: {
-              formatter: () => {
-                return null
-              }
-            },
-            formatter: () => {
-              return this.detailElement
-            }
-          },
-          x: {
-            formatter: (val) => {
-              return 'الموقع: ' + val
-            }
-          },
-          style: {
-            fontSize: '16px',
-            fontFamily: '"Tajwal", sans-serif !important'
-          }
-        }
-      }
     }
   },
   computed: {},
 
   watch: {
     indexes () {
-      // setTimeout(() => {
       if (!this.indexes) return
-      this.embedOptions()
+      this.setXaxis()
+      this.setToolTip()
       this.highlightOnChart(this.indexes[this.occurrences[0].x], 0)
-      // }, 3000)
     }
   },
   mounted () {
     if (!this.indexes) return
-    this.embedOptions()
     this.highlightOnChart(this.indexes[this.occurrences[0].x], 0)
+  },
+  created () {
+    this.setXaxis()
+    this.setToolTip()
   }
 }
 </script>
@@ -198,25 +139,6 @@ export default {
 <style>
 .webKitWidth {
   width: -webkit-fill-available;
-}
-.tableStyle {
-  width: 270px;
-}
-.searchField {
-  width: 150px;
-}
-.tableStyle td {
-  border: none !important;
-}
-.tableStyle table {
-  border-collapse: collapse;
-  width: 100%;
-}
-.tableStyle tr:nth-child(even) {
-  background-color: #fdfdfd;
-}
-.tableStyle td {
-  border: none !important;
 }
 .table {
   max-width: 268px;

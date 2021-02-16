@@ -20,7 +20,6 @@
         </v-card>
       </div>
     </v-row>
-
     <suraText
       v-if="view === 'suraText'"
       :inputText="inputText"
@@ -171,6 +170,7 @@ export default {
           this.fetchSuraDetails()
           break
         case 'frequency':
+          this.fetchSuraText()
           this.fetchSuraChartData()
           break
       }

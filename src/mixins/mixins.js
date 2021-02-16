@@ -1,8 +1,7 @@
 
 export const appMixin = {
   data () {
-    return {
-    }
+
   },
   methods: {
     handleTableClick (rowItem, tableType) {
@@ -52,11 +51,12 @@ export const appMixin = {
     },
     highlight (text, searchValue) {
       if (!searchValue) {
-        if (text.length < 50) { return text } else { return text.slice(0, 20) + '...' }
+        if (text.length < 53) { return text } else { return text.slice(0, 53) + '......' }
       }
+
       var searchWordPosition = (text.indexOf(searchValue))
-      if (searchWordPosition > 20) {
-        var suraChunk = '..' + text.slice(searchWordPosition - 200, 300)
+      if (searchWordPosition > 53) {
+        var suraChunk = '......' + text.slice(searchWordPosition - 30)
       } else {
         suraChunk = text
       }

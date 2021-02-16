@@ -23,7 +23,6 @@
       fixed-header
       :group-by="groupBy"
       :loader-height="2"
-      @click:row="rowClicked"
     >
       <template v-slot:item="props">
         <tr
@@ -57,10 +56,8 @@ export default {
 }
 </script>
 
-<style scoped>
-.tableStyle .indexItem.text-right {
-    background: #f2f2f233;
-}
+<style >
+
 .groupHeader {
   height: 26px;
   font-weight: bold;

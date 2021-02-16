@@ -29,7 +29,7 @@
           <div class="d-flex" @click.prevent="disableInputBox()">
             <autoCompleteSearchBar />
           </div>
-           <v-icon
+          <v-icon
             small
             v-if="inputText"
             @click="matchAll = !matchAll"
@@ -46,15 +46,15 @@
           </div>
         </template>
       </v-autocomplete>
-
-    </div><div v-if="inputText">
-          <v-btn
-            small
-            @click="handleShowAll()"
-            class="green lighten-2 white--text caption mt-4"
-            >جميع النتائج</v-btn
-          >
-        </div>
+    </div>
+    <div v-if="inputText">
+      <v-btn
+        small
+        @click="handleShowAll()"
+        class="green lighten-2 white--text caption mt-4"
+        >جميع النتائج</v-btn
+      >
+    </div>
   </v-row>
 </template>
 
@@ -126,18 +126,21 @@ export default {
     },
     handleFiltering (item, queryText, itemText) {
       itemText = ' ' + itemText + ' '
-      if (!this.matchAll && (itemText.match(queryText) !== null)) {
+      if (!this.matchAll && itemText.match(queryText) !== null) {
         return itemText
       }
       // var regex = new RegExp('([^،-٩]+' + queryText + '[^،-٩]+)', 'gim')
-      var regex = new RegExp('([^\u0621-\u064A]+' + queryText + '[^\u0621-\u064A]+)', 'gim')
+      var regex = new RegExp(
+        '([^\u0621-\u064A]+' + queryText + '[^\u0621-\u064A]+)',
+        'gim'
+      )
       var match = itemText.match(regex)
 
       return match
     },
     resultsCount () {
       if (!this.$refs.autocomplete) return
-      return (this.$refs.autocomplete.filteredItems.length).toString()
+      return this.$refs.autocomplete.filteredItems.length.toString()
     }
   },
   computed: {
@@ -170,8 +173,8 @@ label.v-label.theme--light {
   margin-right: 39px;
 }
 .v-text-field__prefix {
-    /* font-style: italic; */
-    color: #b3b3b3;
+  /* font-style: italic; */
+  color: #b3b3b3;
 }
 // .enlarge {
 //   animation: enlarge .5s linear;

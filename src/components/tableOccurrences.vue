@@ -54,7 +54,6 @@
 
         >
         </v-chip>
-
       </template>
     </v-data-table>
   </div>
@@ -71,9 +70,7 @@ export default {
 </script>
 
 <style scoped>
-.tableStyle .indexItem.text-right {
-    background: #f2f2f233;
-}
+
 .groupHeader {
   height: 26px;
   font-weight: bold;
@@ -85,5 +82,8 @@ export default {
   /* brown */
   background: #efebe9 !important;
   font-weight: 500;
+}
+.v-chip {
+  display: -webkit-inline-box;
 }
 </style>

@@ -1,6 +1,7 @@
 const chartOptions = {
   chart: {
     type: 'bar',
+    offsetY: 20,
     toolbar: {
       show: true,
       offsetY: 2
@@ -27,20 +28,29 @@ const chartOptions = {
       dataLabels: {
         position: 'top'
       }
-
     }
   },
   dataLabels: {
     enabled: true,
-    style: { colors: ['grey'], fontFamily: '"Tajawal", sans-serif !important', fontSize: '15px' },
-    offsetY: -35
-    // a0a0a0de
+    offsetY: 9,
+    background: {
+      enabled: true,
+      foreColor: '#616161',
+      color: '#000',
+      padding: 4,
+      borderRadius: 2,
+      borderWidth: 1,
+      borderColor: '#616161'
+    },
+    style: {
+      fontSize: '16px',
+      fontFamily: '"Tajawal", sans-serif !important'
+    }
   },
   theme: {
     monochrome: {
       enabled: true,
       color: '#cccccc'
-      // A1887F
     }
   },
   stroke: {
@@ -64,8 +74,9 @@ const chartOptions = {
     tickAmount: undefined,
     tickPlacement: 'between',
     title: {
-      show: false,
-      // text: 'آيات',
+      show: true,
+      text: ' تكرار الحروف',
+      offsetY: 10,
       style: {
         fontSize: '18px', fontFamily: '"Tajawal", sans-serif !important'
       }
@@ -80,21 +91,12 @@ const chartOptions = {
       }
     },
     title: {
-      offsetX: -50,
+      offsetX: 10,
       style: {
         fontSize: '18px',
         fontFamily: '"Tajawal", sans-serif !important'
       }
     }
-    // min: 0,
-    // max: undefined,
-    // axisTicks: {
-    //   autoskip: true,
-    //   maxTicksLimit: 100,
-    //   interval: 300
-    // },
-    // tickAmount: undefined,
-    // tickPlacement: 'between'
   },
   grid: {
     show: false,

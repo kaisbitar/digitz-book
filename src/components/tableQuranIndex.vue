@@ -1,12 +1,26 @@
 <template>
-  <div class="text-center"  >
+  <div class="text-center">
+    <div class="d-flex searchWrap">
       <v-text-field
-        class=" mr-1 ml-5"
+        class="mr-2 ml-2"
         label="ابحث عن اسم سورة أو رقماً فيها.."
         single-line
         v-model="search"
         append-icon="mdi-magnify"
+        clearable
+        clear-icon="mdi-close"
       ></v-text-field>
+      <div>
+        <v-icon
+          class="mt-9 ml-4"
+          :color="showDetail === false ? 'grey' : 'blue'"
+          @click="
+            (showDetail = !showDetail), $emit('showDetailToggle', showDetail)"
+        >
+          mdi-dots-horizontal
+        </v-icon>
+      </div>
+    </div>
     <div id="indexBlock">
       <v-data-table
         :headers="headers"
@@ -18,7 +32,7 @@
         :height="'84vh'"
         fixed-header
         hide-default-footer
-        class="tableStyle"
+        class="tableStyle indexStyle"
         id="indexBlock"
       >
         <template v-slot:item="props">
@@ -27,11 +41,26 @@
             :class="{ active: props.item.suraIndex === selectedId }"
             class="indexItem"
           >
-            <td class="text-right" v-html="highlight(props.item.suraIndex, search)"></td>
-            <td class="text-right" v-html="highlight(props.item.Name, search)"></td>
-            <td class="text-right" v-html="highlight(props.item.numberOfVerses, search)"></td>
-            <td class="text-right" v-html="highlight(props.item.NumberOfWords, search)"></td>
-            <td class="text-right" v-html="highlight(props.item.NumberOfLetters, search)"></td>
+            <td
+              class="text-right"
+              v-html="highlight(props.item.suraIndex, search)"
+            ></td>
+            <td
+              class="text-right"
+              v-html="highlight(props.item.Name, search)"
+            ></td>
+            <td
+              class="text-right"
+              v-html="highlight(props.item.numberOfVerses, search)"
+            ></td>
+            <td
+              class="text-right"
+              v-html="highlight(props.item.numberOfWords, search)"
+            ></td>
+            <td
+              class="text-right"
+              v-html="highlight(props.item.numberOfLetters, search)"
+            ></td>
           </tr>
         </template>
       </v-data-table>
@@ -52,6 +81,7 @@ export default {
     loading: true,
     search: '',
     selectedId: 1,
+    showDetail: false,
     headers: [
       {
         text: 'رقم',
@@ -95,7 +125,6 @@ export default {
       var target = { fileName: sura.fileName, verseIndex: null }
       this.$store.commit('setTarget', target)
       this.selectedId = sura.suraIndex
-      this.search = ''
       if (this.$router.currentRoute.name !== 'singleSura') {
         this.$router.push({ name: 'singleSura' })
       }
@@ -127,9 +156,7 @@ export default {
         text = text.toString()
         var qurey = new RegExp(search, 'gi')
         return text.replace(qurey, (match) => {
-          return (
-            '<span class="orange accent-1">' + match + '</span>'
-          )
+          return '<span class="yellow accent-1">' + match + '</span>'
         })
       }
     }
@@ -150,7 +177,7 @@ export default {
       this.updateIndex(this.$store.state.target.fileName)
       this.scrollToIndex(this.selectedId)
     },
-    mounted () { }
+    mounted () {}
   }
 }
 </script>
@@ -160,27 +187,40 @@ th {
   height: 25px !important;
 }
 .indexItem {
-    cursor: pointer;
-    /* background: white !important; */
-    font-weight: 100;
+  cursor: pointer;
+  /* background: white !important; */
+  font-weight: 100;
 }
 .indexItem:hover {
-  background: #ccc ;
+  background: #0000000f !important;
+  opacity: 0.7;
 }
-.active:hover{
+.active:hover {
   font-weight: 100 !important;
 }
-.active{
+.active {
   color: black !important;
   font-weight: 500 !important;
   background: #efebe9 !important;
 }
-
+.indexStyle {
+  width: auto !important;
+}
 .searchBox {
   padding-bottom: 0px;
   margin-bottom: -21px;
 }
-#indexBlock .v-data-table--fixed-header > .v-data-table__wrapper{
-    overflow-x: hidden !important;
+#indexBlock .v-data-table--fixed-header > .v-data-table__wrapper {
+  overflow-x: hidden !important;
+}
+.searchWrap{
+  width: 253px;
+}
+.v-text-field__slot{
+  position: initial;
+}
+label.v-label.theme--light{
+  font-size: 14px;
+  top: 10px;
 }
 </style>

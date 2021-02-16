@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card outlined flat>
+    <!-- <v-card  outlined flat> -->
       <apexchart
         :markerClick="handleClick"
         :options="options"
@@ -16,7 +16,7 @@
       >
         <v-progress-circular color="indigo" indeterminate></v-progress-circular>
       </v-overlay>
-    </v-card>
+    <!-- </v-card> -->
   </div>
 </template>
 

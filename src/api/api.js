@@ -15,6 +15,7 @@ export function fetchSearchData (appApi) {
     .get(appApi + 'api/allSurasData/all')
   // .then(res => res.clone().json())
     .then(response => {
+      console.log(response)
       return response.data
     })
 }

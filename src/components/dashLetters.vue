@@ -12,7 +12,7 @@
             :dataType="'letters'"
             :series="series"
             :isLoading="isLoading"
-            :options="chartOptions"
+            :options="options"
             :includeTab="true"
             v-if="showChart"
             :height="getHeight()"
@@ -21,7 +21,7 @@
       </v-tab-item>
       <v-tab-item value="tab-2">
         <div class="d-flex s">
-          <v-card  outlined>
+          <v-card   outlined>
             <tableOccurrences
               :tableData="occurrences"
               :dataType="dataType"
@@ -49,7 +49,7 @@
 <script>
 import dashLabelsPositions from './dashLabelsPositions.vue'
 import chart from './chart.vue'
-import chartOptions from '../assets/numbersOfLettersOptions.js'
+import chartOptions from '../assets/numbersOptions.js'
 import tableOccurrences from './tableOccurrences.vue'
 import { detailMixin } from '../mixins/detailMixin'
 
@@ -59,27 +59,44 @@ export default {
   mixins: [detailMixin],
   data: () => ({
     dataType: 'letters',
-    chartOptions: chartOptions,
+    options: chartOptions,
     tableHeaders: [
       { text: 'الحروف', value: 'x', class: ' lighten-4 black--text' }
     ],
     wordsGroup: null
   }),
   methods: {
+    setToolTip () {
+      var x = {
+        custom: (obj) => {
+          return '<div class="d-flex pt-2 pa-2">' +
+                    '<div class=" tipInfo ">الحرف: ' + obj.w.globals.seriesX[0][obj.dataPointIndex] + '</div>' +
+                    '<p class=" ">' +
+                    '<div class="  tipInfo tipInfo2">تكرار: ' + obj.series[0][obj.dataPointIndex] + '</div>' +
+                    '</p>' +
+                  '</div>'
+        }
+      }
+      this.options = {
+        ...this.options,
+        ...{ tooltip: x }
+      }
+    },
     getHeight () {
       var heightDif = this.windowHeight - 240
       return heightDif
     }
+  },
+  created () {
+    this.setToolTip()
   }
 }
+
 </script>
 
 <style>
 .webKitWidth {
   width: -webkit-fill-available;
-}
-.tableStyle {
-  width: 270px;
 }
 .showIcon {
   position: absolute;
@@ -87,6 +104,15 @@ export default {
   margin-right: 16px;
   margin-top: 24px;
   cursor: pointer;
+}
+.tableStyle {
+  width: 320px;
+}
+.tableStyle .indexItem.text-right {
+    background: #f2f2f233;
+}
+.tableStyle .indexItem.text-right {
+    background: #f2f2f233;
 }
 .searchField {
   width: 150px;
