@@ -32,7 +32,7 @@ const chartOptions = {
   },
   dataLabels: {
     enabled: true,
-    offsetY: 9,
+    offsetY: -30,
     background: {
       enabled: true,
       foreColor: '#616161',
