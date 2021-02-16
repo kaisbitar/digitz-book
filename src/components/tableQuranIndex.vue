@@ -152,14 +152,15 @@ export default {
       if (!text) return
       if (search == null) {
         return text
-      } else {
+      } if (isNaN) {
         text = text.toString()
-        var qurey = new RegExp(search, 'gi')
-        return text.replace(qurey, (match) => {
-          return '<span class="yellow accent-1">' + match + '</span>'
-        })
       }
+      var qurey = new RegExp(search, 'gi')
+      return text.replace(qurey, (match) => {
+        return '<span class="yellow accent-1">' + match + '</span>'
+      })
     }
+
   },
   created () {
     const appApi = process.env.VUE_APP_API_URL
