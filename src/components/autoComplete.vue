@@ -1,6 +1,6 @@
 <template>
-  <v-row fluid class="autoWrap">
-    <div>
+  <div fluid class="d-flex autoWrap webKitWidth">
+    <div class="webKitWidth">
       <v-autocomplete
         :filter="handleFiltering"
         :items="storedItems"
@@ -51,17 +51,18 @@
       <v-btn
         small
         @click="handleShowAll()"
-        class="green lighten-2 white--text caption mt-4"
+        class="green lighten-2 white--text caption mt-1 mr-2"
         >جميع النتائج</v-btn
       >
     </div>
-  </v-row>
+  </div>
 </template>
 
 <script>
+
 import autoCompleteList from './autoCompleteList'
-import { fetchSearchData } from '@/api/api.js'
 import autoCompleteSearchBar from './autoCompleteSearchBar'
+
 export default {
   name: 'autoComplete',
   components: {
@@ -145,19 +146,10 @@ export default {
   },
   computed: {
     storedItems () {
-      return this.$store.getters.autoCompleteItems
+      return this.$store.getters.oneQuranFile
     }
   },
   created () {
-    if (this.storedItems.length > 0) {
-      this.isLoading = false
-    } else {
-      const appApi = process.env.VUE_APP_API_URL
-      fetchSearchData(appApi).then((items) => {
-        this.$store.commit('setAutoCompleteItems', items)
-        this.isLoading = false
-      })
-    }
   },
   watch: {},
   mounted () {},
@@ -166,27 +158,19 @@ export default {
 </script>
 
 <style lang="scss">
-label.v-label.theme--light {
-  color: #afafaf;
-}
+// label.v-label.theme--light {
+//   color: #afafaf;
+// }
 .autoWrap {
   margin-right: 39px;
 }
 .v-text-field__prefix {
-  /* font-style: italic; */
-  color: #b3b3b3;
+  color: #b7b7b9;
+  font-size: 19px;
 }
-// .enlarge {
-//   animation: enlarge .5s linear;
-// }
-// @keyframes enlarge {
-//   0% {
-//     transform: scale(1);
-//     height: 70px;
-//   }
-//   100% {
-//     transform: scale(1.3);
-//     height: 50px;
-//   }
+// label.v-label.theme--light {
+//     font-size: 20px  !important;
+//     margin-top: -4px;
+//     height: 23px;
 // }
 </style>

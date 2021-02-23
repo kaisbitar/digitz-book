@@ -1,7 +1,7 @@
 <template>
   <v-card
     class="suraInfoSingleBox"
-    @click="$emit('selected')"
+    @click="selectTab(tabName)"
     :class="{ active: activeTab}"
     outlined
   >
@@ -19,10 +19,16 @@
 export default {
   name: 'dashboardTab',
   components: {},
-  props: ['activeTab', 'value', 'title'],
-  data: () => ({}),
+  props: ['activeTab', 'value', 'title', 'tabName'],
+  data: () => ({
+
+  }),
   computed: {},
-  methods: {},
+  methods: {
+    selectTab (tabName) {
+      this.$store.commit('setActiveTab', tabName)
+    }
+  },
   created () {},
   mounted () {}
 }

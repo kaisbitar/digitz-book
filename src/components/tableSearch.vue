@@ -40,7 +40,7 @@ export default {
       { text: 'السورة', value: 'sura', class: 'grey   lighten-2', width: '10' },
       {
         text: 'رقم',
-        value: 'verseIndx',
+        value: 'verseIndex',
         class: 'grey   lighten-2 ',
         width: '5'
       },

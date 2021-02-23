@@ -1,5 +1,5 @@
 <template>
-  <div class="singleSura">
+  <div class="compWrapper">
     <v-row>
       <suraTextInfoBasic
         class="pr-3"
@@ -20,34 +20,33 @@
         </v-card>
       </div>
     </v-row>
-    <suraText
-      v-if="view === 'suraText'"
-      :inputText="inputText"
-      :suraTargetedVerse="suraTargetedVerse"
-      :numberOfVerses="numberOfVerses"
-      :numberOfWords="numberOfWords"
-      :numberOfLetters="numberOfLetters"
-      :suraTextarray="suraTextarray"
-      :isLoading="isLoading"
-    />
-    <dashbord
-      v-if="view === 'suraChart' && details"
-      :title="fileName"
-      @tabChanged="getData"
-      :numberOfVerses="numberOfVerses"
-      :numberOfWords="numberOfWords"
-      :numberOfLetters="numberOfLetters"
-      :isLoading="isLoading"
-      :wordIndexes="details.wordIndexes"
-      :wordOccurrences="details.wordOccurrences"
-      :letterIndexes="details.letterIndexes"
-      :letterOccurrences="details.letterOccurrences"
-      :letterSeries="letterSeries"
-      :wordsSeries="wordsSeries"
-      :suraTextarray="suraTextarray"
-      :versesBasics="versesBasics"
-      :activeTab="activeTab"
-    />
+    <keepAlive>
+      <suraText
+        v-if="view === 'suraText'"
+        :inputText="inputText"
+        :suraTargetedVerse="suraTargetedVerse"
+        :numberOfVerses="numberOfVerses"
+        :numberOfWords="numberOfWords"
+        :numberOfLetters="numberOfLetters"
+        :suraTextarray="suraTextarray"
+        :isLoading="isLoading"
+    /></keepAlive>
+    <keepAlive>
+      <dashbord
+        v-if="view === 'suraChart' && details"
+        :title="fileName"
+        :numberOfVerses="numberOfVerses"
+        :numberOfWords="numberOfWords"
+        :numberOfLetters="numberOfLetters"
+        :isLoading="isLoading"
+        :wordIndexes="details.wordIndexes"
+        :letterSeries="letterSeries"
+        :wordsSeries="wordsSeries"
+        :versesSeries="versesSeries"
+        :suraTextarray="suraTextarray"
+        :versesBasics="versesBasics"
+        :activeTab="activeTab"
+    /></keepAlive>
   </div>
 </template>
 
@@ -77,9 +76,12 @@ export default {
     details: {},
     letterSeries: [],
     wordsSeries: [],
-    activeTab: 'numberOfWords'
+    versesSeries: []
   }),
   computed: {
+    activeTab () {
+      return this.$store.getters.activeTab
+    },
     inputText () {
       if (
         this.$store.getters.filteredSearch.length === 0 ||
@@ -96,6 +98,9 @@ export default {
     },
     fileName () {
       return this.$store.getters.target.fileName
+    },
+    tableQuranIndex () {
+      return this.$store.getters.tableQuranIndex
     }
   },
   methods: {
@@ -125,6 +130,16 @@ export default {
     },
     fetchSuraChartData () {
       this.isLoading = true
+
+      if (this.fileName === '000المصحف') {
+        this.wordsSeries = this.getMushafSeries('numberOfWords')
+        this.letterSeries = this.getMushafSeries('numberOfLetters')
+        this.versesSeries = this.getMushafSeries('numberOfVerses')
+        this.isLoading = false
+
+        return
+      }
+
       this.$store
         .dispatch('getSuraChartData')
         .then((items) => {
@@ -138,7 +153,7 @@ export default {
     fetchSuraText () {
       this.isLoading = true
       this.$store
-        .dispatch('getSuraText')
+        .dispatch('getSuraText2')
         .then((items) => {
           this.suraTextarray = items
           return items
@@ -150,7 +165,7 @@ export default {
     fetchVersesData () {
       this.isLoading = true
       this.$store
-        .dispatch('getVersesMap')
+        .dispatch('getVersesMap2')
         .then((items) => {
           this.versesBasics = items
           return items
@@ -159,18 +174,15 @@ export default {
           this.isLoading = false
         })
     },
-    getData (tab) {
-      this.activeTab = tab
-      switch (tab) {
+    getData () {
+      switch (this.activeTab) {
         case 'numberOfVerses':
           this.fetchVersesData()
           return
         case 'numberOfWords':
-        case 'numberOfLetters':
           this.fetchSuraDetails()
           break
         case 'frequency':
-          this.fetchSuraText()
           this.fetchSuraChartData()
           break
       }
@@ -184,78 +196,40 @@ export default {
       this.iconColor = 'grey'
       this.view = 'suraText'
       this.fetchSuraText()
+    },
+    getMushafSeries (dataType) {
+      var arr = this.tableQuranIndex.map((item) => {
+        return item[dataType]
+      })
+      arr.shift()
+      var series = [{ data: arr }]
+      return series
     }
   },
   watch: {
     fileName () {
       this.isLoading = true
       this.details = {}
-      setTimeout(() => {
-        this.fetchSuraBasics().then(() => {
-          if (this.view === 'suraText') {
-            this.fetchSuraText()
-            return
-          }
-          this.getData(this.activeTab)
-        })
-      }, 200)
+      this.fetchSuraBasics()
+      this.fetchSuraText()
+      this.getData()
     },
     view () {
-      this.getData(this.activeTab)
+      this.getData()
+    },
+    activeTab () {
+      this.getData()
     }
   },
   created () {
-    this.fetchSuraBasics().then(() => {
-      this.getData(this.activeTab)
-    })
+    this.fetchSuraBasics()
+    this.getData()
+    this.fetchSuraText()
   },
   mounted () {}
 }
 </script>
 
 <style>
-.singleSura {
-  padding-right: 19px;
-  padding-left: 19px;
-}
 
-.suraInfoBox {
-  padding: 24px;
-  margin-left: 10px;
-  width: 181.5px;
-  display: flex;
-}
-.arrowsWrap {
-  width: -webkit-fit-content;
-  margin-right: auto;
-  margin-top: -85px;
-}
-.numberInfo {
-  width: 191px;
-  margin-top: -9px;
-}
-.titleWrap {
-  width: 259px;
-  height: 94px;
-  margin-right: -12px;
-  margin-top: -9px;
-}
-.downArr {
-  margin-top: 18px !important;
-}
-h5.basmaleh {
-  width: 142px;
-}
-.charSwitch {
-  margin-right: 56px;
-  width: 72px;
-  z-index: 2;
-  margin-top: 14px;
-}
-.switchLabel {
-  margin: auto;
-  width: fit-content;
-  /* grey lighten-1*/
-  color: #BDBDBD
-}
 </style>

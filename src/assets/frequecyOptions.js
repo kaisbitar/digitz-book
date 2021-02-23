@@ -5,7 +5,8 @@ const chartOptions = {
     toolbar: {
       show: true,
       offsetY: 2
-    }
+    },
+    dir: 'rtl'
   },
   zoom: {
     enabled: true

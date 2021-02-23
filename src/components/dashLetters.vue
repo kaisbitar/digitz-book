@@ -1,6 +1,6 @@
 <template>
   <label>
-    <v-tabs v-model="tab" background-color="grey lighten-4 mt-n5 pr-1 pl-2" centered>
+    <v-tabs v-model="tab" background-color="grey lighten-4 mt-0 pr-1 pl-2" centered>
       <v-tab class="body-1" href="#tab-1">بيان</v-tab>
       <v-tab class="body-1" href="#tab-2">جدول</v-tab>
     </v-tabs>
@@ -31,6 +31,7 @@
               :isLoading="isLoading"
               :groupBy="null"
               :selectedId="selectedId"
+              :includeTab="true"
               @rowClicked="setDetailItem"
             />
           </v-card>
@@ -63,7 +64,10 @@ export default {
     tableHeaders: [
       { text: 'الحروف', value: 'x', class: ' lighten-4 black--text' }
     ],
-    wordsGroup: null
+    indexes: {},
+    wordsGroup: null,
+    alfhaBet: ['ب', 'ت', 'ث', 'ج', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 'س', 'ش', 'ص', 'ض', 'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ك', 'ل', 'م', 'ن', 'ه', 'و', 'ي', 'ؤ', 'ء', 'ى', 'ة', 'أ', 'آ', 'إ', 'ا'],
+    occurrences: []
   }),
   methods: {
     setToolTip () {
@@ -75,7 +79,9 @@ export default {
                     '<div class="  tipInfo tipInfo2">تكرار: ' + obj.series[0][obj.dataPointIndex] + '</div>' +
                     '</p>' +
                   '</div>'
-        }
+        },
+        shared: true,
+        followCursor: true
       }
       this.options = {
         ...this.options,
@@ -83,12 +89,45 @@ export default {
       }
     },
     getHeight () {
-      var heightDif = this.windowHeight - 240
+      var heightDif = this.windowHeight - 290
       return heightDif
+    },
+    getIndexes () {
+      var obj = {}
+      var indexes = this.alfhaBet.map((letter) => {
+        for (var i = 0; i < this.suraText.length; i++) {
+          if (!obj[letter]) {
+            obj[letter] = []
+          }
+          if (this.suraText[i] === letter) {
+            obj[letter].push(i + 1)
+          }
+        }
+        return obj
+      })
+      this.indexes = indexes[0]
+    },
+    getOccurrences () {
+      this.occurrences = []
+      for (const [key, value] of Object.entries(this.indexes)) {
+        this.occurrences.push({ x: key, y: value.length })
+      }
     }
+  },
+  computed: {
+  },
+  watch: {
+    suraText () {
+      if (!this.suraText) return
+      this.getIndexes()
+      this.getOccurrences()
+    }
+
   },
   created () {
     this.setToolTip()
+    this.getIndexes()
+    this.getOccurrences()
   }
 }
 

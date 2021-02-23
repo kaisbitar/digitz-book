@@ -36,13 +36,8 @@ export default {
         verseIndex: chartContext.dataPointIndex + 1
       }
       this.$store.commit('setTarget', target)
-    },
-    getHeight () {
-      var tabHeight = 0
-      if (this.includeTab) { tabHeight = -20 }
-      var heightDif = this.windowHeight - 185 + tabHeight
-      return heightDif
     }
+
   },
   computed: {
     targetedVerse () {

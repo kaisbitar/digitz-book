@@ -3,7 +3,7 @@
     <div class="d-flex searchWrap">
       <v-text-field
         class="mr-2 ml-2"
-        label="ابحث عن اسم سورة أو رقماً فيها.."
+        label="سورة أو رقماً فيها.."
         single-line
         v-model="search"
         append-icon="mdi-magnify"
@@ -28,7 +28,7 @@
         :loading="loading"
         loading-text="جاري تحميل أسماء السور"
         :search="search"
-        :items-per-page="114"
+        :items-per-page="115"
         :height="'84vh'"
         fixed-header
         hide-default-footer
@@ -38,16 +38,16 @@
         <template v-slot:item="props">
           <tr
             @click="selectSura(props.item)"
-            :class="{ active: props.item.suraIndex === selectedId }"
+            :class="{ active: props.item.fileName === selectedId }"
             class="indexItem"
           >
             <td
               class="text-right"
-              v-html="highlight(props.item.suraIndex, search)"
+              v-html="highlight(suraIndex(props.item.fileName), search)"
             ></td>
             <td
               class="text-right"
-              v-html="highlight(props.item.Name, search)"
+              v-html="highlight(suraName(props.item.fileName), search)"
             ></td>
             <td
               class="text-right"
@@ -71,7 +71,6 @@
 </template>
 
 <script>
-import { fetchtableQuranIndex } from '@/api/api.js'
 import { appMixin } from '../mixins/mixins'
 
 export default {
@@ -90,7 +89,7 @@ export default {
       },
       {
         text: 'السورة',
-        value: 'Name',
+        value: 'name',
         width: 100
       },
       {
@@ -119,21 +118,27 @@ export default {
     fileName () {
       return this.$store.state.target.fileName
     }
+
   },
   methods: {
+    suraName (fileName) {
+      fileName = fileName.replace(/[0-9]/g, '')
+      return fileName
+    },
+    suraIndex (fileName) {
+      if (fileName === '000المصحف') return '0'
+      var suraNumber = parseInt(fileName, 10)
+      return suraNumber
+    },
     selectSura (sura) {
       var target = { fileName: sura.fileName, verseIndex: null }
       this.$store.commit('setTarget', target)
-      this.selectedId = sura.suraIndex
+      this.selectedId = sura.fileName
       if (this.$router.currentRoute.name !== 'singleSura') {
         this.$router.push({ name: 'singleSura' })
       }
     },
-    updateIndex (fileName) {
-      var suraNumber = parseInt(fileName, 10)
-      this.selectedId = suraNumber
-    },
-    scrollToIndex (suraNumber) {
+    scrollToIndex () {
       setTimeout(() => {
         this.$vuetify.goTo('.active', {
           container: '.v-data-table__wrapper',
@@ -163,23 +168,30 @@ export default {
 
   },
   created () {
-    const appApi = process.env.VUE_APP_API_URL
-    fetchtableQuranIndex(appApi).then((data) => {
-      this.$store.commit('settableQuranIndex', data)
-      this.loading = false
-    })
     if (this.fileName !== this.$store.state.fileName) {
-      this.updateIndex(this.$store.state.target.fileName)
+      this.selectedId = this.$store.state.target.fileName
       this.scrollToIndex(this.selectedId)
+      this.loading = false
     }
   },
   watch: {
     fileName () {
-      this.updateIndex(this.$store.state.target.fileName)
+      this.selectedId = this.$store.state.target.fileName
       this.scrollToIndex(this.selectedId)
     },
-    mounted () {}
-  }
+    search () {
+      if (this.search === null) {
+        this.showDetail = false
+        this.$emit('showDetailToggle', false)
+        return
+      } if (!isNaN(this.search)) {
+        this.showDetail = true
+        this.$emit('showDetailToggle', true)
+      }
+    }
+  },
+  mounted () {}
+
 }
 </script>
 <style>
@@ -191,6 +203,7 @@ th {
   cursor: pointer;
   /* background: white !important; */
   font-weight: 100;
+  color: #a9a9a9;
 }
 .indexItem:hover {
   background: #0000000f !important;
@@ -215,7 +228,7 @@ th {
   overflow-x: hidden !important;
 }
 .searchWrap{
-  width: 253px;
+  width: 220px;
 }
 .v-text-field__slot{
   position: initial;

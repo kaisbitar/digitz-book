@@ -10,7 +10,8 @@ export const tableOccMixin = {
     'isLoading',
     'groupBy',
     'dataType',
-    'selectedId'
+    'selectedId',
+    'includeTab'
   ],
   data: () => ({
     windowHeight: window.innerHeight,
@@ -19,8 +20,10 @@ export const tableOccMixin = {
   }),
   computed: {},
   methods: {
-    getheight () {
-      var heightDif = this.windowHeight - 310
+    getHeight () {
+      var tabHeight = 0
+      if (this.includeTab) { tabHeight = -20 }
+      var heightDif = this.windowHeight - 290 + tabHeight
       return heightDif
     },
     async collapseHeaders (group) {

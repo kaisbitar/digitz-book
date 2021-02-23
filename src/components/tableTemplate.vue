@@ -3,7 +3,7 @@
   <div  >
   <tr class="white" v-bind:key="index" v-for="(item, index) in verseItem">
     <td><div>{{item.bigIndx}}</div></td>
-    <td><div>{{item.verseIndx}}</div></td>{{search}}
+    <td><div>{{item.verseIndex}}</div></td>{{search}}
     <td><div v-html="$options.filters.highlightVerse(item.verseText, search)"></div></td>
     <td><div>{{item.NumberOfWords}}</div></td>
     <td><div>{{item.NumberOfLetters}}</div></td>

@@ -1,12 +1,12 @@
 <template>
   <div style="display: contents" @click="handleClick()">
     <v-chip label small color="" class="mt-7 ml-4 black--text brown lighten-5">
-      <div >آية {{ item.verseIndx }}</div>
+      <div >آية {{ item.verseIndex }}</div>
     </v-chip>
     <v-list-item-content>
       <v-list-item-title
         class="blue--text"
-        v-html="highlight(item.sura, inputText)"
+        v-html="highlight(item.fileName, inputText)"
       ></v-list-item-title>
       <v-list-item-title
         style="max-width=200px !important"
@@ -32,7 +32,7 @@ export default {
   computed: {},
   methods: {
     handleClick () {
-      var target = { fileName: this.item.sura, verseIndex: this.item.verseIndx }
+      var target = { fileName: this.item.sura, verseIndex: this.item.verseIndex }
       this.$store.commit('setTarget', target)
       if (this.$router.currentRoute.name !== 'singleSura') {
         this.$router.push({ name: 'singleSura' })

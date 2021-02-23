@@ -19,6 +19,8 @@
 <script>
 import autoComplete from './components/autoComplete.vue'
 import tableQuranIndex from './components/tableQuranIndex.vue'
+import { fetchOneQuranFile, fetchtableQuranIndex } from '@/api/api.js'
+
 export default {
   name: 'App',
 
@@ -58,7 +60,18 @@ export default {
   updated () {},
   mounted () {},
   created () {
+    this.isLoading = true
     this.$store.commit('resetFilterSelectedIndex')
+    const appApi = process.env.VUE_APP_API_URL
+    fetchOneQuranFile(appApi).then((items) => {
+      this.$store.commit('setoneQuranFile', items)
+      this.isLoading = false
+    }).then(() => {
+      fetchtableQuranIndex(appApi).then((data) => {
+        this.$store.commit('setTableQuranIndex', data)
+        this.loading = false
+      })
+    })
   }
 }
 </script>
@@ -89,6 +102,50 @@ export default {
 }
 .titleText {
   width: 148px;
+}
+.arrowsWrap {
+  width: -webkit-fit-content;
+  margin-right: auto;
+  margin-top: -85px;
+}
+.compWrapper {
+  padding-right: 19px;
+  padding-left: 19px;
+}
+.suraInfoBox {
+  padding: 24px;
+  margin-left: 10px;
+  width: 181.5px;
+  display: flex;
+}
+
+.numberInfo {
+  width: 191px;
+  margin-top: -9px;
+}
+.titleWrap {
+  width: 259px;
+  height: 94px;
+  margin-right: -12px;
+  margin-top: -9px;
+}
+.downArr {
+  margin-top: 18px !important;
+}
+h5.basmaleh {
+  width: 142px;
+}
+.charSwitch {
+  margin-right: 56px;
+  width: 72px;
+  z-index: 2;
+  margin-top: 14px;
+}
+.switchLabel {
+  margin: auto;
+  width: fit-content;
+  /* grey lighten-1*/
+  color: #BDBDBD
 }
 /************ Responseive***********/
 @media (max-width: 600px) {

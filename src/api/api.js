@@ -10,12 +10,10 @@ export function fetchFileNames (appApi) {
     return response.data
   })
 }
-export function fetchSearchData (appApi) {
+export function fetchOneQuranFile (appApi) {
   return axios
     .get(appApi + 'api/allSurasData/all')
-  // .then(res => res.clone().json())
     .then(response => {
-      console.log(response)
       return response.data
     })
 }

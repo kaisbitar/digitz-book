@@ -1,5 +1,5 @@
 export const detailMixin = {
-  props: ['indexes', 'occurrences', 'isLoading'],
+  props: ['suraText', 'isLoading'],
   data: () => ({
     detailElement: '',
     detailCount: 0,
@@ -35,7 +35,7 @@ export const detailMixin = {
   },
   watch: {
     indexes () {
-      if (!this.occurrences) return null
+      if (!this.occurrences || !this.indexes) return null
       this.setInitialItem()
     }
   },
@@ -43,7 +43,7 @@ export const detailMixin = {
 
   },
   mounted () {
-    if (!this.occurrences) return null
+    if (!this.occurrences || !this.indexes) return null
     this.setInitialItem()
   }
 }

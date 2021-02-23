@@ -1,7 +1,24 @@
 <template>
   <label>
-    <div class="d-flex" >
-      <v-card outlined>
+    <v-row class="pl-6 pr-6 d-flex" >
+      <div class="webKitWidth">
+        <chart
+          class="mr-2 pa-0 ml-2 webKitWidth lettersChart"
+          :dataType="'letters'"
+          :series="seriesC"
+          :isLoading="isLoading"
+          :options="options"
+          :includeTab="true"
+          :height="chartHeight"
+        />
+      </div>
+      <v-row>
+        <dashLabels
+          :detailElement="detailElement"
+          :detailCount="detailCount"
+          :isLoading="isLoading"
+          :showPosition="false"
+        />
         <tableOccurrences
         :tableData="occurrences"
         :dataType="dataType"
@@ -12,26 +29,10 @@
         :selectedId="selectedId"
         @rowClicked="rowClickedActions"
         :initialWord="detailElement"
-        />
-      </v-card>
-      <div class="webKitWidth">
-        <dashLabels
-          :detailElement="detailElement"
-          :detailCount="detailCount"
-          :isLoading="isLoading"
-          :showPosition="false"
-        />
-        <chart
-          class="mr-2 pa-0 ml-2 webKitWidth lettersChart"
-          :dataType="'letters'"
-          :series="seriesC"
-          :isLoading="isLoading"
-          :options="options"
-          :includeTab="true"
-          :height="getHeight()/2.5"
-        />
-      </div>
-    </div>
+      />
+
+     </v-row>
+    </v-row>
   </label>
 </template>
 
@@ -43,9 +44,9 @@ import { detailMixin } from '../mixins/detailMixin'
 import chartOptions from '../assets/wordChartOptions.js'
 
 export default {
-  name: 'wordDetails',
+  name: 'dashWords',
   mixins: [detailMixin],
-  props: ['numberOfWords'],
+  props: ['numberOfWords', 'indexes'],
   components: {
     dashLabels,
     tableOccurrences,
@@ -103,23 +104,44 @@ export default {
                     '<div class=" tipInfo  tipInfo2 ">' + this.detailElement + '</div>' +
                     '<div class=" tipInfo ">الموقع: ' + obj.w.globals.seriesX[0][obj.dataPointIndex] + '</div>' +
                   '</div>'
-        }
+        },
+        shared: true,
+        followCursor: true
       }
       this.options = {
         ...this.options,
         ...{ tooltip: x }
       }
     },
-    getHeight () {
-      var heightDif = this.windowHeight - 270
+    countRepeatedWords (sentence) {
+      const words = sentence.split(' ')
+      const wordMap = {}
+
+      for (let i = 0; i < words.length; i++) {
+        const currentWordCount = wordMap[words[i]]
+        const count = currentWordCount || 0
+        wordMap[words[i]] = count + 1
+      }
+      return wordMap
+    }
+  },
+  computed: {
+    occurrences () {
+      var repeatedWords = this.countRepeatedWords(this.suraText)
+      var occ = []
+      for (const [key, value] of Object.entries(repeatedWords)) {
+        occ.push({ x: key, y: value })
+      }
+      return occ
+    },
+    chartHeight () {
+      var heightDif = this.windowHeight - 450
       return heightDif
     }
   },
-  computed: {},
-
   watch: {
-    indexes () {
-      if (!this.indexes) return
+    suraText () {
+      if (!this.occurrences || !this.indexes) return
       this.setXaxis()
       this.setToolTip()
       this.highlightOnChart(this.indexes[this.occurrences[0].x], 0)

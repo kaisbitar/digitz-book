@@ -27,7 +27,7 @@
       <template v-slot:item="{item}">
         <tr
           class="tableRow"
-          :class="{'activeRow': item.verseIndx===selectedId}"
+          :class="{'activeRow': item.verseIndex===selectedId}"
           @click="handleClick(item)"
         >
           <td class="pa-0 pr-3" v-bind:key="index" v-for="(header, index) in headers">
@@ -54,7 +54,7 @@ export default {
   methods: {
     handleClick (rowItem) {
       this.handleTableClick(rowItem, this.tableType)
-      this.selectedId = rowItem.verseIndx
+      this.selectedId = rowItem.verseIndex
     }
   },
   created () {

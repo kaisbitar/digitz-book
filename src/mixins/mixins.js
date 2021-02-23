@@ -6,7 +6,7 @@ export const appMixin = {
   methods: {
     handleTableClick (rowItem, tableType) {
       if (tableType === 'tableSearch') {
-        var target = { fileName: rowItem.sura, verseIndex: rowItem.verseIndx }
+        var target = { fileName: rowItem.sura, verseIndex: rowItem.verseIndex }
         this.$store.commit('setTarget', target)
         if (this.$router.currentRoute.name !== 'singleSura') {
           this.$router.push({ name: 'singleSura' })
@@ -50,13 +50,14 @@ export const appMixin = {
       })
     },
     highlight (text, searchValue) {
+      console.log(searchValue)
       if (!searchValue) {
-        if (text.length < 53) { return text } else { return text.slice(0, 53) + '......' }
+        if (text.length < 53) { return text } else { return text.slice(0, 53) + '...' }
       }
 
       var searchWordPosition = (text.indexOf(searchValue))
       if (searchWordPosition > 53) {
-        var suraChunk = '......' + text.slice(searchWordPosition - 30)
+        var suraChunk = '...' + text.slice(searchWordPosition - 30)
       } else {
         suraChunk = text
       }
@@ -64,5 +65,10 @@ export const appMixin = {
         return '<span style="background:yellow">' + match + '</span>'
       })
     }
+    // highlightNumber (number, searchValue) {
+    //   return toString(number).replace(new RegExp(searchValue, 'gi'), match => {
+    //     return '<span style="background:yellow">' + match + '</span>'
+    //   })
+    // }
   }
 }

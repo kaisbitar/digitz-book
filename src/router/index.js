@@ -22,12 +22,6 @@ const routes = [
       import('../views/surasGroup.vue')
   },
   {
-    path: '/full-book',
-    name: 'fullBook',
-    component: () =>
-      import('../views/fullBook.vue')
-  },
-  {
     path: '/search',
     name: 'search',
     meta: { keepAlive: true },

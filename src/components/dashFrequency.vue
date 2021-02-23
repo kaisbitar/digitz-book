@@ -48,7 +48,9 @@ export default {
                     ' <span class="tipLabel">' + this.tooltipLabel + '</span></span></div>' +
                     '<p class="tipInfo tipText pr-1 pl-2">' + this.versesText[dataPointIndex] + '</p>' +
                   '</div>'
-        }
+        },
+        shared: true,
+        followCursor: true
       }
       this.options = {
         ...this.options,

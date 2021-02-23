@@ -16,9 +16,9 @@
     <v-data-table
       :items="tableData"
       :headers="tableHeaders"
-      :items-per-page="100"
+      :items-per-page="75"
       :search="search"
-      :height="getheight()"
+      :height="getHeight()"
       :footer-props="footerProps"
       :loading="isLoading"
       loading-text="جاري تحميل البيانات القرآنية ... الرجاء الانتظار"
@@ -51,7 +51,6 @@
           class="indexItem text-right pa-2 ma-1"
           label
           v-html="highlight(props.item.x , search)"
-
         >
         </v-chip>
       </template>

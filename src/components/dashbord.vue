@@ -6,8 +6,8 @@
         :key="index"
         :title="item.title"
         :value="item.value"
+        :tabName="item.name"
         :activeTab="activeTab === item.name"
-        @selected="activate(item.name)"
       />
     </v-row>
     <v-row>
@@ -25,7 +25,7 @@
         :numberOfWords="numberOfWords"
         :numberOfLetters="numberOfLetters"
         :indexes="wordIndexes"
-        :occurrences="wordOccurrences"
+        :suraText="suraTextarray.join(' ')"
         :isLoading="isLoading"
       />
       <dashLetters
@@ -33,8 +33,7 @@
         v-if="activeTab === 'numberOfLetters'"
         :numberOfWords="numberOfWords"
         :numberOfLetters="numberOfLetters"
-        :indexes="letterIndexes"
-        :occurrences="letterOccurrences"
+        :suraText="suraTextarray.join('')"
         :isLoading="isLoading"
       />
        <dashVerses
@@ -64,9 +63,6 @@ export default {
     'numberOfLetters',
     'isLoading',
     'wordIndexes',
-    'wordOccurrences',
-    'letterIndexes',
-    'letterOccurrences',
     'letterSeries',
     'wordsSeries',
     'suraTextarray',
@@ -78,10 +74,6 @@ export default {
     windowHeight: window.innerHeight
   }),
   methods: {
-    activate (el) {
-      this.$emit('tabChanged', el)
-    }
-
   },
   computed: {
     tabs () {

@@ -81,6 +81,6 @@ export default {
 }
 .wordItemWrap {
   overflow-y: scroll;
-  max-height:270px;
+  max-height:200px;
 }
 </style>

@@ -46,8 +46,5 @@ export default {
   width: 70px;
   text-align: center;
 }
-.wordItemWrap {
-  overflow-y: scroll;
-  max-height:270px;
-}
+
 </style>
