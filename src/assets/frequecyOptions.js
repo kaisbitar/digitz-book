@@ -66,6 +66,8 @@ const chartOptions = {
     min: 1
   },
   yaxis: {
+    floating: false,
+    showAlways: true,
     labels: {
       show: true,
       style: {

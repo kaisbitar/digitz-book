@@ -9,7 +9,7 @@
       :key="index"
       :class="getClass(index)"
       class="grey--text"
-      @click.prevent="handleClick(index)"
+      @click.prevent="handleClick(index, item)"
       @click:close="removeChip(index)"
       close
       close-label
@@ -29,11 +29,12 @@ export default {
   mixins: [appMixin],
   components: {},
   methods: {
-    handleClick (index) {
+    handleClick (index, item) {
       this.$store.commit('setFilterSelectedIndex', index)
       if (this.$router.currentRoute.name !== 'search') {
         this.$router.push({ name: 'search' })
       }
+      this.$store.commit('setSelectedInput', item.inputText)
     },
     removeChip (index) {
       this.$store.commit('removeFilteredItem', index)
@@ -60,11 +61,7 @@ export default {
     }
   },
   watch: {},
-  created () {
-    // if (this.$router.currentRoute.name !== 'search') {
-    //   this.$router.push({ name: 'search' })
-    // }
-  },
+  created () {},
   mounted () {}
 }
 </script>

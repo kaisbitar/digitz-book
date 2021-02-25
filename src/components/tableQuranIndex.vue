@@ -65,8 +65,6 @@
         </template>
       </v-data-table>
     </div>
-    <!-- </v-card> -->
-    <!-- </v-col> -->
   </div>
 </template>
 
@@ -79,7 +77,7 @@ export default {
   data: () => ({
     loading: true,
     search: '',
-    selectedId: 1,
+    selectedId: '001الفاتحة',
     showDetail: false,
     headers: [
       {
@@ -89,7 +87,7 @@ export default {
       },
       {
         text: 'السورة',
-        value: 'name',
+        value: 'fileName',
         width: 100
       },
       {
@@ -122,13 +120,11 @@ export default {
   },
   methods: {
     suraName (fileName) {
-      fileName = fileName.replace(/[0-9]/g, '')
-      return fileName
+      return fileName.replace(/[0-9]/g, '')
     },
     suraIndex (fileName) {
       if (fileName === '000المصحف') return '0'
-      var suraNumber = parseInt(fileName, 10)
-      return suraNumber
+      return parseInt(fileName, 10)
     },
     selectSura (sura) {
       var target = { fileName: sura.fileName, verseIndex: null }
@@ -168,11 +164,13 @@ export default {
 
   },
   created () {
-    if (this.fileName !== this.$store.state.fileName) {
-      this.selectedId = this.$store.state.target.fileName
-      this.scrollToIndex(this.selectedId)
+    if (!this.fileName) {
       this.loading = false
+      return
     }
+    this.selectedId = this.$store.state.target.fileName
+    this.scrollToIndex(this.selectedId)
+    this.loading = false
   },
   watch: {
     fileName () {
@@ -201,16 +199,13 @@ th {
 }
 .indexItem {
   cursor: pointer;
-  /* background: white !important; */
   font-weight: 100;
-  color: #a9a9a9;
+  color: #544d4d;
+  font-size: 16px !important;
 }
 .indexItem:hover {
   background: #0000000f !important;
   opacity: 0.7;
-}
-.active:hover {
-  font-weight: 100 !important;
 }
 .active {
   color: black !important;

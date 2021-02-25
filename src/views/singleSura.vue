@@ -10,12 +10,13 @@
         @arrowClick="setTargetFromArrow"
       />
       <div class="charSwitch">
-        <v-card
-          @click="getView()"
-          outlined
-        >
+        <v-card @click="getView()" outlined>
           <div class="grey lighten-4 d-flex">
-            <div class="switchLabel caption" :class="[{ 'active': view === 'suraChart' }]">تفصيل</div>
+            <div
+              class="switchLabel"
+              :class="[{ active: view === 'suraChart' }]"
+            >تفصيل
+            </div>
           </div>
         </v-card>
       </div>
@@ -46,6 +47,7 @@
         :suraTextarray="suraTextarray"
         :versesBasics="versesBasics"
         :activeTab="activeTab"
+        :inputText="inputText"
     /></keepAlive>
   </div>
 </template>
@@ -82,16 +84,14 @@ export default {
     activeTab () {
       return this.$store.getters.activeTab
     },
+    filteredSearch () {
+      return this.$store.getters.filteredSearch
+    },
+    filterSelectedIndex () {
+      return this.$store.getters.filterSelectedIndex
+    },
     inputText () {
-      if (
-        this.$store.getters.filteredSearch.length === 0 ||
-        this.$store.getters.filterSelectedIndex === 0
-      ) {
-        return
-      }
-      return this.$store.getters.filteredSearch[
-        this.$store.getters.filterSelectedIndex
-      ].inputText
+      return this.$store.getters.selectedInput
     },
     suraTargetedVerse () {
       return this.$store.getters.target.verseIndex
@@ -101,20 +101,22 @@ export default {
     },
     tableQuranIndex () {
       return this.$store.getters.tableQuranIndex
+    },
+    suraNumber () {
+      return this.$store.getters.target.suraNumber
+    },
+    suraBasics () {
+      if (this.fileName === null) {
+        return this.tableQuranIndex[1]
+      }
+      return this.tableQuranIndex[this.suraNumber]
     }
   },
   methods: {
-    async fetchSuraBasics () {
-      this.isLoading = true
-      return new Promise((resolve) => {
-        this.$store.dispatch('getSuraBasics').then((items) => {
-          this.numberOfVerses = items.numberOfVerses
-          this.numberOfWords = items.numberOfWords
-          this.numberOfLetters = items.numberOfLetters
-          this.isLoading = false
-          resolve()
-        })
-      })
+    fetchSuraBasics () {
+      this.numberOfVerses = this.suraBasics.numberOfVerses
+      this.numberOfWords = this.suraBasics.numberOfWords
+      this.numberOfLetters = this.suraBasics.numberOfLetters
     },
     fetchSuraDetails () {
       this.isLoading = true
@@ -128,64 +130,47 @@ export default {
           this.isLoading = false
         })
     },
-    fetchSuraChartData () {
-      this.isLoading = true
-
+    perpareSuraData () {
+      var start = this.suraBasics.verseNumberToQuran - 1
+      var end = this.suraBasics.numberOfVerses + start
+      var letters = []
+      var words = []
+      var versesBasics = []
+      var suraText = this.$store.getters.oneQuranFile.map((item, index) => {
+        var obj = {
+          verseNumberToQuran: item.verseNumberToQuran,
+          numberOfLetters: item.verseText.replace(/ /g, '').length,
+          numberOfWords: item.verseText.split(' ').length,
+          fileName: item.fileName.replace(/[0-9]/g, ''),
+          verseIndex: item.verseIndex,
+          verseText: item.verseText
+        }
+        if (index > start - 1 && index < end) {
+          letters.push(item.verseText.replace(/ /g, '').length)
+          words.push(item.verseText.split(' ').length)
+        }
+        if (
+          this.fileName === '000المصحف' ||
+          (index > start - 1 && index < end)
+        ) {
+          versesBasics.push(obj)
+          return item.verseText
+        }
+      })
+      versesBasics = versesBasics.filter(function (element) {
+        return element !== undefined
+      })
+      suraText = suraText.filter(function (element) {
+        return element !== undefined
+      })
+      this.suraTextarray = suraText
+      this.versesBasics = versesBasics
       if (this.fileName === '000المصحف') {
-        this.wordsSeries = this.getMushafSeries('numberOfWords')
-        this.letterSeries = this.getMushafSeries('numberOfLetters')
-        this.versesSeries = this.getMushafSeries('numberOfVerses')
-        this.isLoading = false
-
+        this.fetchMushafChartData()
         return
       }
-
-      this.$store
-        .dispatch('getSuraChartData')
-        .then((items) => {
-          this.letterSeries = [{ data: items.letters }]
-          this.wordsSeries = [{ data: items.words }]
-        })
-        .then(() => {
-          this.isLoading = false
-        })
-    },
-    fetchSuraText () {
-      this.isLoading = true
-      this.$store
-        .dispatch('getSuraText2')
-        .then((items) => {
-          this.suraTextarray = items
-          return items
-        })
-        .then(() => {
-          this.isLoading = false
-        })
-    },
-    fetchVersesData () {
-      this.isLoading = true
-      this.$store
-        .dispatch('getVersesMap2')
-        .then((items) => {
-          this.versesBasics = items
-          return items
-        })
-        .then(() => {
-          this.isLoading = false
-        })
-    },
-    getData () {
-      switch (this.activeTab) {
-        case 'numberOfVerses':
-          this.fetchVersesData()
-          return
-        case 'numberOfWords':
-          this.fetchSuraDetails()
-          break
-        case 'frequency':
-          this.fetchSuraChartData()
-          break
-      }
+      this.letterSeries = [{ data: letters }]
+      this.wordsSeries = [{ data: words }]
     },
     getView () {
       if (this.view === 'suraText') {
@@ -195,12 +180,17 @@ export default {
       }
       this.iconColor = 'grey'
       this.view = 'suraText'
-      this.fetchSuraText()
+    },
+    fetchMushafChartData () {
+      this.wordsSeries = this.getMushafSeries('numberOfWords')
+      this.letterSeries = this.getMushafSeries('numberOfLetters')
+      this.versesSeries = this.getMushafSeries('numberOfVerses')
     },
     getMushafSeries (dataType) {
-      var arr = this.tableQuranIndex.map((item) => {
+      var arr = this.$store.getters.tableQuranIndex.map((item) => {
         return item[dataType]
       })
+
       arr.shift()
       var series = [{ data: arr }]
       return series
@@ -208,28 +198,18 @@ export default {
   },
   watch: {
     fileName () {
-      this.isLoading = true
-      this.details = {}
       this.fetchSuraBasics()
-      this.fetchSuraText()
-      this.getData()
-    },
-    view () {
-      this.getData()
-    },
-    activeTab () {
-      this.getData()
+      this.fetchSuraDetails()
+      this.perpareSuraData()
     }
   },
-  created () {
+  mounted () {
     this.fetchSuraBasics()
-    this.getData()
-    this.fetchSuraText()
-  },
-  mounted () {}
+    this.fetchSuraDetails()
+    this.perpareSuraData()
+  }
 }
 </script>
 
 <style>
-
 </style>

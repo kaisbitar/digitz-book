@@ -26,7 +26,6 @@
         :footerProps="footerProps"
         :isLoading="isLoading"
         :groupBy="groupBy"
-        :selectedId="selectedId"
         @rowClicked="rowClickedActions"
         :initialWord="detailElement"
       />
@@ -102,7 +101,7 @@ export default {
         custom: (obj) => {
           return '<div class="d-flex pt-2 pa-2">' +
                     '<div class=" tipInfo  tipInfo2 ">' + this.detailElement + '</div>' +
-                    '<div class=" tipInfo ">الموقع: ' + obj.w.globals.seriesX[0][obj.dataPointIndex] + '</div>' +
+                    '<div class=" tipInfo "><span class="tipLabel">الموقع:</span> ' + obj.w.globals.seriesX[0][obj.dataPointIndex] + '</div>' +
                   '</div>'
         },
         shared: true,
@@ -140,17 +139,14 @@ export default {
     }
   },
   watch: {
-    suraText () {
-      if (!this.occurrences || !this.indexes) return
+    indexes () {
+      if (!this.indexes) return
       this.setXaxis()
       this.setToolTip()
       this.highlightOnChart(this.indexes[this.occurrences[0].x], 0)
     }
   },
-  mounted () {
-    if (!this.indexes) return
-    this.highlightOnChart(this.indexes[this.occurrences[0].x], 0)
-  },
+  mounted () {},
   created () {
     this.setXaxis()
     this.setToolTip()
@@ -175,18 +171,3 @@ export default {
   margin-left: 0;
 }
 </style>
-<!--// seriesB () {
-//   var result = []
-//   for (var i = 0; i < this.occurrences.length; i++) {
-//     var word = this.occurrences[i].x
-//     for (var j = 0; j < this.indexes[word].length; j++) {
-//       var obj = {}
-//       obj.y = this.occurrences[i].y
-//       obj.word = word
-//       obj.x = this.indexes[word][j]
-//       result.push(obj)
-//     }
-//   }
-//   return [{ data: result }]
-// },
--->

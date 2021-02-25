@@ -30,7 +30,6 @@
             <autoCompleteSearchBar />
           </div>
           <v-icon
-            small
             v-if="inputText"
             @click="matchAll = !matchAll"
             :color="matchAll === false ? 'grey lighten-1' : 'blue'"
@@ -77,24 +76,24 @@ export default {
   }),
   methods: {
     handleClickWithInput () {
-      if (!this.inputText) return
+      // if (!this.inputText) return
 
       this.setFilteredSearch()
-      this.setFilteredSearchIndex()
+      this.setfilterSelectedIndex()
       this.disableInputBox()
     },
     handleShowAll () {
       if (!this.inputText) return
 
       this.setFilteredSearch()
-      this.setFilteredSearchIndex()
+      this.setfilterSelectedIndex()
 
       if (this.$router.currentRoute.name !== 'search') {
         this.$router.push({ name: 'search' })
       }
       this.disableInputBox()
     },
-    setFilteredSearchIndex () {
+    setfilterSelectedIndex () {
       var filterSelectedIndex = this.$store.getters.filteredSearch.length - 1
       this.$store.commit('setFilterSelectedIndex', filterSelectedIndex)
     },
@@ -109,6 +108,7 @@ export default {
       }
 
       this.$store.commit('setFilteredSearch', value)
+      console.log(internalSearch)
     },
     disableInputBox () {
       this.isDisabled = true
@@ -116,7 +116,7 @@ export default {
         this.isDisabled = false
       }, 100)
       this.$refs.autocomplete.blur()
-      this.inputText = null
+      // this.inputText = null
     },
     handleRemoveAllChips () {
       this.$store.commit('resetFilteredItems')

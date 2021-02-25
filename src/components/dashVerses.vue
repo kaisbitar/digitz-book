@@ -1,24 +1,25 @@
 <template>
   <label class="dashVerses d-flex">
-    <v-card outlined>
+    <v-card flat>
       <tableVerses
         :tableData="versesBasics"
         :tableHeaders="tableHeaders"
+        :inputText="inputText"
         :isLoading="isLoading"
         :groupBy="null"
         :selectedId="selectedId"
-        :dataType="' عن آية'"
+        :dataType="' عن آية أو رقم'"
         :footerProps="footerProps"
         @rowClicked="setVerse"
       />
     </v-card>
 
-    <div class=" pt-5 webKitWidth" outlined>
-      <v-tabs v-model="tab" background-color="grey lighten-4 mt-n5 pr-1 pl-2" centered>
-        <v-tab class="body-1" href="#tab-1"><span class="caption ml-1">آية</span>{{verseIndex}}</v-tab>
-        <v-tab class="body-1" href="#tab-2">{{numberOfWords}}<span class="caption mr-1">كلمة </span></v-tab>
-        <v-tab class="body-1" href="#tab-3">{{numberOfLetters}}<span class="caption mr-1"> حرف </span></v-tab>
-        <v-tab class="body-1" href="#tab-3" disabled>{{verseNumberToQuran}}<span class="caption"> مصحف </span></v-tab>
+    <div class=" pt-12 webKitWidth" outlined>
+      <v-tabs class="" v-model="tab" background-color="mt-n5 pr-1 pl-2" centered>
+        <v-tab class="dashTabs body-1" href="#tab-1"><span class="caption ml-1">آية</span>{{verseIndex}}</v-tab>
+        <v-tab class="dashTabs body-1" href="#tab-2">{{numberOfWords}}<span class="caption mr-1">كلمة </span></v-tab>
+        <v-tab class="dashTabs body-1" href="#tab-3">{{numberOfLetters}}<span class="caption mr-1"> حرف </span></v-tab>
+        <v-tab class="dashTabs body-1" href="#tab-3" disabled>{{verseNumberToQuran}}<span class="caption"> مصحف </span></v-tab>
       </v-tabs>
     <v-tabs-items v-model="tab">
       <v-tab-item value="tab-1">
@@ -30,6 +31,8 @@
           :numberOfLetters="numberOfLetters"
           :numberOfWords="numberOfWords"
           :verseText="verseText"
+          :inputText="inputText"
+          :suraName="suraName"
         />
         <div class="d-flex">
           <chart
@@ -82,16 +85,16 @@ import tableVerses from './tableVerses.vue'
 import dashVersesLabels from './dashVersesLabels'
 export default {
   name: 'dashVerses',
-  props: ['versesBasics', 'isLoading'],
+  props: ['versesBasics', 'isLoading', 'inputText'],
   components: { tableVerses, dashVersesLabels, chart, dashWords, dashLetters },
   data: () => ({
     index: 1,
     tableHeaders: [
-      { text: 'رقم', class: 'lighten-4 black--text', width: '69' },
-      { text: 'الآية', class: 'lighten-4 black--text', width: '200' },
-      { text: 'السورة', class: 'lighten-4 black--text', width: '110' },
-      { text: 'كلمات', class: 'lighten-4 black--text' },
-      { text: 'حروف', class: 'lighten-4 black--text' }
+      { text: 'السورة', value: 'fileName', class: 'lighten-4 black--text', width: '90', filterable: false },
+      { text: 'رقم', value: 'verseIndex', class: 'lighten-4 black--text', width: '69' },
+      { text: 'الآية', value: 'verseText', class: 'lighten-4 black--text', width: '245', align: 'center' },
+      { text: 'كلمات', value: 'numberOfWords', class: 'lighten-4 black--text' },
+      { text: 'حروف', value: 'numberOfLetters', class: 'lighten-4 black--text' }
     ],
     verses: [],
     verseChart: [],
@@ -102,6 +105,7 @@ export default {
     numberOfLetters: '',
     numberOfWords: '',
     verseText: '',
+    suraName: '',
     options: chartOptions,
     footerProps: { 'items-per-page-text': '' },
     windowHeight: window.innerHeight,
@@ -110,7 +114,7 @@ export default {
   }),
   computed: {
     height () {
-      var heightDif = this.windowHeight - 350
+      var heightDif = this.windowHeight - 385
       return heightDif
     }
   },
@@ -130,12 +134,13 @@ export default {
       if (!item) {
         item = this.versesBasics[0]
       }
-      this.selectedId = item.verseIndex.toString()
+      this.selectedId = item.verseNumberToQuran.toString()
       this.verseIndex = item.verseIndex
       this.verseNumberToQuran = item.verseNumberToQuran
       this.numberOfLetters = item.numberOfLetters
       this.numberOfWords = item.numberOfWords
       this.verseText = item.verseText
+      this.suraName = item.fileName.replace(/[0-9]/g, '')
       this.perpareChartData(item)
       this.getWordIndexes()
     },
@@ -153,7 +158,7 @@ export default {
           var wordsArr = this.verseText.split(' ')
           return '<div class= d-flex pt-2 pa-2">' +
                     '<div class=" tipInfo tipInfo2 ">' + wordsArr[obj.dataPointIndex] + '</div>' +
-                    '<div class=" tipInfo ">' + obj.series[0][obj.dataPointIndex] + ' حروف</div>' +
+                    '<div class=" tipInfo ">' + obj.series[0][obj.dataPointIndex] + '<span class="tipLabel"> حروف</span></div>' +
                   '</div>'
         },
         shared: true,
@@ -213,10 +218,23 @@ export default {
         ...this.options,
         ...{ dataLabels: dataLabels }
       }
+    },
+    setNoResults () {
+      this.wordIndexes = []
+      this.verseIndex = 0
+      this.verseNumberToQuran = 0
+      this.numberOfLetters = 0
+      this.numberOfWords = 0
+      this.verseText = ''
+      this.verseChart = [{ data: [] }]
     }
   },
   watch: {
     versesBasics () {
+      if (this.versesBasics.length === 0 || !this.versesBasics) {
+        this.setNoResults()
+        return
+      }
       this.setVerse()
       this.setToolTip()
       this.setChart()
@@ -227,7 +245,10 @@ export default {
   created () {
   },
   mounted () {
-    if (this.versesBasics.length === 0) return null
+    if (this.versesBasics.length === 0 || !this.versesBasics) {
+      this.setNoResults()
+      return
+    }
     this.setVerse()
     this.setToolTip()
     // this.setDataLabels()
@@ -242,18 +263,10 @@ export default {
 tr.v-data-table__selected {
   background: #7d92f5 !important;
 }
+.dashTabs{
+  height: 35px;
+}
+.v-slide-group__content.v-tabs-bar__content {
+    height: 35px;
+}
 </style>
- indexSura (verses) {
-      verses = verses.map((items, index) => ({
-        ...items
-      }))
-      this.verses = verses
-    },
-    prepareTableData () {
-      var verses = this.versesMap
-      verses = Object.entries(this.versesMap)
-      verses = verses.map((post) => {
-        return post[1]
-      })
-      this.indexSura(verses)
-    }

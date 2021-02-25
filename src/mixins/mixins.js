@@ -1,8 +1,7 @@
 
 export const appMixin = {
-  data () {
-
-  },
+  data: () => ({
+  }),
   methods: {
     handleTableClick (rowItem, tableType) {
       if (tableType === 'tableSearch') {
@@ -50,7 +49,6 @@ export const appMixin = {
       })
     },
     highlight (text, searchValue) {
-      console.log(searchValue)
       if (!searchValue) {
         if (text.length < 53) { return text } else { return text.slice(0, 53) + '...' }
       }

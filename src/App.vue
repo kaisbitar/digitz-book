@@ -7,11 +7,21 @@
 
     <v-app-bar class="topHeader brown lighten-5" flat app :height="71">
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"> </v-app-bar-nav-icon>
-      <h3 class="titleText ml-2 font-weight-thin">الكتاب المرقوم</h3>
+      <v-progress-linear
+        class="mt-12"
+        color="blue"
+        indeterminate
+        rounded
+        height="6"
+        :active="isLoading"
+        absolute
+      ></v-progress-linear><h3 class="titleText ml-2 font-weight-thin">الكتاب المرقوم</h3>
       <autoComplete class="mt-3" />
     </v-app-bar>
+
     <v-main class="mainWrap">
-      <router-view />
+      <div></div>
+    <router-view v-if="!isLoading"/>
     </v-main>
   </v-app>
 </template>
@@ -19,7 +29,6 @@
 <script>
 import autoComplete from './components/autoComplete.vue'
 import tableQuranIndex from './components/tableQuranIndex.vue'
-import { fetchOneQuranFile, fetchtableQuranIndex } from '@/api/api.js'
 
 export default {
   name: 'App',
@@ -31,23 +40,23 @@ export default {
 
   data: () => ({
     drawer: true,
-    drawerWidth: 250
+    drawerWidth: 250,
+    isLoading: false
   }),
   methods: {
     calculateWidth (showDetail) {
       if (showDetail === false) this.drawerWidth = 250
       if (showDetail === true) this.drawerWidth = 440
+    },
+    async prepareData () {
+      this.isLoading = true
+      return new Promise((resolve) => {
+        this.$store.dispatch('getQuranData')
+        resolve()
+      })
     }
   },
   computed: {
-    searchedWord () {
-      if (this.$store.getters.filteredSearch.length === 0) return
-      var filteredLists = this.$store.getters.filteredSearch[
-        this.$store.state.filterSelectedIndex
-      ].result
-      if (!filteredLists) return null
-      else return filteredLists.searchTerms.searchedText
-    },
     drawerFlag () {
       return this.$store.getters.drawerState
     }
@@ -58,19 +67,10 @@ export default {
     }
   },
   updated () {},
-  mounted () {},
+  mounted () { },
   created () {
-    this.isLoading = true
-    this.$store.commit('resetFilterSelectedIndex')
-    const appApi = process.env.VUE_APP_API_URL
-    fetchOneQuranFile(appApi).then((items) => {
-      this.$store.commit('setoneQuranFile', items)
+    this.prepareData().then(() => {
       this.isLoading = false
-    }).then(() => {
-      fetchtableQuranIndex(appApi).then((data) => {
-        this.$store.commit('setTableQuranIndex', data)
-        this.loading = false
-      })
     })
   }
 }

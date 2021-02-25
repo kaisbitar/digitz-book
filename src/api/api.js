@@ -31,7 +31,7 @@ export function fetchSuraText (appApi, fileName) {
       return response.data
     })
 }
-export function fetchVersesMap (appApi, fileName) {
+export function fetchVersesBasics (appApi, fileName) {
   return axios
     .get(appApi + 'api/view/verses-basics/' + fileName)
     .then(response => {

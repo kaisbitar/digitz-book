@@ -33,20 +33,28 @@ export default {
     tooltipLabel () {
       if (this.view === 'words') return 'كلمات'
       return 'حرف'
+    },
+    tooltipLabel2 () {
+      if (this.fileName !== '000المصحف') return 'آية'
+      return 'سورة'
+    },
+    quranIndex () {
+      return this.$store.getters.tableQuranIndex
+    },
+    fileName () {
+      return this.$store.getters.target.fileName
     }
   },
   methods: {
-    setToolTip () {
-      if (!this.versesText) return
+    setToolTip (toolTipText) {
       var x = {
         custom: ({ series, seriesIndex, dataPointIndex, w }) => {
           return '<div class="mr-2 ml-2 pt-2">' +
-                    '<div class="d-flex"><span class="tipInfo"><span class="tipLabel">الآية</span> ' +
+                    '<div class="d-flex"><span class="tipInfo"><span class="tipLabel">' + this.tooltipLabel2 + ' </span> ' +
                     parseInt(dataPointIndex + 1) + '</span>' +
                     '<span class="tipInfo tipInfo2">' + w.globals.series[0][dataPointIndex] +
-                    // '<span class="tipInfo tipInfo2">' + this.letterSeries[dataPointIndex] +
                     ' <span class="tipLabel">' + this.tooltipLabel + '</span></span></div>' +
-                    '<p class="tipInfo tipText pr-1 pl-2">' + this.versesText[dataPointIndex] + '</p>' +
+                    '<p class="tipInfo tipText pr-1 pl-2">' + toolTipText[dataPointIndex] + '</p>' +
                   '</div>'
         },
         shared: true,
@@ -56,53 +64,32 @@ export default {
         ...this.options,
         ...{ tooltip: x }
       }
+    },
+    prepareToolTipData () {
+      if (this.fileName === '000المصحف') {
+        var quranToolTip = this.quranIndex.map((item) => {
+          return item.fileName.replace(/[0-9]/g, '')
+        })
+        quranToolTip.shift()
+        this.setToolTip(quranToolTip)
+        return
+      }
+      this.setToolTip(this.versesText)
     }
   },
   watch: {
     versesText () {
-      this.setToolTip()
+      this.prepareToolTipData()
     }
   },
   created () {
   },
   mounted () {
-    this.setToolTip()
+    this.prepareToolTipData()
   }
 }
 </script>
 
 <style>
- .apexcharts-tooltip {
-    background: none !important;
-    color: rgb(31, 31, 31);
-    font-family: "Tajawal", sans-serif;
-    font-size: 16px;
-    font-weight: ٥00 !important;
-    white-space:normal;
-    max-width: 300px;
-    background: #ffffff !important;
-    /* border-color: #000 !important; */
-    border-top: 15px solid #efebe9 !important;
-        box-shadow: -1px 1px 10px 0px #ccc;
 
-  }
-  .tipInfo2{
-    border-top: 3px solid #4DB6AC !important;
-  }
-  .tipInfo{
-    border: 1px solid rgb(218, 218, 218);
-    border-top: 3px solid #2195f3;
-    border-radius: 3px;
-    margin: 4px;
-    padding: 3px;
-    height: fit-content;
-  }
-  .tipLabel{
-    font-size: 12px;
-  }
-  .tipText{
-    border-top: 1px solid rgb(218, 218, 218);
-    border-right: 3px solid #cfcfcf;
-
-  }
 </style>

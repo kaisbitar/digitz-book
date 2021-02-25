@@ -47,7 +47,7 @@
       <template v-slot:item="props">
         <v-chip
           @click="$emit('rowClicked', props.index, props.item)"
-          :class="{ activeRow: props.item.x === selectedId }"
+          :class="{ active: props.item.x === selectedId }"
           class="indexItem text-right pa-2 ma-1"
           label
           v-html="highlight(props.item.x , search)"
@@ -69,18 +69,11 @@ export default {
 </script>
 
 <style scoped>
-
 .groupHeader {
   height: 26px;
   font-weight: bold;
   font-size: 12px;
   cursor: pointer;
-}
-.activeRow {
-  color: #737373 !important;
-  /* brown */
-  background: #efebe9 !important;
-  font-weight: 500;
 }
 .v-chip {
   display: -webkit-inline-box;

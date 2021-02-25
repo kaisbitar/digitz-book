@@ -1,16 +1,15 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
-import { fetchSuraDetails } from '../api/api.js'
-// import { compress, decompress } from 'lzma'
+import { fetchSuraDetails, fetchOneQuranFile, fetchtableQuranIndex } from '../api/api.js'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
     target: {
-      fileName: '002البقرة',
-      verseIndex: 0,
+      fileName: '001الفاتحة',
+      verseIndex: 1,
       suraNumber: 1
     },
     filteredSearch: [],
@@ -21,7 +20,8 @@ export default new Vuex.Store({
     scrollTrigger: false,
     drawerState: true,
     numberInfoShow: true,
-    activeTab: 'numberOfVerses'
+    activeTab: 'numberOfVerses',
+    selectedInput: ''
   },
   plugins: [createPersistedState({ })],
   getters: {
@@ -33,8 +33,9 @@ export default new Vuex.Store({
     scrollTrigger: state => state.scrollTrigger,
     drawerState: state => state.drawerState,
     numberInfoShow: state => state.numberInfoShow,
-    versesMap: state => state.versesMap,
-    activeTab: state => state.activeTab
+    activeTab: state => state.activeTab,
+    selectedInput: state => state.selectedInput
+
   },
   mutations: {
     setActiveTab (state, activeTab) {
@@ -78,129 +79,28 @@ export default new Vuex.Store({
     setDrawerState (state, drawerState) {
       state.drawerState = drawerState
     },
-    // setSuraBasics (state, suraBasics) {
-    //   state.suras[state.target.fileName].suraBasics = suraBasics.suraBasics
-    // },
-    // setSuraText (state, suraText) {
-    //   state.suras[state.target.fileName].suraText = suraText.suraText
-    // },
     setSuraDetails (state, suraDetails) {
       state.suras[state.target.fileName].suraDetails = suraDetails.suraDetails
     },
     setSuraChartData (state, suraChartData) {
       state.suras[state.target.fileName].suraChartData = suraChartData.suraChartData
+    },
+    setSelectedInput (state, selectedInput) {
+      state.selectedInput = selectedInput
     }
-    // setVersesMap (state, versesMap) {
-    //   state.suras[state.target.fileName].versesMap = versesMap.versesMap
-    // }
   },
   actions: {
-    // checkLocalStorage () {
-    //   for (var value in localStorage) {
-    //     if (value.substr(0, 50) === 'vuex') {
-    //       var valueLen = ((localStorage[value].length + value.length) * 2)
-    //       var storedSize = (valueLen / 1024).toFixed(0)
-    //     }
-    //     if (storedSize < 5000) {
-    //       return
-    //     }
-    //     this.commit('resetSuras')
-    //     return
-    //   }
-    // },
-    getSuraText2 ({ state }) {
-      var start = state.tableQuranIndex[state.target.suraNumber].verseNumberToQuran - 1
-      var end = state.tableQuranIndex[state.target.suraNumber].numberOfVerses + start
-      var suraText = state.oneQuranFile.map((item, index) => {
-        if (state.target.fileName === '000المصحف' || ((index > start - 1) && (index < end))) {
-          return item.verseText
-        }
+    getQuranData ({ commit, state }) {
+      if (state.oneQuranFile.length > 0) { return }
+      const appApi = process.env.VUE_APP_API_URL
+      fetchOneQuranFile(appApi).then((items) => {
+        commit('setoneQuranFile', items)
+      }).then(() => {
+        fetchtableQuranIndex(appApi).then((data) => {
+          commit('setTableQuranIndex', data)
+        })
       })
-      suraText = suraText.filter(function (element) {
-        return element !== undefined
-      })
-      return suraText
     },
-    getSuraChartData ({ state }) {
-      var start = state.tableQuranIndex[state.target.suraNumber].verseNumberToQuran - 1
-      var end = state.tableQuranIndex[state.target.suraNumber].numberOfVerses + start
-      var letters = []
-      var words = []
-      state.oneQuranFile.map((item, index) => {
-        if (state.target.fileName === '000المصحف') {
-          letters.push((item.verseText.replace(/ /g, '')).length)
-          words.push((item.verseText.split(' ')).length)
-          return item.verseText
-        } else if ((index > start - 1) && (index < end)) {
-          letters.push((item.verseText.replace(/ /g, '')).length)
-          words.push((item.verseText.split(' ')).length)
-          return item.verseText
-        }
-      })
-      var seriesObj = { letters: letters, words: words }
-      return seriesObj
-    },
-    getVersesMap2 ({ state }) {
-      var start = state.tableQuranIndex[state.target.suraNumber].verseNumberToQuran - 1
-      var end = state.tableQuranIndex[state.target.suraNumber].numberOfVerses + start
-      var versesMap = state.oneQuranFile.map((item, index) => {
-        var obj = {
-          verseNumberToQuran: item.verseNumberToQuran,
-          numberOfLetters: (item.verseText.replace(/ /g, '')).length,
-          numberOfWords: (item.verseText.split(' ')).length,
-          sura: item.fileName,
-          verseIndex: item.verseIndex,
-          verseText: item.verseText
-        }
-        if (state.target.fileName === '000المصحف') {
-          return obj
-        } else if ((index > start - 1) && (index < end)) {
-          return obj
-        }
-      })
-      versesMap = versesMap.filter(function (element) {
-        return element !== undefined
-      })
-      return versesMap
-    },
-    getSuraBasics ({ state }) {
-      return state.tableQuranIndex[state.target.suraNumber]
-    },
-    // getSuraText ({ commit, state }) {
-    //   if (!state.suras[state.target.fileName]) {
-    //     var obj = { suraText: null }
-    //     Vue.set(state.suras, state.target.fileName, obj)
-    //   }
-    //   return new Promise((resolve, reject) => {
-    //     if (!state.suras[state.target.fileName].suraText) {
-    //       const appApi = process.env.VUE_APP_API_URL
-    //       fetchSuraText(appApi, state.target.fileName).then(suraText => {
-    //         commit('setSuraText', suraText)
-    //         resolve(state.suras[state.target.fileName].suraText)
-    //       })
-    //       return
-    //     }
-    //     resolve(state.suras[state.target.fileName].suraText)
-    //   })
-    // },
-    // getSuraBasics ({ commit, state }) {
-    //   if (!state.suras[state.target.fileName]) {
-    //     var obj = { suraBasics: null }
-    //     Vue.set(state.suras, state.target.fileName, obj)
-    //   }
-    //   return new Promise((resolve, reject) => {
-    //     if (!state.suras[state.target.fileName].suraBasics) {
-    //       const appApi = process.env.VUE_APP_API_URL
-    //       fetchSuraBasics(appApi, state.target.fileName).then(suraBasics => {
-    //         var obj = { suraBasics: suraBasics }
-    //         commit('setSuraBasics', obj)
-    //         resolve(suraBasics)
-    //       })
-    //       return
-    //     }
-    //     resolve(state.suras[state.target.fileName].suraBasics)
-    //   })
-    // },
     getSuraDetails ({ commit, state }) {
       if (!state.suras[state.target.fileName]) {
         var obj = { suraDetails: null }
@@ -219,42 +119,5 @@ export default new Vuex.Store({
         resolve(state.suras[state.target.fileName].suraDetails)
       })
     }
-    // getSuraChartData ({ commit, state }) {
-    //   if (!state.suras[state.target.fileName]) {
-    //     var obj = { suraChartData: null }
-    //     Vue.set(state.suras, state.target.fileName, obj)
-    //   }
-    //   return new Promise((resolve, reject) => {
-    //     if (!state.suras[state.target.fileName].suraChartData) {
-    //       const appApi = process.env.VUE_APP_API_URL
-    //       fetchSuraChartData(appApi, state.target.fileName).then(suraChartData => {
-    //         var obj = { suraChartData: suraChartData }
-    //         commit('setSuraChartData', obj)
-    //         resolve(suraChartData)
-    //       })
-    //       return
-    //     }
-    //     resolve(state.suras[state.target.fileName].suraChartData)
-    //   })
-    // }
-    // getVersesMap ({ commit, state }) {
-    //   if (!state.suras[state.target.fileName]) {
-    //     var obj = { versesMap: null }
-    //     Vue.set(state.suras, state.target.fileName, obj)
-    //   }
-    //   return new Promise((resolve, reject) => {
-    //     if (!state.suras[state.target.fileName].versesMap) {
-    //       const appApi = process.env.VUE_APP_API_URL
-    //       fetchVersesMap(appApi, state.target.fileName).then(versesMap => {
-    //         this.dispatch('checkLocalStorage')
-    //         var obj = { versesMap: versesMap }
-    //         commit('setVersesMap', obj)
-    //         resolve(versesMap)
-    //       })
-    //       return
-    //     }
-    //     resolve(state.suras[state.target.fileName].versesMap)
-    //   })
-    // }
   }
 })

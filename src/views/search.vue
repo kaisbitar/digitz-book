@@ -1,21 +1,21 @@
 <template>
-
   <div class="compWrapper">
-       <v-row>
-         <suraTextInfoBasic
+    <v-row>
+      <suraTextInfoBasic
         class="pr-3"
-        :numberOfVerses="filteredSearchList.result.length"
-        :numberOfWords="filteredSearchList.result.length"
-        :numberOfLetters="filteredSearchList.result.length"
-        :title="filteredSearchList.inputText"
-        @arrowClick="getNextSearch"/>
+        :numberOfVerses="numberOfVerses"
+        :numberOfWords="numberOfVerses"
+        :numberOfLetters="numberOfVerses"
+        :title="inputText"
+        @arrowClick="getNextSearch"
+      />
     </v-row>
 
     <dashbord
       v-if="!isLoading"
-      :title="filteredSearchList.inputText"
+      :inputText="inputText"
       @tabChanged="getData"
-      :numberOfVerses="filteredSearchList.result.length"
+      :numberOfVerses="numberOfVerses"
       :numberOfWords="numberOfWords"
       :numberOfLetters="numberOfLetters"
       :isLoading="isLoading"
@@ -24,22 +24,18 @@
       :versesBasics="versesBasics"
       :activeTab="activeTab"
     />
-    <!-- :letterSeries="letterSeries"
-      :wordsSeries="wordsSeries" -->
+
   </div>
 </template>
 <script>
-
-// @ is an alias to /src
-// import tableSearch from '../components/tableSearch.vue'
 import dashbord from '../components/dashbord.vue'
-// import { fetchtableSearchs } from '../api/api'
 import suraTextInfoBasic from '../components/suraTextInfoBasic'
 
 export default {
   name: 'search',
   components: {
-    dashbord, suraTextInfoBasic
+    dashbord,
+    suraTextInfoBasic
   },
   data: () => ({
     tableHeaders: [
@@ -48,7 +44,6 @@ export default {
       { text: 'مصحف', value: 'verseNumberToQuran', class: 'grey   lighten-2' },
       { text: 'نص', value: 'verseText', class: 'grey   lighten-2' }
     ],
-    numberOfVerses: 0,
     isLoading: false,
     details: {},
     letterSeries: [],
@@ -56,39 +51,64 @@ export default {
     searchIndxes: []
   }),
   computed: {
+    numberOfVerses () {
+      if (!this.filteredSearchList.result) return 0
+      return this.filteredSearchList.result.length
+    },
     activeTab () {
       return this.$store.getters.activeTab
     },
+    fullFilteredSearch () {
+      return this.$store.getters.filteredSearch
+    },
+    filterSelectedIndex () {
+      return this.$store.state.filterSelectedIndex
+    },
     filteredSearchList () {
-      var filteredList = this.$store.state.filteredSearch[this.$store.state.filterSelectedIndex]
+      if (!this.fullFilteredSearch.length > 0) return {}
+      var filteredList = this.fullFilteredSearch[
+        this.filterSelectedIndex
+      ]
       if (!filteredList) return {}
       return filteredList
     },
+    inputText () {
+      return this.$store.getters.selectedInput
+    },
     searchTextarray () {
-      var filteredList = this.$store.state.filteredSearch[this.$store.state.filterSelectedIndex].result
+      if (!this.fullFilteredSearch.length > 0) return []
+      var filteredList = this.fullFilteredSearch[
+        this.filterSelectedIndex
+      ].result
       var searchText = filteredList.map((item) => {
         return item.verseText
       })
       return searchText
     },
     versesBasics () {
-      var filteredList = this.$store.state.filteredSearch[this.$store.state.filterSelectedIndex].result
-      // var searchText = filteredList.map((item) => {
-      //   return item.verseText
-      // })
+      if (!this.fullFilteredSearch.length > 0) return []
+      var filteredList = this.fullFilteredSearch[
+        this.filterSelectedIndex
+      ].result
       return filteredList
     },
     numberOfWords () {
-      var filteredList = this.$store.state.filteredSearch[this.$store.state.filterSelectedIndex].result
+      if (!this.fullFilteredSearch.length > 0) return 0
+      var filteredList = this.fullFilteredSearch[
+        this.filterSelectedIndex
+      ].result
       var wordsCount = []
       var numberOfWords = filteredList.map((item) => {
-        wordsCount = (item.verseText.split(' ').length)
+        wordsCount = item.verseText.split(' ').length
         return wordsCount
       })
       return numberOfWords.reduce((a, b) => a + b, 0)
     },
     numberOfLetters () {
-      var filteredList = this.$store.state.filteredSearch[this.$store.state.filterSelectedIndex].result
+      if (!this.fullFilteredSearch.length > 0) return 0
+      var filteredList = this.fullFilteredSearch[
+        this.filterSelectedIndex
+      ].result
       var lettersCount = []
       var numberOfLetters = filteredList.map((item) => {
         lettersCount = item.verseText.replace(/ /g, '').length
@@ -96,38 +116,26 @@ export default {
       })
       return numberOfLetters.reduce((a, b) => a + b, 0)
     }
-
   },
   methods: {
     getData (tab) {
       this.activeTab = tab
-      switch (tab) {
-        // case 'numberOfVerses':
-        //   this.fetchVersesData()
-        //   return
-        case 'numberOfWords':
-          this.fetchSuraDetails()
-          break
-        // case 'frequency':
-        //   this.fetchSuraChartData()
-        //   break
+      if (this.activeTab === 'numberOfWords') {
+        this.fetchSuraDetails()
       }
     },
-    // fetchResults () {
-    //   const appApi = process.env.VUE_APP_API_URL
-    //   fetchtableSearchs(appApi, this.filteredSearchList.inputText).then(results => {
-    //     this.details = results
-    //     this.letterSeries = [{ data: results.letterOccurrences }]
-    //     this.wordsSeries = [{ data: results.wordOccurrences }]
-    //   })
-    // },
     getNextSearch (item) {
-      console.log(item)
       if (item === 'up') {
-        this.$store.commit('setFilterSelectedIndex', this.$store.state.filterSelectedIndex + 1)
+        this.$store.commit(
+          'setFilterSelectedIndex',
+          this.filterSelectedIndex + 1
+        )
         return
       }
-      this.$store.commit('setFilterSelectedIndex', this.$store.state.filterSelectedIndex - 1)
+      this.$store.commit(
+        'setFilterSelectedIndex',
+        this.filterSelectedIndex - 1
+      )
     },
     fetchSuraDetails () {
       this.isLoading = true
@@ -135,7 +143,6 @@ export default {
         .dispatch('getSuraDetails')
         .then((items) => {
           this.details = items
-          console.log(items)
           return items
         })
         .then(() => {
@@ -145,25 +152,22 @@ export default {
   },
   watch: {
     filteredSearchList () {
-      // if (!this.filteredSearchList) return
+      if (!this.filteredSearchList.result) return
       this.searchIndxes = []
       for (var i = 0; i < this.filteredSearchList.result.length; i++) {
-        this.searchIndxes.push(this.filteredSearchList.result[i].verseNumberToQuran)
+        this.searchIndxes.push(
+          this.filteredSearchList.result[i].verseNumberToQuran
+        )
       }
-      // this.fetchResults()
     }
   },
   created () {
-    var target = {
-      ...{ fileName: null }
-    }
-    this.$store.commit('setTarget', target)
   }
 }
 </script>
 
 <style scoped>
-.cTable{
+.cTable {
   max-width: 600px;
 }
 </style>

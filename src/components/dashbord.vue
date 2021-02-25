@@ -11,37 +11,42 @@
       />
     </v-row>
     <v-row>
-        <dashFrequency
-        v-if="activeTab === 'frequency'"
-        :isLoading="isLoading"
-        :letterSeries="letterSeries"
-        :wordsSeries="wordsSeries"
-        :versesText="suraTextarray"
-        :height="height"
-        />
-      <dashWords
-        class="chartRow"
-        v-if="activeTab === 'numberOfWords'"
-        :numberOfWords="numberOfWords"
-        :numberOfLetters="numberOfLetters"
-        :indexes="wordIndexes"
-        :suraText="suraTextarray.join(' ')"
-        :isLoading="isLoading"
-      />
-      <dashLetters
-        class="chartRow"
-        v-if="activeTab === 'numberOfLetters'"
-        :numberOfWords="numberOfWords"
-        :numberOfLetters="numberOfLetters"
-        :suraText="suraTextarray.join('')"
-        :isLoading="isLoading"
-      />
-       <dashVerses
-        class="chartRow"
-        v-if="activeTab === 'numberOfVerses'"
-        :versesBasics="versesBasics"
-        :isLoading="isLoading"
-      />
+      <keep-alive
+        ><dashFrequency
+          v-if="activeTab === 'frequency'"
+          :isLoading="isLoading"
+          :letterSeries="letterSeries"
+          :wordsSeries="wordsSeries"
+          :versesText="suraTextarray"
+          :height="height"
+      /></keep-alive>
+      <keep-alive
+        ><dashWords
+          class="chartRow"
+          v-if="activeTab === 'numberOfWords'"
+          :numberOfWords="numberOfWords"
+          :numberOfLetters="numberOfLetters"
+          :indexes="wordIndexes"
+          :suraText="suraTextarray.join(' ')"
+          :isLoading="isLoading"
+      /></keep-alive>
+      <keep-alive
+        ><dashLetters
+          class="chartRow"
+          v-if="activeTab === 'numberOfLetters'"
+          :numberOfWords="numberOfWords"
+          :numberOfLetters="numberOfLetters"
+          :suraText="suraTextarray.join('')"
+          :isLoading="isLoading"
+      /></keep-alive>
+      <keep-alive
+        ><dashVerses
+          class="chartRow"
+          v-if="activeTab === 'numberOfVerses'"
+          :versesBasics="versesBasics"
+          :inputText="inputText"
+          :isLoading="isLoading"
+      /></keep-alive>
     </v-row>
   </label>
 </template>
@@ -55,9 +60,15 @@ import dashFrequency from './dashFrequency'
 
 export default {
   name: 'dashbord',
-  components: { dashLetters, dashboardTab, dashWords, dashVerses, dashFrequency },
+  components: {
+    dashLetters,
+    dashboardTab,
+    dashWords,
+    dashVerses,
+    dashFrequency
+  },
   props: [
-    'title',
+    'inputText',
     'numberOfVerses',
     'numberOfWords',
     'numberOfLetters',
@@ -73,8 +84,7 @@ export default {
     dataType: 'الكلمة',
     windowHeight: window.innerHeight
   }),
-  methods: {
-  },
+  methods: {},
   computed: {
     tabs () {
       var tabs = [
@@ -93,7 +103,7 @@ export default {
     }
   },
   watch: {},
-  created () { },
+  created () {},
   mounted () {
     this.$store.commit('setNumberInfoShow', false)
   }
@@ -114,7 +124,7 @@ export default {
 }
 .suraInfoSingleBox.active {
   opacity: 1;
-  border: 1px solid #626262 !important;
+  /* border: 1px solid #626262 !important; */
 }
 .chartRow {
   width: -webkit-fill-available;
@@ -126,20 +136,20 @@ export default {
   margin-top: 3px !important;
   margin-right: 250px;
 }
-.dashboardTab{
+.dashboardTab {
   margin-right: 395px;
-  margin-top: -55px;
-  margin-bottom: 23px;
+  margin-top: -66px;
+  margin-bottom: 16px;
 }
 @media (max-width: 978px) {
-  .dashboardTab{
+  .dashboardTab {
     margin-right: 0px;
     margin-top: 0px;
     margin-bottom: 10px;
   }
   .suraInfoSingleBox {
-  padding: 5px;
-  margin-bottom: 5px;
+    padding: 5px;
+    margin-bottom: 5px;
   }
 }
 </style>

@@ -35,15 +35,12 @@ export const detailMixin = {
   },
   watch: {
     indexes () {
-      if (!this.occurrences || !this.indexes) return null
+      if (this.occurrences.length === 0) return null
       this.setInitialItem()
     }
   },
   created () {
 
   },
-  mounted () {
-    if (!this.occurrences || !this.indexes) return null
-    this.setInitialItem()
-  }
+  mounted () { }
 }

@@ -30,7 +30,6 @@
               :footerProps="footerProps"
               :isLoading="isLoading"
               :groupBy="null"
-              :selectedId="selectedId"
               :includeTab="true"
               @rowClicked="setDetailItem"
             />
@@ -74,10 +73,8 @@ export default {
       var x = {
         custom: (obj) => {
           return '<div class="d-flex pt-2 pa-2">' +
-                    '<div class=" tipInfo ">الحرف: ' + obj.w.globals.seriesX[0][obj.dataPointIndex] + '</div>' +
-                    '<p class=" ">' +
-                    '<div class="  tipInfo tipInfo2">تكرار: ' + obj.series[0][obj.dataPointIndex] + '</div>' +
-                    '</p>' +
+                    '<div class=" tipInfo "><span class="tipLabel">الحرف:</span> ' + obj.w.globals.seriesX[0][obj.dataPointIndex] + '</div>' +
+                    '<div class="  tipInfo tipInfo2"><span class="tipLabel">تكرار:</span> ' + obj.series[0][obj.dataPointIndex] + '</div>' +
                   '</div>'
         },
         shared: true,
@@ -145,7 +142,7 @@ export default {
   cursor: pointer;
 }
 .tableStyle {
-  width: 320px;
+  /* width: 320px; */
 }
 .tableStyle .indexItem.text-right {
     background: #f2f2f233;
@@ -164,21 +161,7 @@ export default {
   width: 100%;
 }
 .tableStyle tr:nth-child(even) {
-  background-color: #fdfdfd;
+  background-color: #f9f9f980;
 }
-.tableStyle td {
-  border: none !important;
-}
-.table {
-  max-width: 268px;
-}
-.v-select__selection.v-select__selection--comma {
-  display: none;
-}
-.v-input.v-input--hide-details.v-input--is-label-active.v-input--is-dirty.theme--light.v-text-field.v-text-field--is-booted.v-select {
-  margin-right: -60px;
-}
-.v-application--is-rtl .v-data-table--fixed-header .v-data-footer {
-  margin-left: 0;
-}
+
 </style>
