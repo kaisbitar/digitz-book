@@ -2,11 +2,15 @@
   <div>
     <div
       class="suraText"
-      v-for="(item, index) in suraTextarray"
+      v-for="(item, index) in suraTextArray"
       :key="index"
       :class="[index - 1, { targetedVerse: index + 1 === suraTargetedVerse }]"
+        @click="setTargetedVerse(index + 1)"
     >
-      <div ref="vDiv" :id="'v' + (index + 1)" class="d-inline ml-2" @click="boxClicked(index+1)">
+      <div
+        :id="'v' + (index + 1)"
+        class="d-inline ml-2"
+      >
         <v-chip
           class="numChip"
           label
@@ -40,35 +44,27 @@ import { appMixin } from '../mixins/mixins'
 
 export default {
   name: 'suraTextBox',
-  props: ['inputText', 'suraTargetedVerse', 'suraTextarray', 'isLoading'],
+  props: ['inputText', 'suraTargetedVerse', 'suraTextArray', 'isLoading'],
   components: {},
   mixins: [appMixin],
   data: () => ({
     suraText: []
   }),
   methods: {
-    scrollToVerse (timeOut) {
-      if (!this.suraTargetedVerse) {
-        var verse = this.prepareToScroll(1)
-      } else {
-        verse = this.prepareToScroll(this.suraTargetedVerse)
-      }
+    scrollToVerse (verse) {
+      if (!document.getElementById('suraBlock')) return
       setTimeout(() => {
-        this.$vuetify.goTo(verse, {
+        this.$vuetify.goTo(verse.toString(), {
           container: '#suraBlock',
-          offset: 0,
-          options: this.scrollOptions
+          offset: 0
         })
-      }, timeOut)
+      }, 50)
     },
-    scrollOptions () {
-      return {
-        duration: 0,
-        easing: 'easingIn'
+    setTargetedVerse (index) {
+      var target = {
+        fileName: this.$store.getters.target.fileName,
+        verseIndex: index
       }
-    },
-    boxClicked (index) {
-      var target = { fileName: this.$store.getters.target.fileName, verseIndex: index }
       this.$store.commit('setTarget', target)
     }
   },
@@ -78,31 +74,36 @@ export default {
     },
     fileName () {
       return this.$store.getters.target.fileName
+    },
+    activeView () {
+      return this.$store.getters.target.activeView
     }
   },
   watch: {
     scrollTrigger () {
-      this.scrollToVerse(0)
+      if (this.activeView === 'suraChart') return
+      var verse = this.prepareToScroll(this.suraTargetedVerse)
+      this.scrollToVerse(verse)
     },
     suraTargetedVerse () {
-      this.scrollToVerse(0)
+      if (this.activeView === 'suraChart') return
+      var verse = this.prepareToScroll(this.suraTargetedVerse)
+      this.scrollToVerse(verse)
     }
   },
   filters: {
     highlightVerse: function (text, value) {
-      if (value == null) return text
-      else {
-        var qurey = new RegExp(value, 'gi')
-        return text.replace(qurey, (match) => {
-          return '<span class="orange accent-1">' + match + '</span>'
-        })
-      }
+      if (value === null) return text
+      var qurey = new RegExp(value, 'gi')
+      return text.replace(qurey, (match) => {
+        return '<span class="orange accent-1">' + match + '</span>'
+      })
     }
   },
-  created () {
-  },
+  created () {},
   mounted () {
-    this.scrollToVerse(1500)
+    var verse = this.prepareToScroll(this.suraTargetedVerse)
+    this.scrollToVerse(verse)
   },
   updated () {}
 }
@@ -115,9 +116,11 @@ export default {
   margin: 1px;
   display: -webkit-inline-box;
   border-radius: 4px;
+  cursor: pointer;
 }
 .numChip {
   /* brown lighten-5 */
+  width: 41px;
   background: #efebe9;
   margin-left: 6px;
   padding-right: 12px;
@@ -133,20 +136,3 @@ export default {
   background: #757575 !important;
 }
 </style>
-
-    searchDuplicates () {
-      if (this.inputText == null) return null
-      if (this.inputText.length >= 3) {
-        var duplicates = 0
-        var results = this.$refs.autocomplete.filteredItems
-        results.map((item) => {
-          var matches = item.verseText.match(new RegExp(this.search, 'gi'))
-          if (matches !== null) {
-            duplicates = matches.length - 1
-          }
-        })
-      } else {
-        duplicates = 0
-      }
-      return duplicates
-    }

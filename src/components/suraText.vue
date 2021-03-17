@@ -1,35 +1,26 @@
 <template>
   <div class="wrapper">
-    <div  class="d-flex suraHeader">
-
-      <suraTextSelectControl
-        :selectedVerse="suraTargetedVerse"
-        :inputText="inputText"
-        style="width:100px"
-      />
-    </div>
     <v-row outlined class="pa-2  grey lighten-4" id="suraBlock" :style="getheight()">
       <suraTextBox
         :inputText="inputText"
         :suraTargetedVerse="suraTargetedVerse"
-        :suraTextarray="suraTextarray"
+        :suraTextArray="suraTextArray"
         :isLoading="isLoading"
       />
-    <v-card  class="sadakAllah caption mr-auto elevation-0 pa-2 mt-1">- صدق الله العظيم -</v-card>
+    <span  class="sadakAllah mr-auto white pa-2 mt-1">صدق الله العظيم</span>
     </v-row>
 
   </div>
 </template>
 
 <script>
-import suraTextSelectControl from './suraTextSelectControl.vue'
 import suraTextBox from './suraTextBox.vue'
 import { appMixin } from '../mixins/mixins'
 
 export default {
   name: 'suraText',
-  components: { suraTextSelectControl, suraTextBox },
-  props: ['numberOfVerses', 'numberOfWords', 'numberOfLetters', 'suraTextarray', 'inputText', 'suraTargetedVerse', 'isLoading'],
+  components: { suraTextBox },
+  props: ['numberOfVerses', 'numberOfWords', 'numberOfLetters', 'suraTextArray', 'inputText', 'suraTargetedVerse', 'isLoading'],
   mixins: [appMixin],
   data: () => ({
     windowHeight: window.innerHeight
@@ -43,14 +34,14 @@ export default {
       }
     },
     getheight () {
-      var heightDif = this.windowHeight - 180
+      var heightDif = this.windowHeight - 140
       var str = 'height:' + heightDif + 'px'
       return str
     }
   },
   computed: {
     suraselectedSearch () {
-      return this.$store.getters.filterSelectedIndex
+      return this.$store.getters.selectedSearchIndex
     },
     wrapperHeight () {
       const filterSectionDOM = document.getElementById('wrapper')
@@ -65,8 +56,6 @@ export default {
 
   },
   created () {
-    // this.$store.commit('setDrawerState', true)
-    this.$store.commit('setNumberInfoShow', true)
   },
   mounted () {
   }
@@ -74,9 +63,6 @@ export default {
 </script>
 
 <style>
-.wrapper{
-  /* height: fit-content; */
-}
 #suraBlock{
     padding-right: 9px;
     padding-left: 9px;
@@ -85,12 +71,6 @@ export default {
     overflow-y: scroll;
 }
 .sadakAllah{
-  width: 125px;
   height: 40px;
-}
-.suraHeader {
-  width: 601px;
-  margin-right: 361px;
-  margin-top: -60px;
 }
 </style>

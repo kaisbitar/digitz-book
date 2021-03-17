@@ -1,5 +1,5 @@
 export const detailMixin = {
-  props: ['suraText', 'isLoading'],
+  props: ['suraText', 'isLoading', 'includeTab'],
   data: () => ({
     detailElement: '',
     detailCount: 0,

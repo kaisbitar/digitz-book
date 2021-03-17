@@ -1,8 +1,9 @@
 // import { setTimeout } from 'core-js'
+import glSearchBox from '../components/glSearchBox'
 
 export const tableOccMixin = {
   name: '',
-  components: {},
+  components: { glSearchBox },
   props: [
     'tableData',
     'tableHeaders',
@@ -10,19 +11,21 @@ export const tableOccMixin = {
     'isLoading',
     'groupBy',
     'dataType',
-    'includeTab'
+    'includeTab',
+    'detailElement'
   ],
   data: () => ({
     windowHeight: window.innerHeight,
     collapseDone: false,
-    search: ''
+    search: '',
+    matchAll: false
   }),
   computed: {},
   methods: {
     getHeight () {
       var tabHeight = 0
-      if (this.includeTab) { tabHeight = -20 }
-      var heightDif = this.windowHeight - 250 + tabHeight
+      if (this.includeTab) { tabHeight = -70 }
+      var heightDif = this.windowHeight - 400 + tabHeight
       return heightDif
     },
     async collapseHeaders (group) {
@@ -36,6 +39,14 @@ export const tableOccMixin = {
     },
     rowClicked (item) {
       this.$emit('rowClicked', item)
+    },
+    searchChanged (search) {
+      this.search = search
+    },
+    matchChanged (matchAll) {
+      this.matchAll = matchAll[1]
+      this.search = ''
+      this.search = matchAll[0]
     }
   },
   created () {

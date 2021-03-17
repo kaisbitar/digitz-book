@@ -9,60 +9,108 @@ export default new Vuex.Store({
   state: {
     target: {
       fileName: '001الفاتحة',
-      verseIndex: 1,
-      suraNumber: 1
+      verseIndex: 1
     },
     filteredSearch: [],
-    filterSelectedIndex: 0,
+    selectedSearchIndex: 0,
     oneQuranFile: [],
     tableQuranIndex: [],
     suras: {},
     scrollTrigger: false,
     drawerState: true,
-    numberInfoShow: true,
     activeTab: 'numberOfVerses',
-    selectedInput: ''
+    activeView: 'suraChart',
+    selectedSearch: []
   },
   plugins: [createPersistedState({ })],
   getters: {
     target: state => state.target,
     filteredSearch: state => state.filteredSearch,
-    filterSelectedIndex: state => state.filterSelectedIndex,
+    selectedSearchIndex: state => state.selectedSearchIndex,
     oneQuranFile: state => state.oneQuranFile,
     tableQuranIndex: state => state.tableQuranIndex,
     scrollTrigger: state => state.scrollTrigger,
     drawerState: state => state.drawerState,
-    numberInfoShow: state => state.numberInfoShow,
+    activeView: state => state.activeView,
     activeTab: state => state.activeTab,
-    selectedInput: state => state.selectedInput
-
+    selectedSearch: state => {
+      var obj = {}
+      state.filteredSearch.map((item) => {
+        if (item.isSelected) obj = item
+      })
+      return obj
+    }
   },
   mutations: {
+    clearState (state) {
+      var newState = []
+      Object.keys(state).forEach(key => {
+        newState[key] = null
+      })
+      state.replaceState(newState)
+    },
     setActiveTab (state, activeTab) {
       state.activeTab = activeTab
     },
-    setNumberInfoShow (state, numberInfoShow) {
-      state.numberInfoShow = numberInfoShow
+    setActiveView (state, activeView) {
+      state.activeView = activeView
     },
     setScrollTrigger (state) {
-      state.scrollTrigger = false
+      state.scrollTrigger = !state.scrollTrigger
     },
     setTarget (state, target) {
-      var suraNumber = parseInt(target.fileName, 10)
-      var value = { fileName: target.fileName, verseIndex: target.verseIndex, suraNumber: suraNumber }
+      var value = { fileName: target.fileName, verseIndex: target.verseIndex }
+      state.target = value
+    },
+    resetTarget (state) {
+      var value = { fileName: '001الفاتحة', verseIndex: null }
       state.target = value
     },
     setFilterSelectedIndex (state, index) {
-      state.filterSelectedIndex = index
+      state.selectedSearchIndex = index
+      state.filteredSearch.map((item, insideIndex) => {
+        if (insideIndex === index) item.isSelected = true
+        else { item.isSelected = false }
+      })
+    },
+    setFilterSelectedSearch (state) {
+      if (!state.filteredSearch[state.selectedSearchIndex]) return
+      state.filteredSearch[state.selectedSearchIndex].isSelected = true
+    },
+    resetFilterSelectedSearch (state) {
+      return state.filteredSearch.filter((item) => {
+        item.isSelected = false
+      })
     },
     resetFilterSelectedIndex (state) {
-      state.filterSelectedIndex = 0
+      state.selectedSearchIndex = 0
     },
     resetSuras (state) {
       state.suras = {}
     },
-    setFilteredSearch (state, filteredSearch) {
+    setFilteredSearchItem (state, filteredSearch) {
+      state.filteredSearch.map((item) => {
+        item.isSelected = false
+      })
       state.filteredSearch.push(filteredSearch)
+    },
+    addToAdvancedSearch (state, item) {
+      state.filteredSearch.map((result, index) => {
+        if (result.isSelected) {
+          state.filteredSearch[index].result.push(item)
+        }
+      })
+    },
+    delelteFromAdvancedSearch (state, verseNumberToQuran) {
+      state.filteredSearch.map((result, index) => {
+        if (result.isSelected) {
+          console.log(verseNumberToQuran)
+          state.filteredSearch[index].result =
+          state.filteredSearch[index].result.filter((item) => {
+            return item.verseNumberToQuran !== verseNumberToQuran
+          })
+        }
+      })
     },
     resetFilteredItems (state) {
       state.filteredSearch = []
@@ -84,9 +132,6 @@ export default new Vuex.Store({
     },
     setSuraChartData (state, suraChartData) {
       state.suras[state.target.fileName].suraChartData = suraChartData.suraChartData
-    },
-    setSelectedInput (state, selectedInput) {
-      state.selectedInput = selectedInput
     }
   },
   actions: {

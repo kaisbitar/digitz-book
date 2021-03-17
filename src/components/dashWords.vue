@@ -1,63 +1,66 @@
 <template>
   <label>
-    <v-row class="pl-6 pr-6 d-flex" >
-      <div class="webKitWidth">
-        <chart
-          class="mr-2 pa-0 ml-2 webKitWidth lettersChart"
-          :dataType="'letters'"
-          :series="seriesC"
-          :isLoading="isLoading"
-          :options="options"
-          :includeTab="true"
-          :height="chartHeight"
-        />
-      </div>
-      <v-row>
-        <dashLabels
-          :detailElement="detailElement"
-          :detailCount="detailCount"
-          :isLoading="isLoading"
-          :showPosition="false"
-        />
-        <tableOccurrences
-        :tableData="occurrences"
-        :dataType="dataType"
-        :tableHeaders="tableHeaders"
-        :footerProps="footerProps"
+    <div class="mt-5">
+      <dashLabels
+        class="dashLabelsWrap "
+        :detailElement="detailElement"
+        :detailCount="detailCount"
         :isLoading="isLoading"
-        :groupBy="groupBy"
-        @rowClicked="rowClickedActions"
-        :initialWord="detailElement"
+        :showPosition="false"
       />
+      <glChart
+        class="ml-auto pa-0 ml-2 webKitWidth lettersChart mb-n6"
+        :dataType="'letters'"
+        :series="seriesC"
+        :isLoading="isLoading"
+        :options="options"
+        :height="100"
+      />
+      <h5 class="text-center mt-n6">المواقع</h5>
+    </div>
+    <div class="d-flex">
+    <tableOccurrences
+      class=" wordsTable"
+      :tableData="occurrences"
+      :dataType="'كلمة'"
+      :tableHeaders="tableHeaders"
+      :footerProps="footerProps"
+      :isLoading="isLoading"
+      :groupBy="groupBy"
+      @rowClicked="rowClickedActions"
+      :detailElement="detailElement"
+      :includeTab="includeTab"
+    />
+      <!-- <p>مواقع {{detailElement}} في {{fileName.replace(/[0-9]/g, '')}}</p> -->
 
-     </v-row>
-    </v-row>
+  </div>
   </label>
 </template>
 
 <script>
 import dashLabels from './dashLabels.vue'
 import tableOccurrences from './tableOccurrences.vue'
-import chart from './chart.vue'
+import glChart from './glChart.vue'
 import { detailMixin } from '../mixins/detailMixin'
 import chartOptions from '../assets/wordChartOptions.js'
 
 export default {
   name: 'dashWords',
   mixins: [detailMixin],
-  props: ['numberOfWords', 'indexes'],
+  props: ['indexes'],
   components: {
     dashLabels,
     tableOccurrences,
-    chart
+    glChart
   },
   data: () => ({
     dataType: 'words',
     options: chartOptions,
     tableHeaders: [
-      { text: 'كلمة', value: 'x', class: ' lighten-4 black--text' }
+      { text: '', value: 'x', class: ' lighten-4 black--text' }
     ],
     wordsGroup: null,
+    numberOfWords: 0,
     seriesC: []
   }),
   methods: {
@@ -78,23 +81,20 @@ export default {
       this.seriesC = [{ data: points }]
     },
     setXaxis () {
-      var x = {}
-      x.title = {
-        offsetY: 9,
-        text: 'المواقع',
-        style: {
-          fontSize: '18px',
-          fontFamily: '"Tajawal", sans-serif !important'
-        }
-      }
-      x.max = this.numberOfWords
-      x.min = 1
-      x.tickAmount = undefined
-      x.tickPlacement = 'between'
-      this.options = {
-        ...this.options,
-        ...{ xaxis: x }
-      }
+      // console.log(Object.keys(this.indexes).length)
+      // if (!this.indexes) return
+      // var x = {}
+      // x.max = Object.keys(this.indexes).length
+      // x.min = 0
+      // x.offsetX = -3
+      // x.labels = { show: true }
+      // x.axisTicks = { show: true }
+      // x.tickAmount = undefined
+      // x.tickPlacement = 'between'
+      // this.options = {
+      //   ...this.options,
+      //   ...{ xaxis: x }
+      // }
     },
     setToolTip () {
       var x = {
@@ -132,10 +132,6 @@ export default {
         occ.push({ x: key, y: value })
       }
       return occ
-    },
-    chartHeight () {
-      var heightDif = this.windowHeight - 450
-      return heightDif
     }
   },
   watch: {
@@ -146,10 +142,15 @@ export default {
       this.highlightOnChart(this.indexes[this.occurrences[0].x], 0)
     }
   },
-  mounted () {},
-  created () {
+  mounted () {
+    if (!this.indexes) return
     this.setXaxis()
     this.setToolTip()
+    this.setInitialItem()
+    this.highlightOnChart(this.indexes[this.detailElement], 0)
+  },
+  created () {
+
   }
 }
 </script>
@@ -161,13 +162,9 @@ export default {
 .table {
   max-width: 268px;
 }
-.v-select__selection.v-select__selection--comma {
-  display: none;
-}
-.v-input.v-input--hide-details.v-input--is-label-active.v-input--is-dirty.theme--light.v-text-field.v-text-field--is-booted.v-select {
-  margin-right: -60px;
-}
-.v-application--is-rtl .v-data-table--fixed-header .v-data-footer {
-  margin-left: 0;
+
+.wordsTable{
+  width: 400px;
+  margin-top: 13px;
 }
 </style>

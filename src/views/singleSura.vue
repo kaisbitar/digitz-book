@@ -1,7 +1,7 @@
 <template>
   <div class="compWrapper">
     <v-row>
-      <suraTextInfoBasic
+      <glTitle
         class="pr-3"
         :numberOfVerses="numberOfVerses"
         :numberOfWords="numberOfWords"
@@ -9,32 +9,28 @@
         :title="fileName"
         @arrowClick="setTargetFromArrow"
       />
-      <div class="charSwitch">
-        <v-card @click="getView()" outlined>
-          <div class="grey lighten-4 d-flex">
-            <div
-              class="switchLabel"
-              :class="[{ active: view === 'suraChart' }]"
-            >تفصيل
-            </div>
-          </div>
-        </v-card>
-      </div>
+      <suraTextSearchResults
+        v-if="activeView === 'suraText'"
+        :selectedVerse="suraTargetedVerse"
+        :inputText="inputText"
+        :suraTextArray="suraTextArray"
+        style="max-width:641px"
+      />
     </v-row>
     <keepAlive>
       <suraText
-        v-if="view === 'suraText'"
+        v-if="activeView === 'suraText'"
         :inputText="inputText"
         :suraTargetedVerse="suraTargetedVerse"
         :numberOfVerses="numberOfVerses"
         :numberOfWords="numberOfWords"
         :numberOfLetters="numberOfLetters"
-        :suraTextarray="suraTextarray"
+        :suraTextArray="suraTextArray"
         :isLoading="isLoading"
     /></keepAlive>
     <keepAlive>
       <dashbord
-        v-if="view === 'suraChart' && details"
+        v-if="activeView === 'suraChart' && details"
         :title="fileName"
         :numberOfVerses="numberOfVerses"
         :numberOfWords="numberOfWords"
@@ -44,7 +40,7 @@
         :letterSeries="letterSeries"
         :wordsSeries="wordsSeries"
         :versesSeries="versesSeries"
-        :suraTextarray="suraTextarray"
+        :suraTextArray="suraTextArray"
         :versesBasics="versesBasics"
         :activeTab="activeTab"
         :inputText="inputText"
@@ -53,28 +49,30 @@
 </template>
 
 <script>
-import suraText from '../components/suraText.vue'
-import dashbord from '../components/dashbord.vue'
-import suraTextInfoBasic from '../components/suraTextInfoBasic'
+import suraText from '../components/suraText'
+import dashbord from '../components/dashbord'
+import glTitle from '../components/glTitle'
 import { appMixin } from '../mixins/mixins'
+import suraTextSearchResults from '../components/suraTextSearchResults'
 
 export default {
   name: 'singleSura',
   mixins: [appMixin],
+  props: ['activeView'],
   components: {
     suraText,
     dashbord,
-    suraTextInfoBasic
+    glTitle,
+    suraTextSearchResults
   },
   data: () => ({
-    suraTextarray: [],
+    suraTextArray: [],
     versesBasics: [],
     isLoading: false,
     view: 'suraChart',
     numberOfVerses: null,
     numberOfWords: null,
     numberOfLetters: null,
-    iconColor: 'grey',
     details: {},
     letterSeries: [],
     wordsSeries: [],
@@ -84,26 +82,34 @@ export default {
     activeTab () {
       return this.$store.getters.activeTab
     },
-    filteredSearch () {
-      return this.$store.getters.filteredSearch
+    selectedSearch () {
+      if (!this.$store.getters.selectedSearch) return
+      return this.$store.getters.selectedSearch
     },
-    filterSelectedIndex () {
-      return this.$store.getters.filterSelectedIndex
+    selectedSearchIndex () {
+      if (!this.selectedSearch) return
+      return this.$store.getters.selectedSearchIndex
     },
     inputText () {
-      return this.$store.getters.selectedInput
+      if (!this.selectedSearch) return null
+      return this.selectedSearch.inputText
     },
     suraTargetedVerse () {
+      if (!this.$store.getters.target) return 1
+      if (!this.$store.getters.target.verseIndex) return 1
       return this.$store.getters.target.verseIndex
     },
     fileName () {
+      if (!this.$store.getters.target) return '001الفاتحة'
       return this.$store.getters.target.fileName
+    },
+    suraNumber () {
+      if (!this.$store.getters.target) return 1
+      var suraNumber = parseInt(this.$store.getters.target.fileName.replaceAll(/^\D+/g, ''))
+      return suraNumber
     },
     tableQuranIndex () {
       return this.$store.getters.tableQuranIndex
-    },
-    suraNumber () {
-      return this.$store.getters.target.suraNumber
     },
     suraBasics () {
       if (this.fileName === null) {
@@ -113,7 +119,7 @@ export default {
     }
   },
   methods: {
-    fetchSuraBasics () {
+    setSuraBasics () {
       this.numberOfVerses = this.suraBasics.numberOfVerses
       this.numberOfWords = this.suraBasics.numberOfWords
       this.numberOfLetters = this.suraBasics.numberOfLetters
@@ -141,7 +147,7 @@ export default {
           verseNumberToQuran: item.verseNumberToQuran,
           numberOfLetters: item.verseText.replace(/ /g, '').length,
           numberOfWords: item.verseText.split(' ').length,
-          fileName: item.fileName.replace(/[0-9]/g, ''),
+          fileName: item.fileName,
           verseIndex: item.verseIndex,
           verseText: item.verseText
         }
@@ -163,7 +169,7 @@ export default {
       suraText = suraText.filter(function (element) {
         return element !== undefined
       })
-      this.suraTextarray = suraText
+      this.suraTextArray = suraText
       this.versesBasics = versesBasics
       if (this.fileName === '000المصحف') {
         this.fetchMushafChartData()
@@ -171,15 +177,6 @@ export default {
       }
       this.letterSeries = [{ data: letters }]
       this.wordsSeries = [{ data: words }]
-    },
-    getView () {
-      if (this.view === 'suraText') {
-        this.iconColor = 'info'
-        this.view = 'suraChart'
-        return
-      }
-      this.iconColor = 'grey'
-      this.view = 'suraText'
     },
     fetchMushafChartData () {
       this.wordsSeries = this.getMushafSeries('numberOfWords')
@@ -198,15 +195,17 @@ export default {
   },
   watch: {
     fileName () {
-      this.fetchSuraBasics()
+      this.setSuraBasics()
       this.fetchSuraDetails()
       this.perpareSuraData()
     }
   },
   mounted () {
-    this.fetchSuraBasics()
+    this.setSuraBasics()
     this.fetchSuraDetails()
     this.perpareSuraData()
+  },
+  created () {
   }
 }
 </script>

@@ -1,18 +1,11 @@
 <template>
   <div>
-    <v-text-field
-      :label="'ابحث ' + dataType"
-      v-model="search"
-      append-icon="mdi-magnify"
-      class="mb-1 mr-1 pa-3 searchField rounded mt-1"
-      background-color="grey lighten-5 mb-0"
-      single-line
-      hide-details
-      autofocus
-      clearable
-      clear-icon="mdi-close"
-      @click:close="collapseHeaders()"
-    ></v-text-field>
+    <glSearchBox
+      @searchChanged="searchChanged"
+      @matchChanged="matchChanged"
+      :inputText="search"
+      :dataType="dataType"
+    />
     <v-data-table
       :items="tableData"
       :headers="tableHeaders"
@@ -43,12 +36,12 @@
             <span class="mr-4"> ({{items.length}} كلمة)</span>
         </div>
       </template>
-
+      <!-- :class="{ active: props.item.x === selectedId }" -->
       <template v-slot:item="props">
         <v-chip
           @click="$emit('rowClicked', props.index, props.item)"
-          :class="{ active: props.item.x === selectedId }"
           class="indexItem text-right pa-2 ma-1"
+          :class="{ 'orange lighten-4 font-weight-bold': props.item.x === detailElement }"
           label
           v-html="highlight(props.item.x , search)"
         >
@@ -68,7 +61,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 .groupHeader {
   height: 26px;
   font-weight: bold;

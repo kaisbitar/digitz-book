@@ -7,7 +7,7 @@
         <v-radio value="letters" label="حروف" color="blue"></v-radio>
       </v-radio-group>
     </v-row>
-    <chart
+    <glChart
       :isLoading="isLoading"
       :series="view === 'letters' ? letterSeries : wordsSeries"
       :options="options"
@@ -18,11 +18,11 @@
 
 <script>
 import chartOptions from '../assets/frequecyOptions'
-import chart from '../components/chart.vue'
+import glChart from '../components/glChart.vue'
 
 export default {
   name: 'dashFrequency',
-  components: { chart },
+  components: { glChart },
   props: ['height', 'isLoading', 'letterSeries', 'wordsSeries', 'versesText'],
   data: () => ({
     options: chartOptions,
@@ -42,6 +42,7 @@ export default {
       return this.$store.getters.tableQuranIndex
     },
     fileName () {
+      if (!this.$store.getters.target) return
       return this.$store.getters.target.fileName
     }
   },

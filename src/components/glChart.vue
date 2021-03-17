@@ -23,7 +23,7 @@
 <script>
 import VueApexCharts from 'vue-apexcharts'
 export default {
-  name: 'Chart',
+  name: 'glChart',
   props: ['height', 'options', 'series', 'isLoading', 'includeTab'],
   components: { apexchart: VueApexCharts },
   data: () => ({

@@ -14,28 +14,29 @@
       />
     </v-card>
 
-    <div class=" pt-12 webKitWidth" outlined>
+    <div class=" pt-5 webKitWidth" outlined>
       <v-tabs class="" v-model="tab" background-color="mt-n5 pr-1 pl-2" centered>
-        <v-tab class="dashTabs body-1" href="#tab-1"><span class="caption ml-1">آية</span>{{verseIndex}}</v-tab>
-        <v-tab class="dashTabs body-1" href="#tab-2">{{numberOfWords}}<span class="caption mr-1">كلمة </span></v-tab>
-        <v-tab class="dashTabs body-1" href="#tab-3">{{numberOfLetters}}<span class="caption mr-1"> حرف </span></v-tab>
-        <v-tab class="dashTabs body-1" href="#tab-3" disabled>{{verseNumberToQuran}}<span class="caption"> مصحف </span></v-tab>
+        <v-tab class="dashTabs" href="#tab-1"><span class=" ml-1">آية</span>{{verseIndex}}</v-tab>
+        <v-tab class="dashTabs" href="#tab-2">{{numberOfWords}}<span class=" mr-1">كلمة </span></v-tab>
+        <v-tab class="dashTabs" href="#tab-3">{{numberOfLetters}}<span class=" mr-1"> حرف </span></v-tab>
+        <v-tab class="dashTabs" href="#tab-3" disabled>{{verseNumberToQuran}}<span class=""> مصحف </span></v-tab>
       </v-tabs>
     <v-tabs-items v-model="tab">
-      <v-tab-item value="tab-1">
+      <v-tab-item value="tab-1" class="labelsWrapper">
         <dashVersesLabels
           v-if="versesBasics"
-          class="ml-2 mb-2"
+          class="ml-2 mb-2 "
           :verseIndex="verseIndex"
           :verseNumberToQuran="verseNumberToQuran"
           :numberOfLetters="numberOfLetters"
           :numberOfWords="numberOfWords"
           :verseText="verseText"
           :inputText="inputText"
+          :secondInput="secondInput"
           :suraName="suraName"
         />
         <div class="d-flex">
-          <chart
+          <glChart
             class="webKitWidth"
             :isLoading="isLoading"
             :series="verseChart"
@@ -44,7 +45,6 @@
           />
         </div>
       </v-tab-item>
-
       <v-tab-item value="tab-2">
         <dashWords
           class="chartRow"
@@ -53,6 +53,7 @@
           :indexes="wordIndexes"
           :suraText="verseText"
           :isLoading="isLoading"
+          :includeTab="true"
         />
       </v-tab-item>
       <v-tab-item value="tab-3">
@@ -78,7 +79,7 @@
 
 <script>
 import chartOptions from '../assets/frequecyOptions'
-import chart from '../components/chart.vue'
+import glChart from '../components/glChart.vue'
 import dashWords from './dashWords.vue'
 import dashLetters from './dashLetters.vue'
 import tableVerses from './tableVerses.vue'
@@ -86,15 +87,16 @@ import dashVersesLabels from './dashVersesLabels'
 export default {
   name: 'dashVerses',
   props: ['versesBasics', 'isLoading', 'inputText'],
-  components: { tableVerses, dashVersesLabels, chart, dashWords, dashLetters },
+  components: { tableVerses, dashVersesLabels, glChart, dashWords, dashLetters },
   data: () => ({
     index: 1,
     tableHeaders: [
-      { text: 'السورة', value: 'fileName', class: 'lighten-4 black--text', width: '90', filterable: false },
+      { text: 'السورة', value: 'fileName', class: 'lighten-4 black--text', width: '90', sortable: false },
       { text: 'رقم', value: 'verseIndex', class: 'lighten-4 black--text', width: '69' },
-      { text: 'الآية', value: 'verseText', class: 'lighten-4 black--text', width: '245', align: 'center' },
+      { text: 'الآية', value: 'verseText', class: 'lighten-4 black--text', width: '274', align: 'center' },
       { text: 'كلمات', value: 'numberOfWords', class: 'lighten-4 black--text' },
-      { text: 'حروف', value: 'numberOfLetters', class: 'lighten-4 black--text' }
+      { text: 'حروف', value: 'numberOfLetters', class: 'lighten-4 black--text' },
+      { text: 'مصحف', value: 'verseNumberToQuran', class: 'lighten-4 black--text' }
     ],
     verses: [],
     verseChart: [],
@@ -110,12 +112,21 @@ export default {
     footerProps: { 'items-per-page-text': '' },
     windowHeight: window.innerHeight,
     tab: 'tab-1',
-    wordIndexes: {}
+    wordIndexes: {},
+    secondInput: ''
   }),
   computed: {
     height () {
       var heightDif = this.windowHeight - 385
       return heightDif
+    },
+    targetFileName () {
+      if (!this.$store.getters.target) return
+      return this.$store.getters.target.fileName
+    },
+    targetVerseIndex () {
+      if (!this.$store.getters.target) return
+      return this.$store.getters.target.verseIndex
     }
   },
   methods: {
@@ -137,12 +148,27 @@ export default {
       this.selectedId = item.verseNumberToQuran.toString()
       this.verseIndex = item.verseIndex
       this.verseNumberToQuran = item.verseNumberToQuran
-      this.numberOfLetters = item.numberOfLetters
-      this.numberOfWords = item.numberOfWords
+      this.numberOfLetters = item.verseText.replace(/ /g, '').length.toString()
+      this.numberOfWords = item.verseText.split(' ').length.toString()
       this.verseText = item.verseText
       this.suraName = item.fileName.replace(/[0-9]/g, '')
       this.perpareChartData(item)
       this.getWordIndexes()
+      this.setTarget(item)
+    },
+    setOnLoadVerseId () {
+      // this.selectedId = 298
+      // var item = this.versesBasics.filter((item) => {
+      //   if (item.verseNumberToQuran === this.selectedId) { return item }
+      // })
+      // console.log(item)
+    },
+    setTarget (item) {
+      this.suraName = item.fileName.replace(/[0-9]/g, '')
+      this.suraNumber = item.fileName.replace(/[ء-٩]/g, '').replace(/\s/g, '')
+      var fileName = this.suraNumber + this.suraName
+      var target = { fileName: fileName, verseIndex: item.verseIndex }
+      this.$store.commit('setTarget', target)
     },
     perpareChartData (item) {
       var wordsArr = item.verseText.split(' ')
@@ -174,7 +200,7 @@ export default {
       var xaxis = {
         labels: { show: true },
         title: {
-          offsetY: -5,
+          offsetY: 0,
           text: 'تواتر الحروف',
           style: {
             fontSize: '12px'
@@ -185,7 +211,7 @@ export default {
           maxTicksLimit: 1,
           interval: 1
         },
-        tickAmount: 2,
+        tickAmount: 1,
         tickPlacement: 'between'
       }
       this.options = {
@@ -199,6 +225,12 @@ export default {
         type: 'area',
         toolbar: {
           show: false
+        },
+        events: {
+          mouseMove: (event, chartContext, config) => {
+            var arr = this.verseText.split(' ')
+            this.secondInput = arr[config.dataPointIndex]
+          }
         }
       }
       this.options = {
@@ -235,10 +267,11 @@ export default {
         this.setNoResults()
         return
       }
+      this.setOnLoadVerseId()
       this.setVerse()
       this.setToolTip()
       this.setChart()
-      // this.setDataLabels()
+      this.setDataLabels()
       this.setXaxis()
     }
   },
@@ -249,9 +282,9 @@ export default {
       this.setNoResults()
       return
     }
-    this.setVerse()
+    this.setOnLoadVerseId()
     this.setToolTip()
-    // this.setDataLabels()
+    this.setDataLabels()
     this.setChart()
     this.setXaxis()
     this.getWordIndexes()
@@ -265,8 +298,13 @@ tr.v-data-table__selected {
 }
 .dashTabs{
   height: 35px;
+  letter-spacing: 0px;;
 }
 .v-slide-group__content.v-tabs-bar__content {
     height: 35px;
+}
+.labelsWrapper{
+  /* max-height: 333px;
+  overflow-y: scroll; */
 }
 </style>

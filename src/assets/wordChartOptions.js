@@ -1,6 +1,5 @@
 var chartOptions = {
   chart: {
-    offsetY: -10,
     type: 'area',
     toolbar: {
       show: false

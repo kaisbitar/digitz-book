@@ -1,13 +1,13 @@
 <template>
   <label>
-    <v-tabs v-model="tab" background-color="grey lighten-4 mt-0 pr-1 pl-2" centered>
-      <v-tab class="body-1" href="#tab-1">بيان</v-tab>
-      <v-tab class="body-1" href="#tab-2">جدول</v-tab>
+    <v-tabs v-model="tab" background-color="mt-0 pr-1 pl-2" centered>
+      <v-tab class="dashTabs" href="#tab-1">بيان</v-tab>
+      <v-tab class="dashTabs" href="#tab-2">جدول</v-tab>
     </v-tabs>
     <v-tabs-items v-model="tab">
       <v-tab-item value="tab-1">
         <div class="webKitWidth">
-          <chart
+          <glChart
             class="mr-1 pa-0 ml-2 webKitWidth lettersChart"
             :dataType="'letters'"
             :series="series"
@@ -48,14 +48,14 @@
 
 <script>
 import dashLabelsPositions from './dashLabelsPositions.vue'
-import chart from './chart.vue'
+import glChart from './glChart.vue'
 import chartOptions from '../assets/numbersOptions.js'
 import tableOccurrences from './tableOccurrences.vue'
 import { detailMixin } from '../mixins/detailMixin'
 
 export default {
   name: 'letterDetails',
-  components: { dashLabelsPositions, chart, tableOccurrences },
+  components: { dashLabelsPositions, glChart, tableOccurrences },
   mixins: [detailMixin],
   data: () => ({
     dataType: 'letters',
@@ -109,6 +109,7 @@ export default {
       for (const [key, value] of Object.entries(this.indexes)) {
         this.occurrences.push({ x: key, y: value.length })
       }
+      this.occurrences.sort((a, b) => (a.y > b.y) ? 1 : -1)
     }
   },
   computed: {
@@ -150,8 +151,12 @@ export default {
 .tableStyle .indexItem.text-right {
     background: #f2f2f233;
 }
-.searchField {
+.dashSearchField {
   width: 150px;
+  margin-bottom: -22px;
+  z-index: 3;
+  position: relative;
+  PADDING-left: 0PX !important;
 }
 .tableStyle td {
   border: none !important;

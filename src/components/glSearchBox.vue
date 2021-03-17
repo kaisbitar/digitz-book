@@ -1,10 +1,10 @@
 <template>
-  <v-card flat class="searchBoxCollection d-flex">
+  <v-card flat class="glSearchBox d-flex">
     <v-text-field
       :label="'ابحث ' + dataType"
       v-model="search"
       append-icon="mdi-magnify"
-      class="mb-0 pa-0 searchField"
+      class="mb-0 pa-0 "
       background-color=""
       single-line
       hide-details
@@ -12,8 +12,9 @@
       clearable
     >
       <template v-slot:prepend>
-        <span @click="matchAll = !matchAll, matchChanged()"
+        <span  @click="matchAll = !matchAll, matchChanged()"
           ><v-icon
+            v-if="search"
             :color="matchAll === false ? 'grey lighten-1' : 'blue'"
             class="mt-1"
           >
@@ -22,21 +23,13 @@
         >
       </template>
     </v-text-field>
-    <div>
-      <v-icon
-        :color="showDetail === false ? 'grey' : 'blue'"
-        @click="showDetail = !showDetail, showChanged()"
-        class="mt-6 mb-1 mr-3"
-      >
-        mdi-dots-horizontal
-      </v-icon>
-    </div>
+
   </v-card>
 </template>
 
 <script>
 export default {
-  name: 'searchBoxCollection',
+  name: 'glSearchBox',
   props: ['dataType', 'inputText'],
   components: {},
   data: () => ({
@@ -50,15 +43,12 @@ export default {
       var arr = []
       arr[0] = this.search
       arr[1] = this.matchAll
-      this.$emit('matchanged', arr)
-    },
-    showChanged () {
-      this.$emit('showChanged', this.showDetail)
+      this.$emit('matchChanged', arr)
     }
   },
   watch: {
     search () {
-      this.$emit('searChanged', this.search)
+      this.$emit('searchChanged', this.search)
     },
     inputText () {
       this.search = this.inputText
@@ -74,7 +64,10 @@ export default {
 </script>
 
 <style>
-.searchBoxCollection{
-    width: 323px;
+.glSearchBox {
+  width: 219px;
+  position: relative;
+  z-index: 5;
+  background: #7fffd400 !important;
 }
 </style>

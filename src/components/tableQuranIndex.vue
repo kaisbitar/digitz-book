@@ -32,7 +32,7 @@
         :height="'84vh'"
         fixed-header
         hide-default-footer
-        class="tableStyle indexStyle"
+        class="tableStyle indexStyle "
         id="indexBlock"
       >
         <template v-slot:item="props">
@@ -114,9 +114,8 @@ export default {
       return this.$store.getters.tableQuranIndex
     },
     fileName () {
-      return this.$store.state.target.fileName
+      return this.$store.getters.target.fileName
     }
-
   },
   methods: {
     suraName (fileName) {
@@ -133,21 +132,15 @@ export default {
       if (this.$router.currentRoute.name !== 'singleSura') {
         this.$router.push({ name: 'singleSura' })
       }
+      this.$store.commit('setFilterSelectedIndex', -1)
+      this.$store.commit('resetFilterSelectedSearch')
     },
     scrollToIndex () {
       setTimeout(() => {
         this.$vuetify.goTo('.active', {
-          container: '.v-data-table__wrapper',
-          options: this.scrollOptions
+          container: '.v-data-table__wrapper'
         })
       }, 10)
-    },
-    scrollOptions () {
-      return {
-        duration: 1,
-        offset: 2,
-        easing: 'easing'
-      }
     },
     highlight (text, search) {
       if (!text) return
@@ -168,13 +161,13 @@ export default {
       this.loading = false
       return
     }
-    this.selectedId = this.$store.state.target.fileName
+    this.selectedId = this.fileName
     this.scrollToIndex(this.selectedId)
     this.loading = false
   },
   watch: {
     fileName () {
-      this.selectedId = this.$store.state.target.fileName
+      this.selectedId = this.fileName
       this.scrollToIndex(this.selectedId)
     },
     search () {
@@ -207,7 +200,7 @@ th {
   background: #0000000f !important;
   opacity: 0.7;
 }
-.active {
+.active, .active2{
   color: black !important;
   font-weight: 500 !important;
   background: #efebe9 !important;
@@ -221,6 +214,7 @@ th {
 }
 #indexBlock .v-data-table--fixed-header > .v-data-table__wrapper {
   overflow-x: hidden !important;
+  /* margin-left: -11px; */
 }
 .searchWrap{
   width: 220px;

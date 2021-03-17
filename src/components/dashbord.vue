@@ -17,7 +17,7 @@
           :isLoading="isLoading"
           :letterSeries="letterSeries"
           :wordsSeries="wordsSeries"
-          :versesText="suraTextarray"
+          :versesText="suraTextArray"
           :height="height"
       /></keep-alive>
       <keep-alive
@@ -27,7 +27,7 @@
           :numberOfWords="numberOfWords"
           :numberOfLetters="numberOfLetters"
           :indexes="wordIndexes"
-          :suraText="suraTextarray.join(' ')"
+          :suraText="suraTextArray.join(' ')"
           :isLoading="isLoading"
       /></keep-alive>
       <keep-alive
@@ -36,7 +36,7 @@
           v-if="activeTab === 'numberOfLetters'"
           :numberOfWords="numberOfWords"
           :numberOfLetters="numberOfLetters"
-          :suraText="suraTextarray.join('')"
+          :suraText="suraTextArray.join('')"
           :isLoading="isLoading"
       /></keep-alive>
       <keep-alive
@@ -76,7 +76,7 @@ export default {
     'wordIndexes',
     'letterSeries',
     'wordsSeries',
-    'suraTextarray',
+    'suraTextArray',
     'versesBasics',
     'activeTab'
   ],
@@ -105,7 +105,6 @@ export default {
   watch: {},
   created () {},
   mounted () {
-    this.$store.commit('setNumberInfoShow', false)
   }
 }
 </script>
@@ -140,6 +139,9 @@ export default {
   margin-right: 395px;
   margin-top: -66px;
   margin-bottom: 16px;
+}
+a.dashTabs.v-tab--active {
+    background: aliceblue;
 }
 @media (max-width: 978px) {
   .dashboardTab {
