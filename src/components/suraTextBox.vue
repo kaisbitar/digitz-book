@@ -26,7 +26,7 @@
         <div v-else class="d-inline">{{ item }}</div>
       </div>
     </div>
-    <v-row justify="center">
+    <v-row justify="center" class="suraTextSearchResults">
       <v-overlay
         color="white"
         :absolute="true"
@@ -94,7 +94,8 @@ export default {
   filters: {
     highlightVerse: function (text, value) {
       if (value === null) return text
-      var qurey = new RegExp(value, 'gi')
+      text = text.replace(/[\u064b-\u064f\u0650-\u0652]/g, '')
+      var qurey = new RegExp(value, 'ig')
       return text.replace(qurey, (match) => {
         return '<span class="orange accent-1">' + match + '</span>'
       })
@@ -120,7 +121,7 @@ export default {
 }
 .numChip {
   /* brown lighten-5 */
-  width: 41px;
+  /* width: 41px; */
   background: #efebe9;
   margin-left: 6px;
   padding-right: 12px;
@@ -134,5 +135,10 @@ export default {
   color: white !important;
   /* grey darken-1 */
   background: #757575 !important;
+}
+@media (max-width:655px){
+  .suraTextSearchResults{
+    display: block;
+  }
 }
 </style>

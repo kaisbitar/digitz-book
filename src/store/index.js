@@ -1,12 +1,11 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
-import { fetchSuraDetails, fetchOneQuranFile, fetchtableQuranIndex } from '../api/api.js'
+import { fetchSuraDetails, fetchOneQuranFile, fetchtableQuranIndex, fetchAllVersesWithTashkeel } from '../api/api.js'
 
 Vue.use(Vuex)
-
-export default new Vuex.Store({
-  state: {
+function initialState () {
+  return {
     target: {
       fileName: '001الفاتحة',
       verseIndex: 1
@@ -20,14 +19,19 @@ export default new Vuex.Store({
     drawerState: true,
     activeTab: 'numberOfVerses',
     activeView: 'suraChart',
-    selectedSearch: []
-  },
+    selectedSearch: [],
+    updateDate: '04-18-2021'
+  }
+}
+export default new Vuex.Store({
+  state: initialState(),
   plugins: [createPersistedState({ })],
   getters: {
     target: state => state.target,
     filteredSearch: state => state.filteredSearch,
     selectedSearchIndex: state => state.selectedSearchIndex,
     oneQuranFile: state => state.oneQuranFile,
+    allVersesWithTashkeel: state => state.allVersesWithTashkeel,
     tableQuranIndex: state => state.tableQuranIndex,
     scrollTrigger: state => state.scrollTrigger,
     drawerState: state => state.drawerState,
@@ -43,11 +47,10 @@ export default new Vuex.Store({
   },
   mutations: {
     clearState (state) {
-      var newState = []
-      Object.keys(state).forEach(key => {
-        newState[key] = null
+      const s = initialState()
+      Object.keys(s).forEach(key => {
+        state[key] = s[key]
       })
-      state.replaceState(newState)
     },
     setActiveTab (state, activeTab) {
       state.activeTab = activeTab
@@ -94,14 +97,21 @@ export default new Vuex.Store({
       })
       state.filteredSearch.push(filteredSearch)
     },
-    addToAdvancedSearch (state, item) {
+    addToAdvancedSearch (state, itemsToAdd) {
       state.filteredSearch.map((result, index) => {
         if (result.isSelected) {
-          state.filteredSearch[index].result.push(item)
+          itemsToAdd.searchResults.map((item) => {
+            state.filteredSearch[index].result.push(item)
+          })
+          // state.filteredSearch[index].resultsCount = state.filteredSearch[index].result.length
+          var parentSearch = { text: itemsToAdd.search, result: itemsToAdd.searchResults.length }
+          if (!state.filteredSearch[index].parentSearch) state.filteredSearch[index].parentSearch = []
+          state.filteredSearch[index].parentSearch.push(parentSearch)
+          // = '+ ' + itemsToAdd.search + ' ' + itemsToAdd.searchResults.length + ' آية '
         }
       })
     },
-    delelteFromAdvancedSearch (state, verseNumberToQuran) {
+    deleteFromAdvancedSearch (state, verseNumberToQuran) {
       state.filteredSearch.map((result, index) => {
         if (result.isSelected) {
           console.log(verseNumberToQuran)
@@ -109,6 +119,7 @@ export default new Vuex.Store({
           state.filteredSearch[index].result.filter((item) => {
             return item.verseNumberToQuran !== verseNumberToQuran
           })
+          state.filteredSearch[index].resultsCount = state.filteredSearch[index].result.length
         }
       })
     },
@@ -120,6 +131,9 @@ export default new Vuex.Store({
     },
     setoneQuranFile (state, items) {
       state.oneQuranFile = items
+    },
+    setAllVersesWithTashkeel (state, items) {
+      state.allVersesWithTashkeel = items
     },
     setTableQuranIndex (state, items) {
       state.tableQuranIndex = items
@@ -138,11 +152,15 @@ export default new Vuex.Store({
     getQuranData ({ commit, state }) {
       if (state.oneQuranFile.length > 0) { return }
       const appApi = process.env.VUE_APP_API_URL
-      fetchOneQuranFile(appApi).then((items) => {
-        commit('setoneQuranFile', items)
+      fetchAllVersesWithTashkeel(appApi).then((items) => {
+        commit('setAllVersesWithTashkeel', items)
       }).then(() => {
-        fetchtableQuranIndex(appApi).then((data) => {
-          commit('setTableQuranIndex', data)
+        fetchOneQuranFile(appApi).then((items) => {
+          commit('setoneQuranFile', items)
+        }).then(() => {
+          fetchtableQuranIndex(appApi).then((data) => {
+            commit('setTableQuranIndex', data)
+          })
         })
       })
     },

@@ -58,7 +58,6 @@ export default {
 }
 .apexcharts-tooltip {
   direction: rtl;
-  font-family: '"Roboto", sans-serif !important';
 }
 .apexcharts-tooltip-text-label {
   margin-right: 6px;
@@ -71,15 +70,12 @@ export default {
   background: none !important;
   color: rgb(31, 31, 31);
   font-family: "Tajawal", sans-serif;
-  font-size: 19px;
-  font-weight: ٥00 !important;
-  white-space:normal;
+  font-size: 19px !important;
+  white-space:normal !important;
   max-width: 300px;
   background: #ffffff !important;
-  /* border-color: #000 !important; */
   border-top: 15px solid #efebe9 !important;
   box-shadow: -1px 1px 10px 0px #ccc;
-
 }
 .tipInfo2{
   border-top: 3px solid #4DB6AC !important;

@@ -47,6 +47,13 @@ export default {
     }
   },
   methods: {
+    prepareToolTipData () {
+      if (this.fileName === '000المصحف') {
+        this.setQuranToolTip()
+        return
+      }
+      this.setToolTip(this.versesText)
+    },
     setToolTip (toolTipText) {
       var x = {
         custom: ({ series, seriesIndex, dataPointIndex, w }) => {
@@ -66,16 +73,12 @@ export default {
         ...{ tooltip: x }
       }
     },
-    prepareToolTipData () {
-      if (this.fileName === '000المصحف') {
-        var quranToolTip = this.quranIndex.map((item) => {
-          return item.fileName.replace(/[0-9]/g, '')
-        })
-        quranToolTip.shift()
-        this.setToolTip(quranToolTip)
-        return
-      }
-      this.setToolTip(this.versesText)
+    setQuranToolTip () {
+      var quranToolTip = this.quranIndex.map((item) => {
+        return item.fileName.replace(/[0-9]/g, '')
+      })
+      quranToolTip.shift()
+      this.setToolTip(quranToolTip)
     }
   },
   watch: {

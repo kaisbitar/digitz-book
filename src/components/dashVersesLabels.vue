@@ -21,7 +21,7 @@
     </div>
     <v-card class="textShadow grey lighten-5 verseText pa-3 ma-auto mt-3" outlined>
       <span
-        class="textWrap grey--text text--darken-3 font-weight-light"
+        class="textWrap grey--text text--darken-3"
         v-html="highlight(verseText, highlighted)"
       ></span>
     </v-card>

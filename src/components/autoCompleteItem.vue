@@ -1,7 +1,6 @@
 <template>
-  <div style="display: contents">
-    <v-checkbox class="mt-6" v-model="checked" @change="toggleChecked()"></v-checkbox>
-    <template @click="handleClick()">
+  <div style="display: contents" @click="handleClick()">
+    <!-- <label > -->
       <v-chip
         label
         small
@@ -28,7 +27,7 @@
         >
         </v-list-item-subtitle>
       </v-list-item-content>
-    </template>
+    <!-- </label> -->
   </div>
 </template>
 
@@ -37,57 +36,41 @@ import { appMixin } from '../mixins/mixins'
 
 export default {
   name: 'autoCompleteItem',
-  props: ['item', 'inputText', 'selectedVerses'],
+  props: ['item', 'inputText'],
   mixins: [appMixin],
   components: {},
   data: () => ({
-    checked: false
   }),
   computed: {},
   methods: {
     handleClick () {
+      var suraNumber = this.item.fileName.replace(/[ء-٩]/g, '').replace(/\s/g, '')
+      var suraName = this.item.fileName.replace(/[0-9]/g, '')
       var target = {
-        fileName: this.item.fileName,
+        fileName: suraNumber + suraName,
         verseIndex: this.item.verseIndex
       }
       this.$store.commit('setTarget', target)
-    },
-    toggleChecked () {
-      if (this.checked) {
-        this.$emit('selected')
-        return
-      }
-      this.$emit('deselected')
+      this.$emit('clicked')
     }
   },
   watch: {
-    // selectedVerses () {
-    //   this.selectedVerses.map((index) => {
-    //     if (index === this.item.verseNumberToQuran) {
-    //       this.checked = true
-    //       return
-    //     }
-    //     this.checked = false
-    //   })
-    // }
   },
   created () {
 
   },
   mounted () {
-    this.selectedVerses.map((index) => {
-      if (index === this.item.verseNumberToQuran) {
-        this.checked = true
-        return
-      }
-      this.checked = false
-    })
   }
 }
 </script>
 
 <style>
-.v-menu__content.theme--light.v-menu__content--fixed.menuable__content__active.v-autocomplete__content {
+.v-autocomplete__content {
   max-width: 500px;
+}
+@media (max-width: 600px) {
+  .v-autocomplete__content{
+    max-width: -webkit-fill-available;
+  }
 }
 </style>

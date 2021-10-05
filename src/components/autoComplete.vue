@@ -1,5 +1,5 @@
 <template>
-        <!-- :prefix="resultsCount()" -->
+  <!-- :prefix="resultsCount()" -->
   <div fluid class="d-flex autoWrap webKitWidth">
     <div class="webKitWidth">
       <v-autocomplete
@@ -16,11 +16,8 @@
         ref="autocomplete"
         v-on:keyup.enter="handleShowAll()"
         @click:clear="handleRemoveAllChips()"
-        @click="search=inputText"
         clearable
-        multiple
       >
-        <!-- @click="search=inputText" -->
         <template v-slot:no-data>
           <p class="pa-1 red--text">لا يوجد معلومات تطابق البحث!</p>
         </template>
@@ -28,9 +25,10 @@
         <template v-slot:selection disabled> </template>
 
         <template v-slot:prepend-inner>
-          <div class="d-flex" @dblclick.prevent="disableInputBox()">
-            <autoCompleteSearchBar @click="search=inputText"/>
+          <div class="d-flex" @click.prevent="disableInputBox()">
+            <autoCompleteSearchBar />
           </div>
+          <span v-if="search && matchAll" class="matchLabel mt-2">تطابق</span>
           <v-icon
             v-if="search"
             @click="matchAll = !matchAll"
@@ -42,42 +40,43 @@
         </template>
 
         <template v-slot:item="{ item }">
-          <div class="d-flex">
+          <div class="d-flex autoCompleteList">
             <autoCompleteItem
               :item="item"
               :inputText="search"
-              :selectedVerses="selectedVerses"
-              @selected="addItemToResults(item)"
-              @deselected="deleteItemFromResults(item)"
-              @click="addItemToResults(item)"/>
+              @clicked="handleShowAll()"
+            />
           </div>
         </template>
 
         <template v-slot:prepend-item>
-          <v-card class="d-flex mr-2" flat>
+          <v-row class="mb-3 mr-4 btnsBar">
             <v-btn
               small
               @click="handleShowAll()"
-              class="green lighten-2 white--text mt-"
-              >بحث</v-btn
+              class="green lighten-2 white--text"
+              >إبحث</v-btn
             >
-            <v-card class="elevation-0 searchLabel label orange accent-1 mr-4 pl-2 pr-2">"{{search}}"
-            <span class="" v-html="resultsCount()"></span> آية</v-card>
-            <div class="mr-4">
-                أو
-            <v-btn
-              v-if="selectedSearchIndex > -1"
-              small
-              @click="handleAddToList()"
-              class="blue lighten-2 white--text mr-4"
-              >ضِف للبحث</v-btn
-            ></div>
-          </v-card>
+            <v-card
+              class="elevation-0 searchLabel label mr-4 pl-2 pr-2"
+              outlined
+            >
+              <span v-if="search" class="yellow ml-1">"{{ search }}" </span>
+              <span class="title mt-n6"> {{ resultsCount() }}</span> آية
+            </v-card>
+            <div v-if="selectedSearchIndex > -1" class="mr-4">
+              أو
+              <v-btn
+                small
+                @click="handleAddToList()"
+                class="blue lighten-2 white--text mr-4"
+                >ضِف للبحث الحالي</v-btn
+              >
+            </div>
+          </v-row>
         </template>
-
       </v-autocomplete>
     </div>
-
   </div>
 </template>
 
@@ -95,32 +94,36 @@ export default {
     isLoading: true,
     search: null,
     isDisabled: false,
-    matchAll: false,
-    searchResults: []
+    matchAll: false
   }),
   methods: {
     handleShowAll () {
       if (!this.search) return
       this.setFilteredSearchItem()
-      if (this.$router.currentRoute.name !== 'search') {
-        this.$router.push({ name: 'search' })
-      }
+      // if (this.$router.currentRoute.name !== 'search') {
+      //   this.$router.push({ name: 'search' })
+      // }
     },
     setFilteredSearchItem () {
-      this.searchResults = this.$refs.autocomplete.filteredItems
+      var searchResults = this.$refs.autocomplete.filteredItems
       var internalSearch = this.$refs.autocomplete.internalSearch
       var selectedSearchIndex = this.$store.getters.filteredSearch.length
       var value = {
-        resultsCount: this.searchResults.length,
+        resultsCount: searchResults.length,
         inputText: internalSearch,
         parentSearch: null,
-        result: this.searchResults,
+        result: searchResults,
         isSelected: true
       }
       this.$store.commit('setFilterSelectedSearch', value)
       this.$store.commit('setFilteredSearchItem', value)
       this.$store.commit('setFilterSelectedIndex', selectedSearchIndex)
       this.disableInputBox()
+    },
+    handleAddToList () {
+      var searchResults = this.$refs.autocomplete.filteredItems
+      var search = this.$refs.autocomplete.internalSearch
+      this.$store.commit('addToAdvancedSearch', { searchResults, search })
     },
     addItemToResults (item) {
       if (this.selectedSearchIndex < 0) {
@@ -137,9 +140,8 @@ export default {
       }
       this.$store.commit('addToAdvancedSearch', item)
     },
-    handleAddToList () {},
     deleteItemFromResults (item) {
-      this.$store.commit('delelteFromAdvancedSearch', item.verseNumberToQuran)
+      this.$store.commit('deleteFromAdvancedSearch', item.verseNumberToQuran)
     },
     disableInputBox () {
       this.isDisabled = true
@@ -178,15 +180,6 @@ export default {
     storedItems () {
       return this.$store.getters.oneQuranFile
     },
-    selectedVerses () {
-      var results = this.selectedSearch.result
-      if (!results) return []
-      var indexes = []
-      results.map((item) => {
-        indexes.push(item.verseNumberToQuran)
-      })
-      return indexes
-    },
     selectedSearch () {
       return this.$store.getters.selectedSearch
     },
@@ -210,8 +203,7 @@ export default {
     }
   },
   mounted () {},
-  updated () {
-  }
+  updated () {}
 }
 </script>
 
@@ -227,7 +219,27 @@ export default {
 .v-select__selections input {
   padding-top: 18px !important;
 }
-.searchLabel{
-  height: 20px;
+.searchLabel {
+  /* height: 20px; */
+  padding-top: 2px;
+  border-radius: 4px !important;
+  margin-top: -7px;
+  padding-bottom: 6px;
+}
+.v-input__control {
+  /* height: 52px !important;
+  margin-bottom: 21px; */
+}
+.v-input__slot {
+  /* background: white; */
+}
+.btnsBar {
+  position: sticky;
+  top: 0px;
+  z-index: 1;
+  background: white;
+  height: 35px;
+  padding-top: 11px;
+  padding-bottom: 42px;
 }
 </style>

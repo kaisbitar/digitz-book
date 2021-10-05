@@ -17,6 +17,13 @@ export function fetchOneQuranFile (appApi) {
       return response.data
     })
 }
+export function fetchAllVersesWithTashkeel (appApi) {
+  return axios
+    .get(appApi + 'api/allVersesWithTashkeel')
+    .then(response => {
+      return response.data
+    })
+}
 export function fetchSuraBasics (appApi, fileName) {
   return axios
     .get(appApi + 'api/view/sura-basics/' + fileName)

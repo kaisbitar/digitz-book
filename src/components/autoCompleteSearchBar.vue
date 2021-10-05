@@ -10,7 +10,7 @@
         <label :class="getClass(index)">
           <div class="d-flex labelsHolder mr-3 ">
             <span class="blue white--text pl-1 pr-1 ml-2">{{item.resultsCount}}</span>
-            <span class="green white--text pl-1 pr-1" v-if="item.parentSearch" v-html="suraName(item.parentSearch)"></span>
+            <span class="green white--text pl-1 pr-1" v-if="item.parentSearch" v-html="(item.parentSearch)"></span>
           </div>
           <v-chip
             @click.prevent="handleClick(index, item)"
@@ -53,6 +53,7 @@ export default {
       return 'notActive'
     },
     suraName (fileName) {
+      console.log(fileName)
       if (!fileName) return
       return fileName.replace(/[0-9]/g, '')
     }
@@ -79,10 +80,11 @@ export default {
 <style>
 .autoChips .v-chip__content {
   font-size: 16px;
+  font-weight: bold;
 }
 .notActive {
   /* background: rgba(128, 128, 128, 0.212) !important; */
-  opacity: 0.5;
+  opacity: 0.2;
 }
 span.v-badge.theme--light {
   padding-right: 6px;

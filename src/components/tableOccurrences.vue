@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="webKitWidth">
     <glSearchBox
       @searchChanged="searchChanged"
       @matchChanged="matchChanged"
@@ -15,7 +15,7 @@
       :footer-props="footerProps"
       :loading="isLoading"
       loading-text="جاري تحميل البيانات القرآنية ... الرجاء الانتظار"
-      class="tableStyle"
+      class="tableStyle webKitWidth"
       fixed-header
       :group-by="groupBy"
       :loader-height="2"
@@ -63,9 +63,9 @@ export default {
 
 <style>
 .groupHeader {
-  height: 26px;
+  /* height: 26px; */
   font-weight: bold;
-  font-size: 12px;
+  /* font-size: 12px; */
   cursor: pointer;
 }
 .v-chip {

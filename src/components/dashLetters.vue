@@ -1,5 +1,5 @@
 <template>
-  <label>
+  <div>
     <v-tabs v-model="tab" background-color="mt-0 pr-1 pl-2" centered>
       <v-tab class="dashTabs" href="#tab-1">بيان</v-tab>
       <v-tab class="dashTabs" href="#tab-2">جدول</v-tab>
@@ -43,7 +43,7 @@
         </div>
       </v-tab-item>
     </v-tabs-items>
-  </label>
+  </div>
 </template>
 
 <script>

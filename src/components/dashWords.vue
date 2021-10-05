@@ -1,16 +1,16 @@
 <template>
-  <label>
+  <div>
     <div class="mt-5">
       <dashLabels
-        class="dashLabelsWrap "
+        class="dashLabelsWrap"
         :detailElement="detailElement"
         :detailCount="detailCount"
         :isLoading="isLoading"
         :showPosition="false"
       />
       <glChart
-        class="ml-auto pa-0 ml-2 webKitWidth lettersChart mb-n6"
-        :dataType="'letters'"
+        class="wordsChart"
+        :dataType="'words'"
         :series="seriesC"
         :isLoading="isLoading"
         :options="options"
@@ -19,22 +19,21 @@
       <h5 class="text-center mt-n6">المواقع</h5>
     </div>
     <div class="d-flex">
-    <tableOccurrences
-      class=" wordsTable"
-      :tableData="occurrences"
-      :dataType="'كلمة'"
-      :tableHeaders="tableHeaders"
-      :footerProps="footerProps"
-      :isLoading="isLoading"
-      :groupBy="groupBy"
-      @rowClicked="rowClickedActions"
-      :detailElement="detailElement"
-      :includeTab="includeTab"
-    />
+      <tableOccurrences
+        class="wordsTable"
+        :tableData="occurrences"
+        :dataType="'كلمة'"
+        :tableHeaders="tableHeaders"
+        :footerProps="footerProps"
+        :isLoading="isLoading"
+        :groupBy="groupBy"
+        @rowClicked="rowClickedActions"
+        :detailElement="detailElement"
+        :includeTab="includeTab"
+      />
       <!-- <p>مواقع {{detailElement}} في {{fileName.replace(/[0-9]/g, '')}}</p> -->
-
+    </div>
   </div>
-  </label>
 </template>
 
 <script>
@@ -47,7 +46,7 @@ import chartOptions from '../assets/wordChartOptions.js'
 export default {
   name: 'dashWords',
   mixins: [detailMixin],
-  props: ['indexes'],
+  props: ['indexes', 'numberOfWords'],
   components: {
     dashLabels,
     tableOccurrences,
@@ -56,53 +55,64 @@ export default {
   data: () => ({
     dataType: 'words',
     options: chartOptions,
-    tableHeaders: [
-      { text: '', value: 'x', class: ' lighten-4 black--text' }
-    ],
+    tableHeaders: [{ text: '', value: 'x', class: ' lighten-4 black--text' }],
     wordsGroup: null,
-    numberOfWords: 0,
     seriesC: []
   }),
   methods: {
     rowClickedActions (index, item) {
-      this.setDetailItem(index, item)
-      this.highlightOnChart(this.indexes[this.detailElement], 0)
+      this.setDetailItem(this.indexes[this.detailElement], item)
+      this.setDataLabel(this.indexes[this.detailElement])
+      this.createSeries(this.indexes[this.detailElement], 0)
     },
-    highlightOnChart (positions, occurrence) {
+    createSeries (positions, occurrence) {
       var points = []
       for (var i = 0; i < positions.length; i++) {
-        points.push(
-          {
-            x: positions[i],
-            y: occurrence
-          }
-        )
+        points.push({
+          x: positions[i],
+          y: occurrence
+        })
       }
       this.seriesC = [{ data: points }]
     },
     setXaxis () {
-      // console.log(Object.keys(this.indexes).length)
-      // if (!this.indexes) return
-      // var x = {}
-      // x.max = Object.keys(this.indexes).length
-      // x.min = 0
-      // x.offsetX = -3
-      // x.labels = { show: true }
-      // x.axisTicks = { show: true }
-      // x.tickAmount = undefined
-      // x.tickPlacement = 'between'
-      // this.options = {
-      //   ...this.options,
-      //   ...{ xaxis: x }
-      // }
+      if (!this.indexes) return
+      var xaxis = {}
+      xaxis.min = 1
+      xaxis.max = parseInt(this.numberOfWords)
+      // xaxis.offsetX = -9
+      // xaxis.axisTicks = { show: true }
+      this.options = {
+        ...this.options,
+        ...{ xaxis: xaxis }
+      }
+    },
+    setDataLabel (positions) {
+      if (!this.indexes) return
+      var x = {
+        formatter: function (val, opt) {
+          return positions[opt.dataPointIndex]
+        }
+      }
+
+      this.options = {
+        ...this.options,
+        ...{ dataLabels: x }
+      }
     },
     setToolTip () {
       var x = {
         custom: (obj) => {
-          return '<div class="d-flex pt-2 pa-2">' +
-                    '<div class=" tipInfo  tipInfo2 ">' + this.detailElement + '</div>' +
-                    '<div class=" tipInfo "><span class="tipLabel">الموقع:</span> ' + obj.w.globals.seriesX[0][obj.dataPointIndex] + '</div>' +
-                  '</div>'
+          return (
+            '<div class="d-flex pt-2 pa-2">' +
+              '<div class=" tipInfo  tipInfo2 ">' +
+                this.detailElement +
+              '</div>' +
+              '<div class=" tipInfo "><span class="tipLabel">الموقع:</span> ' +
+                this.indexes[this.detailElement][obj.dataPointIndex] +
+              '</div>' +
+            '</div>'
+          )
         },
         shared: true,
         followCursor: true
@@ -139,7 +149,7 @@ export default {
       if (!this.indexes) return
       this.setXaxis()
       this.setToolTip()
-      this.highlightOnChart(this.indexes[this.occurrences[0].x], 0)
+      this.createSeries(this.indexes[this.occurrences[0].x], 0)
     }
   },
   mounted () {
@@ -147,11 +157,10 @@ export default {
     this.setXaxis()
     this.setToolTip()
     this.setInitialItem()
-    this.highlightOnChart(this.indexes[this.detailElement], 0)
+    this.setDataLabel(this.indexes[this.detailElement])
+    this.createSeries(this.indexes[this.detailElement], 0)
   },
-  created () {
-
-  }
+  created () {}
 }
 </script>
 
@@ -160,11 +169,19 @@ export default {
   width: -webkit-fill-available;
 }
 .table {
-  max-width: 268px;
+  /* max-width: 268px; */
 }
 
-.wordsTable{
-  width: 400px;
-  margin-top: 13px;
+.wordsTable  {
+  /* margin-top: 13px; */
+}
+.wordsTable thead.v-data-table-header {
+    display: none;
+}
+.glSearchBox {
+  margin-bottom: -21px;
+}
+.wordsChart text{
+text-anchor: start;
 }
 </style>

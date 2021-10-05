@@ -1,6 +1,6 @@
-var chartOptions = {
+const chartOptions = {
   chart: {
-    type: 'area',
+    type: 'line',
     toolbar: {
       show: false
     }
@@ -16,6 +16,13 @@ var chartOptions = {
     show: false
   },
   xaxis: {
+    axisTicks: {
+      show: true,
+      maxTicksLimit: 40,
+      interval: 30
+    },
+    tickAmount: undefined,
+    tickPlacement: 'between',
     labels: {
       show: true,
       style: {
@@ -39,10 +46,11 @@ var chartOptions = {
       borderRadius: 2,
       borderWidth: 1,
       borderColor: '#616161'
-    },
-    formatter: function (val, opt) {
-      return opt.w.globals.seriesX[0][opt.dataPointIndex] + val
     }
+    // formatter: function (val, opt) {
+    //   console.log(opt.w.globals.seriesX[0][1])
+    //   return opt.w.globals.seriesX[0][opt.dataPointIndex] + val
+    // }
 
   },
   stroke: {
@@ -52,8 +60,8 @@ var chartOptions = {
   },
   markers: {
     strokeColors: '#000',
-    strokeWidth: 0.5,
-    size: 4
+    strokeWidth: 0.7,
+    size: 3
   },
   plotOptions: {
     bar: {

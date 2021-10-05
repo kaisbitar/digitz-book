@@ -17,7 +17,7 @@
           @click="
             (showDetail = !showDetail), $emit('showDetailToggle', showDetail)"
         >
-          mdi-dots-horizontal
+          mdi-format-horizontal-align-center
         </v-icon>
       </div>
     </div>

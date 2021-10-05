@@ -1,6 +1,6 @@
 <template>
-  <label class="dashVerses d-flex">
-    <v-card flat>
+  <div class="dashVerses d-flex">
+    <v-card flat v-if="!showVerse">
       <tableVerses
         :tableData="versesBasics"
         :tableHeaders="tableHeaders"
@@ -11,61 +11,62 @@
         :dataType="' عن آية أو رقم'"
         :footerProps="footerProps"
         @rowClicked="setVerse"
+        @itemClicked="runMenuItem"
       />
     </v-card>
-
-    <div class=" pt-5 webKitWidth" outlined>
+    <div class=" pt-5 webKitWidth" outlined v-if="showVerse">
       <v-tabs class="" v-model="tab" background-color="mt-n5 pr-1 pl-2" centered>
         <v-tab class="dashTabs" href="#tab-1"><span class=" ml-1">آية</span>{{verseIndex}}</v-tab>
         <v-tab class="dashTabs" href="#tab-2">{{numberOfWords}}<span class=" mr-1">كلمة </span></v-tab>
         <v-tab class="dashTabs" href="#tab-3">{{numberOfLetters}}<span class=" mr-1"> حرف </span></v-tab>
         <v-tab class="dashTabs" href="#tab-3" disabled>{{verseNumberToQuran}}<span class=""> مصحف </span></v-tab>
       </v-tabs>
-    <v-tabs-items v-model="tab">
-      <v-tab-item value="tab-1" class="labelsWrapper">
-        <dashVersesLabels
-          v-if="versesBasics"
-          class="ml-2 mb-2 "
-          :verseIndex="verseIndex"
-          :verseNumberToQuran="verseNumberToQuran"
-          :numberOfLetters="numberOfLetters"
-          :numberOfWords="numberOfWords"
-          :verseText="verseText"
-          :inputText="inputText"
-          :secondInput="secondInput"
-          :suraName="suraName"
-        />
-        <div class="d-flex">
-          <glChart
-            class="webKitWidth"
-            :isLoading="isLoading"
-            :series="verseChart"
-            :options="options"
-            :height="height"
+      <div @click="showVerse=false"><v-icon class="ml-2"> mdi-arrow-right</v-icon>الآيات</div>
+      <v-tabs-items v-model="tab" v-if="showVerse">
+        <v-tab-item value="tab-1" class="labelsWrapper">
+          <dashVersesLabels
+            v-if="versesBasics"
+            class="ml-2 mb-2 "
+            :verseIndex="verseIndex"
+            :verseNumberToQuran="verseNumberToQuran"
+            :numberOfLetters="numberOfLetters"
+            :numberOfWords="numberOfWords"
+            :verseText="verseText"
+            :inputText="inputText"
+            :secondInput="secondInput"
+            :suraName="suraName"
           />
-        </div>
-      </v-tab-item>
-      <v-tab-item value="tab-2">
-        <dashWords
-          class="chartRow"
-          :numberOfWords="numberOfWords"
-          :numberOfLetters="numberOfLetters"
-          :indexes="wordIndexes"
-          :suraText="verseText"
-          :isLoading="isLoading"
-          :includeTab="true"
-        />
-      </v-tab-item>
-      <v-tab-item value="tab-3">
-        <dashLetters
-          class="chartRow"
-          :numberOfWords="numberOfWords"
-          :numberOfLetters="numberOfLetters"
-          :suraText="verseText"
-          :isLoading="isLoading"
-        />
-      </v-tab-item>
-    </v-tabs-items>
+          <div class="d-flex">
+            <glChart
+              class="webKitWidth"
+              :isLoading="isLoading"
+              :series="verseChart"
+              :options="options"
+              :height="height"
+            />
+          </div>
+        </v-tab-item>
+        <v-tab-item value="tab-2">
+          <dashWords
+            class="chartRow"
+            :numberOfWords="numberOfWords"
+            :numberOfLetters="numberOfLetters"
+            :indexes="wordIndexes"
+            :suraText="verseText"
+            :isLoading="isLoading"
+            :includeTab="true"
+          />
+        </v-tab-item>
+        <v-tab-item value="tab-3">
+          <dashLetters
+            class="chartRow"
+            :numberOfWords="numberOfWords"
+            :numberOfLetters="numberOfLetters"
+            :suraText="verseText"
+            :isLoading="isLoading"
+          />
+        </v-tab-item>
+      </v-tabs-items>
       <v-overlay
         color="white"
         :absolute="true"
@@ -74,7 +75,7 @@
       >
       </v-overlay>
     </div>
-  </label>
+  </div>
 </template>
 
 <script>
@@ -91,9 +92,10 @@ export default {
   data: () => ({
     index: 1,
     tableHeaders: [
-      { text: 'السورة', value: 'fileName', class: 'lighten-4 black--text', width: '90', sortable: false },
+      { text: '', class: 'lighten-4 black--text' },
+      { text: 'السورة', value: 'fileName', class: 'lighten-4 black--text', width: '90', sortable: true },
       { text: 'رقم', value: 'verseIndex', class: 'lighten-4 black--text', width: '69' },
-      { text: 'الآية', value: 'verseText', class: 'lighten-4 black--text', width: '274', align: 'center' },
+      { text: 'الآية', value: 'verseText', class: 'lighten-4 black--text', width: '600' },
       { text: 'كلمات', value: 'numberOfWords', class: 'lighten-4 black--text' },
       { text: 'حروف', value: 'numberOfLetters', class: 'lighten-4 black--text' },
       { text: 'مصحف', value: 'verseNumberToQuran', class: 'lighten-4 black--text' }
@@ -109,11 +111,12 @@ export default {
     verseText: '',
     suraName: '',
     options: chartOptions,
-    footerProps: { 'items-per-page-text': '' },
+    footerProps: { 'items-per-page-text': '', 'disable-items-per-page': true },
     windowHeight: window.innerHeight,
     tab: 'tab-1',
     wordIndexes: {},
-    secondInput: ''
+    secondInput: '',
+    showVerse: false
   }),
   computed: {
     height () {
@@ -155,6 +158,11 @@ export default {
       this.perpareChartData(item)
       this.getWordIndexes()
       this.setTarget(item)
+    },
+    runMenuItem (item) {
+      if (item === 'verseDetail') {
+        this.showVerse = true
+      }
     },
     setOnLoadVerseId () {
       // this.selectedId = 298
@@ -201,7 +209,7 @@ export default {
         labels: { show: true },
         title: {
           offsetY: 0,
-          text: 'تواتر الحروف',
+          text: 'تواتر الكلمات',
           style: {
             fontSize: '12px'
           }

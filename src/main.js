@@ -4,12 +4,14 @@ import './registerServiceWorker'
 import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
-// import VueApexCharts from 'vue-apexcharts'
+import VueGtag from 'vue-gtag'
+
+Vue.use(VueGtag, {
+  config: { id: 'G-DKL773VPTB' }
+})
 
 Vue.config.productionTip = false
-// Vue.use(VueApexCharts)
 
-// Vue.component('apexchart', VueApexCharts)
 new Vue({
   router,
   store,

@@ -3,15 +3,6 @@ export const appMixin = {
   data: () => ({
   }),
   methods: {
-    handleTableClick (rowItem, tableType) {
-      if (tableType === 'tableSearch') {
-        var target = { fileName: rowItem.sura, verseIndex: rowItem.verseIndex }
-        this.$store.commit('setTarget', target)
-      }
-      if (this.$router.currentRoute.name !== 'singleSura') {
-        this.$router.push({ name: 'singleSura' })
-      }
-    },
     prepareToScroll (item) {
       var target = parseInt(item)
       if (target < 0) {
@@ -36,7 +27,8 @@ export const appMixin = {
     },
     highlight (text, searchValue) {
       if (!searchValue) {
-        if (text.length < 53) { return text } else { return text.slice(0, 53) + '...' }
+        return text
+        // if (text.length < 53) { return text } else { return text.slice(0, 53) + '...' }
       }
 
       var searchWordPosition = (text.indexOf(searchValue))

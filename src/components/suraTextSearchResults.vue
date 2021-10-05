@@ -10,26 +10,26 @@
       class="elevation-0 pl-2 pr-2 label orange accent-1 ml-2"
       style="width: fit-content"
     >
-      {{ inputText }} - {{ foundIndexes.length }}
+      <span class="">"{{ inputText }}"</span> - {{ foundIndexes.length }} آية
     </v-card>
     <div class="versesArrow">
       <div>
         <v-icon @click="arrowClick(-1)">mdi-chevron-up</v-icon>
       </div>
       <div>
-        <v-icon  @click="arrowClick(1)" class="">mdi-chevron-down</v-icon>
+        <v-icon @click="arrowClick(1)" class="">mdi-chevron-down</v-icon>
       </div>
     </div>
     <label class="toVerse">
       <v-select
         class="toVerse"
-        v-if="foundIndexes.length > 5"
+        v-if="foundIndexes.length > 10"
         v-model="selectedIndex"
         :items="foundIndexes"
         label="إلى الآية"
       ></v-select>
     </label>
-    <label class="d-flex" v-if="foundIndexes.length <= 5">
+    <label class="d-flex" v-if="foundIndexes.length <= 10">
       <v-card
         v-for="(foundIndex, index) in foundIndexes"
         :key="index"
@@ -149,18 +149,18 @@ export default {
   width: min-content;
   margin-top: -11px;
 }
-.versesArrow{
+.versesArrow {
   margin-left: 19px;
   margin-right: 19px;
   margin-top: -12px;
 }
-.verseLabel{
+.verseLabel {
   width: 70px;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 655px) {
   .selectsWrap {
-    width: 40px;
+    /* width: 40px; */
     margin-right: 0px;
     /* padding-top: 55px !important; */
   }

@@ -25,7 +25,7 @@ export const tableOccMixin = {
     getHeight () {
       var tabHeight = 0
       if (this.includeTab) { tabHeight = -70 }
-      var heightDif = this.windowHeight - 400 + tabHeight
+      var heightDif = this.windowHeight - 375 + tabHeight
       return heightDif
     },
     async collapseHeaders (group) {

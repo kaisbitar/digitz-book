@@ -4,7 +4,7 @@ export const detailMixin = {
     detailElement: '',
     detailCount: 0,
     search: '',
-    footerProps: { 'items-per-page-text': '' },
+    footerProps: { 'items-per-page-text': '', 'items-per-page-options': [75, 150, -1] },
     selectedId: '',
     showChart: true,
     windowHeight: window.innerHeight,

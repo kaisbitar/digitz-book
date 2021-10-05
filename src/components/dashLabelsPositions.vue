@@ -8,7 +8,7 @@
       />
     <div class="mt-2 mr-2">المواقع: </div>
     <v-row
-      class="wordItemWrap mr-2 mt-4"
+      class="wordItemWrap mr-2 mt-4 ml-0"
     >
       <div
         class="wordItem"
@@ -70,15 +70,6 @@ export default {
 </script>
 
 <style>
-.wordItem {
-  margin: 5px;
-  padding: 5px;
-  border: 1px solid #bebebe;
-  border-radius: 3px;
-  background: #efefef8c;
-  width: 70px;
-  text-align: center;
-}
 .wordItemWrap {
   overflow-y: scroll;
   max-height:200px;

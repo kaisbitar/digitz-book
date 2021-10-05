@@ -1,5 +1,5 @@
 <template>
-  <label>
+  <div>
     <v-row class="dashboardTab">
       <dashboardTab
         v-for="(item, index) in tabs"
@@ -13,13 +13,19 @@
     <v-row>
       <keep-alive
         ><dashFrequency
-          v-if="activeTab === 'frequency'"
+          v-if="activeTab === 'frequency' && !searchFrequency"
           :isLoading="isLoading"
           :letterSeries="letterSeries"
           :wordsSeries="wordsSeries"
           :versesText="suraTextArray"
           :height="height"
-      /></keep-alive>
+      /><dashFrequencySearch
+          v-if="activeTab === 'frequency' && searchFrequency"
+          :isLoading="isLoading"
+          :height="height"
+          :versesBasics="versesBasics"
+      />
+      </keep-alive>
       <keep-alive
         ><dashWords
           class="chartRow"
@@ -48,7 +54,7 @@
           :isLoading="isLoading"
       /></keep-alive>
     </v-row>
-  </label>
+  </div>
 </template>
 
 <script>
@@ -57,6 +63,7 @@ import dashWords from './dashWords.vue'
 import dashVerses from './dashVerses.vue'
 import dashboardTab from './dashboardTab'
 import dashFrequency from './dashFrequency'
+import dashFrequencySearch from './dashFrequencySearch'
 
 export default {
   name: 'dashbord',
@@ -65,7 +72,8 @@ export default {
     dashboardTab,
     dashWords,
     dashVerses,
-    dashFrequency
+    dashFrequency,
+    dashFrequencySearch
   },
   props: [
     'inputText',
@@ -78,7 +86,8 @@ export default {
     'wordsSeries',
     'suraTextArray',
     'versesBasics',
-    'activeTab'
+    'activeTab',
+    'searchFrequency'
   ],
   data: () => ({
     dataType: 'الكلمة',
@@ -142,6 +151,13 @@ export default {
 }
 a.dashTabs.v-tab--active {
     background: aliceblue;
+}
+@media (max-width: 700px) {
+  .suraInfoSingleBox {
+    width: 70.5px;
+    margin-left: 10px;
+    font-size: 13px;
+  }
 }
 @media (max-width: 978px) {
   .dashboardTab {

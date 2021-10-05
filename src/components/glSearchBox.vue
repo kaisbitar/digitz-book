@@ -1,30 +1,24 @@
 <template>
-  <v-card flat class="glSearchBox d-flex">
+  <div flat class="glSearchBox d-flex">
+    <span v-if="search && matchAll" class="matchLabel">تطابق</span>
+    <label @click="(matchAll = !matchAll), matchChanged()">
+      <v-icon
+        v-if="search"
+        :color="matchAll === false ? 'grey lighten-1' : 'blue'"
+        class="mt-1"
+      >
+        mdi-format-letter-matches
+      </v-icon> </label
+    >
     <v-text-field
       :label="'ابحث ' + dataType"
       v-model="search"
       append-icon="mdi-magnify"
-      class="mb-0 pa-0 "
-      background-color=""
-      single-line
-      hide-details
-      autofocus
+      class="mb-0 pa-0"
       clearable
     >
-      <template v-slot:prepend>
-        <span  @click="matchAll = !matchAll, matchChanged()"
-          ><v-icon
-            v-if="search"
-            :color="matchAll === false ? 'grey lighten-1' : 'blue'"
-            class="mt-1"
-          >
-            mdi-format-letter-matches
-          </v-icon></span
-        >
-      </template>
     </v-text-field>
-
-  </v-card>
+  </div>
 </template>
 
 <script>
@@ -34,10 +28,13 @@ export default {
   components: {},
   data: () => ({
     search: '',
-    matchAll: false,
-    showDetail: false
+    matchAll: false
   }),
-  computed: {},
+  computed: {
+    selectedSearchIndex () {
+      return this.$store.getters.selectedSearchIndex
+    }
+  },
   methods: {
     matchChanged () {
       var arr = []
@@ -52,14 +49,19 @@ export default {
     },
     inputText () {
       this.search = this.inputText
+    },
+    selectedSearchIndex () {
+      this.matchAll = false
+      this.matchChanged()
     }
   },
   created () {
     this.search = this.inputText
+    this.matchAll = false
+    this.matchChanged()
   },
   mounted () {},
-  updated () {
-  }
+  updated () {}
 }
 </script>
 
@@ -69,5 +71,16 @@ export default {
   position: relative;
   z-index: 5;
   background: #7fffd400 !important;
+}
+.matchLabel {
+  text-align: center;
+  font-size: 10px;
+  position: inherit;
+  margin-left: -26px;
+  margin-top: -2px;
+  background: #d6d6d673;
+}
+.v-icon {
+  cursor: pointer;
 }
 </style>

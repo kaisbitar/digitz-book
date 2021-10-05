@@ -25,7 +25,7 @@
         :numberOfVerses="numberOfVerses"
         :numberOfWords="numberOfWords"
         :numberOfLetters="numberOfLetters"
-        :suraTextArray="suraTextArray"
+        :suraTextArray="suraTextWithTashkeel"
         :isLoading="isLoading"
     /></keepAlive>
     <keepAlive>
@@ -67,6 +67,7 @@ export default {
   },
   data: () => ({
     suraTextArray: [],
+    suraTextWithTashkeel: [],
     versesBasics: [],
     isLoading: false,
     view: 'suraChart',
@@ -191,6 +192,22 @@ export default {
       arr.shift()
       var series = [{ data: arr }]
       return series
+    },
+    prepareSuraWithTashkeel () {
+      var start = this.suraBasics.verseNumberToQuran - 1
+      var end = this.suraBasics.numberOfVerses + start
+      var suraTextWithTashkeel = this.$store.getters.allVersesWithTashkeel.map((item, index) => {
+        if (
+          this.fileName === '000المصحف' ||
+          (index > start - 1 && index < end)
+        ) {
+          return item
+        }
+      })
+      suraTextWithTashkeel = suraTextWithTashkeel.filter(function (element) {
+        return element !== undefined
+      })
+      this.suraTextWithTashkeel = suraTextWithTashkeel
     }
   },
   watch: {
@@ -198,12 +215,14 @@ export default {
       this.setSuraBasics()
       this.fetchSuraDetails()
       this.perpareSuraData()
+      this.prepareSuraWithTashkeel()
     }
   },
   mounted () {
     this.setSuraBasics()
     this.fetchSuraDetails()
     this.perpareSuraData()
+    this.prepareSuraWithTashkeel()
   },
   created () {
   }

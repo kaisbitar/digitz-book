@@ -6,7 +6,7 @@
     outlined
   >
     <div class="d-flex ma-auto">
-      <span  class="ml-1 body-1">
+      <span  class="ml-1">
         {{ value }}
       </span>
       {{title}}

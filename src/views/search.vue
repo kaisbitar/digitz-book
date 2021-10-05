@@ -24,6 +24,7 @@
       :suraTextArray="searchResults"
       :versesBasics="versesBasics"
       :activeTab="activeTab"
+      :searchFrequency="true"
     />
   </div>
 </template>
@@ -114,7 +115,7 @@ export default {
       return this.selectedSearch.inputText
     },
     searchResults () {
-      if (this.selectedSearch === {}) return []
+      if (!this.selectedSearch.result) return []
       var filteredList = this.selectedSearch.result
       var searchText = filteredList.map((item) => {
         return item.verseText
@@ -122,12 +123,12 @@ export default {
       return searchText
     },
     versesBasics () {
-      if (this.selectedSearch === {}) return []
+      if (!this.selectedSearch.result) return []
       var filteredList = this.selectedSearch.result
       return filteredList
     },
     numberOfWords () {
-      if (this.selectedSearch === {}) return 0
+      if (!this.selectedSearch.result) return 0
       var filteredList = this.selectedSearch.result
       var wordsCount = []
       var numberOfWords = filteredList.map((item) => {
@@ -137,7 +138,7 @@ export default {
       return numberOfWords.reduce((a, b) => a + b, 0)
     },
     numberOfLetters () {
-      if (this.selectedSearch === {}) return 0
+      if (!this.selectedSearch.result) return 0
       var filteredList = this.selectedSearch.result
       var lettersCount = []
       var numberOfLetters = filteredList.map((item) => {
@@ -153,7 +154,7 @@ export default {
     parentSearch () {
       if (!this.$store.getters.selectedSearch.parentSearch) return
       var parentSearch = this.$store.getters.selectedSearch.parentSearch
-      if (/\d/.test(parentSearch)) return 'سورة ' + parentSearch.replace(/[0-9]/g, '')
+      // if (/\d/.test(parentSearch)) return 'سورة ' + parentSearch.replace(/[0-9]/g, '')
       return parentSearch
     },
     parentcount () {

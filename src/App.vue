@@ -109,20 +109,15 @@ export default {
     }
   },
   watch: {
-    activeView () {
-      // this.changeView()
-    }
   },
   updated () {},
   mounted () {},
   created () {
+    // this.$store.commit('clearState')
     this.drawer = this.drawerState
     this.prepareData().then(() => {
       this.isLoading = false
     })
-    // if(selectedInput){
-    // this.$store.commit('clearState')
-    // }
   }
 }
 </script>
@@ -199,6 +194,9 @@ h5.basmaleh {
   /* grey lighten-1*/
   color: #bdbdbd;
 }
+.v-data-footer {
+  justify-content: end;
+}
 /************ Responseive***********/
 @media (max-width: 600px) {
   .titleText {
@@ -214,7 +212,7 @@ h5.basmaleh {
 
 /* width */
 ::-webkit-scrollbar {
-  width: 3px;
+  width: 5px;
 }
 
 /* Track */
