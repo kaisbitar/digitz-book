@@ -1,9 +1,9 @@
 // import { setTimeout } from 'core-js'
-import glSearchBox from '../components/glSearchBox'
+import appSearchBox from '../components/appSearchBox'
 
 export const tableOccMixin = {
   name: '',
-  components: { glSearchBox },
+  components: { appSearchBox },
   props: [
     'tableData',
     'tableHeaders',

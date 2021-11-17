@@ -8,7 +8,7 @@
         :isLoading="isLoading"
         :showPosition="false"
       />
-      <glChart
+      <appChart
         class="wordsChart"
         :dataType="'words'"
         :series="seriesC"
@@ -39,7 +39,7 @@
 <script>
 import dashLabels from './dashLabels.vue'
 import tableOccurrences from './tableOccurrences.vue'
-import glChart from './glChart.vue'
+import appChart from './appChart.vue'
 import { detailMixin } from '../mixins/detailMixin'
 import chartOptions from '../assets/wordChartOptions.js'
 
@@ -50,7 +50,7 @@ export default {
   components: {
     dashLabels,
     tableOccurrences,
-    glChart
+    appChart
   },
   data: () => ({
     dataType: 'words',
@@ -178,7 +178,7 @@ export default {
 .wordsTable thead.v-data-table-header {
     display: none;
 }
-.glSearchBox {
+.appSearchBox {
   margin-bottom: -21px;
 }
 .wordsChart text{

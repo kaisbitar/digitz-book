@@ -1,31 +1,34 @@
 <template>
-  <div flat class="glSearchBox d-flex">
-    <span v-if="search && matchAll" class="matchLabel">تطابق</span>
-    <label @click="(matchAll = !matchAll), matchChanged()">
-      <v-icon
-        v-if="search"
-        :color="matchAll === false ? 'grey lighten-1' : 'blue'"
-        class="mt-1"
-      >
-        mdi-format-letter-matches
-      </v-icon> </label
-    >
+  <div flat class="appSearchBox d-flex">
     <v-text-field
-      :label="'ابحث ' + dataType"
       v-model="search"
+      background-color="white"
+      :label="'ابحث عن ' + dataType"
       append-icon="mdi-magnify"
-      class="mb-0 pa-0"
       clearable
+      outlined
+      dense
     >
+      <template v-slot:prepend-inner>
+        <appSearchBoxMatch
+          :search="search"
+          :matchAll="matchAll"
+          @clicked="(matchAll = !matchAll), matchChanged()"
+        />
+      </template>
     </v-text-field>
   </div>
 </template>
 
 <script>
+import appSearchBoxMatch from './appSearchBoxMatch'
+
 export default {
-  name: 'glSearchBox',
+  name: 'appSearchBox',
   props: ['dataType', 'inputText'],
-  components: {},
+  components: {
+    appSearchBoxMatch
+  },
   data: () => ({
     search: '',
     matchAll: false
@@ -37,9 +40,7 @@ export default {
   },
   methods: {
     matchChanged () {
-      var arr = []
-      arr[0] = this.search
-      arr[1] = this.matchAll
+      var arr = [this.search, this.matchAll]
       this.$emit('matchChanged', arr)
     }
   },
@@ -66,7 +67,7 @@ export default {
 </script>
 
 <style>
-.glSearchBox {
+.appSearchBox {
   width: 219px;
   position: relative;
   z-index: 5;

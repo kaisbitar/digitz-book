@@ -1,7 +1,7 @@
 <template>
-  <div class="webKitWidth grey lighten-4" outlined>
-    <div class="d-flex">
-      <glSearchBox
+  <div class="webKitWidth grey lighten-4" >
+    <div class="d-flex pa-3 topBar">
+      <appSearchBox
         @searchChanged="searchChanged"
         @matchChanged="matchChanged"
         :inputText="search"
@@ -9,11 +9,11 @@
       />
       <div>
         <!-- setSuraFilter() -->
-        <v-btn @click="dialog = false">
+        <!-- <v-btn @click="dialog = false">
           <v-icon v-if="search" class="mt-6 mb-1 mr-3" small>
             mdi-table-plus</v-icon
           >
-        </v-btn>
+        </v-btn> -->
       </div>
     </div>
     <div id="indexBlock">
@@ -62,7 +62,7 @@
               >
                 {{ props.index + 1 }}
               </div>
-              <glDropMenu
+              <appDropMenu
                 @itemClicked="itemClicked"
                 class="detailIcon"
                 :class="{
@@ -116,12 +116,12 @@
 
 <script>
 import { tableOccMixin } from '../mixins/tableOccMixin'
-import glSearchBox from './glSearchBox'
-import glDropMenu from './glDropMenu'
+import appSearchBox from './appSearchBox'
+import appDropMenu from './appDropMenu'
 import tableVersesEdit from './tableVersesEdit.vue'
 
 export default {
-  components: { glSearchBox, glDropMenu, tableVersesEdit },
+  components: { appSearchBox, appDropMenu, tableVersesEdit },
   name: '',
   mixins: [tableOccMixin],
   props: ['selectedId', 'inputText'],
@@ -193,8 +193,8 @@ export default {
       this.search = matchAll[0]
     },
     setSuraFilter () {
-      var filteredSearchItem = this.$refs.versesTable.$children[0]
-        .filteredItems
+      var filteredSearchItem =
+        this.$refs.versesTable.$children[0].filteredItems
       var selectedSearchIndex = this.$store.getters.filteredSearch.length - 1
       var value = {
         resultsCount: filteredSearchItem.length,
@@ -214,7 +214,7 @@ export default {
       if (this.includeTab) {
         tabHeight = -20
       }
-      var heightDif = this.windowHeight - 232 + tabHeight
+      var heightDif = this.windowHeight - 265 + tabHeight
       return heightDif
     },
     removeItem (item) {
@@ -301,5 +301,8 @@ export default {
 }
 .indexNumber.activeIcon {
   display: none !important;
+}
+.topBar{
+  height: 66px;
 }
 </style>

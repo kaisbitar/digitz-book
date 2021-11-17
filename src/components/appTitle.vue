@@ -39,7 +39,7 @@
 
 <script>
 export default {
-  name: 'glTitle',
+  name: 'appTitle',
   props: ['title', 'parentSearch', 'parentcount', 'numberOfVerses', 'numberOfWords', 'numberOfLetters'],
   components: {},
   data: () => ({

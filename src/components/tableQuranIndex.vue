@@ -1,18 +1,20 @@
 <template>
   <div class="text-center">
-    <div class="d-flex searchWrap">
+    <div class="d-flex searchWrap mr-1">
       <v-text-field
-        class="mr-2 ml-2"
-        label="سورة أو رقماً فيها.."
-        single-line
         v-model="search"
+        background-color="white"
         append-icon="mdi-magnify"
-        clearable
+        label="سورة أو رقماً فيها.."
         clear-icon="mdi-close"
+        class="mr-2 ml-2 mt-3"
+        single-line
+        clearable
+        outlined
+        dense
       ></v-text-field>
-      <div>
+      <div class="mt-5">
         <v-icon
-          class="mt-9 ml-4"
           :color="showDetail === false ? 'grey' : 'blue'"
           @click="
             (showDetail = !showDetail), $emit('showDetailToggle', showDetail)"
@@ -218,6 +220,7 @@ th {
 }
 .searchWrap{
   width: 220px;
+  height: 66px;
 }
 .v-text-field__slot{
   position: initial;

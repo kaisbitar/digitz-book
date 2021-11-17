@@ -1,7 +1,7 @@
 <template>
   <div class="compWrapper">
     <v-row>
-      <glTitle
+      <appTitle
         class="pr-3"
         :numberOfVerses="numberOfVerses"
         :numberOfWords="numberOfWords"
@@ -30,13 +30,13 @@
 </template>
 <script>
 import dashbord from '../components/dashbord.vue'
-import glTitle from '../components/glTitle'
+import appTitle from '../components/appTitle'
 
 export default {
   name: 'search',
   components: {
     dashbord,
-    glTitle
+    appTitle
   },
   data: () => ({
     tableHeaders: [

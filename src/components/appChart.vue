@@ -1,29 +1,22 @@
 <template>
   <div>
-    <!-- <v-card  outlined flat> -->
-      <apexchart
-        :markerClick="handleClick"
-        :options="options"
-        :height="height"
-        :series="series"
-        ref="myChart"
-      />
-      <v-overlay
-        :absolute="true"
-        :opacity="0.6"
-        color="white"
-        :value="isLoading"
-      >
-        <v-progress-circular color="indigo" indeterminate></v-progress-circular>
-      </v-overlay>
-    <!-- </v-card> -->
+    <apexchart
+      :markerClick="handleClick"
+      :options="options"
+      :height="height"
+      :series="series"
+      ref="myChart"
+    />
+    <v-overlay :absolute="true" :opacity="0.6" color="white" :value="isLoading">
+      <v-progress-circular color="indigo" indeterminate></v-progress-circular>
+    </v-overlay>
   </div>
 </template>
 
 <script>
 import VueApexCharts from 'vue-apexcharts'
 export default {
-  name: 'glChart',
+  name: 'appChart',
   props: ['height', 'options', 'series', 'isLoading', 'includeTab'],
   components: { apexchart: VueApexCharts },
   data: () => ({
@@ -37,7 +30,6 @@ export default {
       }
       this.$store.commit('setTarget', target)
     }
-
   },
   computed: {
     targetedVerse () {
@@ -45,8 +37,7 @@ export default {
     }
   },
   watch: {},
-  created () {
-  },
+  created () {},
   updated () {},
   mounted () {}
 }
@@ -71,16 +62,16 @@ export default {
   color: rgb(31, 31, 31);
   font-family: "Tajawal", sans-serif;
   font-size: 19px !important;
-  white-space:normal !important;
+  white-space: normal !important;
   max-width: 300px;
   background: #ffffff !important;
   border-top: 15px solid #efebe9 !important;
   box-shadow: -1px 1px 10px 0px #ccc;
 }
-.tipInfo2{
-  border-top: 3px solid #4DB6AC !important;
+.tipInfo2 {
+  border-top: 3px solid #4db6ac !important;
 }
-.tipInfo{
+.tipInfo {
   border: 1px solid rgb(218, 218, 218);
   border-top: 3px solid #2195f3;
   border-radius: 3px;
@@ -88,12 +79,11 @@ export default {
   padding: 3px;
   height: fit-content;
 }
-.tipLabel{
+.tipLabel {
   font-size: 12px;
 }
-.tipText{
+.tipText {
   border-top: 1px solid rgb(218, 218, 218);
   border-right: 3px solid #cfcfcf;
-
 }
 </style>

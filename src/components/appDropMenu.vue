@@ -32,7 +32,6 @@ export default {
   }),
   methods: {
     handleClick (item) {
-      console.log(item.instuction)
       if (item.instuction === 'cancel') return
       this.$emit('itemClicked', item)
     },

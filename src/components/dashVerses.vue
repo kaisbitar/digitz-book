@@ -1,6 +1,6 @@
 <template>
   <div class="dashVerses d-flex">
-    <v-card flat v-if="!showVerse">
+    <v-card class="webKitWidth" flat v-if="!showVerse">
       <tableVerses
         :tableData="versesBasics"
         :tableHeaders="tableHeaders"
@@ -37,7 +37,7 @@
             :suraName="suraName"
           />
           <div class="d-flex">
-            <glChart
+            <appChart
               class="webKitWidth"
               :isLoading="isLoading"
               :series="verseChart"
@@ -48,7 +48,7 @@
         </v-tab-item>
         <v-tab-item value="tab-2">
           <dashWords
-            class="chartRow"
+            class="webKitWidth"
             :numberOfWords="numberOfWords"
             :numberOfLetters="numberOfLetters"
             :indexes="wordIndexes"
@@ -59,7 +59,7 @@
         </v-tab-item>
         <v-tab-item value="tab-3">
           <dashLetters
-            class="chartRow"
+            class="webKitWidth"
             :numberOfWords="numberOfWords"
             :numberOfLetters="numberOfLetters"
             :suraText="verseText"
@@ -80,7 +80,7 @@
 
 <script>
 import chartOptions from '../assets/frequecyOptions'
-import glChart from '../components/glChart.vue'
+import appChart from '../components/appChart.vue'
 import dashWords from './dashWords.vue'
 import dashLetters from './dashLetters.vue'
 import tableVerses from './tableVerses.vue'
@@ -88,17 +88,17 @@ import dashVersesLabels from './dashVersesLabels'
 export default {
   name: 'dashVerses',
   props: ['versesBasics', 'isLoading', 'inputText'],
-  components: { tableVerses, dashVersesLabels, glChart, dashWords, dashLetters },
+  components: { tableVerses, dashVersesLabels, appChart, dashWords, dashLetters },
   data: () => ({
     index: 1,
     tableHeaders: [
-      { text: '', class: 'lighten-4 black--text' },
-      { text: 'السورة', value: 'fileName', class: 'lighten-4 black--text', width: '90', sortable: true },
-      { text: 'رقم', value: 'verseIndex', class: 'lighten-4 black--text', width: '69' },
-      { text: 'الآية', value: 'verseText', class: 'lighten-4 black--text', width: '600' },
-      { text: 'كلمات', value: 'numberOfWords', class: 'lighten-4 black--text' },
-      { text: 'حروف', value: 'numberOfLetters', class: 'lighten-4 black--text' },
-      { text: 'مصحف', value: 'verseNumberToQuran', class: 'lighten-4 black--text' }
+      { text: '', class: 'brown lighten-5 black--text', width: '10' },
+      { text: 'السورة', value: 'fileName', class: 'brown lighten-5 black--text', width: '90' },
+      { text: 'رقم', value: 'verseIndex', class: 'brown lighten-5 black--text', width: '80' },
+      { text: 'الآية', value: 'verseText', class: 'brown lighten-5 black--text', width: '550' },
+      { text: 'كلمات', value: 'numberOfWords', class: 'brown lighten-5 black--text', width: '85' },
+      { text: 'حروف', value: 'numberOfLetters', class: 'brown lighten-5 black--text', width: '85' },
+      { text: 'مصحف', value: 'verseNumberToQuran', class: 'brown lighten-5 black--text', width: '90' }
     ],
     verses: [],
     verseChart: [],
@@ -120,7 +120,7 @@ export default {
   }),
   computed: {
     height () {
-      var heightDif = this.windowHeight - 385
+      var heightDif = this.windowHeight - 370
       return heightDif
     },
     targetFileName () {
@@ -309,10 +309,6 @@ tr.v-data-table__selected {
   letter-spacing: 0px;;
 }
 .v-slide-group__content.v-tabs-bar__content {
-    height: 35px;
-}
-.labelsWrapper{
-  /* max-height: 333px;
-  overflow-y: scroll; */
+  height: 35px;
 }
 </style>

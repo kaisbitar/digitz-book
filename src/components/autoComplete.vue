@@ -1,129 +1,156 @@
 <template>
-  <!-- :prefix="resultsCount()" -->
-  <div fluid class="d-flex autoWrap webKitWidth">
-    <div class="webKitWidth">
-      <v-autocomplete
-        :filter="handleFiltering"
-        :items="storedItems"
-        :search-input.sync="search"
-        :hide-no-data="!search"
-        item-text="verseText"
-        item-value="verseNumberToQuran"
-        :disabled="isDisabled"
-        :color="'blue darken-4'"
-        prepend-inner-icon="mdi-magnify"
-        label="ابحث  في الكتاب.."
-        ref="autocomplete"
-        v-on:keyup.enter="handleShowAll()"
-        @click:clear="handleRemoveAllChips()"
-        clearable
-      >
-        <template v-slot:no-data>
-          <p class="pa-1 red--text">لا يوجد معلومات تطابق البحث!</p>
-        </template>
+  <div class="d-flex autoWrap webKitWidth">
+    <v-autocomplete
+      :search-input.sync="search"
+      :filter="handleFiltering"
+      :hide-no-data="!search"
+      :disabled="isDisabled"
+      :items="storedItems"
+      @click:clear="handleRemoveAllChips()"
+      v-on:keyup.enter="handleShowAll()"
+      prepend-inner-icon="mdi-magnify"
+      background-color="#fff"
+      item-value="verseNumberToQuran"
+      item-text="verseText"
+      :color="'blue darken-4'"
+      label="ابحث  في الكتاب.."
+      ref="autocomplete"
+      class="autoBox"
+      clearable
+      flat
+      dense
+      multiple
+      solo
+    >
+      <template v-slot:no-data>
+        <p class="pa-1 red--text">لا يوجد معلومات تطابق البحث!</p>
+      </template>
 
-        <template v-slot:selection disabled> </template>
+      <template v-slot:selection disabled> </template>
 
-        <template v-slot:prepend-inner>
-          <div class="d-flex" @click.prevent="disableInputBox()">
-            <autoCompleteSearchBar />
-          </div>
-          <span v-if="search && matchAll" class="matchLabel mt-2">تطابق</span>
-          <v-icon
-            v-if="search"
-            @click="matchAll = !matchAll"
-            :color="matchAll === false ? 'grey lighten-1' : 'blue'"
-            class="mt-1"
-          >
-            mdi-format-letter-matches
-          </v-icon>
-        </template>
+      <template v-slot:prepend-inner>
+        <div class="d-flex" @click.prevent="disableInputBox()">
+          <autoCompleteChipsBar
+            :chipsData="filteredSearch"
+            :selectedChipIndex="selectedSearchIndex"
+            @chipClicked="handleClickedChip"
+            @chipRemoved="handleRemovedChip"
+          />
+        </div>
+        <appSearchBoxMatch
+          :search="search"
+          :matchAll="matchAll"
+          @clicked="matchAll = !matchAll"
+        />
+      </template>
 
-        <template v-slot:item="{ item }">
-          <div class="d-flex autoCompleteList">
-            <autoCompleteItem
-              :item="item"
-              :inputText="search"
-              @clicked="handleShowAll()"
-            />
-          </div>
-        </template>
+      <template v-slot:item="{ item }">
+        <div class="d-flex autoCompleteList">
+          <autoCompleteItem
+            :inputText="search"
+            :item="item"
+            :chipTitle="' آية ' + item.verseIndex"
+            :subtitle="
+              'ترتيب في المصحف:' +
+              highlight(item.verseNumberToQuran.toString(), search)
+            "
+            :mainText="highlight(item.verseText, search)"
+            :title="highlight(item.fileName, search)"
+            @clicked="handleSingleItemClicked(item)"
+          />
+        </div>
+      </template>
 
-        <template v-slot:prepend-item>
-          <v-row class="mb-3 mr-4 btnsBar">
-            <v-btn
-              small
-              @click="handleShowAll()"
-              class="green lighten-2 white--text"
-              >إبحث</v-btn
-            >
-            <v-card
-              class="elevation-0 searchLabel label mr-4 pl-2 pr-2"
-              outlined
-            >
-              <span v-if="search" class="yellow ml-1">"{{ search }}" </span>
-              <span class="title mt-n6"> {{ resultsCount() }}</span> آية
-            </v-card>
-            <div v-if="selectedSearchIndex > -1" class="mr-4">
-              أو
-              <v-btn
-                small
-                @click="handleAddToList()"
-                class="blue lighten-2 white--text mr-4"
-                >ضِف للبحث الحالي</v-btn
-              >
-            </div>
-          </v-row>
-        </template>
-      </v-autocomplete>
-    </div>
+      <template v-slot:prepend-item>
+        <autoCompleteOptionsBar
+          class="btnsBar"
+          @btn1Clicked="handleShowAll()"
+          @btn2Clicked="handleAddToList()"
+          :resultCounter="resultsCount()"
+          :secondBtnCondition="selectedSearchIndex"
+          :textValue="search"
+          :btn1Title="'إبحث'"
+          :btn2Title="'ضِف للبحث الحالي'"
+        />
+      </template>
+    </v-autocomplete>
   </div>
 </template>
 
 <script>
+import autoCompleteOptionsBar from './autoCompleteOptionsBar'
+import autoCompleteChipsBar from './autoCompleteChipsBar'
+import appSearchBoxMatch from './appSearchBoxMatch'
 import autoCompleteItem from './autoCompleteItem'
-import autoCompleteSearchBar from './autoCompleteSearchBar'
+
+import { appMixin } from '../mixins/mixins'
 
 export default {
   name: 'autoComplete',
+  mixins: [appMixin],
   components: {
-    autoCompleteItem,
-    autoCompleteSearchBar
+    autoCompleteOptionsBar,
+    autoCompleteChipsBar,
+    appSearchBoxMatch,
+    autoCompleteItem
   },
   data: () => ({
-    isLoading: true,
-    search: null,
     isDisabled: false,
-    matchAll: false
+    matchAll: false,
+    isLoading: true,
+    search: null
   }),
   methods: {
+    handleSingleItemClicked (item) {
+      var suraNumber = item.fileName.replace(/[ء-٩]/g, '').replace(/\s/g, '')
+      var suraName = item.fileName.replace(/[0-9]/g, '')
+      var target = {
+        fileName: suraNumber + suraName,
+        verseIndex: item.verseIndex
+      }
+      this.$store.commit('setTarget', target)
+      this.handleShowAll()
+    },
     handleShowAll () {
       if (!this.search) return
       this.setFilteredSearchItem()
-      // if (this.$router.currentRoute.name !== 'search') {
-      //   this.$router.push({ name: 'search' })
-      // }
+
+      if (this.$router.currentRoute.name !== 'search') {
+        this.$router.push({ name: 'search' })
+      }
+    },
+    handleClickedChip (index) {
+      if (this.$router.currentRoute.name !== 'search') {
+        this.$router.push({ name: 'search' })
+      }
+      this.$store.commit('setFilterSelectedSearch', this.selectedFilterList)
+      this.$store.commit('setFilterSelectedIndex', index)
+    },
+    handleRemovedChip (index) {
+      this.$store.commit('setFilterSelectedSearch', this.selectedFilterList)
+      this.$store.commit('setFilterSelectedIndex', index - 1)
+      this.$store.commit('removeFilteredItem', index)
     },
     setFilteredSearchItem () {
-      var searchResults = this.$refs.autocomplete.filteredItems
-      var internalSearch = this.$refs.autocomplete.internalSearch
-      var selectedSearchIndex = this.$store.getters.filteredSearch.length
       var value = {
-        resultsCount: searchResults.length,
-        inputText: internalSearch,
+        resultsCount: this.$refs.autocomplete.filteredItems.length,
+        inputText: this.$refs.autocomplete.internalSearch,
+        result: this.$refs.autocomplete.filteredItems,
         parentSearch: null,
-        result: searchResults,
         isSelected: true
       }
+      this.$store.commit(
+        'setFilterSelectedIndex',
+        this.$store.getters.filteredSearch.length - 1
+      )
       this.$store.commit('setFilterSelectedSearch', value)
       this.$store.commit('setFilteredSearchItem', value)
-      this.$store.commit('setFilterSelectedIndex', selectedSearchIndex)
       this.disableInputBox()
     },
     handleAddToList () {
-      var searchResults = this.$refs.autocomplete.filteredItems
+      var results = this.$refs.autocomplete.filteredItems
       var search = this.$refs.autocomplete.internalSearch
-      this.$store.commit('addToAdvancedSearch', { searchResults, search })
+      this.$store.commit('addToAdvancedSearch', { results, search })
     },
     addItemToResults (item) {
       if (this.selectedSearchIndex < 0) {
@@ -189,11 +216,17 @@ export default {
     inputText () {
       if (!this.selectedSearch) return
       return this.selectedSearch.inputText
+    },
+    filteredSearch () {
+      if (this.$store.getters.filteredSearch === null) return
+      var filteredSearch = this.$store.getters.filteredSearch
+      return filteredSearch
+    },
+    selectedFilterList () {
+      return this.filteredSearch[this.selectedChipIndex]
     }
   },
-  created () {
-    // this.search = this.inputText
-  },
+  created () {},
   watch: {
     inputText () {
       this.search = this.inputText

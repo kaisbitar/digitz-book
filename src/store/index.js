@@ -114,7 +114,6 @@ export default new Vuex.Store({
     deleteFromAdvancedSearch (state, verseNumberToQuran) {
       state.filteredSearch.map((result, index) => {
         if (result.isSelected) {
-          console.log(verseNumberToQuran)
           state.filteredSearch[index].result =
           state.filteredSearch[index].result.filter((item) => {
             return item.verseNumberToQuran !== verseNumberToQuran

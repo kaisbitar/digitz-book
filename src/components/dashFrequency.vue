@@ -1,5 +1,5 @@
 <template>
-  <div class="chartRow" >
+  <div class="webKitWidth" >
     <v-row>
       <v-radio-group class="d-flex chartTitleWrap" v-model="view" row
         >تواتر
@@ -7,7 +7,7 @@
         <v-radio value="letters" label="حروف" color="blue"></v-radio>
       </v-radio-group>
     </v-row>
-    <glChart
+    <appChart
       :isLoading="isLoading"
       :series="view === 'letters' ? letterSeries : wordsSeries"
       :options="options"
@@ -18,11 +18,11 @@
 
 <script>
 import chartOptions from '../assets/frequecyOptions'
-import glChart from '../components/glChart.vue'
+import appChart from '../components/appChart.vue'
 
 export default {
   name: 'dashFrequency',
-  components: { glChart },
+  components: { appChart },
   props: ['height', 'isLoading', 'letterSeries', 'wordsSeries', 'versesText'],
   data: () => ({
     options: chartOptions,

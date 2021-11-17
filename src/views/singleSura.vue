@@ -1,7 +1,7 @@
 <template>
   <div class="compWrapper">
     <v-row>
-      <glTitle
+      <appTitle
         class="pr-3"
         :numberOfVerses="numberOfVerses"
         :numberOfWords="numberOfWords"
@@ -51,7 +51,7 @@
 <script>
 import suraText from '../components/suraText'
 import dashbord from '../components/dashbord'
-import glTitle from '../components/glTitle'
+import appTitle from '../components/appTitle'
 import { appMixin } from '../mixins/mixins'
 import suraTextSearchResults from '../components/suraTextSearchResults'
 
@@ -62,7 +62,7 @@ export default {
   components: {
     suraText,
     dashbord,
-    glTitle,
+    appTitle,
     suraTextSearchResults
   },
   data: () => ({

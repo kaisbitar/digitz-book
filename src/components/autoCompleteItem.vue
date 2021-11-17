@@ -1,66 +1,42 @@
 <template>
   <div style="display: contents" @click="handleClick()">
-    <!-- <label > -->
-      <v-chip
-        label
-        small
-        color=""
-        class="mt-7 ml-4 black--text brown lighten-5"
+    <v-chip label small color="" class="mt-7 ml-4 black--text brown lighten-5">
+      <div> {{ chipTitle }}</div>
+    </v-chip>
+    <v-list-item-content>
+      <v-list-item-title
+        class="blue--text"
+        v-html="title"
+      ></v-list-item-title>
+      <v-list-item-title
+        style="max-width=200px !important"
+        v-html="mainText"
       >
-        <div>آية {{ item.verseIndex }}</div>
-      </v-chip>
-      <v-list-item-content>
-        <v-list-item-title
-          class="blue--text"
-          v-html="highlight(item.fileName, inputText)"
-        ></v-list-item-title>
-        <v-list-item-title
-          style="max-width=200px !important"
-          v-html="highlight(item.verseText, inputText)"
-        >
-        </v-list-item-title>
-        <v-list-item-subtitle
-          v-html="
-            'ترتيب في المصحف:' +
-            highlight(item.verseNumberToQuran.toString(), inputText)
-          "
-        >
-        </v-list-item-subtitle>
-      </v-list-item-content>
-    <!-- </label> -->
+      </v-list-item-title>
+      <v-list-item-subtitle
+        v-html="subtitle"
+      >
+      </v-list-item-subtitle>
+    </v-list-item-content>
   </div>
 </template>
 
 <script>
-import { appMixin } from '../mixins/mixins'
 
 export default {
   name: 'autoCompleteItem',
-  props: ['item', 'inputText'],
-  mixins: [appMixin],
+  props: ['title', 'mainText', 'chipTitle', 'subtitle'],
   components: {},
-  data: () => ({
-  }),
+  data: () => ({}),
   computed: {},
   methods: {
     handleClick () {
-      var suraNumber = this.item.fileName.replace(/[ء-٩]/g, '').replace(/\s/g, '')
-      var suraName = this.item.fileName.replace(/[0-9]/g, '')
-      var target = {
-        fileName: suraNumber + suraName,
-        verseIndex: this.item.verseIndex
-      }
-      this.$store.commit('setTarget', target)
       this.$emit('clicked')
     }
   },
-  watch: {
-  },
-  created () {
-
-  },
-  mounted () {
-  }
+  watch: {},
+  created () {},
+  mounted () {}
 }
 </script>
 
@@ -68,8 +44,12 @@ export default {
 .v-autocomplete__content {
   max-width: 500px;
 }
+.v-list-item {
+  zoom: 1.2;
+}
+
 @media (max-width: 600px) {
-  .v-autocomplete__content{
+  .v-autocomplete__content {
     max-width: -webkit-fill-available;
   }
 }

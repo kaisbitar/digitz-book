@@ -28,7 +28,7 @@
       </keep-alive>
       <keep-alive
         ><dashWords
-          class="chartRow"
+          class="webKitWidth"
           v-if="activeTab === 'numberOfWords'"
           :numberOfWords="numberOfWords"
           :numberOfLetters="numberOfLetters"
@@ -38,7 +38,7 @@
       /></keep-alive>
       <keep-alive
         ><dashLetters
-          class="chartRow"
+          class="webKitWidth"
           v-if="activeTab === 'numberOfLetters'"
           :numberOfWords="numberOfWords"
           :numberOfLetters="numberOfLetters"
@@ -47,7 +47,7 @@
       /></keep-alive>
       <keep-alive
         ><dashVerses
-          class="chartRow"
+          class="webKitWidth"
           v-if="activeTab === 'numberOfVerses'"
           :versesBasics="versesBasics"
           :inputText="inputText"
@@ -133,9 +133,6 @@ export default {
 .suraInfoSingleBox.active {
   opacity: 1;
   /* border: 1px solid #626262 !important; */
-}
-.chartRow {
-  width: -webkit-fill-available;
 }
 .chartTitleWrap {
   zoom: 0.8;

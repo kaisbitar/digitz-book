@@ -7,7 +7,7 @@
     <v-tabs-items v-model="tab">
       <v-tab-item value="tab-1">
         <div class="webKitWidth">
-          <glChart
+          <appChart
             class="mr-1 pa-0 ml-2 webKitWidth lettersChart"
             :dataType="'letters'"
             :series="series"
@@ -21,7 +21,7 @@
       </v-tab-item>
       <v-tab-item value="tab-2">
         <div class="d-flex s">
-          <v-card   outlined>
+          <v-card outlined>
             <tableOccurrences
               :tableData="occurrences"
               :dataType="dataType"
@@ -48,14 +48,14 @@
 
 <script>
 import dashLabelsPositions from './dashLabelsPositions.vue'
-import glChart from './glChart.vue'
+import appChart from './appChart.vue'
 import chartOptions from '../assets/numbersOptions.js'
 import tableOccurrences from './tableOccurrences.vue'
 import { detailMixin } from '../mixins/detailMixin'
 
 export default {
   name: 'letterDetails',
-  components: { dashLabelsPositions, glChart, tableOccurrences },
+  components: { dashLabelsPositions, appChart, tableOccurrences },
   mixins: [detailMixin],
   data: () => ({
     dataType: 'letters',
@@ -65,17 +65,59 @@ export default {
     ],
     indexes: {},
     wordsGroup: null,
-    alfhaBet: ['ب', 'ت', 'ث', 'ج', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 'س', 'ش', 'ص', 'ض', 'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ك', 'ل', 'م', 'ن', 'ه', 'و', 'ي', 'ؤ', 'ء', 'ى', 'ة', 'أ', 'آ', 'إ', 'ا'],
+    alfhaBet: [
+      'ب',
+      'ت',
+      'ث',
+      'ج',
+      'ح',
+      'خ',
+      'د',
+      'ذ',
+      'ر',
+      'ز',
+      'س',
+      'ش',
+      'ص',
+      'ض',
+      'ط',
+      'ظ',
+      'ع',
+      'غ',
+      'ف',
+      'ق',
+      'ك',
+      'ل',
+      'م',
+      'ن',
+      'ه',
+      'و',
+      'ي',
+      'ؤ',
+      'ء',
+      'ى',
+      'ة',
+      'أ',
+      'آ',
+      'إ',
+      'ا'
+    ],
     occurrences: []
   }),
   methods: {
     setToolTip () {
       var x = {
         custom: (obj) => {
-          return '<div class="d-flex pt-2 pa-2">' +
-                    '<div class=" tipInfo "><span class="tipLabel">الحرف:</span> ' + obj.w.globals.seriesX[0][obj.dataPointIndex] + '</div>' +
-                    '<div class="  tipInfo tipInfo2"><span class="tipLabel">تكرار:</span> ' + obj.series[0][obj.dataPointIndex] + '</div>' +
-                  '</div>'
+          return (
+            '<div class="d-flex pt-2 pa-2">' +
+            '<div class=" tipInfo "><span class="tipLabel">الحرف:</span> ' +
+            obj.w.globals.seriesX[0][obj.dataPointIndex] +
+            '</div>' +
+            '<div class="  tipInfo tipInfo2"><span class="tipLabel">تكرار:</span> ' +
+            obj.series[0][obj.dataPointIndex] +
+            '</div>' +
+            '</div>'
+          )
         },
         shared: true,
         followCursor: true
@@ -109,18 +151,16 @@ export default {
       for (const [key, value] of Object.entries(this.indexes)) {
         this.occurrences.push({ x: key, y: value.length })
       }
-      this.occurrences.sort((a, b) => (a.y > b.y) ? 1 : -1)
+      this.occurrences.sort((a, b) => (a.y > b.y ? 1 : -1))
     }
   },
-  computed: {
-  },
+  computed: {},
   watch: {
     suraText () {
       if (!this.suraText) return
       this.getIndexes()
       this.getOccurrences()
     }
-
   },
   created () {
     this.setToolTip()
@@ -128,7 +168,6 @@ export default {
     this.getOccurrences()
   }
 }
-
 </script>
 
 <style>
@@ -146,17 +185,17 @@ export default {
   /* width: 320px; */
 }
 .tableStyle .indexItem.text-right {
-    background: #f2f2f233;
+  background: #f2f2f233;
 }
 .tableStyle .indexItem.text-right {
-    background: #f2f2f233;
+  background: #f2f2f233;
 }
 .dashSearchField {
   width: 150px;
   margin-bottom: -22px;
   z-index: 3;
   position: relative;
-  PADDING-left: 0PX !important;
+  padding-left: 0px !important;
 }
 .tableStyle td {
   border: none !important;
@@ -168,5 +207,4 @@ export default {
 .tableStyle tr:nth-child(even) {
   background-color: #f9f9f980;
 }
-
 </style>

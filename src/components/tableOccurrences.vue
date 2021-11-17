@@ -1,6 +1,6 @@
 <template>
   <div class="webKitWidth">
-    <glSearchBox
+    <appSearchBox
       @searchChanged="searchChanged"
       @matchChanged="matchChanged"
       :inputText="search"
