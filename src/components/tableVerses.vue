@@ -47,7 +47,7 @@
             />
             <td
               :class="{hideIt: showMenuIcon === 'icon' + props.item.verseNumberToQuran.toString()}"
-              v-html="( page -1 ) * 50 + props.index + 1"
+              v-html="( page - 1 ) * 50 + props.index + 1"
             />
             <tableVerseItem
               v-for="(cellItem, index) in props.item"
@@ -105,6 +105,7 @@ export default {
       )
     },
     setCurrentItems (items) {
+      this.currentItems = []
       this.currentItems = items
       this.currentItemsLength = items.length
       this.selectFirstItemInTable()
@@ -120,6 +121,10 @@ export default {
       }
     },
     selectFirstItemInTable () {
+      if (this.storeFileName === '000المصحف') {
+        this.scrollToActiveRow()
+        return
+      }
       this.$store.commit('setTarget', { fileName: this.currentItems[0].fileName, verseIndex: this.currentItems[0].verseIndex })
       this.scrollToActiveRow()
     },
@@ -142,6 +147,9 @@ export default {
     },
     selectedSearchIndex () {
       return this.$store.getters.selectedSearchIndex
+    },
+    storeFileName () {
+      return this.$store.getters.target.fileName
     }
   },
   watch: {

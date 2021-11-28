@@ -252,25 +252,31 @@ export default {
       this.setSuraBasics()
       this.fetchSuraDetails()
       if (this.fileName === '000المصحف') {
+        this.setSuraBasics()
+        this.fetchSuraDetails()
         this.perpareMushafData()
         this.suraTextWithTashkeel = this.allVersesWithTashkeel
         this.setMushafToolTip()
         return
       }
+      this.setSuraBasics()
+      this.fetchSuraDetails()
       this.perpareSuraData()
       this.prepareSuraWithTashkeel()
       this.setToolTip(this.suraTextArray)
     }
   },
   mounted () {
-    this.setSuraBasics()
-    this.fetchSuraDetails()
     if (this.fileName === '000المصحف') {
+      this.setSuraBasics()
+      this.fetchSuraDetails()
       this.perpareMushafData()
       this.suraTextWithTashkeel = this.allVersesWithTashkeel
       this.setMushafToolTip()
       return
     }
+    this.setSuraBasics()
+    this.fetchSuraDetails()
     this.perpareSuraData()
     this.prepareSuraWithTashkeel()
     this.setToolTip(this.suraTextArray)

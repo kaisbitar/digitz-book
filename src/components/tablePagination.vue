@@ -8,7 +8,7 @@
     <v-pagination
       v-model="pageLocal"
       :length="pageCount"
-      color="brown lighten-5 black--text font-weight-bold"
+      color="brown lighten-4 black--text font-weight-bold"
       class="paginator"
     ></v-pagination>
   </v-card>

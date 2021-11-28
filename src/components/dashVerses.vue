@@ -69,7 +69,7 @@ export default {
     index: 1,
     tableHeaders: [
       { text: 'INDEX', value: '', class: 'brown lighten-5 black--text', width: '100' },
-      { text: 'السورة', value: 'fileName', class: 'brown lighten-5 black--text', width: '110' },
+      { text: 'السورة', value: 'fileName', class: 'brown lighten-5 black--text', width: '110', filterable: false },
       { text: 'رقم', value: 'verseIndex', class: 'brown lighten-5 black--text', width: '80' },
       { text: 'الآية', value: 'verseText', class: 'brown lighten-5 black--text' },
       { text: 'كلمات', value: 'numberOfWords', class: 'brown lighten-5 black--text', width: '85' },
