@@ -1,8 +1,8 @@
 <template>
   <div class="webKitWidth">
     <appSearchBox
-      @searchChanged="searchChanged"
-      @matchChanged="matchChanged"
+      @searchChanged="changeSearch"
+      @matchChanged="changeMatchingStatus"
       :inputText="search"
       :dataType="dataType"
     />
@@ -11,7 +11,7 @@
       :headers="tableHeaders"
       :items-per-page="75"
       :search="search"
-      :height="getHeight()"
+      :height="getTableHeight() - 130"
       :footer-props="footerProps"
       :loading="isLoading"
       loading-text="جاري تحميل البيانات القرآنية ... الرجاء الانتظار"
@@ -40,7 +40,7 @@
       <template v-slot:item="props">
         <v-chip
           @click="$emit('rowClicked', props.index, props.item)"
-          class="indexItem text-right pa-2 ma-1"
+          class="tableItem text-right pa-2 ma-1"
           :class="{ 'orange lighten-4 font-weight-bold': props.item.x === detailElement }"
           label
           v-html="highlight(props.item.x , search)"
@@ -52,12 +52,11 @@
 </template>
 
 <script>
-import { appMixin } from '../mixins/mixins'
 import { tableOccMixin } from '../mixins/tableOccMixin'
 
 export default {
   name: '',
-  mixins: [appMixin, tableOccMixin]
+  mixins: [tableOccMixin]
 }
 </script>
 

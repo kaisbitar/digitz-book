@@ -171,9 +171,6 @@ export default {
 </script>
 
 <style>
-.webKitWidth {
-  width: -webkit-fill-available;
-}
 .showIcon {
   position: absolute;
   z-index: 2;
@@ -181,15 +178,12 @@ export default {
   margin-top: 24px;
   cursor: pointer;
 }
-.tableStyle {
-  /* width: 320px; */
-}
-.tableStyle .indexItem.text-right {
+/* .tableStyle .tableItem.text-right {
   background: #f2f2f233;
 }
-.tableStyle .indexItem.text-right {
+.tableStyle .tableItem.text-right {
   background: #f2f2f233;
-}
+} */
 .dashSearchField {
   width: 150px;
   margin-bottom: -22px;
@@ -197,14 +191,5 @@ export default {
   position: relative;
   padding-left: 0px !important;
 }
-.tableStyle td {
-  border: none !important;
-}
-.tableStyle table {
-  border-collapse: collapse;
-  width: 100%;
-}
-.tableStyle tr:nth-child(even) {
-  background-color: #f9f9f980;
-}
+
 </style>

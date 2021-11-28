@@ -22,9 +22,8 @@
       :isLoading="isLoading"
       :wordIndexes="details.wordIndexes"
       :suraTextArray="searchResults"
-      :versesBasics="versesBasics"
+      :versesBasics="versesData"
       :activeTab="activeTab"
-      :searchFrequency="true"
     />
   </div>
 </template>
@@ -34,6 +33,7 @@ import appTitle from '../components/appTitle'
 
 export default {
   name: 'search',
+  props: ['activeView'],
   components: {
     dashbord,
     appTitle
@@ -47,10 +47,10 @@ export default {
     ],
     isLoading: false,
     details: {},
+    versesData: [],
     letterSeries: [],
     wordsSeries: [],
-    searchIndxes: [],
-    view: 'suraChart'
+    view: 'detailView'
   }),
   methods: {
     getData (tab) {
@@ -59,22 +59,24 @@ export default {
         this.fetchSuraDetails()
       }
     },
+    createSurasNames () {
+      this.versesData = this.versesBasics.map((item, index) => {
+        return {
+          fileName: item.fileName,
+          verseIndex: item.verseIndex.toString(),
+          verseText: item.verseText,
+          numberOfWords: item.verseText.split(' ').length.toString(),
+          numberOfLetters: item.verseText.replace(/ /g, '').length.toString(),
+          verseNumberToQuran: item.verseNumberToQuran.toString()
+        }
+      })
+    },
     getNextSearch (item) {
       if (item === 'up') {
-        this.$store.commit(
-          'setFilterSelectedIndex',
-          this.selectedSearchIndex - 1
-        )
-        var selectedFilterList = this.filteredSearch[this.selectedSearchIndex]
-        this.$store.commit('setFilterSelectedSearch', selectedFilterList)
+        this.$store.commit('setSearchIndex', this.selectedSearchIndex - 1)
         return
       }
-      this.$store.commit(
-        'setFilterSelectedIndex',
-        this.selectedSearchIndex + 1
-      )
-      selectedFilterList = this.filteredSearch[this.selectedSearchIndex]
-      this.$store.commit('setFilterSelectedSearch', selectedFilterList)
+      this.$store.commit('setSearchIndex', this.selectedSearchIndex + 1)
     },
     fetchSuraDetails () {
       this.isLoading = true
@@ -91,20 +93,17 @@ export default {
   },
   computed: {
     numberOfVerses () {
-      if (!this.selectedSearch.result) return 0
+      if (!this.selectedSearch) return 0
       return this.selectedSearch.result.length
     },
     activeTab () {
       return this.$store.getters.activeTab
     },
-    activeView () {
-      return this.$store.getters.activeView
-    },
-    filteredSearch () {
-      return this.$store.state.filteredSearch
+    SearchResults () {
+      return this.$store.state.SearchResults
     },
     selectedSearch () {
-      if (!this.filteredSearch.length > 0) return {}
+      if (!this.SearchResults) return {}
       return this.$store.getters.selectedSearch
     },
     selectedSearchIndex () {
@@ -115,67 +114,50 @@ export default {
       return this.selectedSearch.inputText
     },
     searchResults () {
-      if (!this.selectedSearch.result) return []
-      var filteredList = this.selectedSearch.result
-      var searchText = filteredList.map((item) => {
+      if (!this.selectedSearch) return []
+      return this.selectedSearch.result.map((item) => {
         return item.verseText
       })
-      return searchText
     },
     versesBasics () {
-      if (!this.selectedSearch.result) return []
-      var filteredList = this.selectedSearch.result
-      return filteredList
+      if (!this.selectedSearch) return []
+      return this.selectedSearch.result
     },
     numberOfWords () {
-      if (!this.selectedSearch.result) return 0
-      var filteredList = this.selectedSearch.result
-      var wordsCount = []
-      var numberOfWords = filteredList.map((item) => {
-        wordsCount = item.verseText.split(' ').length
-        return wordsCount
-      })
-      return numberOfWords.reduce((a, b) => a + b, 0)
+      if (!this.selectedSearch) return 0
+      return this.selectedSearch.result.map((item) => {
+        return item.verseText.split(' ').length
+      }).reduce((a, b) => a + b, 0)
     },
     numberOfLetters () {
-      if (!this.selectedSearch.result) return 0
-      var filteredList = this.selectedSearch.result
-      var lettersCount = []
-      var numberOfLetters = filteredList.map((item) => {
-        lettersCount = item.verseText.replace(/ /g, '').length
-        return lettersCount
-      })
-      return numberOfLetters.reduce((a, b) => a + b, 0)
+      if (!this.selectedSearch) return 0
+      return this.selectedSearch.result.map((item) => {
+        return item.verseText.replace(/ /g, '').length
+      }).reduce((a, b) => a + b, 0)
     },
     fileName () {
       if (!this.$store.getters.target) return
       return this.$store.getters.target.fileName
     },
     parentSearch () {
-      if (!this.$store.getters.selectedSearch.parentSearch) return
-      var parentSearch = this.$store.getters.selectedSearch.parentSearch
-      // if (/\d/.test(parentSearch)) return 'سورة ' + parentSearch.replace(/[0-9]/g, '')
-      return parentSearch
+      if (!this.$store.getters.selectedSearch) return
+      return this.$store.getters.selectedSearch.parentSearch
     },
     parentcount () {
-      if (!this.$store.getters.selectedSearch.resultsCount) return
+      if (!this.$store.getters.selectedSearch) return
       return this.$store.getters.selectedSearch.resultsCount
     }
   },
   watch: {
-    selectedSearch () {
-      if (!this.selectedSearch.result) return
-      this.searchIndxes = []
-      for (var i = 0; i < this.selectedSearch.result.length; i++) {
-        this.searchIndxes.push(
-          this.selectedSearch.result[i].verseNumberToQuran
-        )
-      }
-      if (this.activeView === 'sruaChart') return
-      this.$store.commit('setActiveView', 'suraChart')
+    versesBasics () {
+      this.createSurasNames()
     }
   },
-  created () {
+  mounted () {
+    if (this.selectedSearchIndex === -1) {
+      this.getNextSearch('down')
+    }
+    this.createSurasNames()
   }
 }
 </script>

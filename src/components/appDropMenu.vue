@@ -1,6 +1,6 @@
 <template>
   <div class="text-center">
-    <label @click="show"><v-icon > mdi-dots-horizontal </v-icon></label>
+    <label class="detailIcon" @click="show"><v-icon > mdi-dots-horizontal </v-icon></label>
     <v-menu
       offset-y
       v-model="showMenu"
@@ -52,5 +52,13 @@ export default {
   background: #bbdefb !important;
   cursor: pointer;
   color: white !important;
+}
+.detailIcon{
+  border: 1px solid;
+  border-radius: 15px;
+  width: 27px;
+}
+.detailIcon:hover {
+  background: #ccc;
 }
 </style>

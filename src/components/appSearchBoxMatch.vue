@@ -1,8 +1,8 @@
 <template>
   <div flat class="appSearchBoxMatch d-flex">
-    <span v-if="search && matchAll" class="matchLabel mt-2">تطابق</span>
+    <span v-if="search && matchingStatus" class="matchLabel mt-2">تطابق</span>
     <v-icon
-      :color="matchAll === false ? 'grey lighten-1' : 'blue'"
+      :color="matchingStatus === false ? 'grey lighten-1' : 'blue'"
       v-if="search"
       class="mt-1"
       @click="$emit('clicked')"
@@ -15,7 +15,7 @@
 <script>
 export default {
   name: 'appSearchBoxMatch',
-  props: ['search', 'matchAll'],
+  props: ['search', 'matchingStatus'],
   components: {},
   data: () => ({}),
   computed: {},

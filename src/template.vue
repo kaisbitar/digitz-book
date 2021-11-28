@@ -1,20 +1,16 @@
 <template>
-  <v-card  flat  class="">
-
-  </v-card>
+  <v-card flat class=""> </v-card>
 </template>
 
 <script>
-
 export default {
   name: '',
-  components: {
-  },
-  data: () => ({ }),
+  components: {},
+  data: () => ({}),
   computed: {},
-  methods: { },
+  methods: {},
   created () {},
-  mounted () { }
+  mounted () {}
 }
 </script>
 

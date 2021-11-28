@@ -1,99 +1,97 @@
 <template>
   <div>
-    <v-row class="dashboardTab">
-      <dashboardTab
-        v-for="(item, index) in tabs"
-        :key="index"
-        :title="item.title"
-        :value="item.value"
-        :tabName="item.name"
-        :activeTab="activeTab === item.name"
-      />
+    <v-row class="dashboardTabs">
+      <dashboardTabs :tabs="tabs" @tabChanged="changeTab" class="webKitWidth"/>
     </v-row>
     <v-row>
-      <keep-alive
-        ><dashFrequency
-          v-if="activeTab === 'frequency' && !searchFrequency"
-          :isLoading="isLoading"
-          :letterSeries="letterSeries"
-          :wordsSeries="wordsSeries"
-          :versesText="suraTextArray"
-          :height="height"
-      /><dashFrequencySearch
-          v-if="activeTab === 'frequency' && searchFrequency"
-          :isLoading="isLoading"
-          :height="height"
-          :versesBasics="versesBasics"
-      />
-      </keep-alive>
-      <keep-alive
-        ><dashWords
-          class="webKitWidth"
-          v-if="activeTab === 'numberOfWords'"
-          :numberOfWords="numberOfWords"
-          :numberOfLetters="numberOfLetters"
-          :indexes="wordIndexes"
-          :suraText="suraTextArray.join(' ')"
-          :isLoading="isLoading"
-      /></keep-alive>
-      <keep-alive
-        ><dashLetters
-          class="webKitWidth"
-          v-if="activeTab === 'numberOfLetters'"
-          :numberOfWords="numberOfWords"
-          :numberOfLetters="numberOfLetters"
-          :suraText="suraTextArray.join('')"
-          :isLoading="isLoading"
-      /></keep-alive>
-      <keep-alive
-        ><dashVerses
-          class="webKitWidth"
-          v-if="activeTab === 'numberOfVerses'"
-          :versesBasics="versesBasics"
-          :inputText="inputText"
-          :isLoading="isLoading"
-      /></keep-alive>
+      <v-tabs-items v-model="tab" class="webKitWidth">
+        <v-tab-item
+          transition="fade-transition" reverse-transition="fade-transition"
+        >
+          <keep-alive>
+            <dashVerses
+              v-if="activeTabName === 'numberOfVerses'"
+              class="webKitWidth"
+              :versesBasics="versesBasics"
+              :inputText="inputText"
+              :isLoading="isLoading"
+          /></keep-alive>
+        </v-tab-item>
+        <v-tab-item
+          transition="fade-transition" reverse-transition="fade-transition"
+        >
+          <dashWords
+            v-if="activeTabName === 'numberOfWords'"
+            class="webKitWidth"
+            :suraText="suraTextArray.join(' ')"
+            :numberOfLetters="numberOfLetters"
+            :numberOfWords="numberOfWords"
+            :isLoading="isLoading"
+            :indexes="wordIndexes"
+        /></v-tab-item>
+        <v-tab-item
+          transition="fade-transition" reverse-transition="fade-transition"
+        >
+          <dashLetters
+            v-if="activeTabName === 'numberOfLetters'"
+            class="webKitWidth"
+            :numberOfLetters="numberOfLetters"
+            :suraText="suraTextArray.join('')"
+            :numberOfWords="numberOfWords"
+            :isLoading="isLoading"
+        /></v-tab-item>
+          <dashFrequency
+            v-if="activeTabName === 'frequency'"
+            :chartFreqSeries="chartFreqSeries"
+            :chartOptions="chartOptions"
+            :versesText="suraTextArray"
+            :isLoading="isLoading"
+            :height="height"
+        />
+      </v-tabs-items>
     </v-row>
   </div>
 </template>
 
 <script>
 import dashLetters from './dashLetters.vue'
-import dashWords from './dashWords.vue'
-import dashVerses from './dashVerses.vue'
-import dashboardTab from './dashboardTab'
 import dashFrequency from './dashFrequency'
-import dashFrequencySearch from './dashFrequencySearch'
+import dashVerses from './dashVerses.vue'
+import dashboardTabs from './dashboardTabs'
+import dashWords from './dashWords.vue'
 
 export default {
   name: 'dashbord',
   components: {
-    dashLetters,
-    dashboardTab,
-    dashWords,
-    dashVerses,
     dashFrequency,
-    dashFrequencySearch
+    dashboardTabs,
+    dashLetters,
+    dashVerses,
+    dashWords
   },
   props: [
-    'inputText',
+    'numberOfLetters',
+    'chartFreqSeries',
     'numberOfVerses',
     'numberOfWords',
-    'numberOfLetters',
-    'isLoading',
-    'wordIndexes',
-    'letterSeries',
-    'wordsSeries',
     'suraTextArray',
+    'chartFreqType',
     'versesBasics',
-    'activeTab',
-    'searchFrequency'
+    'chartOptions',
+    'wordIndexes',
+    'inputText',
+    'isLoading',
+    'activeTab'
   ],
   data: () => ({
-    dataType: 'الكلمة',
-    windowHeight: window.innerHeight
+    windowHeight: window.innerHeight,
+    tab: 3
   }),
-  methods: {},
+  methods: {
+    changeTab (tab) {
+      this.tab = tab
+    }
+  },
   computed: {
     tabs () {
       var tabs = [
@@ -105,35 +103,21 @@ export default {
       return tabs
     },
     height () {
-      // var tabgetHeight ()Height = 0
-      // if (this.includeTab) { tabHeight = -20 }
       var heightDif = this.windowHeight - 210
       return heightDif
+    },
+    activeTabName () {
+      if (!this.activeTab) return
+      return this.activeTab.name
     }
   },
   watch: {},
   created () {},
-  mounted () {
-  }
+  mounted () {}
 }
 </script>
 
 <style>
-.suraInfoSingleBox {
-  padding: 24px;
-  margin-left: 9px;
-  width: 130.5px;
-  display: flex;
-  color: #fff;
-  opacity: 0.5;
-  padding-top: 12px;
-  padding-bottom: 12px;
-  text-align: center;
-}
-.suraInfoSingleBox.active {
-  opacity: 1;
-  /* border: 1px solid #626262 !important; */
-}
 .chartTitleWrap {
   zoom: 0.8;
   position: absolute;
@@ -141,30 +125,22 @@ export default {
   margin-top: 3px !important;
   margin-right: 250px;
 }
-.dashboardTab {
+.dashboardTabs {
   margin-right: 395px;
-  margin-top: -66px;
-  margin-bottom: 16px;
+  margin-top: -37px;
+  margin-bottom: -1px;
+  margin-left: 47px;
 }
 a.dashTabs.v-tab--active {
-    background: aliceblue;
+  background: aliceblue;
 }
 @media (max-width: 700px) {
-  .suraInfoSingleBox {
-    width: 70.5px;
-    margin-left: 10px;
-    font-size: 13px;
-  }
 }
 @media (max-width: 978px) {
-  .dashboardTab {
+  .dashboardTabs {
     margin-right: 0px;
     margin-top: 0px;
     margin-bottom: 10px;
-  }
-  .suraInfoSingleBox {
-    padding: 5px;
-    margin-bottom: 5px;
   }
 }
 </style>

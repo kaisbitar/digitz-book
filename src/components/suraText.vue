@@ -3,7 +3,7 @@
     <v-row outlined class="pa-2  grey lighten-4" id="suraBlock" :style="getheight()">
       <suraTextBox
         :inputText="inputText"
-        :suraTargetedVerse="suraTargetedVerse"
+        :suraTargetedVerseIndex="suraTargetedVerseIndex"
         :suraTextArray="suraTextArray"
         :isLoading="isLoading"
       />
@@ -20,7 +20,7 @@ import { appMixin } from '../mixins/mixins'
 export default {
   name: 'suraText',
   components: { suraTextBox },
-  props: ['numberOfVerses', 'numberOfWords', 'numberOfLetters', 'suraTextArray', 'inputText', 'suraTargetedVerse', 'isLoading'],
+  props: ['numberOfVerses', 'numberOfWords', 'numberOfLetters', 'suraTextArray', 'inputText', 'suraTargetedVerseIndex', 'isLoading'],
   mixins: [appMixin],
   data: () => ({
     windowHeight: window.innerHeight

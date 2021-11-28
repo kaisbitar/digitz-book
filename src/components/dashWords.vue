@@ -11,9 +11,9 @@
       <appChart
         class="wordsChart"
         :dataType="'words'"
-        :series="seriesC"
         :isLoading="isLoading"
         :options="options"
+        :series="series"
         :height="100"
       />
       <h5 class="text-center mt-n6">المواقع</h5>
@@ -21,43 +21,42 @@
     <div class="d-flex">
       <tableOccurrences
         class="wordsTable"
-        :tableData="occurrences"
         :dataType="'كلمة'"
-        :tableHeaders="tableHeaders"
-        :footerProps="footerProps"
-        :isLoading="isLoading"
-        :groupBy="groupBy"
         @rowClicked="rowClickedActions"
         :detailElement="detailElement"
+        :tableHeaders="tableHeaders"
+        :footerProps="footerProps"
+        :tableData="occurrences"
         :includeTab="includeTab"
+        :isLoading="isLoading"
+        :groupBy="groupBy"
       />
-      <!-- <p>مواقع {{detailElement}} في {{fileName.replace(/[0-9]/g, '')}}</p> -->
     </div>
   </div>
 </template>
 
 <script>
-import dashLabels from './dashLabels.vue'
-import tableOccurrences from './tableOccurrences.vue'
-import appChart from './appChart.vue'
-import { detailMixin } from '../mixins/detailMixin'
 import chartOptions from '../assets/wordChartOptions.js'
+import tableOccurrences from './tableOccurrences.vue'
+import { detailMixin } from '../mixins/detailMixin'
+import dashLabels from './dashLabels.vue'
+import appChart from './appChart.vue'
 
 export default {
   name: 'dashWords',
   mixins: [detailMixin],
   props: ['indexes', 'numberOfWords'],
   components: {
-    dashLabels,
     tableOccurrences,
+    dashLabels,
     appChart
   },
   data: () => ({
-    dataType: 'words',
-    options: chartOptions,
     tableHeaders: [{ text: '', value: 'x', class: ' lighten-4 black--text' }],
+    options: chartOptions,
+    dataType: 'words',
     wordsGroup: null,
-    seriesC: []
+    series: []
   }),
   methods: {
     rowClickedActions (index, item) {
@@ -73,15 +72,13 @@ export default {
           y: occurrence
         })
       }
-      this.seriesC = [{ data: points }]
+      this.series = [{ data: points }]
     },
     setXaxis () {
       if (!this.indexes) return
       var xaxis = {}
       xaxis.min = 1
       xaxis.max = parseInt(this.numberOfWords)
-      // xaxis.offsetX = -9
-      // xaxis.axisTicks = { show: true }
       this.options = {
         ...this.options,
         ...{ xaxis: xaxis }
@@ -165,16 +162,6 @@ export default {
 </script>
 
 <style>
-.webKitWidth {
-  width: -webkit-fill-available;
-}
-.table {
-  /* max-width: 268px; */
-}
-
-.wordsTable  {
-  /* margin-top: 13px; */
-}
 .wordsTable thead.v-data-table-header {
     display: none;
 }

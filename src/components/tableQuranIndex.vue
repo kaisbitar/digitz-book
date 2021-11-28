@@ -17,7 +17,8 @@
         <v-icon
           :color="showDetail === false ? 'grey' : 'blue'"
           @click="
-            (showDetail = !showDetail), $emit('showDetailToggle', showDetail)"
+            (showDetail = !showDetail), $emit('showDetailToggle', showDetail)
+          "
         >
           mdi-format-horizontal-align-center
         </v-icon>
@@ -34,14 +35,14 @@
         :height="'84vh'"
         fixed-header
         hide-default-footer
-        class="tableStyle indexStyle "
+        class="tableStyle indexStyle"
         id="indexBlock"
       >
         <template v-slot:item="props">
           <tr
-            @click="selectSura(props.item)"
-            :class="{ active: props.item.fileName === selectedId }"
-            class="indexItem"
+            @click="runSura(props.item)"
+            :class="{ activeTableItem: props.item.fileName === selectedId }"
+            class="tableItem"
           >
             <td
               class="text-right"
@@ -127,19 +128,20 @@ export default {
       if (fileName === '000المصحف') return '0'
       return parseInt(fileName, 10)
     },
-    selectSura (sura) {
-      var target = { fileName: sura.fileName, verseIndex: null }
-      this.$store.commit('setTarget', target)
+    runSura (sura) {
+      this.$store.commit('setTarget', {
+        fileName: sura.fileName,
+        verseIndex: null
+      })
       this.selectedId = sura.fileName
       if (this.$router.currentRoute.name !== 'singleSura') {
         this.$router.push({ name: 'singleSura' })
       }
-      this.$store.commit('setFilterSelectedIndex', -1)
-      this.$store.commit('resetFilterSelectedSearch')
+      this.$store.commit('setSearchIndex', -1)
     },
     scrollToIndex () {
       setTimeout(() => {
-        this.$vuetify.goTo('.active', {
+        this.$vuetify.goTo('.activeTableItem', {
           container: '.v-data-table__wrapper'
         })
       }, 10)
@@ -148,7 +150,8 @@ export default {
       if (!text) return
       if (search == null) {
         return text
-      } if (isNaN) {
+      }
+      if (isNaN) {
         text = text.toString()
       }
       var qurey = new RegExp(search, 'gi')
@@ -156,7 +159,6 @@ export default {
         return '<span class="yellow accent-1">' + match + '</span>'
       })
     }
-
   },
   created () {
     if (!this.fileName) {
@@ -175,16 +177,16 @@ export default {
     search () {
       if (this.search === null) {
         this.showDetail = false
-        this.$emit('showDetailToggle', false)
+        this.$emit('showDetailToggle', this.showDetail)
         return
-      } if (!isNaN(this.search)) {
+      }
+      if (!isNaN(this.search)) {
         this.showDetail = true
-        this.$emit('showDetailToggle', true)
+        this.$emit('showDetailToggle', this.showDetail)
       }
     }
   },
   mounted () {}
-
 }
 </script>
 <style>
@@ -192,20 +194,33 @@ th {
   padding-top: 2px !important;
   height: 25px !important;
 }
-.indexItem {
-  cursor: pointer;
+.indexStyle .tableItem  {
   font-weight: 100;
+}
+.tableItem {
+  cursor: pointer;
+  font-weight: 500;
   color: #544d4d;
   font-size: 16px !important;
 }
-.indexItem:hover {
+.tableItem:hover {
   background: #0000000f !important;
   opacity: 0.7;
 }
-.active, .active2{
+.activeTableItem, .activeTableItem2 {
   color: black !important;
   font-weight: 500 !important;
   background: #efebe9 !important;
+}
+.tableStyle td {
+  border: none !important;
+}
+.tableStyle table {
+  border-collapse: collapse;
+  width: 100%;
+}
+.tableStyle tr:nth-child(even) {
+  background-color: #f9f9f980;
 }
 .indexStyle {
   width: auto !important;
@@ -218,14 +233,14 @@ th {
   overflow-x: hidden !important;
   /* margin-left: -11px; */
 }
-.searchWrap{
+.searchWrap {
   width: 220px;
   height: 66px;
 }
-.v-text-field__slot{
+.v-text-field__slot {
   position: initial;
 }
-label.v-label.theme--light{
+label.v-label.theme--light {
   font-size: 14px;
   top: 10px;
 }

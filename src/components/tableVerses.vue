@@ -1,232 +1,147 @@
 <template>
-  <div class="webKitWidth grey lighten-4" >
-    <div class="d-flex pa-3 topBar">
+  <div class="webKitWidth grey lighten-5">
+    <div class="d-flex pt-1 topBar">
       <appSearchBox
-        @searchChanged="searchChanged"
-        @matchChanged="matchChanged"
+        @searchChanged="changeSearch"
+        @matchChanged="changeMatchingStatus"
         :inputText="search"
         :dataType="dataType"
       />
-      <div>
-        <!-- setSuraFilter() -->
-        <!-- <v-btn @click="dialog = false">
-          <v-icon v-if="search" class="mt-6 mb-1 mr-3" small>
-            mdi-table-plus</v-icon
-          >
-        </v-btn> -->
-      </div>
     </div>
-    <div id="indexBlock">
-      <tableVersesEdit
-        v-if="dialog"
-        @close="dialog = false"
-        :editItem="editItem"
-        :dialog="dialog"
-      />
+    <div>
       <v-data-table
-        :custom-filter="handleFiltering"
-        :items="tableData"
-        :headers="tableHeaders"
-        :search="search"
-        :items-per-page="286"
-        :height="getVersesTable()"
-        :footer-props="footerProps"
-        :loading="isLoading"
         loading-text="جاري تحميل البيانات القرآنية ... الرجاء الانتظار"
         class="tableStyle versesTable"
-        fixed-header
-        :group-by="groupBy"
         ref="versesTable"
+        :custom-filter="handleFiltering"
+        :footer-props="footerProps"
+        hide-default-footer
+        :height="getTableHeight()"
+        :headers="tableHeaders"
+        :loading="isLoading"
+        :group-by="groupBy"
+        :items="tableData"
+        :search="search"
+        :items-per-page="50"
+        :page.sync="page"
+        @page-count="pageCount = $event"
+        @current-items="setCurrentItems"
+        fixed-header
       >
         <template v-slot:item="props">
           <tr
-            class="indexItem verse"
-            @click="$emit('rowClicked', props.item), (editItem = props.item)"
-            :id="'v' + props.item.verseNumberToQuran.toString()"
+            :id="'verse' + props.item.verseNumberToQuran"
+            class="tableItem"
             :class="{
-              active2: props.item.verseNumberToQuran === parseInt(selectedId),
-            }"
-            @mouseover="
-              showDetailsIcon =
-                'icon' + props.item.verseNumberToQuran.toString()
-            "
+              mouseOverRow: showMenuIcon === 'icon' + props.item.verseNumberToQuran.toString(),
+              activeTableItem2: activeTableItemId ===  props.item.fileName + props.item.verseIndex }"
+            @click="$emit('rowClicked', props.item)"
+            @mouseover="showMenuIcon = 'icon' + props.item.verseNumberToQuran.toString()"
+            @mouseleave="showMenuIcon = 'icon' "
           >
-            <td class="text-right">
-              <div
-                class="indexNumber"
-                :class="{
-                  activeIcon:
-                    showDetailsIcon ===
-                    'icon' + props.item.verseNumberToQuran.toString(),
-                }"
-              >
-                {{ props.index + 1 }}
-              </div>
-              <appDropMenu
-                @itemClicked="itemClicked"
-                class="detailIcon"
-                :class="{
-                  activeIcon:
-                    showDetailsIcon ===
-                    'icon' + props.item.verseNumberToQuran.toString(),
-                }"
-                :items="menuItems"
-              />
-            </td>
+            <appDropMenu
+              class="menuIcon"
+              :items="menuItems"
+              @itemClicked="passClickedMenuItem"
+              :class="{activeIcon: showMenuIcon === 'icon' + props.item.verseNumberToQuran.toString()}"
+            />
             <td
-              class="text-right"
-              @click="goToverse()"
-              v-html="highlight(getSuraName(props.item.fileName), search)"
-            ></td>
-            <td
-              @click="goToverse()"
-              v-html="highlight(props.item.verseIndex.toString(), search)"
-              class="text-right"
-            ></td>
-            <td
-              @click="goToverse()"
-              class="text-right pt-2 pb-2"
-              v-html="highlight(props.item.verseText, search)"
-            ></td>
-            <td
-              class="text-right"
-              @click="goToverse()"
-              v-html="highlight(getNumberOfWords(props.item.verseText), search)"
-            ></td>
-            <td
-              class="text-right"
-              @click="goToverse()"
-              v-html="
-                highlight(getNumberOfLetters(props.item.verseText), search)
-              "
-            ></td>
-            <td
-              class="text-right"
-              @click="goToverse()"
-              v-html="
-                highlight(props.item.verseNumberToQuran.toString(), search)
-              "
-            ></td>
+              :class="{hideIt: showMenuIcon === 'icon' + props.item.verseNumberToQuran.toString()}"
+              v-html="( page -1 ) * 50 + props.index + 1"
+            />
+            <tableVerseItem
+              v-for="(cellItem, index) in props.item"
+              :key="index"
+              :search="search"
+              :cellItem="cellItem"
+              @itemClicked="$emit('activateRowItem')"
+            />
           </tr>
         </template>
       </v-data-table>
+      <tablePagination
+        :page="page"
+        :pageCount="pageCount"
+        :currentItemsLength="currentItemsLength"
+        :label="'آية'"
+        @pageChanged="changePage"
+      />
     </div>
   </div>
 </template>
 
 <script>
+import { appMixin } from '../mixins/mixins'
 import { tableOccMixin } from '../mixins/tableOccMixin'
 import appSearchBox from './appSearchBox'
+import tableVerseItem from './tableVerseItem.vue'
 import appDropMenu from './appDropMenu'
-import tableVersesEdit from './tableVersesEdit.vue'
+import tablePagination from './tablePagination'
 
 export default {
-  components: { appSearchBox, appDropMenu, tableVersesEdit },
+  components: { appSearchBox, tableVerseItem, appDropMenu, tablePagination },
   name: '',
-  mixins: [tableOccMixin],
-  props: ['selectedId', 'inputText'],
+  mixins: [appMixin, tableOccMixin],
+  props: ['tableData', 'inputText', 'menuItems', 'activeTableItemId'],
   data: () => ({
-    matchAll: false,
-    showDetailsIcon: false,
-    menuItems: [
-      { title: 'تفصيل الآية', instuction: 'verseDetail' },
-      { title: 'تحرير الآية', instuction: 'editVerse' },
-      { title: 'إلغاء', instuction: 'cancel' }
-    ],
-    dialog: false,
-    editItem: {}
+    matchingStatus: false,
+    showMenuIcon: false,
+    editItem: {},
+    page: 1,
+    pageCount: 0,
+    currentItemsLength: 0
   }),
   methods: {
-    getSuraName (fileName) {
-      var suraNumber = fileName.replace(/[ء-٩]/g, '').replace(/\s/g, '')
-      return parseInt(suraNumber, 10) + ' ' + fileName.replace(/[0-9]/g, '')
-    },
-    getNumberOfWords (verseText) {
-      var wordsCount = verseText.split(' ').length
-      return wordsCount.toString()
-    },
-    getNumberOfLetters (verseText) {
-      var lettersCount = verseText.replace(/ /g, '').length
-      return lettersCount.toString()
-    },
     handleFiltering (itemText, queryText) {
       itemText = ' ' + itemText + ' '
-      if (!this.matchAll && itemText.match(queryText) !== null) {
+      if (!this.matchingStatus && itemText.match(queryText) !== null) {
         return itemText
       }
-      var regex = new RegExp(
-        '([^\u0621-\u064A]+' + queryText + '[^\u0621-\u064A]+)',
-        'gim'
+      return itemText.match(
+        new RegExp(
+          '([^\u0621-\u064A]+' + queryText + '[^\u0621-\u064A]+)',
+          'gim'
+        )
       )
-      var match = itemText.match(regex)
-
-      return match
     },
-    goToverse () {
-      this.$store.commit('setActiveView', 'suraText')
-      if (this.$router.currentRoute.name !== 'singleSura') {
-        this.$router.push({ name: 'singleSura' })
+    setCurrentItems (items) {
+      this.currentItems = items
+      this.currentItemsLength = items.length
+      this.selectFirstItemInTable()
+    },
+    scrollToActiveRow () {
+      if (document.getElementsByClassName('activeTableItem2').length > 0) {
+        setTimeout(() => {
+          this.$vuetify.goTo('.activeTableItem2', {
+            container: '.versesTable .v-data-table__wrapper',
+            offset: 100
+          })
+        }, 100)
       }
     },
-    itemClicked (item) {
-      if (item.instuction === 'verseDetail') {
-        this.$emit('itemClicked', item.instuction)
-        return
-      }
-      if (item.instuction === 'editVerse') {
-        this.dialog = true
-      }
+    selectFirstItemInTable () {
+      this.$store.commit('setTarget', { fileName: this.currentItems[0].fileName, verseIndex: this.currentItems[0].verseIndex })
+      this.scrollToActiveRow()
     },
-    scrollTo () {
-      if (document.getElementsByClassName('active2').length > 0) {
-        this.$vuetify.goTo('.active2', {
-          container: '.versesTable .v-data-table__wrapper'
-        })
-      }
+    passClickedMenuItem (item) {
+      this.$emit('handleClickedMenu', item.instuction)
     },
-    searchChanged (search) {
-      this.search = search
+    changePage (page) {
+      this.page = page
+    }
+  },
+  computed: {
+    activeView () {
+      return this.$store.getters.activeView
     },
-    matchChanged (matchAll) {
-      this.matchAll = matchAll[1]
-      this.search = ''
-      this.search = matchAll[0]
+    activeTab () {
+      return this.$store.getters.activeTab
     },
-    setSuraFilter () {
-      var filteredSearchItem =
-        this.$refs.versesTable.$children[0].filteredItems
-      var selectedSearchIndex = this.$store.getters.filteredSearch.length - 1
-      var value = {
-        resultsCount: filteredSearchItem.length,
-        inputText: this.search,
-        parentSearch: this.parentSearch,
-        result: filteredSearchItem
-      }
-      this.$store.commit('setFilterSelectedIndex', selectedSearchIndex + 1)
-      this.$store.commit('setFilterSelectedSearch', value)
-      this.$store.commit('setFilteredSearchItem', value)
-      if (this.$router.currentRoute.name !== 'search') {
-        this.$router.push({ name: 'search' })
-      }
+    selectedSearch () {
+      return this.$store.getters.selectedSearch
     },
-    getVersesTable () {
-      var tabHeight = 0
-      if (this.includeTab) {
-        tabHeight = -20
-      }
-      var heightDif = this.windowHeight - 265 + tabHeight
-      return heightDif
-    },
-    removeItem (item) {
-      this.$store.commit('deleteFromAdvancedSearch', item.verseNumberToQuran)
-    },
-    highlight (text, searchValue) {
-      if (!searchValue) {
-        return text
-      }
-      return text.replace(new RegExp(searchValue, 'gi'), (match) => {
-        return '<span style="background:yellow">' + match + '</span>'
-      })
+    selectedSearchIndex () {
+      return this.$store.getters.selectedSearchIndex
     }
   },
   watch: {
@@ -234,39 +149,21 @@ export default {
       this.search = this.inputText
     },
     activeView () {
-      if (this.activeView === 'suraText') return
-      this.scrollTo()
+      if (this.activeView === 'textView') return
+      this.scrollToActiveRow()
     },
     activeTab () {
       if (this.activeTab !== 'numberOfVerses') return
-      this.scrollTo()
+      this.scrollToActiveRow()
     },
-    fileName () {
-      if (document.getElementsByClassName('active2')) return
-      this.scrollTo()
+    tableData () {
+      this.page = 1
+      this.scrollToActiveRow()
     }
   },
-  computed: {
-    fileName () {
-      if (!this.$store.getters.target) return
-      return this.$store.getters.target.fileName
-    },
-    parentSearch () {
-      if (this.fileName) {
-        return this.fileName
-      }
-      return this.search
-    },
-    activeView () {
-      return this.$store.getters.activeView
-    },
-    activeTab () {
-      return this.$store.getters.activeTab
-    }
-  },
-  created () {
+  mounted () {
     this.search = this.inputText
-    console.log(this.$gtag.pageview(this.$route))
+    this.scrollToActiveRow()
   }
 }
 </script>
@@ -281,28 +178,21 @@ export default {
 .versesTable .v-data-table__wrapper {
   overflow-x: hidden;
 }
-/* .groupHeader {
-  height: 26px;
-  font-weight: bold;
-  font-size: 12px;
-} */
-.detailIcon {
+.menuIcon {
   display: none;
-  border: 1px solid;
-  border-radius: 15px;
-  margin-right: -6px;
-  width: 27px;
-}
-.detailIcon:hover {
-  background: #ccc;
+  padding-left: 57px !important;
 }
 .activeIcon {
-  display: block;
+  vertical-align: middle;
+  display: table-cell;
+  border: none;
+  padding-left: 15px;
 }
-.indexNumber.activeIcon {
-  display: none !important;
+.mouseOverRow td:nth-child(2) {
+  opacity: 0;
+  display: none;
 }
-.topBar{
-  height: 66px;
+.topBar {
+  height: 49px;
 }
 </style>

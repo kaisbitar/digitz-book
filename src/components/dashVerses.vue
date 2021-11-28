@@ -1,72 +1,49 @@
 <template>
   <div class="dashVerses d-flex">
-    <v-card class="webKitWidth" flat v-if="!showVerse">
+    <v-card class="webKitWidth" flat v-show="!showSingleVerse">
       <tableVerses
         :tableData="versesBasics"
         :tableHeaders="tableHeaders"
         :inputText="inputText"
+        :menuItems="menuItems"
+        :activeTableItemId="targetFileName + targetVerseIndex"
         :isLoading="isLoading"
         :groupBy="null"
-        :selectedId="selectedId"
         :dataType="' عن آية أو رقم'"
         :footerProps="footerProps"
-        @rowClicked="setVerse"
-        @itemClicked="runMenuItem"
+        @rowClicked="handleVerseSelection"
+        @handleClickedMenu="runMenuItem"
+        @activateRowItem="goToverseTextView"
       />
     </v-card>
-    <div class=" pt-5 webKitWidth" outlined v-if="showVerse">
-      <v-tabs class="" v-model="tab" background-color="mt-n5 pr-1 pl-2" centered>
-        <v-tab class="dashTabs" href="#tab-1"><span class=" ml-1">آية</span>{{verseIndex}}</v-tab>
-        <v-tab class="dashTabs" href="#tab-2">{{numberOfWords}}<span class=" mr-1">كلمة </span></v-tab>
-        <v-tab class="dashTabs" href="#tab-3">{{numberOfLetters}}<span class=" mr-1"> حرف </span></v-tab>
-        <v-tab class="dashTabs" href="#tab-3" disabled>{{verseNumberToQuran}}<span class=""> مصحف </span></v-tab>
-      </v-tabs>
-      <div @click="showVerse=false"><v-icon class="ml-2"> mdi-arrow-right</v-icon>الآيات</div>
-      <v-tabs-items v-model="tab" v-if="showVerse">
-        <v-tab-item value="tab-1" class="labelsWrapper">
-          <dashVersesLabels
-            v-if="versesBasics"
-            class="ml-2 mb-2 "
-            :verseIndex="verseIndex"
-            :verseNumberToQuran="verseNumberToQuran"
-            :numberOfLetters="numberOfLetters"
-            :numberOfWords="numberOfWords"
-            :verseText="verseText"
-            :inputText="inputText"
-            :secondInput="secondInput"
-            :suraName="suraName"
-          />
-          <div class="d-flex">
-            <appChart
-              class="webKitWidth"
-              :isLoading="isLoading"
-              :series="verseChart"
-              :options="options"
-              :height="height"
-            />
-          </div>
-        </v-tab-item>
-        <v-tab-item value="tab-2">
-          <dashWords
-            class="webKitWidth"
-            :numberOfWords="numberOfWords"
-            :numberOfLetters="numberOfLetters"
-            :indexes="wordIndexes"
-            :suraText="verseText"
-            :isLoading="isLoading"
-            :includeTab="true"
-          />
-        </v-tab-item>
-        <v-tab-item value="tab-3">
-          <dashLetters
-            class="webKitWidth"
-            :numberOfWords="numberOfWords"
-            :numberOfLetters="numberOfLetters"
-            :suraText="verseText"
-            :isLoading="isLoading"
-          />
-        </v-tab-item>
-      </v-tabs-items>
+    <tableDialogEdit
+        v-if="showEditVerse"
+        @close="showEditVerse = false"
+        :suraName="suraNumber + suraName"
+        :verseIndex="verseIndex"
+        :numberOfWords="numberOfWords"
+        :numberOfLetters="numberOfLetters"
+        :verseText="verseText"
+        :showEditVerse="showEditVerse"
+      />
+    <div class="pt-5 webKitWidth" outlined v-if="showSingleVerse">
+      <dashSingleVerse
+        v-if="showSingleVerse"
+        :verseIndex="verseIndex"
+        @backBtnClicked="showSingleVerse = !showSingleVerse"
+        :verseNumberToQuran="verseNumberToQuran"
+        :numberOfLetters="numberOfLetters"
+        :numberOfWords="numberOfWords"
+        :verseText="verseText"
+        :inputText="inputText"
+        :secondInput="secondInput"
+        :suraName="suraName"
+        :isLoading="isLoading"
+        :verseChart="verseChart"
+        :options="options"
+        :height="singleVerseHeight"
+        :wordIndexes="wordIndexes"
+      />
       <v-overlay
         color="white"
         :absolute="true"
@@ -80,30 +57,32 @@
 
 <script>
 import chartOptions from '../assets/frequecyOptions'
-import appChart from '../components/appChart.vue'
-import dashWords from './dashWords.vue'
-import dashLetters from './dashLetters.vue'
 import tableVerses from './tableVerses.vue'
-import dashVersesLabels from './dashVersesLabels'
+import dashSingleVerse from './dashSingleVerse'
+import tableDialogEdit from './tableDialogEdit.vue'
+
 export default {
   name: 'dashVerses',
   props: ['versesBasics', 'isLoading', 'inputText'],
-  components: { tableVerses, dashVersesLabels, appChart, dashWords, dashLetters },
+  components: { tableVerses, tableDialogEdit, dashSingleVerse },
   data: () => ({
     index: 1,
     tableHeaders: [
-      { text: '', class: 'brown lighten-5 black--text', width: '10' },
-      { text: 'السورة', value: 'fileName', class: 'brown lighten-5 black--text', width: '90' },
+      { text: 'INDEX', value: '', class: 'brown lighten-5 black--text', width: '100' },
+      { text: 'السورة', value: 'fileName', class: 'brown lighten-5 black--text', width: '110' },
       { text: 'رقم', value: 'verseIndex', class: 'brown lighten-5 black--text', width: '80' },
-      { text: 'الآية', value: 'verseText', class: 'brown lighten-5 black--text', width: '550' },
+      { text: 'الآية', value: 'verseText', class: 'brown lighten-5 black--text' },
       { text: 'كلمات', value: 'numberOfWords', class: 'brown lighten-5 black--text', width: '85' },
       { text: 'حروف', value: 'numberOfLetters', class: 'brown lighten-5 black--text', width: '85' },
       { text: 'مصحف', value: 'verseNumberToQuran', class: 'brown lighten-5 black--text', width: '90' }
     ],
-    verses: [],
+    menuItems: [
+      { title: 'تفصيل ', instuction: 'showSingleVerse' },
+      { title: 'تحرير ', instuction: 'showEditVerse' },
+      { title: 'إلغاء', instuction: 'cancel' }
+    ],
+    footerProps: { 'items-per-page-text': '', 'disable-items-per-page': true },
     verseChart: [],
-    items: [],
-    selectedId: '',
     verseIndex: '',
     verseNumberToQuran: '',
     numberOfLetters: '',
@@ -111,17 +90,15 @@ export default {
     verseText: '',
     suraName: '',
     options: chartOptions,
-    footerProps: { 'items-per-page-text': '', 'disable-items-per-page': true },
     windowHeight: window.innerHeight,
-    tab: 'tab-1',
     wordIndexes: {},
     secondInput: '',
-    showVerse: false
+    showEditVerse: false,
+    showSingleVerse: false
   }),
   computed: {
-    height () {
-      var heightDif = this.windowHeight - 370
-      return heightDif
+    singleVerseHeight () {
+      return this.windowHeight - 420
     },
     targetFileName () {
       if (!this.$store.getters.target) return
@@ -133,10 +110,20 @@ export default {
     }
   },
   methods: {
-    getWordIndexes () {
+    handleVerseSelection (item) {
+      if (!item) return
+      this.verseIndex = item.verseIndex
+      this.verseNumberToQuran = item.verseNumberToQuran
+      this.numberOfLetters = item.verseText.replace(/ /g, '').length.toString()
+      this.numberOfWords = item.verseText.split(' ').length.toString()
+      this.verseText = item.verseText
+      this.perpareChartData(item)
+      this.getWordIndexes(item.verseText)
+      this.setTargetedSuraInStore(item)
+    },
+    getWordIndexes (text) {
       this.wordIndexes = {}
-      var wordsArr = this.verseText.split(' ')
-      wordsArr.map((word, index) => {
+      text.split(' ').map((word, index) => {
         if (!this.wordIndexes[word]) {
           this.wordIndexes[word] = [index + 1]
           return null
@@ -144,159 +131,131 @@ export default {
         this.wordIndexes[word].push(index + 1)
       })
     },
-    setVerse (item) {
-      if (!item) {
-        item = this.versesBasics[0]
-      }
-      this.selectedId = item.verseNumberToQuran.toString()
-      this.verseIndex = item.verseIndex
-      this.verseNumberToQuran = item.verseNumberToQuran
-      this.numberOfLetters = item.verseText.replace(/ /g, '').length.toString()
-      this.numberOfWords = item.verseText.split(' ').length.toString()
-      this.verseText = item.verseText
-      this.suraName = item.fileName.replace(/[0-9]/g, '')
-      this.perpareChartData(item)
-      this.getWordIndexes()
-      this.setTarget(item)
-    },
     runMenuItem (item) {
-      if (item === 'verseDetail') {
-        this.showVerse = true
+      if (item === 'showSingleVerse') {
+        this.showSingleVerse = true
+        return
       }
+      if (item === 'showEditVerse') this.showEditVerse = true
     },
-    setOnLoadVerseId () {
-      // this.selectedId = 298
-      // var item = this.versesBasics.filter((item) => {
-      //   if (item.verseNumberToQuran === this.selectedId) { return item }
-      // })
-      // console.log(item)
-    },
-    setTarget (item) {
+    setTargetedSuraInStore (item) {
       this.suraName = item.fileName.replace(/[0-9]/g, '')
       this.suraNumber = item.fileName.replace(/[ء-٩]/g, '').replace(/\s/g, '')
-      var fileName = this.suraNumber + this.suraName
-      var target = { fileName: fileName, verseIndex: item.verseIndex }
+      var target = { fileName: item.fileName, verseIndex: item.verseIndex }
       this.$store.commit('setTarget', target)
     },
+    goToverseTextView () {
+      this.$store.commit('setActiveView', 'textView')
+      this.checkAndGo('singleSura')
+    },
+    checkAndGo (route) {
+      if (this.$router.currentRoute.name !== route) {
+        this.$router.push({ name: route })
+      }
+    },
     perpareChartData (item) {
-      var wordsArr = item.verseText.split(' ')
       var chart = []
-      wordsArr.map((word, index) => {
+      item.verseText.split(' ').map((word, index) => {
         chart[index] = word.length
       })
       this.verseChart = [{ data: chart }]
     },
-    setToolTip () {
-      var tooltip = {
-        custom: (obj) => {
-          var wordsArr = this.verseText.split(' ')
-          return '<div class= d-flex pt-2 pa-2">' +
-                    '<div class=" tipInfo tipInfo2 ">' + wordsArr[obj.dataPointIndex] + '</div>' +
-                    '<div class=" tipInfo ">' + obj.series[0][obj.dataPointIndex] + '<span class="tipLabel"> حروف</span></div>' +
-                  '</div>'
-        },
-        shared: true,
-        followCursor: true
-      }
-
+    setChartToolTip () {
       this.options = {
         ...this.options,
-        ...{ tooltip: tooltip }
-      }
-    },
-    setXaxis () {
-      var xaxis = {
-        labels: { show: true },
-        title: {
-          offsetY: 0,
-          text: 'تواتر الكلمات',
-          style: {
-            fontSize: '12px'
-          }
-        },
-        axisTicks: {
-          show: true,
-          maxTicksLimit: 1,
-          interval: 1
-        },
-        tickAmount: 1,
-        tickPlacement: 'between'
-      }
-      this.options = {
-        ...this.options,
-        ...{ xaxis: xaxis }
-      }
-    },
-    setChart () {
-      var chart = {
-        offsetY: 10,
-        type: 'area',
-        toolbar: {
-          show: false
-        },
-        events: {
-          mouseMove: (event, chartContext, config) => {
-            var arr = this.verseText.split(' ')
-            this.secondInput = arr[config.dataPointIndex]
+        ...{
+          tooltip: {
+            custom: (obj) => {
+              return (
+                '<div class= d-flex pt-2 pa-2">' +
+            '<div class=" tipInfo tipInfo2 ">' +
+            this.verseText.split(' ')[obj.dataPointIndex] +
+            '</div>' +
+            '<div class=" tipInfo ">' +
+            obj.series[0][obj.dataPointIndex] +
+            '<span class="tipLabel"> حروف</span></div>' +
+            '</div>'
+              )
+            },
+            shared: true,
+            followCursor: true
           }
         }
       }
+    },
+    setChartXaxis () {
       this.options = {
         ...this.options,
-        ...{ chart: chart }
-      }
-    },
-    setDataLabels () {
-      var dataLabels = {
-        enabled: true,
-        offsetY: 0,
-        background: {
-          enabled: false
+        ...{
+          xaxis: {
+            labels: { show: true },
+            title: {
+              offsetY: 0,
+              text: 'تواتر الكلمات',
+              style: {
+                fontSize: '12px'
+              }
+            },
+            axisTicks: {
+              show: true,
+              maxTicksLimit: 1,
+              interval: 1
+            },
+            tickAmount: 1,
+            tickPlacement: 'between'
+          }
         }
       }
+    },
+    setChartSingleVerse () {
       this.options = {
         ...this.options,
-        ...{ dataLabels: dataLabels }
+        ...{
+          chart: {
+            offsetY: 10,
+            type: 'area',
+            toolbar: {
+              show: false
+            },
+            events: {
+              mouseMove: (event, chartContext, config) => {
+                this.secondInput = this.verseText.split(' ')[config.dataPointIndex]
+              }
+            }
+          }
+        }
       }
     },
-    setNoResults () {
-      this.wordIndexes = []
-      this.verseIndex = 0
-      this.verseNumberToQuran = 0
-      this.numberOfLetters = 0
-      this.numberOfWords = 0
-      this.verseText = ''
-      this.verseChart = [{ data: [] }]
+    setChartDataLabels () {
+      this.options = {
+        ...this.options,
+        ...{
+          dataLabels: {
+            enabled: true,
+            offsetY: 0,
+            background: {
+              enabled: false
+            }
+          }
+        }
+      }
     }
   },
   watch: {
-    versesBasics () {
-      if (this.versesBasics.length === 0 || !this.versesBasics) {
-        this.setNoResults()
-        return
+    showSingleVerse () {
+      if (this.showSingleVerse) {
+        this.setChartToolTip()
+        this.setChartSingleVerse()
+        this.setChartDataLabels()
+        this.setChartXaxis()
       }
-      this.setOnLoadVerseId()
-      this.setVerse()
-      this.setToolTip()
-      this.setChart()
-      this.setDataLabels()
-      this.setXaxis()
+    },
+    targetFileName () {
+      this.showSingleVerse = false
     }
   },
-  created () {
-  },
-  mounted () {
-    if (this.versesBasics.length === 0 || !this.versesBasics) {
-      this.setNoResults()
-      return
-    }
-    this.setOnLoadVerseId()
-    this.setToolTip()
-    this.setDataLabels()
-    this.setChart()
-    this.setXaxis()
-    this.getWordIndexes()
-  }
+  created () {},
+  mounted () { }
 }
 </script>
 
@@ -304,9 +263,9 @@ export default {
 tr.v-data-table__selected {
   background: #7d92f5 !important;
 }
-.dashTabs{
+.dashTabs {
   height: 35px;
-  letter-spacing: 0px;;
+  letter-spacing: 0px;
 }
 .v-slide-group__content.v-tabs-bar__content {
   height: 35px;

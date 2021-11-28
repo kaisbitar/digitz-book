@@ -4,7 +4,7 @@
       class="suraText"
       v-for="(item, index) in suraTextArray"
       :key="index"
-      :class="[index - 1, { targetedVerse: index + 1 === suraTargetedVerse }]"
+      :class="[index - 1, { targetedVerse: index + 1 === parseInt(suraTargetedVerseIndex) }]"
         @click="setTargetedVerse(index + 1)"
     >
       <div
@@ -14,7 +14,7 @@
         <v-chip
           class="numChip"
           label
-          :class="[{ 'grey white--text': index + 1 === suraTargetedVerse }]"
+          :class="[{ 'grey white--text': index + 1 === suraTargetedVerseIndex }]"
         >
           {{ index + 1 }}
         </v-chip>
@@ -44,7 +44,7 @@ import { appMixin } from '../mixins/mixins'
 
 export default {
   name: 'suraTextBox',
-  props: ['inputText', 'suraTargetedVerse', 'suraTextArray', 'isLoading'],
+  props: ['inputText', 'suraTargetedVerseIndex', 'suraTextArray', 'isLoading'],
   components: {},
   mixins: [appMixin],
   data: () => ({
@@ -81,13 +81,13 @@ export default {
   },
   watch: {
     scrollTrigger () {
-      if (this.activeView === 'suraChart') return
-      var verse = this.prepareToScroll(this.suraTargetedVerse)
+      if (this.activeView === 'detailView') return
+      var verse = this.prepareToScroll(this.suraTargetedVerseIndex)
       this.scrollToVerse(verse)
     },
-    suraTargetedVerse () {
-      if (this.activeView === 'suraChart') return
-      var verse = this.prepareToScroll(this.suraTargetedVerse)
+    suraTargetedVerseIndex () {
+      if (this.activeView === 'detailView') return
+      var verse = this.prepareToScroll(this.suraTargetedVerseIndex)
       this.scrollToVerse(verse)
     }
   },
@@ -103,7 +103,7 @@ export default {
   },
   created () {},
   mounted () {
-    var verse = this.prepareToScroll(this.suraTargetedVerse)
+    var verse = this.prepareToScroll(this.suraTargetedVerseIndex)
     this.scrollToVerse(verse)
   },
   updated () {}

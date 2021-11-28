@@ -4,12 +4,8 @@ export const appMixin = {
   }),
   methods: {
     prepareToScroll (item) {
-      var target = parseInt(item)
-      if (target < 0) {
-        return '#v1'
-      } else {
-        return '#v' + target
-      }
+      if (parseInt(item) < 0) return '#v1'
+      return '#v' + parseInt(item)
     },
     setTargetFromArrow (direction) {
       var suraNumber = this.suraNumber
@@ -18,12 +14,7 @@ export const appMixin = {
       } else {
         suraNumber = suraNumber + 1
       }
-      var targetrSura = {
-        fileName: this.tableQuranIndex[
-          suraNumber
-        ].fileName
-      }
-      this.$store.commit('setTarget', targetrSura)
+      this.$store.commit('setTarget', { fileName: this.tableQuranIndex[suraNumber].fileName })
     },
     highlight (text, searchValue) {
       if (!searchValue) {
@@ -31,9 +22,8 @@ export const appMixin = {
         // if (text.length < 53) { return text } else { return text.slice(0, 53) + '...' }
       }
 
-      var searchWordPosition = (text.indexOf(searchValue))
-      if (searchWordPosition > 53) {
-        var suraChunk = '...' + text.slice(searchWordPosition - 30)
+      if (text.indexOf(searchValue) > 53) {
+        var suraChunk = '...' + text.slice(text.indexOf(searchValue) - 30)
       } else {
         suraChunk = text
       }

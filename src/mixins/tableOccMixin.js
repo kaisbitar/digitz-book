@@ -18,15 +18,14 @@ export const tableOccMixin = {
     windowHeight: window.innerHeight,
     collapseDone: false,
     search: '',
-    matchAll: false
+    matchingStatus: false
   }),
   computed: {},
   methods: {
-    getHeight () {
+    getTableHeight () {
       var tabHeight = 0
-      if (this.includeTab) { tabHeight = -70 }
-      var heightDif = this.windowHeight - 375 + tabHeight
-      return heightDif
+      if (this.includeTab) tabHeight = -20
+      return this.windowHeight - 230 + tabHeight
     },
     async collapseHeaders (group) {
       return new Promise((resolve) => {
@@ -37,16 +36,18 @@ export const tableOccMixin = {
         resolve()
       })
     },
-    rowClicked (item) {
-      this.$emit('rowClicked', item)
-    },
-    searchChanged (search) {
+    changeSearch (search) {
       this.search = search
     },
-    matchChanged (matchAll) {
-      this.matchAll = matchAll[1]
-      this.search = ''
-      this.search = matchAll[0]
+    changeMatchingStatus (matchingStatus) {
+      this.matchingStatus = matchingStatus[1]
+      this.search = matchingStatus[0]
+    },
+    highlight (text, searchValue) {
+      if (!searchValue) return text
+      return text.replace(new RegExp(searchValue, 'gi'), (match) => {
+        return '<span style="background:yellow">' + match + '</span>'
+      })
     }
   },
   created () {

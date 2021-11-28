@@ -7,7 +7,7 @@
       :disabled="isDisabled"
       :items="storedItems"
       @click:clear="handleRemoveAllChips()"
-      v-on:keyup.enter="handleShowAll()"
+      v-on:keyup.enter="handleNewSearch()"
       prepend-inner-icon="mdi-magnify"
       background-color="#fff"
       item-value="verseNumberToQuran"
@@ -31,7 +31,7 @@
       <template v-slot:prepend-inner>
         <div class="d-flex" @click.prevent="disableInputBox()">
           <autoCompleteChipsBar
-            :chipsData="filteredSearch"
+            :chipsData="SearchResults"
             :selectedChipIndex="selectedSearchIndex"
             @chipClicked="handleClickedChip"
             @chipRemoved="handleRemovedChip"
@@ -39,8 +39,8 @@
         </div>
         <appSearchBoxMatch
           :search="search"
-          :matchAll="matchAll"
-          @clicked="matchAll = !matchAll"
+          :matchingStatus="matchingStatus"
+          @clicked="matchingStatus = !matchingStatus"
         />
       </template>
 
@@ -64,8 +64,7 @@
       <template v-slot:prepend-item>
         <autoCompleteOptionsBar
           class="btnsBar"
-          @btn1Clicked="handleShowAll()"
-          @btn2Clicked="handleAddToList()"
+          @btn1Clicked="handleNewSearch()"
           :resultCounter="resultsCount()"
           :secondBtnCondition="selectedSearchIndex"
           :textValue="search"
@@ -96,111 +95,81 @@ export default {
   },
   data: () => ({
     isDisabled: false,
-    matchAll: false,
+    matchingStatus: false,
     isLoading: true,
     search: null
   }),
   methods: {
+    handleClickedChip (index) {
+      this.$store.commit('setSearchIndex', index)
+      this.checkAndGo('search')
+    },
+    handleRemovedChip (index) {
+      this.$store.commit('removeSearchItem', index)
+      if (index !== this.selectedSearchIndex) {
+        this.$store.commit('setSearchIndex', this.selectedSearchIndex - 1)
+        return
+      }
+      this.$store.commit('setSearchIndex', index - 1)
+      this.checkAndGo('search')
+    },
+    handleRemoveAllChips () {
+      this.$store.commit('resetSearchResults')
+      this.checkAndGo('singleSura')
+    },
     handleSingleItemClicked (item) {
-      var suraNumber = item.fileName.replace(/[ء-٩]/g, '').replace(/\s/g, '')
-      var suraName = item.fileName.replace(/[0-9]/g, '')
       var target = {
-        fileName: suraNumber + suraName,
+        fileName:
+            item.fileName.replace(/[ء-٩]/g, '').replace(/\s/g, '') +
+            item.fileName.replace(/[0-9]/g, ''),
         verseIndex: item.verseIndex
       }
       this.$store.commit('setTarget', target)
-      this.handleShowAll()
+      this.handleNewSearch()
     },
-    handleShowAll () {
+    handleNewSearch () {
       if (!this.search) return
-      this.setFilteredSearchItem()
-
-      if (this.$router.currentRoute.name !== 'search') {
-        this.$router.push({ name: 'search' })
-      }
+      this.setNewSearch()
+      this.checkAndGo('search')
     },
-    handleClickedChip (index) {
-      if (this.$router.currentRoute.name !== 'search') {
-        this.$router.push({ name: 'search' })
-      }
-      this.$store.commit('setFilterSelectedSearch', this.selectedFilterList)
-      this.$store.commit('setFilterSelectedIndex', index)
-    },
-    handleRemovedChip (index) {
-      this.$store.commit('setFilterSelectedSearch', this.selectedFilterList)
-      this.$store.commit('setFilterSelectedIndex', index - 1)
-      this.$store.commit('removeFilteredItem', index)
-    },
-    setFilteredSearchItem () {
+    setNewSearch () {
       var value = {
         resultsCount: this.$refs.autocomplete.filteredItems.length,
         inputText: this.$refs.autocomplete.internalSearch,
         result: this.$refs.autocomplete.filteredItems,
-        parentSearch: null,
-        isSelected: true
+        parentSearch: null
       }
-      this.$store.commit(
-        'setFilterSelectedIndex',
-        this.$store.getters.filteredSearch.length - 1
-      )
-      this.$store.commit('setFilterSelectedSearch', value)
-      this.$store.commit('setFilteredSearchItem', value)
+      this.$store.commit('setSearchIndex', this.SearchResults.length)
+      this.$store.commit('setSearchResultsItem', value)
       this.disableInputBox()
-    },
-    handleAddToList () {
-      var results = this.$refs.autocomplete.filteredItems
-      var search = this.$refs.autocomplete.internalSearch
-      this.$store.commit('addToAdvancedSearch', { results, search })
-    },
-    addItemToResults (item) {
-      if (this.selectedSearchIndex < 0) {
-        var value = {
-          resultsCount: 1,
-          inputText: '',
-          parentSearch: 'بحث خاص',
-          result: [item],
-          isAdvanced: true,
-          isSelected: true
-        }
-        this.$store.commit('setFilteredSearchItem', value)
-        return
-      }
-      this.$store.commit('addToAdvancedSearch', item)
-    },
-    deleteItemFromResults (item) {
-      this.$store.commit('deleteFromAdvancedSearch', item.verseNumberToQuran)
     },
     disableInputBox () {
       this.isDisabled = true
       setTimeout(() => {
         this.isDisabled = false
-      }, 100)
+      }, 10)
       this.$refs.autocomplete.blur()
-    },
-    handleRemoveAllChips () {
-      if (this.$router.currentRoute.name !== 'singleSura') {
-        this.$router.push({ name: 'singleSura' })
-      }
-      this.$store.commit('resetFilteredItems')
-      this.$store.commit('resetFilterSelectedIndex')
-      this.$store.commit('resetFilterSelectedSearch')
     },
     handleFiltering (item, queryText, itemText) {
       itemText = ' ' + itemText + ' '
-      if (!this.matchAll && itemText.match(queryText) !== null) {
+      if (!this.matchingStatus && itemText.match(queryText) !== null) {
         return itemText
       }
-      var regex = new RegExp(
-        '([^\u0621-\u064A]+' + queryText + '[^\u0621-\u064A]+)',
-        'gim'
+      return itemText.match(
+        new RegExp(
+          '([^\u0621-\u064A]+' + queryText + '[^\u0621-\u064A]+)',
+          'gim'
+        )
       )
-      var match = itemText.match(regex)
-
-      return match
     },
     resultsCount () {
       if (!this.$refs.autocomplete) return
       return this.$refs.autocomplete.filteredItems.length.toString()
+    },
+    checkAndGo (route) {
+      if (this.$router.currentRoute.name !== route) {
+        this.$router.push({ name: route })
+      }
     }
   },
   computed: {
@@ -217,13 +186,9 @@ export default {
       if (!this.selectedSearch) return
       return this.selectedSearch.inputText
     },
-    filteredSearch () {
-      if (this.$store.getters.filteredSearch === null) return
-      var filteredSearch = this.$store.getters.filteredSearch
-      return filteredSearch
-    },
-    selectedFilterList () {
-      return this.filteredSearch[this.selectedChipIndex]
+    SearchResults () {
+      if (this.$store.getters.SearchResults === null) return
+      return this.$store.getters.SearchResults
     }
   },
   created () {},
@@ -233,6 +198,7 @@ export default {
     },
     selectedSearchIndex () {
       this.search = this.inputText
+      this.$store.commit('setTarget', { fileName: this.selectedSearch.result[0].fileName, verseIndex: this.selectedSearch.result[0].verseIndex })
     }
   },
   mounted () {},
@@ -253,18 +219,10 @@ export default {
   padding-top: 18px !important;
 }
 .searchLabel {
-  /* height: 20px; */
   padding-top: 2px;
   border-radius: 4px !important;
   margin-top: -7px;
   padding-bottom: 6px;
-}
-.v-input__control {
-  /* height: 52px !important;
-  margin-bottom: 21px; */
-}
-.v-input__slot {
-  /* background: white; */
 }
 .btnsBar {
   position: sticky;

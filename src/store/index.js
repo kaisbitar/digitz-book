@@ -4,13 +4,13 @@ import createPersistedState from 'vuex-persistedstate'
 import { fetchSuraDetails, fetchOneQuranFile, fetchtableQuranIndex, fetchAllVersesWithTashkeel } from '../api/api.js'
 
 Vue.use(Vuex)
-function initialState () {
+function initializeState () {
   return {
     target: {
       fileName: '001الفاتحة',
       verseIndex: 1
     },
-    filteredSearch: [],
+    SearchResults: [],
     selectedSearchIndex: 0,
     oneQuranFile: [],
     tableQuranIndex: [],
@@ -18,17 +18,18 @@ function initialState () {
     scrollTrigger: false,
     drawerState: true,
     activeTab: 'numberOfVerses',
-    activeView: 'suraChart',
+    activeView: 'detailView',
     selectedSearch: [],
-    updateDate: '04-18-2021'
+    updateDate: '04-18-2021',
+    chartFreqType: 'words'
   }
 }
 export default new Vuex.Store({
-  state: initialState(),
+  state: initializeState(),
   plugins: [createPersistedState({ })],
   getters: {
     target: state => state.target,
-    filteredSearch: state => state.filteredSearch,
+    SearchResults: state => state.SearchResults,
     selectedSearchIndex: state => state.selectedSearchIndex,
     oneQuranFile: state => state.oneQuranFile,
     allVersesWithTashkeel: state => state.allVersesWithTashkeel,
@@ -37,20 +38,20 @@ export default new Vuex.Store({
     drawerState: state => state.drawerState,
     activeView: state => state.activeView,
     activeTab: state => state.activeTab,
+    chartFreqType: state => state.chartFreqType,
     selectedSearch: state => {
-      var obj = {}
-      state.filteredSearch.map((item) => {
-        if (item.isSelected) obj = item
-      })
-      return obj
+      return state.SearchResults[state.selectedSearchIndex]
     }
   },
   mutations: {
     clearState (state) {
-      const s = initialState()
-      Object.keys(s).forEach(key => {
-        state[key] = s[key]
+      const initialState = initializeState()
+      Object.keys(initialState).forEach(key => {
+        state[key] = initialState[key]
       })
+    },
+    setChartFreqType (state, chartFreqType) {
+      state.chartFreqType = chartFreqType
     },
     setActiveTab (state, activeTab) {
       state.activeTab = activeTab
@@ -62,73 +63,28 @@ export default new Vuex.Store({
       state.scrollTrigger = !state.scrollTrigger
     },
     setTarget (state, target) {
-      var value = { fileName: target.fileName, verseIndex: target.verseIndex }
-      state.target = value
+      state.target = { fileName: target.fileName, verseIndex: target.verseIndex }
     },
     resetTarget (state) {
-      var value = { fileName: '001الفاتحة', verseIndex: null }
-      state.target = value
+      state.target = { fileName: '001الفاتحة', verseIndex: null }
     },
-    setFilterSelectedIndex (state, index) {
+    setSearchIndex (state, index) {
       state.selectedSearchIndex = index
-      state.filteredSearch.map((item, insideIndex) => {
-        if (insideIndex === index) item.isSelected = true
-        else { item.isSelected = false }
-      })
-    },
-    setFilterSelectedSearch (state) {
-      if (!state.filteredSearch[state.selectedSearchIndex]) return
-      state.filteredSearch[state.selectedSearchIndex].isSelected = true
-    },
-    resetFilterSelectedSearch (state) {
-      return state.filteredSearch.filter((item) => {
-        item.isSelected = false
-      })
-    },
-    resetFilterSelectedIndex (state) {
-      state.selectedSearchIndex = 0
+      state.selectedSearch = state.SearchResults[index]
     },
     resetSuras (state) {
       state.suras = {}
     },
-    setFilteredSearchItem (state, filteredSearch) {
-      state.filteredSearch.map((item) => {
-        item.isSelected = false
-      })
-      state.filteredSearch.push(filteredSearch)
+    setSearchResultsItem (state, result) {
+      state.SearchResults.push(result)
     },
-    addToAdvancedSearch (state, itemsToAdd) {
-      state.filteredSearch.map((result, index) => {
-        if (result.isSelected) {
-          itemsToAdd.searchResults.map((item) => {
-            state.filteredSearch[index].result.push(item)
-          })
-          // state.filteredSearch[index].resultsCount = state.filteredSearch[index].result.length
-          var parentSearch = { text: itemsToAdd.search, result: itemsToAdd.searchResults.length }
-          if (!state.filteredSearch[index].parentSearch) state.filteredSearch[index].parentSearch = []
-          state.filteredSearch[index].parentSearch.push(parentSearch)
-          // = '+ ' + itemsToAdd.search + ' ' + itemsToAdd.searchResults.length + ' آية '
-        }
-      })
+    resetSearchResults (state) {
+      state.SearchResults = []
     },
-    deleteFromAdvancedSearch (state, verseNumberToQuran) {
-      state.filteredSearch.map((result, index) => {
-        if (result.isSelected) {
-          state.filteredSearch[index].result =
-          state.filteredSearch[index].result.filter((item) => {
-            return item.verseNumberToQuran !== verseNumberToQuran
-          })
-          state.filteredSearch[index].resultsCount = state.filteredSearch[index].result.length
-        }
-      })
+    removeSearchItem (state, index) {
+      state.SearchResults.splice(index, 1)
     },
-    resetFilteredItems (state) {
-      state.filteredSearch = []
-    },
-    removeFilteredItem (state, index) {
-      state.filteredSearch.splice(index, 1)
-    },
-    setoneQuranFile (state, items) {
+    setOneQuranFile (state, items) {
       state.oneQuranFile = items
     },
     setAllVersesWithTashkeel (state, items) {
@@ -155,7 +111,7 @@ export default new Vuex.Store({
         commit('setAllVersesWithTashkeel', items)
       }).then(() => {
         fetchOneQuranFile(appApi).then((items) => {
-          commit('setoneQuranFile', items)
+          commit('setOneQuranFile', items)
         }).then(() => {
           fetchtableQuranIndex(appApi).then((data) => {
             commit('setTableQuranIndex', data)
@@ -165,15 +121,13 @@ export default new Vuex.Store({
     },
     getSuraDetails ({ commit, state }) {
       if (!state.suras[state.target.fileName]) {
-        var obj = { suraDetails: null }
-        Vue.set(state.suras, state.target.fileName, obj)
+        Vue.set(state.suras, state.target.fileName, { suraDetails: null })
       }
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         if (!state.suras[state.target.fileName].suraDetails) {
           const appApi = process.env.VUE_APP_API_URL
           fetchSuraDetails(appApi, state.target.fileName).then(suraDetails => {
-            var obj = { suraDetails: suraDetails }
-            commit('setSuraDetails', obj)
+            commit('setSuraDetails', { suraDetails: suraDetails })
             resolve(suraDetails)
           })
           return

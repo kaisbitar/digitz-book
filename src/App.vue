@@ -12,7 +12,7 @@
 
     <v-app-bar class="topHeader brown lighten-5" flat app :height="71">
       <v-app-bar-nav-icon
-        @click.stop="(drawer = !drawer), toggleDrawer(drawer)"
+        @click.stop="drawer = !drawer, toggleDrawer(drawer)"
       >
       </v-app-bar-nav-icon>
       <v-progress-linear
@@ -29,18 +29,16 @@
     </v-app-bar>
 
     <v-main class="mainWrap" v-if="!isLoading">
-      <div class="charSwitch">
+      <div class="viewSwitch">
         <v-card
-          @click="changeView()"
-          outlined
+          :class="[{ activeView: activeView === 'detailView' }]"
           class="switchLabel"
-          :class="[{ active: activeView === 'suraChart' }]"
+          outlined
         >
-          <div v-if="activeView==='suraText'" class="pl-2 pr-2">تفصيل</div>
-          <div v-else class="pl-2 pr-2">نص</div>
+          <div  @click="changeView()" class=" pl-2 pr-2" style="font-size:12px;">detailView</div>
         </v-card>
       </div>
-     <keep-alive> <router-view :activeView="activeView"/></keep-alive>
+      <keep-alive><router-view :activeView="activeView" /></keep-alive>
     </v-main>
   </v-app>
 </template>
@@ -64,22 +62,25 @@ export default {
   }),
   methods: {
     changeView () {
-      if (this.activeView === 'suraChart') {
-        if (this.selectedSearchIndex >= 0) {
-          this.$router.push({ name: 'singleSura' })
+      if (this.activeView === 'detailView') {
+        if (this.selectedSearchIndex > -1) {
+          this.checkAndGo('singleSura')
         }
-        this.$store.commit('setActiveView', 'suraText')
+        this.$store.commit('setActiveView', 'textView')
         this.$store.commit('setScrollTrigger')
         return
       }
-      if (this.selectedSearchIndex >= 0) {
-        this.$router.push({ name: 'search' })
+      if (this.selectedSearchIndex > -1) {
+        this.checkAndGo('search')
       }
-      this.$store.commit('setActiveView', 'suraChart')
+      this.$store.commit('setActiveView', 'detailView')
     },
     calculateWidth (showDetail) {
-      if (showDetail === false) this.drawerWidth = 250
-      if (showDetail === true) this.drawerWidth = 440
+      if (!showDetail) {
+        this.drawerWidth = 250
+        return
+      }
+      this.drawerWidth = 440
     },
     async prepareData () {
       this.isLoading = true
@@ -90,6 +91,15 @@ export default {
     },
     toggleDrawer (value) {
       this.$store.commit('setDrawerState', value)
+    },
+    checkAndGo (route) {
+      if (this.$router.currentRoute.name !== route) {
+        this.$router.push({ name: route })
+      }
+    },
+    async accept () {
+      this.showUpgradeUI = false
+      await this.$workbox.messageSW({ type: 'SKIP_WAITING' })
     }
   },
   computed: {
@@ -108,11 +118,15 @@ export default {
       return this.$store.getters.selectedInput
     }
   },
-  watch: {
-  },
+  watch: {},
   updated () {},
   mounted () {},
   created () {
+    if (this.$workbox) {
+      this.$workbox.addEventListener('waiting', () => {
+        this.showUpgradeUI = true
+      })
+    }
     // this.$store.commit('clearState')
     this.drawer = this.drawerState
     this.prepareData().then(() => {
@@ -182,11 +196,16 @@ export default {
 h5.basmaleh {
   width: 142px;
 }
-.charSwitch {
+.viewSwitch {
   margin-right: 272px;
   width: 72px;
-  margin-top: 15px;
+  margin-top: 22px;
   margin-bottom: -41px;
+  cursor: pointer;
+}
+.activeView{
+  background: #e8e8e8 !important;
+  color: #0c1115 !important;
 }
 .switchLabel {
   margin: auto;
@@ -197,19 +216,6 @@ h5.basmaleh {
 .v-data-footer {
   justify-content: end;
 }
-/************ Responseive***********/
-@media (max-width: 600px) {
-  .titleText {
-    font-size: 15px;
-  }
-  .autoAndLogo {
-    display: block !important;
-  }
-  .searcj {
-    margin-top: -44px !important;
-  }
-}
-
 /* width */
 ::-webkit-scrollbar {
   width: 5px;
@@ -228,5 +234,20 @@ h5.basmaleh {
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #000;
+}
+.webKitWidth {
+  width: -webkit-fill-available;
+}
+/************ Responseive***********/
+@media (max-width: 600px) {
+  .titleText {
+    font-size: 15px;
+  }
+  .autoAndLogo {
+    display: block !important;
+  }
+  .searcj {
+    margin-top: -44px !important;
+  }
 }
 </style>

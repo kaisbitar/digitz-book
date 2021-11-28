@@ -12,8 +12,8 @@
       <template v-slot:prepend-inner>
         <appSearchBoxMatch
           :search="search"
-          :matchAll="matchAll"
-          @clicked="(matchAll = !matchAll), matchChanged()"
+          :matchingStatus="matchingStatus"
+          @clicked="(matchingStatus = !matchingStatus), matchChanged()"
         />
       </template>
     </v-text-field>
@@ -31,7 +31,7 @@ export default {
   },
   data: () => ({
     search: '',
-    matchAll: false
+    matchingStatus: false
   }),
   computed: {
     selectedSearchIndex () {
@@ -40,8 +40,7 @@ export default {
   },
   methods: {
     matchChanged () {
-      var arr = [this.search, this.matchAll]
-      this.$emit('matchChanged', arr)
+      this.$emit('matchChanged', [this.search, this.matchingStatus])
     }
   },
   watch: {
@@ -52,13 +51,13 @@ export default {
       this.search = this.inputText
     },
     selectedSearchIndex () {
-      this.matchAll = false
+      this.matchingStatus = false
       this.matchChanged()
     }
   },
   created () {
     this.search = this.inputText
-    this.matchAll = false
+    this.matchingStatus = false
     this.matchChanged()
   },
   mounted () {},
