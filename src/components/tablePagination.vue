@@ -3,7 +3,7 @@
     <div class="currentItemsLength mb-2 mt-1 mr-4 ml-4">
       <span class="thisPage">هذه الصفحة: </span>
       <span class="font-weight-bold">{{ currentItemsLength }}</span>
-      {{ label }}
+      <span class="thisPage pr-1">{{label}} </span>
     </div>
     <v-pagination
       v-model="pageLocal"
@@ -45,6 +45,7 @@ ul.v-pagination.theme--light {
 }
 .currentItemsLength {
   font-size: 14px;
+  width: 113px;
 }
 .paginator {
   margin-top: -3px;

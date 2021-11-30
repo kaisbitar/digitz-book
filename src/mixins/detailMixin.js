@@ -14,10 +14,6 @@ export const detailMixin = {
   computed: {
     fileName () {
       return this.$store.getters.target.fileName
-    },
-    series () {
-      if (!this.occurrences) return
-      return [{ data: this.occurrences }]
     }
   },
   methods: {

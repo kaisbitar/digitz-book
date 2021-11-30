@@ -33,11 +33,11 @@
         v-if="activeView === 'detailView' && details"
         :numberOfLetters="numberOfLetters"
         :wordIndexes="details.wordIndexes"
-        :chartFreqSeries="chartFreqSeries"
         :numberOfVerses="numberOfVerses"
         :numberOfWords="numberOfWords"
         :suraTextArray="suraTextArray"
         :chartFreqType="chartFreqType"
+        :chartFreqSeries="chartFreqSeries"
         :chartOptions="chartOptions"
         :versesSeries="versesSeries"
         :versesBasics="versesBasics"
@@ -77,9 +77,9 @@ export default {
     suraTextArray: [],
     versesBasics: [],
     isLoading: false,
-    letterSeries: [],
-    versesSeries: [],
-    wordsSeries: [],
+    letterSeries: [{ data: [] }],
+    versesSeries: [{ data: [] }],
+    wordsSeries: [{ data: [] }],
     details: {}
   }),
   computed: {
@@ -224,9 +224,9 @@ export default {
       var quranToolTip = this.tableQuranIndex.map((item) => {
         return item.fileName.replace(/[0-9]/g, '')
       })
-      this.setToolTip(quranToolTip.shift())
+      this.setSuraToolTip(quranToolTip.shift())
     },
-    setToolTip (toolTipText) {
+    setSuraToolTip (toolTipText) {
       var x = {
         custom: ({ series, seriesIndex, dataPointIndex, w }) => {
           return '<div class="mr-2 ml-2 pt-2">' +
@@ -252,34 +252,29 @@ export default {
       this.setSuraBasics()
       this.fetchSuraDetails()
       if (this.fileName === '000المصحف') {
-        this.setSuraBasics()
-        this.fetchSuraDetails()
         this.perpareMushafData()
         this.suraTextWithTashkeel = this.allVersesWithTashkeel
         this.setMushafToolTip()
         return
       }
-      this.setSuraBasics()
-      this.fetchSuraDetails()
       this.perpareSuraData()
       this.prepareSuraWithTashkeel()
-      this.setToolTip(this.suraTextArray)
+      this.setSuraToolTip(this.suraTextArray)
     }
   },
   mounted () {
+    this.$store.commit('setActiveTab', 'numberOfVerses')
+    this.setSuraBasics()
+    this.fetchSuraDetails()
     if (this.fileName === '000المصحف') {
-      this.setSuraBasics()
-      this.fetchSuraDetails()
       this.perpareMushafData()
       this.suraTextWithTashkeel = this.allVersesWithTashkeel
       this.setMushafToolTip()
       return
     }
-    this.setSuraBasics()
-    this.fetchSuraDetails()
     this.perpareSuraData()
     this.prepareSuraWithTashkeel()
-    this.setToolTip(this.suraTextArray)
+    this.setSuraToolTip(this.suraTextArray)
   },
   created () {
   }

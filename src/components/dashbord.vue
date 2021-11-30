@@ -1,55 +1,67 @@
 <template>
   <div>
     <v-row class="dashboardTabs">
-      <dashboardTabs :tabs="tabs" @tabChanged="changeTab" class="webKitWidth"/>
+      <dashboardTabs
+        :tabs="tabs"
+        :activeTab="activeTab"
+        @tabChanged="changeTab"
+        class="webKitWidth"
+      />
     </v-row>
-    <v-row>
-      <v-tabs-items v-model="tab" class="webKitWidth">
-        <v-tab-item
-          transition="fade-transition" reverse-transition="fade-transition"
-        >
-          <keep-alive>
-            <dashVerses
-              v-if="activeTabName === 'numberOfVerses'"
-              class="webKitWidth"
-              :versesBasics="versesBasics"
-              :inputText="inputText"
-              :isLoading="isLoading"
-          /></keep-alive>
-        </v-tab-item>
-        <v-tab-item
-          transition="fade-transition" reverse-transition="fade-transition"
-        >
-          <dashWords
-            v-if="activeTabName === 'numberOfWords'"
+    <v-tabs-items v-model="activeTab" class="webKitWidth">
+      <v-tab-item
+        transition="fade-transition"
+        reverse-transition="fade-transition"
+        key="numberOfVerses"
+        value="numberOfVerses"
+      >
+        <keep-alive>
+          <dashVerses
+            v-if="activeTab === 'numberOfVerses'"
             class="webKitWidth"
-            :suraText="suraTextArray.join(' ')"
-            :numberOfLetters="numberOfLetters"
-            :numberOfWords="numberOfWords"
+            :versesBasics="versesBasics"
+            :inputText="inputText"
             :isLoading="isLoading"
-            :indexes="wordIndexes"
-        /></v-tab-item>
-        <v-tab-item
-          transition="fade-transition" reverse-transition="fade-transition"
-        >
-          <dashLetters
-            v-if="activeTabName === 'numberOfLetters'"
-            class="webKitWidth"
-            :numberOfLetters="numberOfLetters"
-            :suraText="suraTextArray.join('')"
-            :numberOfWords="numberOfWords"
-            :isLoading="isLoading"
-        /></v-tab-item>
-          <dashFrequency
-            v-if="activeTabName === 'frequency'"
-            :chartFreqSeries="chartFreqSeries"
-            :chartOptions="chartOptions"
-            :versesText="suraTextArray"
-            :isLoading="isLoading"
-            :height="height"
-        />
-      </v-tabs-items>
-    </v-row>
+        /></keep-alive>
+      </v-tab-item>
+      <v-tab-item
+        transition="fade-transition"
+        reverse-transition="fade-transition"
+        key="numberOfWords"
+        value="numberOfWords"
+      >
+        <dashWords
+          v-if="activeTab === 'numberOfWords'"
+          class="webKitWidth"
+          :suraText="suraTextArray.join(' ')"
+          :numberOfLetters="numberOfLetters"
+          :numberOfWords="numberOfWords"
+          :isLoading="isLoading"
+          :indexes="wordIndexes"
+      /></v-tab-item>
+      <v-tab-item
+        transition="fade-transition"
+        reverse-transition="fade-transition"
+        key="numberOfLetters"
+        value="numberOfLetters"
+      >
+        <dashLetters
+          v-if="activeTab === 'numberOfLetters'"
+          class="webKitWidth"
+          :numberOfLetters="numberOfLetters"
+          :suraText="suraTextArray.join('')"
+          :numberOfWords="numberOfWords"
+          :isLoading="isLoading"
+      /></v-tab-item>
+      <dashFrequency
+        v-if="activeTab === 'frequency'"
+        :chartFreqSeries="chartFreqSeries"
+        :chartOptions="chartOptions"
+        :versesText="suraTextArray"
+        :isLoading="isLoading"
+        :height="height"
+      />
+    </v-tabs-items>
   </div>
 </template>
 
@@ -85,12 +97,9 @@ export default {
   ],
   data: () => ({
     windowHeight: window.innerHeight,
-    tab: 3
+    tab: 'numberOfVerses'
   }),
   methods: {
-    changeTab (tab) {
-      this.tab = tab
-    }
   },
   computed: {
     tabs () {

@@ -34,7 +34,7 @@
             class="tableItem"
             :class="{
               mouseOverRow: showMenuIcon === 'icon' + props.item.verseNumberToQuran.toString(),
-              activeTableItem2: activeTableItemId ===  props.item.fileName + props.item.verseIndex }"
+              activeTableItem2: activeTableItemIdLocal ===  props.item.verseNumberToQuran.toString() }"
             @click="$emit('rowClicked', props.item)"
             @mouseover="showMenuIcon = 'icon' + props.item.verseNumberToQuran.toString()"
             @mouseleave="showMenuIcon = 'icon' "
@@ -86,6 +86,7 @@ export default {
   data: () => ({
     matchingStatus: false,
     showMenuIcon: false,
+    activeTableItemIdLocal: '',
     editItem: {},
     page: 1,
     pageCount: 0,
@@ -105,6 +106,7 @@ export default {
       )
     },
     setCurrentItems (items) {
+      if (!items) return
       this.currentItems = []
       this.currentItems = items
       this.currentItemsLength = items.length
@@ -121,10 +123,13 @@ export default {
       }
     },
     selectFirstItemInTable () {
+      if (!this.currentItems[0]) return
       if (this.storeFileName === '000المصحف') {
+        this.activeTableItemIdLocal = this.currentItems[0].verseNumberToQuran
         this.scrollToActiveRow()
         return
       }
+      this.activeTableItemIdLocal = this.currentItems[0].verseNumberToQuran
       this.$store.commit('setTarget', { fileName: this.currentItems[0].fileName, verseIndex: this.currentItems[0].verseIndex })
       this.scrollToActiveRow()
     },
@@ -167,10 +172,14 @@ export default {
     tableData () {
       this.page = 1
       this.scrollToActiveRow()
+    },
+    activeTableItemId () {
+      this.activeTableItemIdLocal = this.activeTableItemId
     }
   },
   mounted () {
     this.search = this.inputText
+    this.activeTableItemIdLocal = this.activeTableItemId
     this.scrollToActiveRow()
   }
 }
@@ -189,6 +198,7 @@ export default {
 .menuIcon {
   display: none;
   padding-left: 57px !important;
+  cursor: default !important;
 }
 .activeIcon {
   vertical-align: middle;

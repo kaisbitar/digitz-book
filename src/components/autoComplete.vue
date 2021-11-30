@@ -197,6 +197,7 @@ export default {
       this.search = this.inputText
     },
     selectedSearchIndex () {
+      if (this.selectedSearchIndex === -1) return
       this.search = this.inputText
       this.$store.commit('setTarget', { fileName: this.selectedSearch.result[0].fileName, verseIndex: this.selectedSearch.result[0].verseIndex })
     }

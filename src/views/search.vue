@@ -15,7 +15,10 @@
     <dashbord
       v-if="!isLoading"
       :inputText="inputText"
-      @tabChanged="getData"
+      @tabChanged="getWordsData"
+      :chartFreqSeries="[{ data: [] }]"
+      :chartFreqType="chartFreqType"
+      :chartOptions="chartOptions"
       :numberOfVerses="numberOfVerses"
       :numberOfWords="numberOfWords"
       :numberOfLetters="numberOfLetters"
@@ -30,6 +33,7 @@
 <script>
 import dashbord from '../components/dashbord.vue'
 import appTitle from '../components/appTitle'
+import chartOptions from '../assets/frequecyOptions'
 
 export default {
   name: 'search',
@@ -50,17 +54,19 @@ export default {
     versesData: [],
     letterSeries: [],
     wordsSeries: [],
-    view: 'detailView'
+    view: 'detailView',
+    chartFreqType: 'words',
+    chartOptions: chartOptions
   }),
   methods: {
-    getData (tab) {
+    getWordsData (tab) {
       this.activeTab = tab
       if (this.activeTab === 'numberOfWords') {
         this.fetchSuraDetails()
       }
     },
-    createSurasNames () {
-      this.versesData = this.versesBasics.map((item, index) => {
+    createVersesData () {
+      this.versesData = this.versesBasics.map((item) => {
         return {
           fileName: item.fileName,
           verseIndex: item.verseIndex.toString(),
@@ -125,15 +131,19 @@ export default {
     },
     numberOfWords () {
       if (!this.selectedSearch) return 0
-      return this.selectedSearch.result.map((item) => {
-        return item.verseText.split(' ').length
-      }).reduce((a, b) => a + b, 0)
+      return this.selectedSearch.result
+        .map((item) => {
+          return item.verseText.split(' ').length
+        })
+        .reduce((a, b) => a + b, 0)
     },
     numberOfLetters () {
       if (!this.selectedSearch) return 0
-      return this.selectedSearch.result.map((item) => {
-        return item.verseText.replace(/ /g, '').length
-      }).reduce((a, b) => a + b, 0)
+      return this.selectedSearch.result
+        .map((item) => {
+          return item.verseText.replace(/ /g, '').length
+        })
+        .reduce((a, b) => a + b, 0)
     },
     fileName () {
       if (!this.$store.getters.target) return
@@ -150,14 +160,15 @@ export default {
   },
   watch: {
     versesBasics () {
-      this.createSurasNames()
+      this.createVersesData()
     }
   },
   mounted () {
+    this.$store.commit('setActiveTab', 'numberOfVerses')
     if (this.selectedSearchIndex === -1) {
       this.getNextSearch('down')
     }
-    this.createSurasNames()
+    this.createVersesData()
   }
 }
 </script>

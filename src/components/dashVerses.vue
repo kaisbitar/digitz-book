@@ -6,11 +6,10 @@
         :tableHeaders="tableHeaders"
         :inputText="inputText"
         :menuItems="menuItems"
-        :activeTableItemId="targetFileName + targetVerseIndex"
+        :activeTableItemId="verseNumberToQuran"
         :isLoading="isLoading"
         :groupBy="null"
         :dataType="' عن آية أو رقم'"
-        :footerProps="footerProps"
         @rowClicked="handleVerseSelection"
         @handleClickedMenu="runMenuItem"
         @activateRowItem="goToverseTextView"
@@ -81,7 +80,6 @@ export default {
       { title: 'تحرير ', instuction: 'showEditVerse' },
       { title: 'إلغاء', instuction: 'cancel' }
     ],
-    footerProps: { 'items-per-page-text': '', 'disable-items-per-page': true },
     verseChart: [],
     verseIndex: '',
     verseNumberToQuran: '',
@@ -117,11 +115,12 @@ export default {
       this.numberOfLetters = item.verseText.replace(/ /g, '').length.toString()
       this.numberOfWords = item.verseText.split(' ').length.toString()
       this.verseText = item.verseText
+      this.getOneVerseWordIndexes(item.verseText)
+      this.setTargetedSuraAndIndex(item)
+      if (this.targetFileName === '000المصحف') return
       this.perpareChartData(item)
-      this.getWordIndexes(item.verseText)
-      this.setTargetedSuraInStore(item)
     },
-    getWordIndexes (text) {
+    getOneVerseWordIndexes (text) {
       this.wordIndexes = {}
       text.split(' ').map((word, index) => {
         if (!this.wordIndexes[word]) {
@@ -138,10 +137,16 @@ export default {
       }
       if (item === 'showEditVerse') this.showEditVerse = true
     },
-    setTargetedSuraInStore (item) {
+    setTargetedSuraAndIndex (item) {
       this.suraName = item.fileName.replace(/[0-9]/g, '')
       this.suraNumber = item.fileName.replace(/[ء-٩]/g, '').replace(/\s/g, '')
-      var target = { fileName: item.fileName, verseIndex: item.verseIndex }
+
+      if (this.targetFileName === '000المصحف') {
+        var target = { fileName: '000المصحف', verseIndex: item.verseNumberToQuran }
+        this.$store.commit('setTarget', target)
+        return
+      }
+      target = { fileName: item.fileName, verseIndex: item.verseIndex }
       this.$store.commit('setTarget', target)
     },
     goToverseTextView () {

@@ -1,13 +1,18 @@
 <template>
-  <div>
-    <div class="mt-5">
-      <dashLabels
-        class="dashLabelsWrap"
-        :detailElement="detailElement"
-        :detailCount="detailCount"
-        :isLoading="isLoading"
-        :showPosition="false"
-      />
+  <div class="d-flex">
+    <tableOccurrences
+      class="wordsTable"
+      :dataType="'كلمة'"
+      @rowClicked="rowClickedActions"
+      :detailElement="detailElement"
+      :tableHeaders="tableHeaders"
+      :footerProps="footerProps"
+      :tableData="occurrences"
+      :includeTab="includeTab"
+      :isLoading="isLoading"
+      :groupBy="groupBy"
+    />
+    <div class="webKitWidth">
       <appChart
         class="wordsChart"
         :dataType="'words'"
@@ -16,21 +21,14 @@
         :series="series"
         :height="100"
       />
-      <h5 class="text-center mt-n6">المواقع</h5>
-    </div>
-    <div class="d-flex">
-      <tableOccurrences
-        class="wordsTable"
-        :dataType="'كلمة'"
-        @rowClicked="rowClickedActions"
+      <dashLabels
+        class="dashLabelsWrap"
         :detailElement="detailElement"
-        :tableHeaders="tableHeaders"
-        :footerProps="footerProps"
-        :tableData="occurrences"
-        :includeTab="includeTab"
+        :detailCount="detailCount"
         :isLoading="isLoading"
-        :groupBy="groupBy"
+        :showPosition="false"
       />
+      <h5 class="text-center mt-n6">المواقع</h5>
     </div>
   </div>
 </template>
@@ -52,7 +50,10 @@ export default {
     appChart
   },
   data: () => ({
-    tableHeaders: [{ text: '', value: 'x', class: ' lighten-4 black--text' }],
+    tableHeaders: [
+      { text: 'كلمة', value: 'x', class: 'brown lighten-5 black--text' },
+      { text: 'تكرار', value: 'y', class: 'brown lighten-5 black--text' }
+    ],
     options: chartOptions,
     dataType: 'words',
     wordsGroup: null,
@@ -102,12 +103,12 @@ export default {
         custom: (obj) => {
           return (
             '<div class="d-flex pt-2 pa-2">' +
-              '<div class=" tipInfo  tipInfo2 ">' +
-                this.detailElement +
-              '</div>' +
-              '<div class=" tipInfo "><span class="tipLabel">الموقع:</span> ' +
-                this.indexes[this.detailElement][obj.dataPointIndex] +
-              '</div>' +
+            '<div class=" tipInfo  tipInfo2 ">' +
+            this.detailElement +
+            '</div>' +
+            '<div class=" tipInfo "><span class="tipLabel">الموقع:</span> ' +
+            this.indexes[this.detailElement][obj.dataPointIndex] +
+            '</div>' +
             '</div>'
           )
         },
@@ -162,13 +163,10 @@ export default {
 </script>
 
 <style>
-.wordsTable thead.v-data-table-header {
-    display: none;
-}
 .appSearchBox {
   margin-bottom: -21px;
 }
-.wordsChart text{
-text-anchor: start;
+.wordsChart text {
+  text-anchor: start;
 }
 </style>

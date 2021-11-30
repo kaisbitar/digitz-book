@@ -11,11 +11,11 @@
       <v-tab
         v-for="(item, index) in tabs"
         v-model="item.name"
-        @click="setActiveTab(item.name)"
+        :href="'#' + item.name"
         :key="index"
+        @click="setActiveTab(item.name)"
         :title="item.title"
         :value="item.value"
-        :tabName="item.name"
       >
         {{item.value}} {{ item.title }}
       </v-tab>
@@ -30,22 +30,24 @@ export default {
   components: {},
   props: ['tabs', 'activeTab', 'value', 'title', 'tabName'],
   data: () => ({
-    tab: null
+    tab: 'numberOfVerses'
   }),
   computed: {},
   methods: {
     setActiveTab (activeTab) {
-      this.$store.commit('setActiveTab', activeTab.name)
+      this.tab = activeTab
+      this.$store.commit('setActiveTab', activeTab)
     }
   },
   watch: {
-    tab () {
-      this.$emit('tabChanged', this.tab)
-      this.$store.commit('setActiveTab', this.tabs[this.tab])
+    activeTab () {
+      this.tab = this.activeTab
     }
   },
   created () {},
-  mounted () {}
+  mounted () {
+    this.tab = this.activeTab
+  }
 }
 </script>
 

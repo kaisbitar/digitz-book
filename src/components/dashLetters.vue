@@ -154,7 +154,12 @@ export default {
       this.occurrences.sort((a, b) => (a.y > b.y ? 1 : -1))
     }
   },
-  computed: {},
+  computed: {
+    series () {
+      if (!this.occurrences) return
+      return [{ data: this.occurrences }]
+    }
+  },
   watch: {
     suraText () {
       if (!this.suraText) return

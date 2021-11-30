@@ -1,66 +1,68 @@
 <template>
-  <div class="webKitWidth">
-    <appSearchBox
-      @searchChanged="changeSearch"
-      @matchChanged="changeMatchingStatus"
-      :inputText="search"
-      :dataType="dataType"
-    />
+  <div class=" grey lighten-5">
+    <div class="d-flex pt-1 topBar">
+      <appSearchBox
+        @searchChanged="changeSearch"
+        @matchChanged="changeMatchingStatus"
+        :inputText="search"
+        :dataType="dataType"
+      />
+    </div>
     <v-data-table
       :items="tableData"
       :headers="tableHeaders"
       :items-per-page="75"
       :search="search"
-      :height="getTableHeight() - 130"
+      :height="getTableHeight()"
       :footer-props="footerProps"
       :loading="isLoading"
       loading-text="جاري تحميل البيانات القرآنية ... الرجاء الانتظار"
-      class="tableStyle webKitWidth"
+      class="tableStyle wordsTable"
       fixed-header
-      :group-by="groupBy"
       :loader-height="2"
-      :show-expand="false"
+      click:row="$emit('rowClicked', item.index, item)"
+      :page.sync="page"
+      @page-count="pageCount = $event"
+      @current-items="setCurrentItems"
+      hide-default-footer
     >
-      <!-- :item-key="selectedId" -->
-      <template v-slot:[`group.header`]="{ items, group, isOpen, toggle }">
-
-        <div @click="toggle" class="groupHeader">
-          <v-btn  icon small :ref="'expand' + group">
-            <v-icon small>
-              {{ isOpen ? "$minus" : "$plus" }}
-            </v-icon>
-          </v-btn>
-          <span class="text-center ">
-            <span class="blue--text text--darken-3">{{ group }}</span> تكرار
-            </span>
-            <span class="mr-4"> ({{items.length}} كلمة)</span>
-        </div>
-      </template>
-      <!-- :class="{ active: props.item.x === selectedId }" -->
-      <template v-slot:item="props">
-        <v-chip
-          @click="$emit('rowClicked', props.index, props.item)"
-          class="tableItem text-right pa-2 ma-1"
-          :class="{ 'orange lighten-4 font-weight-bold': props.item.x === detailElement }"
-          label
-          v-html="highlight(props.item.x , search)"
-        >
-        </v-chip>
-      </template>
     </v-data-table>
+    <tablePagination
+      :page="page"
+      :pageCount="pageCount"
+      :currentItemsLength="currentItemsLength"
+      :label="'كلمة'"
+    />
   </div>
 </template>
 
 <script>
 import { tableOccMixin } from '../mixins/tableOccMixin'
-
+import tablePagination from './tablePagination'
 export default {
   name: '',
-  mixins: [tableOccMixin]
+  components: { tablePagination },
+  mixins: [tableOccMixin],
+  data: () => ({
+    page: 1,
+    pageCount: 0,
+    currentItemsLength: 0
+  }),
+  methods: {
+    setCurrentItems (items) {
+      if (!items) return
+      this.currentItems = []
+      this.currentItems = items
+      this.currentItemsLength = items.length
+    }
+  }
 }
 </script>
 
 <style>
+.wordsTable{
+  width: 450px
+}
 .groupHeader {
   /* height: 26px; */
   font-weight: bold;
