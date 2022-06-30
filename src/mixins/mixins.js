@@ -25,7 +25,7 @@ export const appMixin = {
         suraChunk = text
       }
       return suraChunk.replace(new RegExp(searchValue, 'gi'), match => {
-        return '<span style="background:yellow">' + match + '</span>'
+        return '<span style="background:yellow; font-weight: bold;">' + match + '</span>'
       })
     }
   }

@@ -96,7 +96,7 @@ export default {
       text = text.replace(/[\u064b-\u064f\u0650-\u0652]/g, '')
       var qurey = new RegExp(value, 'ig')
       return text.replace(qurey, (match) => {
-        return '<span class="orange accent-1">' + match + '</span>'
+        return '<span class="orange accent-1 font-weight-bold">' + match + '</span>'
       })
     }
   },
