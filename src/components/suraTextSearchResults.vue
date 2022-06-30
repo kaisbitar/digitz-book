@@ -1,24 +1,17 @@
 <template>
   <v-row v-if="foundIndexes" class="selectsWrap d-flex pillsWrap mb-1">
     <v-card
-      class="verseLabel elevation-0 pl-3 pr-3 ml-1 label yellow accent-1 text-center"
-    >
-      آية {{ selectedIndex }}
-    </v-card>
-    <v-card
       v-if="inputText"
-      class="elevation-0 pl-2 pr-2 label orange accent-1 ml-2"
+      class="elevation-0 pl-2 pr-2 label grey lighten-3 ml-2"
       style="width: fit-content"
     >
-      <span class="">"{{ inputText }}"</span> - {{ foundIndexes.length }} آية
+      "<span class="font-weight-bold ">{{ inputText }}</span>" - {{ foundIndexes.length }} <span class="caption">مرة</span>
     </v-card>
-    <div class="versesArrow">
-      <div>
-        <v-icon @click="arrowClick(-1)">mdi-chevron-up</v-icon>
-      </div>
-      <div>
-        <v-icon @click="arrowClick(1)" class="">mdi-chevron-down</v-icon>
-      </div>
+    <div class="versesArrow d-none d-sm-block">
+      <div><v-icon @click="arrowClick(-1)">mdi-chevron-up</v-icon></div>
+      <div class="caption mr-1 font-weight-bold">آية</div>
+
+      <div><v-icon @click="arrowClick(1)" class="">mdi-chevron-down</v-icon></div>
     </div>
     <label class="toVerse">
       <v-select
@@ -74,7 +67,10 @@ export default {
   },
   methods: {
     setTargetedVerse (selectedIndex) {
-      this.$store.commit('setTarget', { fileName: this.fileName, verseIndex: selectedIndex })
+      this.$store.commit('setTarget', {
+        fileName: this.fileName,
+        verseIndex: selectedIndex
+      })
     },
     arrowClick (direction) {
       var selectedIndex = 0
@@ -140,8 +136,11 @@ export default {
 .active {
   opacity: 1;
 }
-.selectsWrap {
-  margin-right: 79px;
+.selectsWrap , .selectsWrap .caption  {
+  font-family: "Tajawal", sans-serif !important;
+}
+.selectsWrap  {
+  margin-right: 100px;
   margin-top: 16px;
 }
 .toVerse {
@@ -151,7 +150,9 @@ export default {
 .versesArrow {
   margin-left: 19px;
   margin-right: 19px;
-  margin-top: -12px;
+  margin-top: -24px;
+  z-index: 72;
+  position: relative;
 }
 .verseLabel {
   width: 70px;
@@ -164,7 +165,7 @@ export default {
     /* padding-top: 55px !important; */
   }
 }
-/************ Responseive***********/
+/************ Responsive***********/
 @media (max-width: 600px) {
   .titleText {
     display: none;
