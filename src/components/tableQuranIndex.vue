@@ -41,7 +41,7 @@
         <template v-slot:item="props">
           <tr
             @click="runSura(props.item)"
-            :class="{ activeTableItem: props.item.fileName === selectedId }"
+            :class="{ activeTableItem: props.item.fileName === fileName }"
             class="tableItem"
           >
             <td
@@ -80,7 +80,6 @@ export default {
   data: () => ({
     loading: true,
     search: '',
-    selectedId: '001الفاتحة',
     showDetail: false,
     headers: [
       {
@@ -133,7 +132,6 @@ export default {
         fileName: sura.fileName,
         verseIndex: null
       })
-      this.selectedId = sura.fileName
       if (this.$router.currentRoute.name !== 'singleSura') {
         this.$router.push({ name: 'singleSura' })
       }
@@ -165,14 +163,12 @@ export default {
       this.loading = false
       return
     }
-    this.selectedId = this.fileName
-    this.scrollToIndex(this.selectedId)
+    this.scrollToIndex(this.fileName)
     this.loading = false
   },
   watch: {
     fileName () {
-      this.selectedId = this.fileName
-      this.scrollToIndex(this.selectedId)
+      this.scrollToIndex(this.fileName)
     },
     search () {
       if (this.search === null) {

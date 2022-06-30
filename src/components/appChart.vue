@@ -24,11 +24,10 @@ export default {
   }),
   methods: {
     handleClick (seriesIndex, dataPointIndex, chartContext) {
-      var target = {
+      this.$store.commit('setTarget', {
         fileName: this.fileName,
         verseIndex: chartContext.dataPointIndex + 1
-      }
-      this.$store.commit('setTarget', target)
+      })
     }
   },
   computed: {

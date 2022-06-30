@@ -61,11 +61,10 @@ export default {
       }, 50)
     },
     setTargetedVerse (index) {
-      var target = {
+      this.$store.commit('setTarget', {
         fileName: this.$store.getters.target.fileName,
         verseIndex: index
-      }
-      this.$store.commit('setTarget', target)
+      })
     }
   },
   computed: {

@@ -145,8 +145,7 @@ export default {
         this.$store.commit('setTarget', target)
         return
       }
-      target = { fileName: `${this.suraNumber}${this.suraName}`, verseIndex: item.verseIndex }
-      this.$store.commit('setTarget', target)
+      this.$store.commit('setTarget', { fileName: `${this.suraNumber}${this.suraName}`, verseIndex: item.verseIndex })
     },
     goToverseTextView () {
       this.$store.commit('setActiveView', 'textView')

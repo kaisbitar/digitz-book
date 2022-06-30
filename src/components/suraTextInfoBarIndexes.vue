@@ -30,8 +30,7 @@ export default {
   }),
   methods: {
     handleClick (item) {
-      var target = { fileName: this.$store.getters.target.fileName, verseIndex: item }
-      this.$store.commit('setTarget', target)
+      this.$store.commit('setTarget', { fileName: this.$store.getters.target.fileName, verseIndex: item })
     }
   },
   computed: {

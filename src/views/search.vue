@@ -60,6 +60,7 @@ export default {
   }),
   methods: {
     getWordsData (tab) {
+      console.log(tab)
       this.activeTab = tab
       if (this.activeTab === 'numberOfWords') {
         this.fetchSuraDetails()

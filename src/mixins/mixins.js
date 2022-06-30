@@ -9,11 +9,8 @@ export const appMixin = {
     },
     setTargetFromArrow (direction) {
       var suraNumber = this.suraNumber
-      if (direction === 'up') {
-        suraNumber = suraNumber - 1
-      } else {
-        suraNumber = suraNumber + 1
-      }
+      if (direction === 'up') suraNumber = suraNumber - 1
+      else suraNumber = suraNumber + 1
       this.$store.commit('setTarget', { fileName: this.tableQuranIndex[suraNumber].fileName })
     },
     highlight (text, searchValue) {

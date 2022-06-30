@@ -74,8 +74,7 @@ export default {
   },
   methods: {
     setTargetedVerse (selectedIndex) {
-      var target = { fileName: this.fileName, verseIndex: selectedIndex }
-      this.$store.commit('setTarget', target)
+      this.$store.commit('setTarget', { fileName: this.fileName, verseIndex: selectedIndex })
     },
     arrowClick (direction) {
       var selectedIndex = 0

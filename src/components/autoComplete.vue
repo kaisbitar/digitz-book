@@ -118,13 +118,12 @@ export default {
       this.checkAndGo('singleSura')
     },
     handleSingleItemClicked (item) {
-      var target = {
+      this.$store.commit('setTarget', {
         fileName:
-            item.fileName.replace(/[ء-٩]/g, '').replace(/\s/g, '') +
-            item.fileName.replace(/[0-9]/g, ''),
+          item.fileName.replace(/[ء-٩]/g, '').replace(/\s/g, '') +
+          item.fileName.replace(/[0-9]/g, ''),
         verseIndex: item.verseIndex
-      }
-      this.$store.commit('setTarget', target)
+      })
       this.handleNewSearch()
     },
     handleNewSearch () {
@@ -191,7 +190,6 @@ export default {
       return this.$store.getters.SearchResults
     }
   },
-  created () {},
   watch: {
     inputText () {
       this.search = this.inputText
@@ -199,7 +197,12 @@ export default {
     selectedSearchIndex () {
       if (this.selectedSearchIndex === -1) return
       this.search = this.inputText
-      this.$store.commit('setTarget', { fileName: this.selectedSearch.result[0].fileName, verseIndex: this.selectedSearch.result[0].verseIndex })
+      this.$store.commit('setTarget', {
+        fileName:
+          this.selectedSearch.result[0].fileName.replace(/[ء-٩]/g, '').replace(/\s/g, '') +
+          this.selectedSearch.result[0].fileName.replace(/[0-9]/g, ''),
+        verseIndex: this.selectedSearch.result[0].verseIndex
+      })
     }
   },
   mounted () {},
