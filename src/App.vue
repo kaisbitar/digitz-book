@@ -96,10 +96,6 @@ export default {
       if (this.$router.currentRoute.name !== route) {
         this.$router.push({ name: route })
       }
-    },
-    async accept () {
-      this.showUpgradeUI = false
-      await this.$workbox.messageSW({ type: 'SKIP_WAITING' })
     }
   },
   computed: {
