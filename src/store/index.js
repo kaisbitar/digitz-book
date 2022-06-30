@@ -44,12 +44,6 @@ export default new Vuex.Store({
     }
   },
   mutations: {
-    clearState (state) {
-      const initialState = initializeState()
-      Object.keys(initialState).forEach(key => {
-        state[key] = initialState[key]
-      })
-    },
     setChartFreqType (state, chartFreqType) {
       state.chartFreqType = chartFreqType
     },

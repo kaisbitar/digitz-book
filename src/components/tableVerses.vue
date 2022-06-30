@@ -130,7 +130,6 @@ export default {
         return
       }
       this.activeTableItemIdLocal = this.currentItems[0].verseNumberToQuran
-      this.$store.commit('setTarget', { fileName: this.currentItems[0].fileName, verseIndex: this.currentItems[0].verseIndex })
       this.scrollToActiveRow()
     },
     passClickedMenuItem (item) {

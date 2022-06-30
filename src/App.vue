@@ -122,12 +122,6 @@ export default {
   updated () {},
   mounted () {},
   created () {
-    if (this.$workbox) {
-      this.$workbox.addEventListener('waiting', () => {
-        this.showUpgradeUI = true
-      })
-    }
-    // this.$store.commit('clearState')
     this.drawer = this.drawerState
     this.prepareData().then(() => {
       this.isLoading = false

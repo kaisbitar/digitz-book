@@ -116,7 +116,7 @@ export default {
       this.numberOfWords = item.verseText.split(' ').length.toString()
       this.verseText = item.verseText
       this.getOneVerseWordIndexes(item.verseText)
-      this.setTargetedSuraAndIndex(item)
+      this.setTargetedSuraAndVerse(item)
       if (this.targetFileName === '000المصحف') return
       this.perpareChartData(item)
     },
@@ -137,16 +137,15 @@ export default {
       }
       if (item === 'showEditVerse') this.showEditVerse = true
     },
-    setTargetedSuraAndIndex (item) {
+    setTargetedSuraAndVerse (item) {
       this.suraName = item.fileName.replace(/[0-9]/g, '')
       this.suraNumber = item.fileName.replace(/[ء-٩]/g, '').replace(/\s/g, '')
-
       if (this.targetFileName === '000المصحف') {
         var target = { fileName: '000المصحف', verseIndex: item.verseNumberToQuran }
         this.$store.commit('setTarget', target)
         return
       }
-      target = { fileName: item.fileName, verseIndex: item.verseIndex }
+      target = { fileName: `${this.suraNumber}${this.suraName}`, verseIndex: item.verseIndex }
       this.$store.commit('setTarget', target)
     },
     goToverseTextView () {

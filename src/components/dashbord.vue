@@ -100,6 +100,9 @@ export default {
     tab: 'numberOfVerses'
   }),
   methods: {
+    changeTab (tab) {
+      this.tab = tab
+    }
   },
   computed: {
     tabs () {

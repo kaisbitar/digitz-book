@@ -277,6 +277,7 @@ export default {
     this.setSuraToolTip(this.suraTextArray)
   },
   created () {
+    this.perpareSuraData()
   }
 }
 </script>
