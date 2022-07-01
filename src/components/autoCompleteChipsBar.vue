@@ -7,11 +7,6 @@
             <span class="blue white--text pl-1 pr-1 ml-2">
               {{ item.resultsCount }}
             </span>
-            <span
-              class="green white--text pl-1 pr-1"
-              v-if="item.parentSearch"
-              v-html="item.parentSearch"
-            ></span>
           </div>
           <v-chip
             @click.prevent="$emit('chipClicked', index)"

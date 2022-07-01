@@ -1,5 +1,5 @@
 <template>
-  <v-row v-if="foundIndexes" class="selectsWrap d-flex pillsWrap mb-1">
+  <v-row v-if="foundIndexes" class="selectsWrap d-flex pillsWrap">
     <v-card
       v-if="inputText"
       class="elevation-0 pl-2 pr-2 label grey lighten-3 ml-2"
@@ -9,30 +9,15 @@
     </v-card>
     <div class="versesArrow d-none d-sm-block">
       <div><v-icon @click="arrowClick(-1)">mdi-chevron-up</v-icon></div>
-      <div class="caption mr-1 font-weight-bold">آية</div>
-
       <div><v-icon @click="arrowClick(1)" class="">mdi-chevron-down</v-icon></div>
     </div>
     <label class="toVerse">
       <v-select
         class="toVerse"
-        v-if="foundIndexes.length > 10"
         v-model="selectedIndex"
         :items="foundIndexes"
         label="إلى الآية"
       ></v-select>
-    </label>
-    <label class="d-flex" v-if="foundIndexes.length <= 10">
-      <v-card
-        v-for="(foundIndex, index) in foundIndexes"
-        :key="index"
-        class="elevation-0 ml-1 numberLabel pl-1 pr-1"
-        :class="{ active: foundIndex === selectedVerse }"
-        outlined
-        @click="setTargetedVerse(foundIndex)"
-      >
-        {{ foundIndex }}
-      </v-card>
     </label>
   </v-row>
 </template>
@@ -140,8 +125,8 @@ export default {
   font-family: "Tajawal", sans-serif !important;
 }
 .selectsWrap  {
-  margin-right: 100px;
-  margin-top: 16px;
+  margin-right: 180px;
+  margin-top: 24px;
 }
 .toVerse {
   width: min-content;
@@ -150,7 +135,7 @@ export default {
 .versesArrow {
   margin-left: 19px;
   margin-right: 19px;
-  margin-top: -24px;
+  margin-top: -15px;
   z-index: 72;
   position: relative;
 }
@@ -160,16 +145,17 @@ export default {
 
 @media (max-width: 655px) {
   .selectsWrap {
-    /* width: 40px; */
-    margin-right: 0px;
-    /* padding-top: 55px !important; */
+    margin-right: -190px;
+    margin-top: 86px !important;
+    margin-bottom: -14px;
+
+  }
+  .toVerse {
+    margin-right: 10px;
   }
 }
 /************ Responsive***********/
 @media (max-width: 600px) {
-  .titleText {
-    display: none;
-  }
   .infoBar {
     height: 92px !important;
   }

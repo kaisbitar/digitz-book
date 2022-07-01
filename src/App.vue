@@ -153,15 +153,10 @@ export default {
 .titleText {
   width: 148px;
 }
-.arrowsWrap {
-  width: -webkit-fit-content;
-  margin-right: auto;
-  margin-top: -85px;
-  cursor: pointer;
-}
 .compWrapper {
   padding-right: 19px;
   padding-left: 19px;
+  margin-top: -48px;
 }
 .suraInfoBox {
   padding: 24px;
@@ -174,17 +169,8 @@ export default {
   width: 191px;
   margin-top: -9px;
 }
-.titleWrap {
-  width: 259px;
-  height: 94px;
-  margin-right: -12px;
-  margin-top: -9px;
-}
 .downArr {
   margin-top: 18px !important;
-}
-h5.basmaleh {
-  width: 142px;
 }
 .viewSwitch {
   margin-right: 272px;
@@ -232,12 +218,7 @@ h5.basmaleh {
 @media (max-width: 600px) {
   .titleText {
     font-size: 15px;
-  }
-  .autoAndLogo {
-    display: block !important;
-  }
-  .searcj {
-    margin-top: -44px !important;
+    display: none;
   }
 }
 </style>

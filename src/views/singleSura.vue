@@ -1,12 +1,8 @@
 <template>
   <div class="compWrapper">
-    <v-row>
+    <div class=" d-flex">
       <appTitle
-        class="pr-3"
-        :numberOfLetters="numberOfLetters"
         @arrowClick="setTargetFromArrow"
-        :numberOfVerses="numberOfVerses"
-        :numberOfWords="numberOfWords"
         :title="fileName"
       />
       <suraTextSearchResults
@@ -16,7 +12,7 @@
         :suraTextArray="suraTextArray"
         :inputText="inputText"
       />
-    </v-row>
+    </div>
     <keepAlive>
       <suraText
         v-if="activeView === 'textView'"

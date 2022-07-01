@@ -1,17 +1,9 @@
 <template>
   <div class="compWrapper">
-    <v-row>
-      <appTitle
-        class="pr-3"
-        :numberOfVerses="numberOfVerses"
-        :numberOfWords="numberOfWords"
-        :numberOfLetters="numberOfLetters"
-        :title="inputText"
-        :parentSearch="parentSearch"
-        :parentcount="parentcount"
-        @arrowClick="getNextSearch"
-      />
-    </v-row>
+    <appTitle
+      :title="inputText"
+      @arrowClick="getNextSearch"
+    />
     <dashbord
       v-if="!isLoading"
       :inputText="inputText"
@@ -149,10 +141,6 @@ export default {
     fileName () {
       if (!this.$store.getters.target) return
       return this.$store.getters.target.fileName
-    },
-    parentSearch () {
-      if (!this.$store.getters.selectedSearch) return
-      return this.$store.getters.selectedSearch.parentSearch
     },
     parentcount () {
       if (!this.$store.getters.selectedSearch) return

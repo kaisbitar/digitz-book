@@ -132,14 +132,12 @@ export default {
       this.checkAndGo('search')
     },
     setNewSearch () {
-      var value = {
+      this.$store.commit('setSearchIndex', this.SearchResults.length)
+      this.$store.commit('setSearchResultsItem', {
         resultsCount: this.$refs.autocomplete.filteredItems.length,
         inputText: this.$refs.autocomplete.internalSearch,
-        result: this.$refs.autocomplete.filteredItems,
-        parentSearch: null
-      }
-      this.$store.commit('setSearchIndex', this.SearchResults.length)
-      this.$store.commit('setSearchResultsItem', value)
+        result: this.$refs.autocomplete.filteredItems
+      })
       this.disableInputBox()
     },
     disableInputBox () {
