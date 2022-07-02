@@ -1,12 +1,12 @@
 <template>
-  <v-row v-if="foundIndexes" class="selectsWrap d-flex pillsWrap">
+  <v-row v-if="indices" class="selectsWrap d-flex pillsWrap">
     <v-card
       v-if="inputText"
       class="elevation-0 pl-2 pr-2 label grey lighten-3 ml-2"
       style="width: fit-content"
     >
       "<span class="font-weight-bold">{{ inputText }}</span
-      >" = <span class="title">{{ foundIndexes.length }}</span>
+      >" = <span class="title">{{ indices.length }}</span>
       <span class="caption">مرة</span>
     </v-card>
     <div class="versesArrow d-none d-sm-block">
@@ -19,7 +19,7 @@
       <v-select
         class="toVerse"
         v-model="selectedIndex"
-        :items="foundIndexes"
+        :items="indices"
         label="إلى الآية"
       ></v-select>
     </label>
@@ -38,16 +38,15 @@ export default {
       if (!this.$store.getters.target) return 1
       return this.$store.getters.target.verseIndex
     },
-    foundIndexes () {
+    indices () {
       if (!this.inputText) return null
-      var foundIndexes = []
+      var indices = []
       this.suraTextArray.filter((item, index) => {
         if (item.match(this.inputText)) {
-          foundIndexes.push(index + 1)
-          return item
+          indices.push(index + 1)
         }
       })
-      return foundIndexes
+      return indices
     },
     fileName () {
       if (!this.$store.getters.target) return
@@ -62,16 +61,15 @@ export default {
       })
     },
     arrowClick (direction) {
-      var index = this.foundIndexes.indexOf(this.selectedIndex)
-      if (!this.foundIndexes[index + direction]) {
+      if (!this.indices[this.indices.indexOf(this.selectedIndex) + direction]) {
         if (direction === -1) {
-          this.selectedIndex = (this.foundIndexes[this.foundIndexes.length - 1])
+          this.selectedIndex = (this.indices[this.indices.length - 1])
           return
         }
-        this.selectedIndex = (this.foundIndexes[0])
+        this.selectedIndex = (this.indices[0])
         return
       }
-      this.selectedIndex = (this.foundIndexes[index + direction])
+      this.selectedIndex = (this.indices[this.indices.indexOf(this.selectedIndex) + direction])
     }
   },
   watch: {

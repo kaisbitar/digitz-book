@@ -1,27 +1,20 @@
 import axios from 'axios'
 
 export function fetchOneQuranFile (appApi) {
-  return axios
-    .get(appApi + 'api/allSurasData/all')
-    .then(response => {
-      return response.data
-    })
+  return getData(appApi + 'api/allSurasData/all')
 }
 export function fetchtableQuranIndex (appApi) {
-  return axios.get(appApi + 'api/quran-index').then(response => {
-    return response.data
-  })
+  return getData(appApi + 'api/quran-index')
 }
 export function fetchAllVersesWithTashkeel (appApi) {
-  return axios
-    .get(appApi + 'api/allVersesWithTashkeel')
-    .then(response => {
-      return response.data
-    })
+  return getData(appApi + 'api/allVersesWithTashkeel')
 }
 export function fetchSuraDetails (appApi, fileName) {
+  return getData(appApi + 'api/view/sura-details/' + fileName)
+}
+function getData (path) {
   return axios
-    .get(appApi + 'api/view/sura-details/' + fileName)
+    .get(path)
     .then(response => {
       return response.data
     })
