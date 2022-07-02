@@ -5,11 +5,15 @@
       class="elevation-0 pl-2 pr-2 label grey lighten-3 ml-2"
       style="width: fit-content"
     >
-      "<span class="font-weight-bold ">{{ inputText }}</span>" - {{ foundIndexes.length }} <span class="caption">مرة</span>
+      "<span class="font-weight-bold">{{ inputText }}</span
+      >" = <span class="title">{{ foundIndexes.length }}</span>
+      <span class="caption">مرة</span>
     </v-card>
     <div class="versesArrow d-none d-sm-block">
       <div><v-icon @click="arrowClick(-1)">mdi-chevron-up</v-icon></div>
-      <div><v-icon @click="arrowClick(1)" class="">mdi-chevron-down</v-icon></div>
+      <div>
+        <v-icon @click="arrowClick(1)" class="">mdi-chevron-down</v-icon>
+      </div>
     </div>
     <label class="toVerse">
       <v-select
@@ -51,23 +55,23 @@ export default {
     }
   },
   methods: {
-    setTargetedVerse (selectedIndex) {
+    setTargetedVerse (index) {
       this.$store.commit('setTarget', {
         fileName: this.fileName,
-        verseIndex: selectedIndex
+        verseIndex: index
       })
     },
     arrowClick (direction) {
-      var selectedIndex = 0
-      this.foundIndexes.filter((item, index) => {
-        if (item === this.selectedIndex) {
-          selectedIndex = this.foundIndexes[index + direction]
+      var index = this.foundIndexes.indexOf(this.selectedIndex)
+      if (!this.foundIndexes[index + direction]) {
+        if (direction === -1) {
+          this.selectedIndex = (this.foundIndexes[this.foundIndexes.length - 1])
+          return
         }
-      })
-      if (selectedIndex === 0) {
-        selectedIndex = this.foundIndexes[0]
+        this.selectedIndex = (this.foundIndexes[0])
+        return
       }
-      this.setTargetedVerse(selectedIndex)
+      this.selectedIndex = (this.foundIndexes[index + direction])
     }
   },
   watch: {
@@ -75,13 +79,12 @@ export default {
       this.setTargetedVerse(this.selectedIndex)
     },
     selectedVerse () {
-      this.selectedIndex = this.selectedVerse
+      this.selectedIndex = parseInt(this.selectedVerse)
     }
   },
-  created () {
-    this.selectedIndex = this.selectedVerse
-  },
-  mounted () {}
+  mounted () {
+    this.selectedIndex = parseInt(this.selectedVerse)
+  }
 }
 </script>
 
@@ -121,10 +124,11 @@ export default {
 .active {
   opacity: 1;
 }
-.selectsWrap , .selectsWrap .caption  {
+.selectsWrap,
+.selectsWrap .caption {
   font-family: "Tajawal", sans-serif !important;
 }
-.selectsWrap  {
+.selectsWrap {
   margin-right: 180px;
   margin-top: 24px;
 }
@@ -148,7 +152,6 @@ export default {
     margin-right: -190px;
     margin-top: 86px !important;
     margin-bottom: -14px;
-
   }
   .toVerse {
     margin-right: 10px;

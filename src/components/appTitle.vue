@@ -33,7 +33,7 @@ export default {
 
 <style >
 .titleWrap {
-  width: 178px;
+  width: 200px;
   display: flex;
   margin-bottom: 5px;
 }

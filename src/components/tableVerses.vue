@@ -19,7 +19,6 @@
         :height="getTableHeight()"
         :headers="tableHeaders"
         :loading="isLoading"
-        :group-by="groupBy"
         :items="tableData"
         :search="search"
         :items-per-page="50"
