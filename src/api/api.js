@@ -1,13 +1,13 @@
 import axios from 'axios'
 
 export function fetchOneQuranFile (appApi) {
-  return getData(appApi + 'api/allSurasData/all')
+  return getData(appApi + 'api/quran-model')
 }
 export function fetchtableQuranIndex (appApi) {
   return getData(appApi + 'api/quran-index')
 }
 export function fetchAllVersesWithTashkeel (appApi) {
-  return getData(appApi + 'api/allVersesWithTashkeel')
+  return getData(appApi + 'api/with-tashkeel')
 }
 export function fetchSuraDetails (appApi, fileName) {
   return getData(appApi + 'api/view/sura-details/' + fileName)

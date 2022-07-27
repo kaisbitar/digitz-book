@@ -1,13 +1,10 @@
 <template>
   <div class="compWrapper">
-    <div class=" d-flex">
-      <appTitle
-        @arrowClick="setTargetFromArrow"
-        :title="fileName"
-      />
+    <div class="d-flex">
+      <appTitle @arrowClick="setTargetFromArrow" :title="fileName" />
       <suraTextSearchResults
         v-if="activeView === 'textView'"
-        style="max-width:641px"
+        style="max-width: 641px"
         :selectedVerse="suraTargetedVerseIndex"
         :suraTextArray="suraTextArray"
         :inputText="inputText"
@@ -211,7 +208,7 @@ export default {
     prepareSuraWithTashkeel () {
       this.suraTextWithTashkeel = []
       this.allVersesWithTashkeel.map((item, index) => {
-        if (index > (this.startIndex) - 1 && index < this.endIndex) {
+        if (index > this.startIndex - 1 && index < this.endIndex) {
           this.suraTextWithTashkeel.push(item)
         }
       })
@@ -225,14 +222,23 @@ export default {
     setSuraToolTip (toolTipText) {
       var x = {
         custom: ({ series, seriesIndex, dataPointIndex, w }) => {
-          return '<div class="mr-2 ml-2 pt-2">' +
+          return (
+            '<div class="mr-2 ml-2 pt-2">' +
             '<div class="d-flex"><span class="tipInfo"><span class="tipLabel">' +
-            this.tooltipLabel2 + ' </span> ' +
-            parseInt(dataPointIndex + 1) + '</span>' +
-            '<span class="tipInfo tipInfo2">' + w.globals.series[0][dataPointIndex] +
-            ' <span class="tipLabel">' + this.tooltipLabel + '</span></span></div>' +
-            '<p class="tipInfo tipText pr-1 pl-2">' + toolTipText[dataPointIndex] + '</p>' +
-          '</div>'
+            this.tooltipLabel2 +
+            ' </span> ' +
+            parseInt(dataPointIndex + 1) +
+            '</span>' +
+            '<span class="tipInfo tipInfo2">' +
+            w.globals.series[0][dataPointIndex] +
+            ' <span class="tipLabel">' +
+            this.tooltipLabel +
+            '</span></span></div>' +
+            '<p class="tipInfo tipText pr-1 pl-2">' +
+            toolTipText[dataPointIndex] +
+            '</p>' +
+            '</div>'
+          )
         },
         shared: true,
         followCursor: true
@@ -241,10 +247,8 @@ export default {
         ...this.chartOptions,
         ...{ tooltip: x }
       }
-    }
-  },
-  watch: {
-    fileName () {
+    },
+    prepareData () {
       this.setSuraBasics()
       this.fetchSuraDetails()
       if (this.fileName === '000المصحف') {
@@ -258,19 +262,14 @@ export default {
       this.setSuraToolTip(this.suraTextArray)
     }
   },
+  watch: {
+    fileName () {
+      this.prepareData()
+    }
+  },
   mounted () {
     this.$store.commit('setActiveTab', 'numberOfVerses')
-    this.setSuraBasics()
-    this.fetchSuraDetails()
-    if (this.fileName === '000المصحف') {
-      this.perpareMushafData()
-      this.suraTextWithTashkeel = this.allVersesWithTashkeel
-      this.setMushafToolTip()
-      return
-    }
-    this.perpareSuraData()
-    this.prepareSuraWithTashkeel()
-    this.setSuraToolTip(this.suraTextArray)
+    this.prepareData()
   },
   created () {
     this.perpareSuraData()
