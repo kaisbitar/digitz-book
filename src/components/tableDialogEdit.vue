@@ -7,7 +7,7 @@
       </v-card-title>
       عدد الكلمات: {{ numberOfWords }} عدد الحروف: {{ numberOfLetters }}
       <v-card-text>
-        <v-textarea v-model="verseText" label="حرر الآية"></v-textarea>
+        <v-textarea v-model="localText" label="حرر الآية"></v-textarea>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
@@ -20,8 +20,9 @@
 
 <script>
 export default {
-  props: ['showEditVerse', 'suraName', 'verseIndex', 'numberOfWords', 'numberOfLetters', 'verseText'],
+  props: ['showEditVerse', 'suraName', 'verseIndex', 'verseText'],
   data: () => ({
+    localText: ''
   }),
   methods: {
     close () {
@@ -29,8 +30,18 @@ export default {
     },
     save () {}
   },
-  computed: { },
-  watch: {},
-  created () {}
+  computed: {
+    numberOfWords () {
+      if (!this.localText) return 0
+      return this.localText.trim().split(' ').length
+    },
+    numberOfLetters () {
+      return this.localText.split(' ').join('').length
+    }
+  },
+  watch: { },
+  mounted () {
+    this.localText = this.verseText
+  }
 }
 </script>

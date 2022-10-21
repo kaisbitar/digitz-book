@@ -20,8 +20,6 @@
         @close="showEditVerse = false"
         :suraName="suraNumber + suraName"
         :verseIndex="verseIndex"
-        :numberOfWords="numberOfWords"
-        :numberOfLetters="numberOfLetters"
         :verseText="verseText"
         :showEditVerse="showEditVerse"
       />

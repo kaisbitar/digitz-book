@@ -102,8 +102,7 @@ export default {
   },
   created () {},
   mounted () {
-    var verse = this.prepareToScroll(this.suraTargetedVerseIndex)
-    this.scrollToVerse(verse)
+    this.scrollToVerse(this.prepareToScroll(this.suraTargetedVerseIndex))
   },
   updated () {}
 }

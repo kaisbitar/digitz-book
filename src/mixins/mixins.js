@@ -8,10 +8,8 @@ export const appMixin = {
       return '#v' + parseInt(item)
     },
     setTargetFromArrow (direction) {
-      var suraNumber = this.suraNumber
-      if (direction === 'up') suraNumber = suraNumber - 1
-      else suraNumber = suraNumber + 1
-      this.$store.commit('setTarget', { fileName: this.tableQuranIndex[suraNumber].fileName })
+      if (direction === 'up') return this.$store.commit('setTarget', { fileName: this.tableQuranIndex[this.suraNumber - 1].fileName })
+      this.$store.commit('setTarget', { fileName: this.tableQuranIndex[this.suraNumber + 1].fileName })
     },
     highlight (text, searchValue) {
       if (!searchValue) {
