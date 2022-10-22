@@ -32,7 +32,7 @@ export default {
   created () {},
   updated () {},
   mounted () {
-    this.type = this.chartFreqType
+    this.type = this.intitalType
   }
 }
 </script>
