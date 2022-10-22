@@ -47,7 +47,6 @@ export default {
     letterSeries: [],
     wordsSeries: [],
     view: 'detailView',
-    chartFreqType: 'words',
     chartOptions: chartOptions
   }),
   methods: {
@@ -145,6 +144,9 @@ export default {
     parentcount () {
       if (!this.$store.getters.selectedSearch) return
       return this.$store.getters.selectedSearch.resultsCount
+    },
+    chartFreqType () {
+      return this.$store.state.chartFreqType
     }
   },
   watch: {

@@ -13,21 +13,27 @@
 <script>
 export default {
   name: 'appChartOptions',
-  props: ['type'],
   components: {},
+  props: ['intitalType'],
   data: () => ({
-    type: 'words'
+    type: ''
   }),
   methods: {},
-  computed: {},
+  computed: {
+  },
   watch: {
+    intitalType () {
+      this.type = this.intitalType
+    },
     type () {
       this.$emit('typeChanged', this.type)
     }
   },
   created () {},
   updated () {},
-  mounted () {}
+  mounted () {
+    this.type = this.chartFreqType
+  }
 }
 </script>
 

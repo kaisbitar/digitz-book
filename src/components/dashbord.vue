@@ -56,6 +56,7 @@
       <dashFrequency
         v-if="activeTab === 'frequency'"
         :chartFreqSeries="chartFreqSeries"
+        :chartFreqType="chartFreqType"
         :chartOptions="chartOptions"
         :versesText="suraTextArray"
         :isLoading="isLoading"

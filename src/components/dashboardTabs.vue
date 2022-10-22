@@ -1,5 +1,5 @@
 <template>
-  <v-card flat>
+  <v-card flat>{{activeTab}}
     <v-tabs
       v-model="tab"
       background-color=""

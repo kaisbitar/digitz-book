@@ -1,7 +1,7 @@
 <template>
-  <div class="webKitWidth" >
+  <div class="webKitWidth">
     <appChartOptions
-      :type="chartFreqType"
+      :intitalType="chartFreqType"
       @typeChanged="changeType"
     />
     <appChart
@@ -20,7 +20,7 @@ import appChartOptions from './appChartOptions.vue'
 export default {
   name: 'dashFrequency',
   components: { appChart, appChartOptions },
-  props: ['chartFreqSeries', 'chartFreqType', 'height', 'isLoading', 'versesText', 'chartOptions'],
+  props: ['chartFreqSeries', 'chartFreqType', 'height', 'isLoading', 'chartOptions'],
   data: () => ({}),
   computed: {},
   methods: {
