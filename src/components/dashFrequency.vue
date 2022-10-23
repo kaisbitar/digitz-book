@@ -20,9 +20,13 @@ import appChartOptions from './appChartOptions.vue'
 export default {
   name: 'dashFrequency',
   components: { appChart, appChartOptions },
-  props: ['chartFreqSeries', 'chartFreqType', 'height', 'isLoading', 'chartOptions'],
+  props: ['chartFreqSeries', 'height', 'isLoading', 'chartOptions'],
   data: () => ({}),
-  computed: {},
+  computed: {
+    chartFreqType () {
+      return this.$store.state.chartFreqType
+    }
+  },
   methods: {
     changeType (type) {
       this.$store.commit('setChartFreqType', type)

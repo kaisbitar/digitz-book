@@ -38,7 +38,9 @@
           <div  @click="changeView()" class=" pl-2 pr-2" style="font-size:12px;">detailView</div>
         </v-card>
       </div>
-      <keep-alive><router-view :activeView="activeView" /></keep-alive>
+      <keep-alive>
+        <router-view :activeView="activeView" />
+      </keep-alive>
     </v-main>
   </v-app>
 </template>

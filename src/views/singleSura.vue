@@ -10,7 +10,6 @@
         :inputText="inputText"
       />
     </div>
-    <keepAlive>
       <suraText
         v-if="activeView === 'textView'"
         :suraTextArray="suraTextWithTashkeel"
@@ -20,7 +19,7 @@
         :numberOfWords="numberOfWords"
         :inputText="inputText"
         :isLoading="isLoading"
-    /></keepAlive>
+    />
     <keepAlive>
       <dashbord
         v-if="activeView === 'detailView' && details"
@@ -35,10 +34,10 @@
         :versesSeries="versesSeries"
         :versesBasics="versesBasics"
         :isLoading="isLoading"
-        :activeTab="activeTab"
         :inputText="inputText"
         :title="fileName"
-    /></keepAlive>
+    />
+  </keepAlive>
   </div>
 </template>
 
@@ -76,9 +75,6 @@ export default {
     details: {}
   }),
   computed: {
-    activeTab () {
-      return this.$store.getters.activeTab
-    },
     selectedSearch () {
       if (!this.$store.getters.selectedSearch) return
       return this.$store.getters.selectedSearch
@@ -268,7 +264,6 @@ export default {
     }
   },
   mounted () {
-    this.$store.commit('setActiveTab', 'numberOfVerses')
     this.prepareData()
   },
   created () {

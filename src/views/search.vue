@@ -4,22 +4,23 @@
       :title="inputText"
       @arrowClick="getNextSearch"
     />
-    <dashbord
-      v-if="!isLoading"
-      :inputText="inputText"
-      @tabChanged="getWordsData"
-      :chartFreqSeries="[{ data: [] }]"
-      :chartFreqType="chartFreqType"
-      :chartOptions="chartOptions"
-      :numberOfVerses="numberOfVerses"
-      :numberOfWords="numberOfWords"
-      :numberOfLetters="numberOfLetters"
-      :isLoading="isLoading"
-      :wordIndexes="details.wordIndexes"
-      :suraTextArray="searchResults"
-      :versesBasics="versesData"
-      :activeTab="activeTab"
-    />
+    <keep-alive>
+      <dashbord
+        v-if="!isLoading"
+        :inputText="inputText"
+        @tabChanged="getWordsData"
+        :chartFreqSeries="[{ data: [] }]"
+        :chartOptions="chartOptions"
+        :numberOfVerses="numberOfVerses"
+        :numberOfWords="numberOfWords"
+        :numberOfLetters="numberOfLetters"
+        :isLoading="isLoading"
+        :wordIndexes="details.wordIndexes"
+        :suraTextArray="searchResults"
+        :versesBasics="versesData"
+        :activeTab="activeTab"
+      />
+    </keep-alive>
   </div>
 </template>
 <script>
@@ -144,9 +145,6 @@ export default {
     parentcount () {
       if (!this.$store.getters.selectedSearch) return
       return this.$store.getters.selectedSearch.resultsCount
-    },
-    chartFreqType () {
-      return this.$store.state.chartFreqType
     }
   },
   watch: {
@@ -155,7 +153,6 @@ export default {
     }
   },
   mounted () {
-    this.$store.commit('setActiveTab', 'numberOfVerses')
     if (this.selectedSearchIndex === -1) {
       this.getNextSearch('down')
     }

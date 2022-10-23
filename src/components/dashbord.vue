@@ -15,14 +15,13 @@
         key="numberOfVerses"
         value="numberOfVerses"
       >
-        <keep-alive>
-          <dashVerses
-            v-if="activeTab === 'numberOfVerses'"
-            class="webKitWidth"
-            :versesBasics="versesBasics"
-            :inputText="inputText"
-            :isLoading="isLoading"
-        /></keep-alive>
+        <dashVerses
+          v-if="activeTab === 'numberOfVerses'"
+          class="webKitWidth"
+          :versesBasics="versesBasics"
+          :inputText="inputText"
+          :isLoading="isLoading"
+        />
       </v-tab-item>
       <v-tab-item
         transition="fade-transition"
@@ -52,11 +51,11 @@
           :suraText="suraTextArray.join('')"
           :numberOfWords="numberOfWords"
           :isLoading="isLoading"
-      /></v-tab-item>
+        />
+      </v-tab-item>
       <dashFrequency
         v-if="activeTab === 'frequency'"
         :chartFreqSeries="chartFreqSeries"
-        :chartFreqType="chartFreqType"
         :chartOptions="chartOptions"
         :versesText="suraTextArray"
         :isLoading="isLoading"
@@ -88,13 +87,11 @@ export default {
     'numberOfVerses',
     'numberOfWords',
     'suraTextArray',
-    'chartFreqType',
     'versesBasics',
     'chartOptions',
     'wordIndexes',
     'inputText',
-    'isLoading',
-    'activeTab'
+    'isLoading'
   ],
   data: () => ({
     windowHeight: window.innerHeight,
@@ -103,6 +100,7 @@ export default {
   methods: {
     changeTab (tab) {
       this.tab = tab
+      this.$store.commit('setActiveTab', tab)
     }
   },
   computed: {
@@ -115,13 +113,12 @@ export default {
       ]
       return tabs
     },
+    activeTab () {
+      return this.$store.getters.activeTab
+    },
     height () {
       var heightDif = this.windowHeight - 210
       return heightDif
-    },
-    activeTabName () {
-      if (!this.activeTab) return
-      return this.activeTab.name
     }
   },
   watch: {},

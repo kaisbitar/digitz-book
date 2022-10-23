@@ -1,8 +1,8 @@
 <template>
-  <v-card flat>{{activeTab}}
+  <v-card flat>
     <v-tabs
       v-model="tab"
-      background-color=""
+      background-color="grey lighten-4"
       color=""
       class=""
       height="37"
@@ -28,7 +28,7 @@
 export default {
   name: 'dashboardTab',
   components: {},
-  props: ['tabs', 'activeTab', 'value', 'title', 'tabName'],
+  props: ['tabs', 'activeTab'],
   data: () => ({
     tab: 'numberOfVerses'
   }),
@@ -36,17 +36,17 @@ export default {
   methods: {
     setActiveTab (activeTab) {
       this.tab = activeTab
-      this.$store.commit('setActiveTab', activeTab)
+      this.$emit('tabChanged', activeTab)
     }
   },
   watch: {
     activeTab () {
-      this.tab = this.activeTab
+      this.setActiveTab(this.activeTab)
     }
   },
   created () {},
   mounted () {
-    this.tab = this.activeTab
+    this.setActiveTab(this.activeTab)
   }
 }
 </script>
