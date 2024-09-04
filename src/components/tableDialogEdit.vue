@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="showEditVerse" max-width="500px">
+  <v-dialog  max-width="500px">
     <v-card>
       <v-card-title>
         <span class="headline ml-1">{{ suraName }}</span> -
