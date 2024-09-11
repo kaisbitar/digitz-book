@@ -10,32 +10,28 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'appChartOptions',
-  components: {},
-  props: ['intitalType'],
-  data: () => ({
-    type: ''
-  }),
-  methods: {},
-  computed: {
+<script setup>
+import { ref, watch, onMounted } from 'vue'
+
+const props = defineProps(['initialType'])
+const emit = defineEmits(['typeChanged'])
+
+const type = ref('')
+
+watch(
+  () => props.initialType,
+  newValue => {
+    type.value = newValue
   },
-  watch: {
-    intitalType () {
-      this.type = this.intitalType
-    },
-    type () {
-      this.$emit('typeChanged', this.type)
-    }
-  },
-  created () {},
-  updated () {},
-  mounted () {
-    this.type = this.intitalType
-  }
-}
+)
+
+watch(type, newValue => {
+  emit('typeChanged', newValue)
+})
+
+onMounted(() => {
+  type.value = props.initialType
+})
 </script>
 
-<style >
-</style>
+<style></style>

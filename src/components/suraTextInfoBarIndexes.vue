@@ -21,24 +21,17 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'suraTextInfoBarIndexes',
-  props: ['items', 'selectedVerse'],
-  components: {},
-  data: () => ({
-  }),
-  methods: {
-    handleClick (item) {
-      this.$store.commit('setTarget', { fileName: this.$store.getters.target.fileName, verseIndex: item })
-    }
-  },
-  computed: {
-  },
-  watch: {
-  },
-  created () { },
-  mounted () {}
+<script setup>
+import { defineProps, defineEmits } from 'vue'
+import { useQuranStore } from '@/stores/app'
+
+const props = defineProps(['items', 'selectedVerse'])
+const emit = defineEmits(['update:selectedVerse'])
+const store = useQuranStore()
+
+const handleClick = item => {
+  store.setTarget({ fileName: store.getTarget.fileName, verseIndex: item })
+  emit('update:selectedVerse', item)
 }
 </script>
 
@@ -46,6 +39,5 @@ export default {
 .indexWrapper {
   max-height: 71px;
   max-width: 483px;
-
 }
 </style>

@@ -37,18 +37,42 @@ export const useQuranStore = defineStore('quran', {
     ],
   },
   getters: {
-    getTarget: state => state.target,
-    getSearchResults: state => state.searchResults,
-    getSelectedSearchIndex: state => state.selectedSearchIndex,
-    getOneQuranFile: state => state.oneQuranFile,
-    getTableQuranIndex: state => state.tableQuranIndex,
-    getScrollTrigger: state => state.scrollTrigger,
-    getDrawerState: state => state.drawerState,
-    getActiveView: state => state.activeView,
-    getActiveTab: state => state.activeTab,
-    getChartFreqType: state => state.chartFreqType,
-    getSelectedSearch: state => state.searchResults[state.selectedSearchIndex],
-    getAllVersesWithTashkeel: state => state.allVersesWithTashkeel,
+    getTarget: state => {
+      return state.target
+    },
+    getSearchResults: state => {
+      return state.searchResults
+    },
+    getSelectedSearchIndex: state => {
+      return state.selectedSearchIndex
+    },
+    getOneQuranFile: state => {
+      return state.oneQuranFile
+    },
+    getTableQuranIndex: state => {
+      return state.tableQuranIndex
+    },
+    getScrollTrigger: state => {
+      return state.scrollTrigger
+    },
+    getDrawerState: state => {
+      return state.drawerState
+    },
+    getActiveView: state => {
+      return state.activeView
+    },
+    getActiveTab: state => {
+      return state.activeTab
+    },
+    getChartFreqType: state => {
+      return state.chartFreqType
+    },
+    getSelectedSearch: state => {
+      return state.searchResults[state.selectedSearchIndex]
+    },
+    getAllVersesWithTashkeel: state => {
+      return state.allVersesWithTashkeel
+    },
   },
   actions: {
     setChartFreqType(chartFreqType) {
@@ -93,6 +117,7 @@ export const useQuranStore = defineStore('quran', {
     },
     setTableQuranIndex(items) {
       this.tableQuranIndex = items
+      console.log('items', this.tableQuranIndex)
     },
     setDrawerState(drawerState) {
       this.drawerState = drawerState

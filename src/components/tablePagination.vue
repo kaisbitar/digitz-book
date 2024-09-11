@@ -3,7 +3,7 @@
     <div class="currentItemsLength mb-2 mt-1 mr-4 ml-4">
       <span class="thisPage">هذه الصفحة: </span>
       <span class="font-weight-bold">{{ currentItemsLength }}</span>
-      <span class="thisPage pr-1">{{label}} </span>
+      <span class="thisPage pr-1">{{ label }} </span>
     </div>
     <v-pagination
       v-model="pageLocal"
@@ -14,29 +14,37 @@
   </v-card>
 </template>
 
-<script>
-export default {
-  name: 'tablePagination',
-  props: ['page', 'pageCount', 'currentItemsLength', 'label'],
-  components: {},
-  data: () => ({
-    pageLocal: 1
-  }),
-  computed: {},
-  methods: {},
-  watch: {
-    pageLocal () {
-      this.$emit('pageChanged', this.pageLocal)
-    },
-    page () {
-      this.pageLocal = this.page
-    }
+<script setup>
+import { ref, watch, onMounted } from 'vue'
+
+const props = defineProps({
+  page: Number,
+  pageCount: Number,
+  currentItemsLength: Number,
+  label: String,
+})
+
+const emit = defineEmits(['pageChanged'])
+
+const pageLocal = ref(1)
+
+watch(
+  () => pageLocal.value,
+  newValue => {
+    emit('pageChanged', newValue)
   },
-  created () {},
-  mounted () {
-    this.pageLocal = this.page
-  }
-}
+)
+
+watch(
+  () => props.page,
+  newValue => {
+    pageLocal.value = newValue
+  },
+)
+
+onMounted(() => {
+  pageLocal.value = props.page
+})
 </script>
 
 <style>

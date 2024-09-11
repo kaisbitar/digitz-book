@@ -1,54 +1,44 @@
 <template>
   <v-card flat>
-    <v-tabs
-      v-model="tab"
-      background-color="grey lighten-4"
-      color=""
-      class=""
-      height="37"
-      grow
-    >
+    <v-tabs v-model="tab" bg-color="grey-lighten-4" height="37" grow>
       <v-tab
         v-for="(item, index) in tabs"
         v-model="item.name"
         :href="'#' + item.name"
         :key="index"
-        @click="setActiveTab(item.name)"
+        :value="item.name"
         :title="item.title"
-        :value="item.value"
+        @click="setActiveTab(item.name)"
       >
-        {{item.value}} {{ item.title }}
+        {{ item.value }} {{ item.title }}
       </v-tab>
     </v-tabs>
-    </v-card
-  >
+  </v-card>
 </template>
 
-<script>
-export default {
-  name: 'dashboardTab',
-  components: {},
-  props: ['tabs', 'activeTab'],
-  data: () => ({
-    tab: 'numberOfVerses'
-  }),
-  computed: {},
-  methods: {
-    setActiveTab (activeTab) {
-      this.tab = activeTab
-      this.$emit('tabChanged', activeTab)
-    }
-  },
-  watch: {
-    activeTab () {
-      this.setActiveTab(this.activeTab)
-    }
-  },
-  created () {},
-  mounted () {
-    this.setActiveTab(this.activeTab)
-  }
+<script setup>
+import { ref, watch, onMounted } from 'vue'
+
+const props = defineProps(['tabs', 'activeTab'])
+const emit = defineEmits(['tabChanged'])
+
+const tab = ref('numberOfVerses')
+
+const setActiveTab = activeTab => {
+  tab.value = activeTab
+  emit('tabChanged', activeTab)
 }
+
+watch(
+  () => props.activeTab,
+  newActiveTab => {
+    setActiveTab(newActiveTab)
+  },
+)
+
+onMounted(() => {
+  setActiveTab(props.activeTab)
+})
 </script>
 
 <style>
@@ -57,7 +47,7 @@ export default {
   font-family: unset;
   letter-spacing: 0;
 }
-.v-tab.v-tab {
+.v-tab {
   height: 26px;
   margin-top: 5px;
 }

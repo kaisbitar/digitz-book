@@ -2,18 +2,41 @@
   <div class="compWrapper">
     <div class="d-flex">
       <appTitle @arrowClick="setTargetFromArrow" :title="fileName" />
-      <suraTextSearchResults v-if="activeView === 'textView'" style="max-width: 641px"
-        :selectedVerse="suraTargetedVerseIndex" :suraTextArray="suraTextArray" :inputText="inputText" />
+      <suraTextSearchResults
+        v-if="activeView === 'textView'"
+        style="max-width: 641px"
+        :selectedVerse="suraTargetedVerseIndex"
+        :suraTextArray="suraTextArray"
+        :inputText="inputText"
+      />
     </div>
-    <suraText v-if="activeView === 'textView'" :suraTextArray="suraTextWithTashkeel"
-      :suraTargetedVerseIndex="suraTargetedVerseIndex" :numberOfLetters="numberOfLetters"
-      :numberOfVerses="numberOfVerses" :numberOfWords="numberOfWords" :inputText="inputText" :isLoading="isLoading" />
+    <suraText
+      v-if="activeView === 'textView'"
+      :suraTextArray="suraTextWithTashkeel"
+      :suraTargetedVerseIndex="suraTargetedVerseIndex"
+      :numberOfLetters="numberOfLetters"
+      :numberOfVerses="numberOfVerses"
+      :numberOfWords="numberOfWords"
+      :inputText="inputText"
+      :isLoading="isLoading"
+    />
     <keep-alive>
-      <dashbord v-if="activeView === 'detailView' && details" :numberOfLetters="numberOfLetters"
-        :wordIndexes="details.wordIndexes" :numberOfVerses="numberOfVerses" :numberOfWords="numberOfWords"
-        :suraTextArray="suraTextArray" :chartFreqType="chartFreqType" :chartFreqSeries="chartFreqSeries"
-        :chartOptions="chartOptions" :versesSeries="versesSeries" :versesBasics="versesBasics" :isLoading="isLoading"
-        :inputText="inputText" :title="fileName" />
+      <dashbord
+        v-if="activeView !== 'detailView' && details"
+        :numberOfLetters="numberOfLetters"
+        :wordIndexes="details.wordIndexes"
+        :numberOfVerses="numberOfVerses"
+        :numberOfWords="numberOfWords"
+        :suraTextArray="suraTextArray"
+        :chartFreqType="chartFreqType"
+        :chartFreqSeries="chartFreqSeries"
+        :chartOptions="chartOptions"
+        :versesSeries="versesSeries"
+        :versesBasics="versesBasics"
+        :isLoading="isLoading"
+        :inputText="inputText"
+        :title="fileName"
+      />
     </keep-alive>
   </div>
 </template>
@@ -49,18 +72,30 @@ const versesSeries = ref([{ data: [] }])
 const wordsSeries = ref([{ data: [] }])
 const details = ref({})
 
-const selectedSearch = computed(() => quranStore.selectedSearch)
-const selectedSearchIndex = computed(() => quranStore.selectedSearchIndex)
+const selectedSearch = computed(() => quranStore.getSelectedSearch)
+const selectedSearchIndex = computed(() => quranStore.getSelectedSearchIndex)
 const inputText = computed(() => selectedSearch.value?.inputText || null)
-const suraTargetedVerseIndex = computed(() => quranStore.target?.verseIndex || 1)
-const fileName = computed(() => quranStore.target?.fileName || '001الفاتحة')
+const suraTargetedVerseIndex = computed(() => quranStore.getTarget?.verseIndex || 1)
+const fileName = computed(() => quranStore.getTarget?.fileName || '001الفاتحة')
 const suraNumber = computed(() => parseInt(fileName.value.replace(/^\D+/g, '')))
-const tableQuranIndex = computed(() => quranStore.tableQuranIndex)
-const suraBasics = computed(() => tableQuranIndex.value[suraNumber.value] || tableQuranIndex.value[1])
-const chartFreqType = computed(() => quranStore.chartFreqType)
-const chartFreqSeries = computed(() => chartFreqType.value === 'words' ? wordsSeries.value : letterSeries.value)
-const oneQuranFile = computed(() => quranStore.oneQuranFile)
-const allVersesWithTashkeel = computed(() => quranStore.allVersesWithTashkeel)
+const tableQuranIndex = computed(() => quranStore.getTableQuranIndex)
+const suraBasics = computed(
+  () => tableQuranIndex.value[suraNumber.value] || tableQuranIndex.value[1],
+)
+const chartFreqType = computed(() => quranStore.getChartFreqType)
+const chartFreqSeries = computed(() =>
+  chartFreqType.value === 'words' ? wordsSeries.value : letterSeries.value,
+)
+const oneQuranFile = computed(() => quranStore.getOneQuranFile)
+const allVersesWithTashkeel = computed(() => quranStore.getAllVersesWithTashkeel)
+
+const tooltipLabel = computed(() => {
+  return chartFreqType.value === 'words' ? 'كلمات' : 'حرف'
+})
+
+const tooltipLabel2 = computed(() => {
+  return fileName.value !== '000المصحف' ? 'آية' : 'سورة'
+})
 
 const setSuraBasics = () => {
   numberOfLetters.value = suraBasics.value.numberOfLetters
@@ -72,7 +107,7 @@ const setSuraBasics = () => {
 
 const fetchSuraDetails = async () => {
   isLoading.value = true
-  details.value = await quranStore.dispatch('getSuraDetails')
+  details.value = await quranStore.getSuraDetails()
   isLoading.value = false
 }
 
@@ -89,7 +124,35 @@ const prepareData = () => {
   prepareSuraWithTashkeel()
   setSuraToolTip(suraTextArray.value)
 }
-
+const setSuraToolTip = toolTipText => {
+  var x = {
+    custom: ({ series, seriesIndex, dataPointIndex, w }) => {
+      return (
+        '<div class="mr-2 ml-2 pt-2">' +
+        '<div class="d-flex"><span class="tipInfo"><span class="tipLabel">' +
+        tooltipLabel2.value +
+        ' </span> ' +
+        parseInt(dataPointIndex + 1) +
+        '</span>' +
+        '<span class="tipInfo tipInfo2">' +
+        w.globals.series[0][dataPointIndex] +
+        ' <span class="tipLabel">' +
+        tooltipLabel.value +
+        '</span></span></div>' +
+        '<p class="tipInfo tipText pr-1 pl-2">' +
+        toolTipText[dataPointIndex] +
+        '</p>' +
+        '</div>'
+      )
+    },
+    shared: true,
+    followCursor: true,
+  }
+  chartOptions.value = {
+    ...chartOptions.value,
+    ...{ tooltip: x },
+  }
+}
 const perpareSuraData = () => {
   const letters = []
   const words = []
@@ -106,7 +169,7 @@ const perpareSuraData = () => {
   wordsSeries.value = [{ data: words }]
 }
 
-const buildVerseObject = (item) => ({
+const buildVerseObject = item => ({
   fileName: item.fileName,
   verseIndex: item.verseIndex.toString(),
   verseText: item.verseText,
@@ -123,7 +186,7 @@ const perpareMushafData = () => {
   wordsSeries.value = getMushafSeries('numberOfWords')
 }
 
-const getMushafSeries = (dataType) => {
+const getMushafSeries = dataType => {
   const arr = tableQuranIndex.value.map(item => item[dataType])
   arr.shift()
   return [{ data: arr }]

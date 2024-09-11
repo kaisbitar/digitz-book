@@ -1,5 +1,5 @@
 <template>
-  <div class=" grey lighten-5">
+  <div class="grey lighten-5">
     <div class="d-flex pt-1 topBar">
       <appSearchBox
         @searchChanged="changeSearch"
@@ -14,16 +14,16 @@
       :items-per-page="75"
       :search="search"
       :height="getTableHeight()"
-      :footer-props="footerProps"
+      :footerProps="footerProps"
       :loading="isLoading"
       loading-text="جاري تحميل البيانات القرآنية ... الرجاء الانتظار"
       class="tableStyle wordsTable"
       fixed-header
       :loader-height="2"
-      click:row="$emit('rowClicked', item.index, item)"
+      @click:row="(event, item) => $emit('rowClicked', item.index, item)"
       :page.sync="page"
-      @page-count="pageCount = $event"
-      @current-items="setCurrentItems"
+      @update:page-count="pageCount = $event"
+      @update:current-items="setCurrentItems"
       hide-default-footer
     >
     </v-data-table>
@@ -36,32 +36,29 @@
   </div>
 </template>
 
-<script>
-import { tableOccMixin } from '../mixins/tableOccMixin'
-import tablePagination from './tablePagination'
-export default {
-  name: '',
-  components: { tablePagination },
-  mixins: [tableOccMixin],
-  data: () => ({
-    page: 1,
-    pageCount: 0,
-    currentItemsLength: 0
-  }),
-  methods: {
-    setCurrentItems (items) {
-      if (!items) return
-      this.currentItems = []
-      this.currentItems = items
-      this.currentItemsLength = items.length
-    }
-  }
+<script setup>
+import { ref, computed } from 'vue'
+import tablePagination from './tablePagination.vue'
+import {
+  getTableHeight,
+  changeSearch,
+  changeMatchingStatus,
+  dataType,
+} from '@/mixins/tableOccMixin'
+
+const page = ref(1)
+const pageCount = ref(0)
+const currentItemsLength = ref(0)
+
+const setCurrentItems = items => {
+  if (!items) return
+  currentItemsLength.value = items.length
 }
 </script>
 
 <style>
-.wordsTable{
-  width: 450px
+.wordsTable {
+  width: 450px;
 }
 .groupHeader {
   /* height: 26px; */

@@ -3,66 +3,67 @@
     <v-text-field
       v-model="search"
       background-color="white"
-      :label="'ابحث عن ' + dataType"
+      :label="'ابحث عن ' + props.dataType"
       append-icon="mdi-magnify"
       clearable
       outlined
       dense
     >
-      <template v-slot:prepend-inner>
+      <template #prepend-inner>
         <appSearchBoxMatch
           :search="search"
           :matchingStatus="matchingStatus"
-          @clicked="(matchingStatus = !matchingStatus), matchChanged()"
+          @clicked="toggleMatching"
         />
       </template>
     </v-text-field>
   </div>
 </template>
 
-<script>
-import appSearchBoxMatch from './appSearchBoxMatch'
+<script setup>
+import { ref, computed, watch, onMounted } from 'vue'
+import { useQuranStore } from '@/stores/app'
+import appSearchBoxMatch from './appSearchBoxMatch.vue'
 
-export default {
-  name: 'appSearchBox',
-  props: ['dataType', 'inputText'],
-  components: {
-    appSearchBoxMatch
-  },
-  data: () => ({
-    search: '',
-    matchingStatus: false
-  }),
-  computed: {
-    selectedSearchIndex () {
-      return this.$store.getters.selectedSearchIndex
-    }
-  },
-  methods: {
-    matchChanged () {
-      this.$emit('matchChanged', [this.search, this.matchingStatus])
-    }
-  },
-  watch: {
-    search () {
-      this.$emit('searchChanged', this.search)
-    },
-    inputText () {
-      this.search = this.inputText
-    },
-    selectedSearchIndex () {
-      this.matchingStatus = false
-      this.matchChanged()
-    }
-  },
-  created () {
-    this.search = this.inputText
-    this.matchingStatus = false
-    this.matchChanged()
-  },
-  mounted () {},
-  updated () {}
+const props = defineProps(['dataType', 'inputText'])
+const emit = defineEmits(['searchChanged', 'matchChanged'])
+
+const store = useQuranStore()
+const search = ref(props.inputText)
+const matchingStatus = ref(false)
+
+const selectedSearchIndex = computed(() => store.getSelectedSearchIndex)
+
+const matchChanged = () => {
+  emit('matchChanged', [search.value, matchingStatus.value])
 }
+
+const toggleMatching = () => {
+  matchingStatus.value = !matchingStatus.value
+  matchChanged()
+}
+
+watch(search, newValue => {
+  emit('searchChanged', newValue)
+})
+
+watch(
+  () => props.inputText,
+  newValue => {
+    search.value = newValue
+  },
+)
+
+watch(selectedSearchIndex, () => {
+  matchingStatus.value = false
+  matchChanged()
+})
+
+onMounted(() => {
+  search.value = props.inputText
+  matchingStatus.value = false
+  matchChanged()
+})
 </script>
 
 <style>

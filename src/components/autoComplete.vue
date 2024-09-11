@@ -1,32 +1,32 @@
 <template>
   <div class="d-flex autoWrap webKitWidth">
     <v-autocomplete
-      :search-input.sync="search"
+      v-model="search"
       :filter="handleFiltering"
       :hide-no-data="!search"
       :disabled="isDisabled"
       :items="storedItems"
       @click:clear="handleRemoveAllChips()"
-      v-on:keyup.enter="handleNewSearch()"
+      @keyup.enter="handleNewSearch()"
       prepend-inner-icon="mdi-magnify"
-      background-color="#fff"
+      bg-color="#fff"
       item-value="verseNumberToQuran"
       item-text="verseText"
-      :color="'blue darken-4'"
+      color="blue-darken-4"
       label="ابحث  في الكتاب.."
       ref="autocomplete"
       class="autoBox"
       clearable
       flat
-      dense
+      density="compact"
       multiple
-      solo
+      variant="solo"
     >
       <template v-slot:no-data>
-        <p class="pa-1 red--text">لا يوجد معلومات تطابق البحث!</p>
+        <p class="pa-1 text-red">لا يوجد معلومات تطابق البحث!</p>
       </template>
 
-      <template v-slot:selection disabled> </template>
+      <template v-slot:selection> </template>
 
       <template v-slot:prepend-inner>
         <div class="d-flex" @click.prevent="disableInputBox()">
@@ -44,24 +44,23 @@
         />
       </template>
 
-      <template v-slot:item="{ item }">
-        <div class="d-flex autoCompleteList">
+      <template v-slot:item="{ item, props }">
+        <v-list-item v-bind="props">
           <autoCompleteItem
             :inputText="search"
-            :item="item"
-            :chipTitle="' آية ' + item.verseIndex"
+            :item="item.raw"
+            :chipTitle="' آية ' + item.raw.verseIndex"
             :subtitle="
-              'ترتيب في المصحف:' +
-              highlight(item.verseNumberToQuran.toString(), search)
+              'ترتيب في المصحف:' + highlight(item.raw.verseNumberToQuran.toString(), search)
             "
-            :mainText="highlight(item.verseText, search)"
-            :title="highlight(item.fileName, search)"
-            @clicked="handleSingleItemClicked(item)"
+            :mainText="highlight(item.raw.verseText, search)"
+            :title="highlight(item.raw.fileName, search)"
+            @clicked="handleSingleItemClicked(item.raw)"
           />
-        </div>
+        </v-list-item>
       </template>
 
-      <template v-slot:prepend-item>
+      <template v-slot:prepend>
         <autoCompleteOptionsBar
           class="btnsBar"
           @btn1Clicked="handleNewSearch()"
@@ -76,136 +75,124 @@
   </div>
 </template>
 
-<script>
-import autoCompleteOptionsBar from './autoCompleteOptionsBar'
-import autoCompleteChipsBar from './autoCompleteChipsBar'
-import appSearchBoxMatch from './appSearchBoxMatch'
-import autoCompleteItem from './autoCompleteItem'
+<script setup>
+import { ref, computed, watch, onMounted, nextTick } from 'vue'
+import { useQuranStore } from '@/stores/app'
+import { useRouter } from 'vue-router'
+import autoCompleteOptionsBar from './autoCompleteOptionsBar.vue'
+import autoCompleteChipsBar from './autoCompleteChipsBar.vue'
+import appSearchBoxMatch from './appSearchBoxMatch.vue'
+import autoCompleteItem from './autoCompleteItem.vue'
 
-import { useNavigation } from '../mixins/mixins'
+const store = useQuranStore()
+const router = useRouter()
 
-export default {
-  name: 'autoComplete',
-  mixins: [useNavigation],
-  components: {
-    autoCompleteOptionsBar,
-    autoCompleteChipsBar,
-    appSearchBoxMatch,
-    autoCompleteItem
-  },
-  data: () => ({
-    isDisabled: false,
-    matchingStatus: false,
-    isLoading: true,
-    search: null
-  }),
-  methods: {
-    handleClickedChip (index) {
-      this.$store.commit('setSearchIndex', index)
-      this.checkAndGo('search')
-    },
-    handleRemovedChip (index) {
-      this.$store.commit('removeSearchItem', index)
-      if (index !== this.selectedSearchIndex) {
-        this.$store.commit('setSearchIndex', this.selectedSearchIndex - 1)
-        return
-      }
-      this.$store.commit('setSearchIndex', index - 1)
-      this.checkAndGo('search')
-    },
-    handleRemoveAllChips () {
-      this.$store.commit('resetSearchResults')
-      this.checkAndGo('singleSura')
-    },
-    handleSingleItemClicked (item) {
-      this.$store.commit('setTarget', {
-        fileName:
-          item.fileName.replace(/[ء-٩]/g, '').replace(/\s/g, '') +
-          item.fileName.replace(/[0-9]/g, ''),
-        verseIndex: item.verseIndex
-      })
-      this.handleNewSearch()
-    },
-    handleNewSearch () {
-      if (!this.search) return
-      this.setNewSearch()
-      this.checkAndGo('search')
-    },
-    setNewSearch () {
-      this.$store.commit('setSearchIndex', this.SearchResults.length)
-      this.$store.commit('setSearchResultsItem', {
-        resultsCount: this.$refs.autocomplete.filteredItems.length,
-        inputText: this.$refs.autocomplete.internalSearch,
-        result: this.$refs.autocomplete.filteredItems
-      })
-      this.disableInputBox()
-    },
-    disableInputBox () {
-      this.isDisabled = true
-      setTimeout(() => {
-        this.isDisabled = false
-      }, 10)
-      this.$refs.autocomplete.blur()
-    },
-    handleFiltering (item, queryText, itemText) {
-      itemText = ' ' + itemText + ' '
-      if (!this.matchingStatus && itemText.match(queryText) !== null) {
-        return itemText
-      }
-      return itemText.match(
-        new RegExp(
-          '([^\u0621-\u064A]+' + queryText + '[^\u0621-\u064A]+)',
-          'gim'
-        )
-      )
-    },
-    resultsCount () {
-      if (!this.$refs.autocomplete) return
-      return this.$refs.autocomplete.filteredItems.length.toString()
-    },
-    checkAndGo (route) {
-      if (this.$router.currentRoute.name !== route) {
-        this.$router.push({ name: route })
-      }
-    }
-  },
-  computed: {
-    storedItems () {
-      return this.$store.getters.oneQuranFile
-    },
-    selectedSearch () {
-      return this.$store.getters.selectedSearch
-    },
-    selectedSearchIndex () {
-      return this.$store.getters.selectedSearchIndex
-    },
-    inputText () {
-      if (!this.selectedSearch) return
-      return this.selectedSearch.inputText
-    },
-    SearchResults () {
-      if (this.$store.getters.SearchResults === null) return
-      return this.$store.getters.SearchResults
-    }
-  },
-  watch: {
-    inputText () {
-      this.search = this.inputText
-    },
-    selectedSearchIndex () {
-      if (this.selectedSearchIndex === -1) return
-      this.search = this.inputText
-      this.$store.commit('setTarget', {
-        fileName:
-          this.selectedSearch.result[0].fileName.replace(/[ء-٩]/g, '').replace(/\s/g, '') +
-          this.selectedSearch.result[0].fileName.replace(/[0-9]/g, ''),
-        verseIndex: this.selectedSearch.result[0].verseIndex
-      })
-    }
-  },
-  mounted () {},
-  updated () {}
+const isDisabled = ref(false)
+const matchingStatus = ref(false)
+const search = ref(null)
+const autocomplete = ref(null)
+
+const storedItems = computed(() => store.getOneQuranFile)
+const selectedSearch = computed(() => store.getSelectedSearch)
+const selectedSearchIndex = computed(() => store.getSelectedSearchIndex)
+const inputText = computed(() => selectedSearch.value?.inputText)
+const SearchResults = computed(() => store.getSearchResults)
+
+const handleClickedChip = index => {
+  store.setSearchIndex(index)
+  checkAndGo('search')
 }
+
+const handleRemovedChip = index => {
+  store.setRremoveSearchItem(index)
+  if (index !== selectedSearchIndex.value) {
+    store.setSearchIndex(selectedSearchIndex.value - 1)
+    return
+  }
+  store.setSearchIndex(index - 1)
+  checkAndGo('search')
+}
+
+const handleRemoveAllChips = () => {
+  store.setResetSearchResults()
+  checkAndGo('singleSura')
+}
+
+const handleSingleItemClicked = item => {
+  store.setTarget({
+    fileName:
+      item.fileName.replace(/[ء-٩]/g, '').replace(/\s/g, '') + item.fileName.replace(/[0-9]/g, ''),
+    verseIndex: item.verseIndex,
+  })
+  handleNewSearch()
+}
+
+const handleNewSearch = () => {
+  if (!search.value) return
+  setNewSearch()
+  checkAndGo('search')
+}
+
+const setNewSearch = () => {
+  store.setSearchIndex(SearchResults.value.length)
+  store.setSearchResultsItem({
+    resultsCount: autocomplete.value.filteredItems.length,
+    inputText: autocomplete.value.internalSearch,
+    result: autocomplete.value.filteredItems,
+  })
+  disableInputBox()
+}
+
+const disableInputBox = () => {
+  isDisabled.value = true
+  setTimeout(() => {
+    isDisabled.value = false
+  }, 10)
+  autocomplete.value.blur()
+}
+
+const handleFiltering = (item, queryText, itemText) => {
+  itemText = ' ' + itemText + ' '
+  if (!matchingStatus.value && itemText.match(queryText) !== null) {
+    return itemText
+  }
+  return itemText.match(new RegExp('([^\u0621-\u064A]+' + queryText + '[^\u0621-\u064A]+)', 'gim'))
+}
+
+const resultsCount = () => {
+  if (!autocomplete.value) return
+  return autocomplete.value.filteredItems.length.toString()
+}
+
+const checkAndGo = route => {
+  if (router.currentRoute.value.name !== route) {
+    router.push({ name: route })
+  }
+}
+
+const highlight = (text, search) => {
+  // Implement your highlight logic here
+  return text
+}
+
+watch(inputText, newValue => {
+  search.value = newValue
+})
+
+watch(selectedSearchIndex, newValue => {
+  if (newValue === -1) return
+  search.value = inputText.value
+  store.setTarget({
+    fileName:
+      selectedSearch.value.result[0].fileName.replace(/[ء-٩]/g, '').replace(/\s/g, '') +
+      selectedSearch.value.result[0].fileName.replace(/[0-9]/g, ''),
+    verseIndex: selectedSearch.value.result[0].verseIndex,
+  })
+})
+
+onMounted(() => {
+  // Any mounted logic here
+})
 </script>
 
 <style>

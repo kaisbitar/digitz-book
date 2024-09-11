@@ -1,19 +1,17 @@
 <template>
   <div class="d-flex">
-    <v-chip-group class="autoChips black--text" mandatory show-arrows>
+    <v-chip-group class="auto-chips black-text" mandatory show-arrows>
       <div v-for="(item, index) in chipsData" :key="index">
-        <div :class="getClass(index)">
-          <div class="d-flex labelsHolder mr-3">
-            <span class="blue white--text pl-1 pr-1 ml-2">
+        <div :class="{ 'not-active': index !== selectedChipIndex }">
+          <div class="d-flex labels-holder mr-3">
+            <span class="bg-blue text-white px-1 ml-2">
               {{ item.resultsCount }}
             </span>
           </div>
           <v-chip
-            @click.prevent="$emit('chipClicked', index)"
+            closable
+            @click="handleChipClick(index, item.inputText)"
             @click:close="$emit('chipRemoved', index)"
-            @click="fethWordMeaning(item.inputText)"
-            close-label
-            close
           >
             {{ item.inputText }}
           </v-chip>
@@ -23,28 +21,24 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { defineProps, defineEmits } from 'vue'
 import { fetchAIResponse } from '../api/api.js'
 
-export default {
-  name: 'autoCompleteChipsBar',
-  props: ['chipsData', 'selectedChipIndex'],
-  components: {},
-  data: () => ({}),
-  methods: {
-    getClass (index) {
-      if (index === this.selectedChipIndex) return
-      return 'notActive'
-    },
-    async fethWordMeaning (word) {
-      const response = await fetchAIResponse('http://localhost:11434', 'five different meanings of ' + word + '? write response in arabic')
-      window.alert(response.response)
-    }
-  },
-  computed: {},
-  watch: {},
-  created () {},
-  mounted () {}
+const props = defineProps({
+  chipsData: Array,
+  selectedChipIndex: Number,
+})
+
+const emit = defineEmits(['chipClicked', 'chipRemoved'])
+
+const handleChipClick = async (index, word) => {
+  emit('chipClicked', index)
+  const response = await fetchAIResponse(
+    'http://localhost:11434',
+    'five different meanings of ' + word + '? write response in arabic',
+  )
+  window.alert(response.response)
 }
 </script>
 

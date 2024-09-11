@@ -16,9 +16,7 @@
       <div class="mt-5">
         <v-icon
           :color="showDetail === false ? 'grey' : 'blue'"
-          @click="
-            (showDetail = !showDetail), $emit('showDetailToggle', showDetail)
-          "
+          @click=";(showDetail = !showDetail), $emit('showDetailToggle', showDetail)"
         >
           mdi-format-horizontal-align-center
         </v-icon>
@@ -44,26 +42,11 @@
             :class="{ activeTableItem: props.item.fileName === fileName }"
             class="tableItem"
           >
-            <td
-              class="text-right"
-              v-html="highlight(suraIndex(props.item.fileName), search)"
-            ></td>
-            <td
-              class="text-right"
-              v-html="highlight(suraName(props.item.fileName), search)"
-            ></td>
-            <td
-              class="text-right"
-              v-html="highlight(props.item.numberOfVerses, search)"
-            ></td>
-            <td
-              class="text-right"
-              v-html="highlight(props.item.numberOfWords, search)"
-            ></td>
-            <td
-              class="text-right"
-              v-html="highlight(props.item.numberOfLetters, search)"
-            ></td>
+            <td class="text-right" v-html="highlight(suraIndex(props.item.fileName), search)"></td>
+            <td class="text-right" v-html="highlight(suraName(props.item.fileName), search)"></td>
+            <td class="text-right" v-html="highlight(props.item.numberOfVerses, search)"></td>
+            <td class="text-right" v-html="highlight(props.item.numberOfWords, search)"></td>
+            <td class="text-right" v-html="highlight(props.item.numberOfLetters, search)"></td>
           </tr>
         </template>
       </v-data-table>
@@ -71,126 +54,106 @@
   </div>
 </template>
 
-<script>
-import { useNavigation } from '../mixins/mixins'
+<script setup>
+import { ref, computed, watch, onCreated } from 'vue'
+import { useQuranStore } from '@/stores/app'
+import { useRouter } from 'vue-router'
 
-export default {
-  name: 'tableQuranIndex',
-  mixins: [useNavigation],
-  data: () => ({
-    loading: true,
-    search: '',
-    showDetail: false,
-    headers: [
-      {
-        text: 'رقم',
-        value: 'suraIndex',
-        width: 70
-      },
-      {
-        text: 'السورة',
-        value: 'fileName',
-        width: 100
-      },
-      {
-        text: 'الآيات',
-        value: 'numberOfVerses',
-        width: 90
-      },
+const store = useQuranStore()
+const router = useRouter()
 
-      {
-        text: 'كلمات',
-        value: 'numberOfWords',
-        width: 90
-      },
+// Reactive state
+const loading = ref(true)
+const search = ref('')
+const showDetail = ref(false)
 
-      {
-        text: 'حروف',
-        value: 'numberOfLetters',
-        width: 90
-      }
-    ]
-  }),
-  computed: {
-    data () {
-      return this.$store.getters.tableQuranIndex
-    },
-    fileName () {
-      return this.$store.getters.target.fileName
-    }
-  },
-  methods: {
-    suraName (fileName) {
-      return fileName.replace(/[0-9]/g, '')
-    },
-    suraIndex (fileName) {
-      if (fileName === '000المصحف') return '0'
-      return parseInt(fileName, 10)
-    },
-    runSura (sura) {
-      this.$store.commit('setTarget', {
-        fileName: sura.fileName,
-        verseIndex: null
-      })
-      if (this.$router.currentRoute.name !== 'singleSura') {
-        this.$router.push({ name: 'singleSura' })
-      }
-      this.$store.commit('setSearchIndex', -1)
-    },
-    scrollToIndex () {
-      setTimeout(() => {
-        this.$vuetify.goTo('.activeTableItem', {
-          container: '.v-data-table__wrapper'
-        })
-      }, 10)
-    },
-    highlight (text, search) {
-      if (!text) return
-      if (search == null) {
-        return text
-      }
-      if (isNaN) {
-        text = text.toString()
-      }
-      var qurey = new RegExp(search, 'gi')
-      return text.replace(qurey, (match) => {
-        return '<span class="yellow accent-1">' + match + '</span>'
-      })
-    }
-  },
-  created () {
-    if (!this.fileName) {
-      this.loading = false
-      return
-    }
-    this.scrollToIndex(this.fileName)
-    this.loading = false
-  },
-  watch: {
-    fileName () {
-      this.scrollToIndex(this.fileName)
-    },
-    search () {
-      if (this.search === null) {
-        this.showDetail = false
-        this.$emit('showDetailToggle', this.showDetail)
-        return
-      }
-      if (!isNaN(this.search)) {
-        this.showDetail = true
-        this.$emit('showDetailToggle', this.showDetail)
-      }
-    }
-  },
-  mounted () {}
+// Data that doesn't need to be reactive
+const headers = [
+  { text: 'رقم', value: 'suraIndex', width: 70 },
+  { text: 'السورة', value: 'fileName', width: 100 },
+  { text: 'الآيات', value: 'numberOfVerses', width: 90 },
+  { text: 'كلمات', value: 'numberOfWords', width: 90 },
+  { text: 'حروف', value: 'numberOfLetters', width: 90 },
+]
+
+// Computed properties
+const data = computed(() => store.getTableQuranIndex)
+const fileName = computed(() => store.getTarget.fileName)
+
+// Methods
+const suraName = fileName => fileName.replace(/[0-9]/g, '')
+
+const suraIndex = fileName => {
+  if (fileName === '000المصحف') return '0'
+  return parseInt(fileName, 10)
 }
+
+const runSura = sura => {
+  store.setTarget({
+    fileName: sura.fileName,
+    verseIndex: null,
+  })
+  if (router.currentRoute.value.name !== 'singleSura') {
+    router.push({ name: 'singleSura' })
+  }
+  store.setSearchIndex(-1)
+}
+
+const scrollToIndex = () => {
+  setTimeout(() => {
+    vuetify.goTo('.activeTableItem', {
+      container: '.v-data-table__wrapper',
+    })
+  }, 10)
+}
+
+const highlight = (text, search) => {
+  if (!text) return
+  if (search == null) return text
+  text = text.toString()
+  const query = new RegExp(search, 'gi')
+  return text.replace(query, match => {
+    return '<span class="yellow accent-1">' + match + '</span>'
+  })
+}
+
+// Watchers
+watch(fileName, () => {
+  scrollToIndex()
+})
+
+watch(search, newValue => {
+  if (newValue === null) {
+    showDetail.value = false
+    emit('showDetailToggle', showDetail.value)
+    return
+  }
+  if (!isNaN(newValue)) {
+    showDetail.value = true
+    emit('showDetailToggle', showDetail.value)
+  }
+})
+
+// Lifecycle hooks
+onCreated(() => {
+  if (!fileName.value) {
+    loading.value = false
+    return
+  }
+  scrollToIndex()
+  loading.value = false
+})
+
+// Emits
+const emit = defineEmits(['showDetailToggle'])
 </script>
+
 <style>
 th {
   padding-top: 2px !important;
   height: 25px !important;
 }
-.indexStyle .tableItem  {
+.indexStyle .tableItem {
   font-weight: 100;
 }
 .tableItem {
@@ -203,7 +166,8 @@ th {
   background: #0000000f !important;
   opacity: 0.7;
 }
-.activeTableItem, .activeTableItem2 {
+.activeTableItem,
+.activeTableItem2 {
   color: black !important;
   font-weight: 500 !important;
   background: #efebe9 !important;

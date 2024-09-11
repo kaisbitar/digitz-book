@@ -1,76 +1,85 @@
 <template>
   <div class="wrapper">
-    <v-row outlined class="pa-2  grey lighten-4" id="suraBlock" :style="getheight()">
+    <v-row outlined class="pa-2 grey lighten-4" id="suraBlock" :style="getHeight()">
       <suraTextBox
         :inputText="inputText"
         :suraTargetedVerseIndex="suraTargetedVerseIndex"
         :suraTextArray="suraTextArray"
         :isLoading="isLoading"
       />
-    <span  class="sadakAllah mr-auto white pa-2 mt-1">صدق الله العظيم</span>
+      <span class="sadakAllah mr-auto white pa-2 mt-1">صدق الله العظيم</span>
     </v-row>
-
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, onMounted, watch } from 'vue'
+import { useQuranStore } from '@/stores/app'
 import suraTextBox from './suraTextBox.vue'
-import { useNavigation } from '../mixins/mixins'
 
-export default {
-  name: 'suraText',
-  components: { suraTextBox },
-  props: ['numberOfVerses', 'numberOfWords', 'numberOfLetters', 'suraTextArray', 'inputText', 'suraTargetedVerseIndex', 'isLoading'],
-  mixins: [useNavigation],
-  data: () => ({
-    windowHeight: window.innerHeight
-  }),
-  methods: {
-    scrollOptions () {
-      return {
-        duration: 1,
-        offset: 2,
-        easing: 'easing'
-      }
-    },
-    getheight () {
-      var heightDif = this.windowHeight - 140
-      var str = 'height:' + heightDif + 'px'
-      return str
-    }
-  },
-  computed: {
-    suraselectedSearch () {
-      return this.$store.getters.selectedSearchIndex
-    },
-    wrapperHeight () {
-      const filterSectionDOM = document.getElementById('wrapper')
-      return filterSectionDOM ? filterSectionDOM.offsetHeight : 'auto'
-    },
-    fileName () {
-      return this.$store.state.target.fileName
-    }
-  },
-  watch: {
-    windowHeight () { this.getheight() }
+// Props
+const props = defineProps([
+  'numberOfVerses',
+  'numberOfWords',
+  'numberOfLetters',
+  'suraTextArray',
+  'inputText',
+  'suraTargetedVerseIndex',
+  'isLoading',
+])
 
-  },
-  created () {
-  },
-  mounted () {
-  }
+// Store
+const store = useQuranStore()
+
+// Reactive data
+const windowHeight = ref(window.innerHeight)
+
+// Methods
+const scrollOptions = () => ({
+  duration: 1,
+  offset: 2,
+  easing: 'easing',
+})
+
+const getHeight = () => {
+  const heightDif = windowHeight.value - 140
+  return `height:${heightDif}px`
 }
+
+// Computed properties
+const suraselectedSearch = computed(() => store.getSelectedSearchIndex)
+const wrapperHeight = computed(() => {
+  const filterSectionDOM = document.getElementById('wrapper')
+  return filterSectionDOM ? filterSectionDOM.offsetHeight : 'auto'
+})
+const fileName = computed(() => store.state.target.fileName)
+
+// Watchers
+watch(windowHeight, () => {
+  getHeight()
+})
+
+// Lifecycle hooks
+onMounted(() => {
+  // Add any mounted logic here
+})
+
+// Expose methods and properties to the template
+defineExpose({
+  scrollOptions,
+  getHeight,
+})
 </script>
 
 <style>
-#suraBlock{
-    padding-right: 9px;
-    padding-left: 9px;
-    /*grey*/
-    border: 1px solid #9e9e9e !important;
-    overflow-y: scroll;
+#suraBlock {
+  padding-right: 9px;
+  padding-left: 9px;
+  /*grey*/
+  border: 1px solid #9e9e9e !important;
+  overflow-y: scroll;
 }
-.sadakAllah{
+.sadakAllah {
   height: 40px;
 }
 </style>

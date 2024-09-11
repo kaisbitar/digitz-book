@@ -1,8 +1,8 @@
 <template>
   <div>
-    <v-tabs v-model="tab" background-color="mt-0 pr-1 pl-2" centered>
-      <v-tab class="dashTabs" href="#tab-1">بيان</v-tab>
-      <v-tab class="dashTabs" href="#tab-2">جدول</v-tab>
+    <v-tabs v-model="tab" bg-color="mt-0 pr-1 pl-2" centered>
+      <v-tab value="tab-1" class="dash-tabs">بيان</v-tab>
+      <v-tab value="tab-2" class="dash-tabs">جدول</v-tab>
     </v-tabs>
     <v-tabs-items v-model="tab">
       <v-tab-item value="tab-1">
@@ -46,133 +46,136 @@
   </div>
 </template>
 
-<script>
-import dashLabelsPositions from './dashLabelsPositions.vue'
-import appChart from './appChart.vue'
+<script setup>
+import { ref, computed, watch, onMounted } from 'vue'
+import { useDisplay } from 'vuetify'
+import DashLabelsPositions from './dashLabelsPositions.vue'
+import AppChart from './appChart.vue'
 import chartOptions from '../assets/numbersOptions.js'
-import tableOccurrences from './tableOccurrences.vue'
-import { detailMixin } from '../mixins/detailMixin'
+import TableOccurrences from './tableOccurrences.vue'
+import { useDetailMixin } from '../mixins/detailMixin'
 
-export default {
-  name: 'letterDetails',
-  components: { dashLabelsPositions, appChart, tableOccurrences },
-  mixins: [detailMixin],
-  data: () => ({
-    dataType: 'letters',
-    options: chartOptions,
-    tableHeaders: [
-      { text: 'الحروف', value: 'x', class: ' lighten-4 black--text' }
-    ],
-    indexes: {},
-    wordsGroup: null,
-    alfhaBet: [
-      'ب',
-      'ت',
-      'ث',
-      'ج',
-      'ح',
-      'خ',
-      'د',
-      'ذ',
-      'ر',
-      'ز',
-      'س',
-      'ش',
-      'ص',
-      'ض',
-      'ط',
-      'ظ',
-      'ع',
-      'غ',
-      'ف',
-      'ق',
-      'ك',
-      'ل',
-      'م',
-      'ن',
-      'ه',
-      'و',
-      'ي',
-      'ؤ',
-      'ء',
-      'ى',
-      'ة',
-      'أ',
-      'آ',
-      'إ',
-      'ا'
-    ],
-    occurrences: []
-  }),
-  methods: {
-    setToolTip () {
-      var x = {
-        custom: (obj) => {
-          return (
-            '<div class="d-flex pt-2 pa-2">' +
-            '<div class=" tipInfo "><span class="tipLabel">الحرف:</span> ' +
-            obj.w.globals.seriesX[0][obj.dataPointIndex] +
-            '</div>' +
-            '<div class="  tipInfo tipInfo2"><span class="tipLabel">تكرار:</span> ' +
-            obj.series[0][obj.dataPointIndex] +
-            '</div>' +
-            '</div>'
-          )
-        },
-        shared: true,
-        followCursor: true
-      }
-      this.options = {
-        ...this.options,
-        ...{ tooltip: x }
-      }
+const { detailElement, detailCount, setDetailItem } = useDetailMixin()
+
+const display = useDisplay()
+
+const tab = ref('tab-1')
+const dataType = ref('letters')
+const options = ref(chartOptions)
+const tableHeaders = ref([{ text: 'الحروف', value: 'x', class: ' lighten-4 black--text' }])
+const indexes = ref({})
+const wordsGroup = ref(null)
+const alfhaBet = ref([
+  'ب',
+  'ت',
+  'ث',
+  'ج',
+  'ح',
+  'خ',
+  'د',
+  'ذ',
+  'ر',
+  'ز',
+  'س',
+  'ش',
+  'ص',
+  'ض',
+  'ط',
+  'ظ',
+  'ع',
+  'غ',
+  'ف',
+  'ق',
+  'ك',
+  'ل',
+  'م',
+  'ن',
+  'ه',
+  'و',
+  'ي',
+  'ؤ',
+  'ء',
+  'ى',
+  'ة',
+  'أ',
+  'آ',
+  'إ',
+  'ا',
+])
+const occurrences = ref([])
+const showChart = ref(true)
+const isLoading = ref(false)
+const search = ref('')
+const footerProps = ref({})
+const suraText = ref('')
+
+const setToolTip = () => {
+  const x = {
+    custom: obj => {
+      return (
+        '<div class="d-flex pt-2 pa-2">' +
+        '<div class=" tipInfo "><span class="tipLabel">الحرف:</span> ' +
+        obj.w.globals.seriesX[0][obj.dataPointIndex] +
+        '</div>' +
+        '<div class="  tipInfo tipInfo2"><span class="tipLabel">تكرار:</span> ' +
+        obj.series[0][obj.dataPointIndex] +
+        '</div>' +
+        '</div>'
+      )
     },
-    getHeight () {
-      var heightDif = this.windowHeight - 290
-      return heightDif
-    },
-    getIndexes () {
-      var obj = {}
-      var indexes = this.alfhaBet.map((letter) => {
-        for (var i = 0; i < this.suraText.length; i++) {
-          if (!obj[letter]) {
-            obj[letter] = []
-          }
-          if (this.suraText[i] === letter) {
-            obj[letter].push(i + 1)
-          }
-        }
-        return obj
-      })
-      this.indexes = indexes[0]
-    },
-    getOccurrences () {
-      this.occurrences = []
-      for (const [key, value] of Object.entries(this.indexes)) {
-        this.occurrences.push({ x: key, y: value.length })
-      }
-      this.occurrences.sort((a, b) => (a.y > b.y ? 1 : -1))
-    }
-  },
-  computed: {
-    series () {
-      if (!this.occurrences) return
-      return [{ data: this.occurrences }]
-    }
-  },
-  watch: {
-    suraText () {
-      if (!this.suraText) return
-      this.getIndexes()
-      this.getOccurrences()
-    }
-  },
-  created () {
-    this.setToolTip()
-    this.getIndexes()
-    this.getOccurrences()
+    shared: true,
+    followCursor: true,
+  }
+  options.value = {
+    ...options.value,
+    ...{ tooltip: x },
   }
 }
+
+const getHeight = () => {
+  return display.height.value - 290
+}
+
+const getIndexes = () => {
+  const obj = {}
+  alfhaBet.value.forEach(letter => {
+    obj[letter] = []
+    for (let i = 0; i < suraText.value.length; i++) {
+      if (suraText.value[i] === letter) {
+        obj[letter].push(i + 1)
+      }
+    }
+  })
+  indexes.value = obj
+}
+
+const getOccurrences = () => {
+  occurrences.value = Object.entries(indexes.value).map(([key, value]) => ({
+    x: key,
+    y: value.length,
+  }))
+  occurrences.value.sort((a, b) => a.y - b.y)
+}
+
+const series = computed(() => {
+  if (!occurrences.value) return []
+  return [{ data: occurrences.value }]
+})
+
+watch(
+  () => suraText.value,
+  () => {
+    if (!suraText.value) return
+    getIndexes()
+    getOccurrences()
+  },
+)
+
+onMounted(() => {
+  setToolTip()
+  getIndexes()
+  getOccurrences()
+})
 </script>
 
 <style>
@@ -196,5 +199,4 @@ export default {
   position: relative;
   padding-left: 0px !important;
 }
-
 </style>

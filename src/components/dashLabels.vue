@@ -1,50 +1,52 @@
 <template>
-  <div outlined>
-    <div class="d-flex text-center" flat>
-      <v-card label class="wordLabel lighten-4 orange mr-2 elevation-0">
-        {{ detailElement }}
-      </v-card>
-      <v-chip label class="dashInfoLabel lighten-5 grey mr-2">
-        {{ detailCount }}
-        <span class="verseInfoLabel mr-1"> مرة </span>
-      </v-chip>
-      <v-chip label class="dashInfoLabel lighten-5 grey mr-2">
-        {{ detailElement.length }}
-        <span class="verseInfoLabel mr-1"> حروف </span>
-      </v-chip>
-    </div>
-    <v-overlay color="white" :absolute="true" :opacity="0.8" :value="isLoading">
+  <v-card outlined>
+    <v-row justify="center" align="center" no-gutters>
+      <v-col cols="auto" class="mr-2">
+        <v-chip class="wordLabel orange lighten-4" label>
+          {{ detailElement }}
+        </v-chip>
+      </v-col>
+      <v-col cols="auto" class="mr-2">
+        <v-chip class="dashInfoLabel grey lighten-5" label>
+          {{ detailCount }}
+          <span class="verseInfoLabel mr-1">مرة</span>
+        </v-chip>
+      </v-col>
+      <v-col cols="auto" class="mr-2">
+        <v-chip class="dashInfoLabel grey lighten-5" label>
+          {{ detailElement.length }}
+          <span class="verseInfoLabel mr-1">حروف</span>
+        </v-chip>
+      </v-col>
+    </v-row>
+    <v-overlay
+      :model-value="isLoading"
+      class="align-center justify-center"
+      persistent
+      scrim="white"
+      :opacity="0.8"
+    >
+      <v-progress-circular indeterminate></v-progress-circular>
     </v-overlay>
-  </div>
+  </v-card>
 </template>
 
-<script>
-export default {
-  name: 'dashLabelsPositions',
-  props: ['detailElement', 'detailCount', 'detailsData', 'isLoading']
-}
+<script setup>
+defineProps({
+  detailElement: String,
+  detailCount: Number,
+  detailsData: Object,
+  isLoading: Boolean,
+})
 </script>
 
-<style>
-.wordItem {
-  margin: 5px;
-  padding: 5px;
-  border: 1px solid #bebebe;
-  border-radius: 3px;
-  background: #efefef8c;
-  width: 70px;
-  text-align: center;
-}
+<style scoped>
 .wordLabel {
   font-size: 25px !important;
   width: 130px;
   text-align: center;
   margin-left: 20px;
   display: block;
-}
-.dashLabelsWrap {
-  margin-top: 22px;
-  margin-bottom: -27px;
 }
 .dashInfoLabel {
   font-size: 20px !important;

@@ -12,26 +12,21 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'appTitle',
-  props: ['title'],
-  components: {},
-  data: () => ({
-    showInfo: true
-  }),
-  computed: {},
-  methods: {
-    arrowClick (direction) {
-      this.$emit('arrowClick', direction)
-    }
-  },
-  created () {},
-  mounted () {}
+<script setup>
+import { defineProps, defineEmits } from 'vue'
+
+const props = defineProps({
+  title: String,
+})
+
+const emit = defineEmits(['arrowClick'])
+
+const arrowClick = direction => {
+  emit('arrowClick', direction)
 }
 </script>
 
-<style >
+<style>
 .titleWrap {
   width: 200px;
   display: flex;

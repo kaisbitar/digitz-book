@@ -3,18 +3,22 @@ import { useQuranStore } from '../stores/app'
 
 export function useNavigation() {
   const quranStore = useQuranStore()
-  const { tableQuranIndex } = storeToRefs(quranStore)
+  const suraNumber = computed(() => parseInt(quranStore.getTarget.fileName.replace(/^\D+/g, '')))
 
   const prepareToScroll = item => {
     if (parseInt(item) < 0) return '#v1'
     return '#v' + parseInt(item)
   }
 
-  const setTargetFromArrow = (direction, suraNumber) => {
+  const setTargetFromArrow = direction => {
     if (direction === 'up') {
-      quranStore.setTarget({ fileName: tableQuranIndex.value[suraNumber - 1].fileName })
+      quranStore.setTarget({
+        fileName: quranStore.getTableQuranIndex[suraNumber.value - 1].fileName,
+      })
     } else {
-      quranStore.setTarget({ fileName: tableQuranIndex.value[suraNumber + 1].fileName })
+      quranStore.setTarget({
+        fileName: quranStore.getTableQuranIndex[suraNumber.value + 1].fileName,
+      })
     }
   }
 

@@ -1,13 +1,7 @@
 <template>
   <div class="text-center">
-    <label class="detailIcon" @click="show"><v-icon > mdi-dots-horizontal </v-icon></label>
-    <v-menu
-      offset-y
-      v-model="showMenu"
-      :position-x="x"
-      :position-y="y"
-      absolute
-    >
+    <label class="detailIcon" @click="show"><v-icon> mdi-dots-horizontal </v-icon></label>
+    <v-menu offset-y v-model="showMenu" :position-x="x" :position-y="y" absolute>
       <v-list>
         <v-list-item
           @click="handleClick(item)"
@@ -22,38 +16,39 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: ['items'],
-  data: () => ({
-    showMenu: false,
-    x: 0,
-    y: 0
-  }),
-  methods: {
-    handleClick (item) {
-      if (item.instuction === 'cancel') return
-      this.$emit('itemClicked', item)
-    },
-    show (e) {
-      e.preventDefault()
-      this.showMenu = false
-      this.x = e.clientX
-      this.y = e.clientY
-      this.$nextTick(() => {
-        this.showMenu = true
-      })
-    }
-  }
+<script setup>
+import { ref, defineProps, defineEmits } from 'vue'
+
+const props = defineProps(['items'])
+const emit = defineEmits(['itemClicked'])
+
+const showMenu = ref(false)
+const x = ref(0)
+const y = ref(0)
+
+const handleClick = item => {
+  if (item.instuction === 'cancel') return
+  emit('itemClicked', item)
+}
+
+const show = e => {
+  e.preventDefault()
+  showMenu.value = false
+  x.value = e.clientX
+  y.value = e.clientY
+  nextTick(() => {
+    showMenu.value = true
+  })
 }
 </script>
+
 <style scoped>
 .menuItem:hover {
   background: #bbdefb !important;
   cursor: pointer;
   color: white !important;
 }
-.detailIcon{
+.detailIcon {
   border: 1px solid;
   border-radius: 15px;
   width: 27px;

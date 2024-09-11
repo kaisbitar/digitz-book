@@ -8,8 +8,8 @@
         class="webKitWidth"
       />
     </v-row>
-    <v-tabs-items v-model="activeTab" class="webKitWidth">
-      <v-tab-item
+    <v-tabs v-model="activeTab" class="webKitWidth">
+      <v-tab
         transition="fade-transition"
         reverse-transition="fade-transition"
         key="numberOfVerses"
@@ -22,8 +22,8 @@
           :inputText="inputText"
           :isLoading="isLoading"
         />
-      </v-tab-item>
-      <v-tab-item
+      </v-tab>
+      <v-tab
         transition="fade-transition"
         reverse-transition="fade-transition"
         key="numberOfWords"
@@ -37,8 +37,8 @@
           :numberOfWords="numberOfWords"
           :isLoading="isLoading"
           :indexes="wordIndexes"
-      /></v-tab-item>
-      <v-tab-item
+      /></v-tab>
+      <v-tab
         transition="fade-transition"
         reverse-transition="fade-transition"
         key="numberOfLetters"
@@ -52,7 +52,7 @@
           :numberOfWords="numberOfWords"
           :isLoading="isLoading"
         />
-      </v-tab-item>
+      </v-tab>
       <dashFrequency
         v-if="activeTab === 'frequency'"
         :chartFreqSeries="chartFreqSeries"
@@ -61,70 +61,56 @@
         :isLoading="isLoading"
         :height="height"
       />
-    </v-tabs-items>
+    </v-tabs>
   </div>
 </template>
 
-<script>
-import dashLetters from './dashLetters.vue'
-import dashFrequency from './dashFrequency'
-import dashVerses from './dashVerses.vue'
-import dashboardTabs from './dashboardTabs'
-import dashWords from './dashWords.vue'
+<script setup>
+import { ref, computed, onMounted } from 'vue'
 
-export default {
-  name: 'dashbord',
-  components: {
-    dashFrequency,
-    dashboardTabs,
-    dashLetters,
-    dashVerses,
-    dashWords
-  },
-  props: [
-    'numberOfLetters',
-    'chartFreqSeries',
-    'numberOfVerses',
-    'numberOfWords',
-    'suraTextArray',
-    'versesBasics',
-    'chartOptions',
-    'wordIndexes',
-    'inputText',
-    'isLoading'
-  ],
-  data: () => ({
-    windowHeight: window.innerHeight,
-    tab: 'numberOfVerses'
-  }),
-  methods: {
-    changeTab (tab) {
-      this.tab = tab
-      this.$store.commit('setActiveTab', tab)
-    }
-  },
-  computed: {
-    tabs () {
-      var tabs = [
-        { title: 'آية', value: this.numberOfVerses, name: 'numberOfVerses' },
-        { title: 'كلمة', value: this.numberOfWords, name: 'numberOfWords' },
-        { title: 'حرف', value: this.numberOfLetters, name: 'numberOfLetters' },
-        { title: 'تواتر', name: 'frequency' }
-      ]
-      return tabs
-    },
-    activeTab () {
-      return this.$store.getters.activeTab
-    },
-    height () {
-      var heightDif = this.windowHeight - 210
-      return heightDif
-    }
-  },
-  watch: {},
-  created () {},
-  mounted () {}
+import { useQuranStore } from '@/stores/app'
+import DashLetters from './dashLetters.vue'
+import DashFrequency from './dashFrequency.vue'
+import DashVerses from './dashVerses.vue'
+import DashboardTabs from './dashboardTabs.vue'
+import DashWords from './dashWords.vue'
+
+const props = defineProps([
+  'numberOfLetters',
+  'chartFreqSeries',
+  'numberOfVerses',
+  'numberOfWords',
+  'suraTextArray',
+  'versesBasics',
+  'chartOptions',
+  'wordIndexes',
+  'inputText',
+  'isLoading',
+])
+console.log(props)
+const store = useQuranStore()
+const windowHeight = ref(window.innerHeight)
+
+const changeTab = tab => {
+  store.setActiveTab(tab)
 }
+
+const tabs = computed(() => [
+  { title: 'آية', value: props.numberOfVerses, name: 'numberOfVerses' },
+  { title: 'كلمة', value: props.numberOfWords, name: 'numberOfWords' },
+  { title: 'حرف', value: props.numberOfLetters, name: 'numberOfLetters' },
+  { title: 'تواتر', name: 'frequency' },
+])
+
+const activeTab = computed(() => store.getActiveTab)
+
+const height = computed(() => windowHeight.value - 210)
+
+onMounted(() => {
+  window.addEventListener('resize', () => {
+    windowHeight.value = window.innerHeight
+  })
+})
 </script>
 
 <style>

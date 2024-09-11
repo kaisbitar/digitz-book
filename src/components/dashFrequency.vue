@@ -1,9 +1,6 @@
 <template>
   <div class="webKitWidth">
-    <appChartOptions
-      :intitalType="chartFreqType"
-      @typeChanged="changeType"
-    />
+    <appChartOptions :intitalType="chartFreqType" @typeChanged="changeType" />
     <appChart
       :isLoading="isLoading"
       :series="chartFreqSeries"
@@ -13,33 +10,26 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import appChart from '../components/appChart.vue'
 import appChartOptions from './appChartOptions.vue'
+import { defineProps } from 'vue'
+import { useQuranStore } from '@/stores/app'
 
-export default {
-  name: 'dashFrequency',
-  components: { appChart, appChartOptions },
-  props: ['chartFreqSeries', 'height', 'isLoading', 'chartOptions'],
-  data: () => ({}),
-  computed: {
-    chartFreqType () {
-      return this.$store.state.chartFreqType
-    }
-  },
-  methods: {
-    changeType (type) {
-      this.$store.commit('setChartFreqType', type)
-    }
-  },
-  watch: {
-  },
-  created () {},
-  mounted () {
-  }
+const props = defineProps({
+  chartFreqSeries: Array,
+  height: [Number, String],
+  isLoading: Boolean,
+  chartOptions: Object,
+})
+
+const store = useQuranStore()
+
+const chartFreqType = computed(() => store.state.chartFreqType)
+
+const changeType = type => {
+  store.setChartFreqType(type)
 }
 </script>
 
-<style>
-
-</style>
+<style></style>

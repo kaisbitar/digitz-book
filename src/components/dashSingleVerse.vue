@@ -1,14 +1,24 @@
 <template>
   <v-card flat>
-    <v-tabs class="" v-model="tab" background-color="mt-n5 pr-1 pl-2" centered>
-      <v-tab class="dashTabs" href="#tab-1"><span class=" ml-1">آية</span>{{verseIndex}}</v-tab>
-      <v-tab class="dashTabs" href="#tab-2">{{numberOfWords}}<span class=" mr-1">كلمة </span></v-tab>
-      <v-tab class="dashTabs" href="#tab-3">{{numberOfLetters}}<span class=" mr-1"> حرف </span></v-tab>
-      <v-tab class="dashTabs" href="#tab-3" disabled>{{verseNumberToQuran}}<span class=""> مصحف </span></v-tab>
+    <v-tabs v-model="tab" bg-color="mt-n5 pr-1 pl-2" centered>
+      <v-tab value="tab-1" class="dashTabs"><span class="ml-1">آية</span>{{ verseIndex }}</v-tab>
+      <v-tab value="tab-2" class="dashTabs"
+        >{{ numberOfWords }}<span class="mr-1">كلمة </span></v-tab
+      >
+      <v-tab value="tab-3" class="dashTabs"
+        >{{ numberOfLetters }}<span class="mr-1"> حرف </span></v-tab
+      >
+      <v-tab value="tab-4" class="dashTabs" disabled
+        >{{ verseNumberToQuran }}<span class=""> مصحف </span></v-tab
+      >
     </v-tabs>
-    <v-tabs-items v-model="tab" >
-      <div @click="$emit('backBtnClicked')"><v-icon class="ml-2"> mdi-arrow-right</v-icon>الآيات</div>
-      <v-tab-item value="tab-1">
+
+    <v-window v-model="tab">
+      <div @click="$emit('backBtnClicked')">
+        <v-icon class="ml-2">mdi-arrow-right</v-icon>الآيات
+      </div>
+
+      <v-window-item value="tab-1">
         <dashVersesLabels
           class="ml-2 mb-2"
           :verseIndex="verseIndex"
@@ -29,8 +39,9 @@
             :height="height"
           />
         </div>
-      </v-tab-item>
-      <v-tab-item value="tab-2">
+      </v-window-item>
+
+      <v-window-item value="tab-2">
         <dashWords
           class="webKitWidth"
           :numberOfWords="numberOfWords"
@@ -40,8 +51,9 @@
           :isLoading="isLoading"
           :includeTab="true"
         />
-      </v-tab-item>
-      <v-tab-item value="tab-3">
+      </v-window-item>
+
+      <v-window-item value="tab-3">
         <dashLetters
           class="webKitWidth"
           :numberOfWords="numberOfWords"
@@ -49,44 +61,42 @@
           :suraText="verseText"
           :isLoading="isLoading"
         />
-      </v-tab-item>
-    </v-tabs-items>
+      </v-window-item>
+    </v-window>
   </v-card>
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue'
 import appChart from '../components/appChart.vue'
 import dashWords from './dashWords.vue'
 import dashLetters from './dashLetters.vue'
-import dashVersesLabels from './dashVersesLabels'
+import dashVersesLabels from './dashVersesLabels.vue'
 
-export default {
-  name: 'dashSingleVerse',
-  props: [
-    'verseIndex',
-    'verseNumberToQuran',
-    'numberOfLetters',
-    'numberOfWords',
-    'verseText',
-    'inputText',
-    'secondInput',
-    'suraName',
-    'isLoading',
-    'verseChart',
-    'options',
-    'height',
-    'wordIndexes'
-  ],
-  components: { dashVersesLabels, appChart, dashWords, dashLetters },
-  data: () => ({
-    tab: 'tab-1'
-  }),
-  computed: {},
-  methods: {},
-  created () {},
-  mounted () {}
-}
+// Props
+const props = defineProps({
+  verseIndex: Number,
+  verseNumberToQuran: Number,
+  numberOfLetters: Number,
+  numberOfWords: Number,
+  verseText: String,
+  inputText: String,
+  secondInput: String,
+  suraName: String,
+  isLoading: Boolean,
+  verseChart: Array,
+  options: Object,
+  height: [String, Number],
+  wordIndexes: Array,
+})
+
+// Emits
+const emit = defineEmits(['backBtnClicked'])
+
+// Reactive state
+const tab = ref('tab-1')
 </script>
 
-<style>
+<style scoped>
+/* Add any component-specific styles here */
 </style>

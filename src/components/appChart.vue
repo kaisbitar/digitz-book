@@ -1,48 +1,44 @@
 <template>
   <div>
     <apexchart
-      :markerClick="handleClick"
       :options="options"
       :height="height"
       :series="series"
       ref="myChart"
+      @markerClick="handleClick"
     />
-    <v-overlay :absolute="true" :opacity="0.6" color="white" :value="isLoading">
+    <v-overlay :modelValue="isLoading" :absolute="true" :opacity="0.6" color="white">
       <v-progress-circular color="indigo" indeterminate></v-progress-circular>
     </v-overlay>
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+import { useQuranStore } from '@/stores/app'
 import VueApexCharts from 'vue3-apexcharts'
-export default {
-  name: 'appChart',
-  props: ['height', 'options', 'series', 'isLoading', 'includeTab'],
-  components: { apexchart: VueApexCharts },
-  data: () => ({
-    windowHeight: window.innerHeight
-  }),
-  methods: {
-    handleClick (seriesIndex, dataPointIndex, chartContext) {
-      this.$store.commit('setTarget', {
-        fileName: this.fileName,
-        verseIndex: chartContext.dataPointIndex + 1
-      })
-    }
-  },
-  computed: {
-    targetedVerse () {
-      return this.$store.getters.target.verseIndex
-    }
-  },
-  watch: {},
-  created () {},
-  updated () {},
-  mounted () {}
+
+const props = defineProps(['height', 'options', 'series', 'isLoading', 'includeTab'])
+const store = useQuranStore()
+
+const myChart = ref(null)
+const windowHeight = ref(window.innerHeight)
+
+const handleClick = (event, chartContext, config) => {
+  store.setTarget({
+    fileName: props.fileName, // Make sure to pass fileName as a prop if needed
+    verseIndex: config.dataPointIndex + 1,
+  })
 }
+
+const targetedVerse = computed(() => store.getTarget.verseIndex)
+
+onMounted(() => {
+  // Any mounted logic can go here
+})
 </script>
 
-<style >
+<style>
 .apexcharts-toolbar {
   z-index: 1 !important;
 }
@@ -59,7 +55,7 @@ export default {
 .apexcharts-tooltip {
   background: none !important;
   color: rgb(31, 31, 31);
-  font-family: "Tajawal", sans-serif;
+  font-family: 'Tajawal', sans-serif;
   font-size: 19px !important;
   white-space: normal !important;
   max-width: 300px;

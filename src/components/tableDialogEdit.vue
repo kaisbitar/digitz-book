@@ -1,5 +1,5 @@
 <template>
-  <v-dialog  max-width="500px">
+  <v-dialog max-width="500px">
     <v-card>
       <v-card-title>
         <span class="headline ml-1">{{ suraName }}</span> -
@@ -18,30 +18,32 @@
   </v-dialog>
 </template>
 
-<script>
-export default {
-  props: ['showEditVerse', 'suraName', 'verseIndex', 'verseText'],
-  data: () => ({
-    localText: ''
-  }),
-  methods: {
-    close () {
-      this.$emit('close')
-    },
-    save () {}
-  },
-  computed: {
-    numberOfWords () {
-      if (!this.localText) return 0
-      return this.localText.trim().split(' ').length
-    },
-    numberOfLetters () {
-      return this.localText.split(' ').join('').length
-    }
-  },
-  watch: { },
-  mounted () {
-    this.localText = this.verseText
-  }
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+
+const props = defineProps(['showEditVerse', 'suraName', 'verseIndex', 'verseText'])
+const emit = defineEmits(['close'])
+
+const localText = ref('')
+
+const close = () => {
+  emit('close')
 }
+
+const save = () => {
+  // Implement save logic here
+}
+
+const numberOfWords = computed(() => {
+  if (!localText.value) return 0
+  return localText.value.trim().split(' ').length
+})
+
+const numberOfLetters = computed(() => {
+  return localText.value.split(' ').join('').length
+})
+
+onMounted(() => {
+  localText.value = props.verseText
+})
 </script>

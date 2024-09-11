@@ -26,64 +26,65 @@
   </v-row>
 </template>
 
-<script>
-export default {
-  name: '',
-  props: ['inputText', 'items', 'suraTextArray'],
-  data: () => ({
-    selectedIndex: 0
-  }),
-  computed: {
-    selectedVerse () {
-      if (!this.$store.getters.target) return 1
-      return this.$store.getters.target.verseIndex
-    },
-    indices () {
-      if (!this.inputText) return null
-      var indices = []
-      this.suraTextArray.filter((item, index) => {
-        if (item.match(this.inputText)) {
-          indices.push(index + 1)
-        }
-      })
-      return indices
-    },
-    fileName () {
-      if (!this.$store.getters.target) return
-      return this.$store.getters.target.fileName
+<script setup>
+import { ref, computed, watch, onMounted } from 'vue'
+import { useQuranStore } from '@/stores/app'
+
+const props = defineProps(['inputText', 'items', 'suraTextArray'])
+const store = useQuranStore()
+
+const selectedIndex = ref(0)
+
+const selectedVerse = computed(() => {
+  if (!store.getTarget) return 1
+  return store.getTarget.verseIndex
+})
+
+const indices = computed(() => {
+  if (!props.inputText) return null
+  return props.suraTextArray.reduce((acc, item, index) => {
+    if (item.match(props.inputText)) {
+      acc.push(index + 1)
     }
-  },
-  methods: {
-    setTargetedVerse (index) {
-      this.$store.commit('setTarget', {
-        fileName: this.fileName,
-        verseIndex: index
-      })
-    },
-    arrowClick (direction) {
-      if (!this.indices[this.indices.indexOf(this.selectedIndex) + direction]) {
-        if (direction === -1) {
-          this.selectedIndex = (this.indices[this.indices.length - 1])
-          return
-        }
-        this.selectedIndex = (this.indices[0])
-        return
-      }
-      this.selectedIndex = (this.indices[this.indices.indexOf(this.selectedIndex) + direction])
-    }
-  },
-  watch: {
-    selectedIndex () {
-      this.setTargetedVerse(this.selectedIndex)
-    },
-    selectedVerse () {
-      this.selectedIndex = parseInt(this.selectedVerse)
-    }
-  },
-  mounted () {
-    this.selectedIndex = parseInt(this.selectedVerse)
+    return acc
+  }, [])
+})
+
+const fileName = computed(() => {
+  if (!store.getTarget) return
+  return store.getTarget.fileName
+})
+
+const setTargetedVerse = index => {
+  store.setTarget({
+    fileName: fileName.value,
+    verseIndex: index,
+  })
+}
+
+const arrowClick = direction => {
+  const currentIndex = indices.value.indexOf(selectedIndex.value)
+  const newIndex = currentIndex + direction
+  if (newIndex < 0) {
+    selectedIndex.value = indices.value[indices.value.length - 1]
+  } else if (newIndex >= indices.value.length) {
+    selectedIndex.value = indices.value[0]
+  } else {
+    selectedIndex.value = indices.value[newIndex]
   }
 }
+
+watch(selectedIndex, () => {
+  setTargetedVerse(selectedIndex.value)
+})
+
+watch(selectedVerse, () => {
+  selectedIndex.value = parseInt(selectedVerse.value)
+})
+
+onMounted(() => {
+  selectedIndex.value = parseInt(selectedVerse.value)
+})
 </script>
 
 <style>
@@ -124,7 +125,7 @@ export default {
 }
 .selectsWrap,
 .selectsWrap .caption {
-  font-family: "Tajawal", sans-serif !important;
+  font-family: 'Tajawal', sans-serif !important;
 }
 .selectsWrap {
   margin-right: 180px;
