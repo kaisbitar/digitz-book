@@ -59,10 +59,10 @@ watch(windowHeight, () => {
   getHeight()
 })
 
-// Lifecycle hooks
-onMounted(() => {
-  // Add any mounted logic here
-})
+// // Lifecycle hooks
+// onMounted(() => {
+//   // Add any mounted logic here
+// })
 
 // Expose methods and properties to the template
 defineExpose({

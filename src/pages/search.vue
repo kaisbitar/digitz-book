@@ -1,0 +1,139 @@
+<template>
+  <div class="compWrapper">
+    <appTitle :title="inputText" @arrowClick="getNextSearch" />
+    <keep-alive>
+      <dashbord
+        v-if="!isLoading"
+        :inputText="inputText"
+        @tabChanged="getWordsData"
+        :chartFreqSeries="[{ data: [] }]"
+        :chartOptions="chartOptions"
+        :numberOfVerses="numberOfVerses"
+        :numberOfWords="numberOfWords"
+        :numberOfLetters="numberOfLetters"
+        :isLoading="isLoading"
+        :wordIndexes="details.wordIndexes"
+        :suraTextArray="searchResults"
+        :versesBasics="versesData"
+        :activeTab="activeTab"
+      />
+    </keep-alive>
+  </div>
+</template>
+<script setup>
+import { ref, computed, watch, onMounted } from 'vue'
+import { useStore } from '@/stores/app'
+import dashbord from '../components/dashbord.vue'
+import appTitle from '../components/appTitle'
+import chartOptions from '../assets/frequecyOptions'
+
+const store = useStore()
+
+// Props
+const props = defineProps(['activeView'])
+
+// Refs
+const isLoading = ref(false)
+const details = ref({})
+const versesData = ref([])
+const letterSeries = ref([])
+const wordsSeries = ref([])
+const view = ref('detailView')
+
+// Data
+const tableHeaders = [
+  { text: 'السورة', value: 'sura', class: 'grey lighten-2' },
+  { text: 'رقم', value: 'verseIndex', class: 'grey lighten-2' },
+  { text: 'مصحف', value: 'verseNumberToQuran', class: 'grey lighten-2' },
+  { text: 'نص', value: 'verseText', class: 'grey lighten-2' },
+]
+
+// Methods
+const getWordsData = tab => {
+  console.log(tab)
+  store.setActiveTab(tab)
+  if (activeTab.value === 'numberOfWords') {
+    fetchSuraDetails()
+  }
+}
+
+const createVersesData = () => {
+  versesData.value = versesBasics.value.map(item => ({
+    fileName: item.fileName,
+    verseIndex: item.verseIndex.toString(),
+    verseText: item.verseText,
+    numberOfWords: item.verseText.split(' ').length.toString(),
+    numberOfLetters: item.verseText.replace(/ /g, '').length.toString(),
+    verseNumberToQuran: item.verseNumberToQuran.toString(),
+  }))
+}
+
+const getNextSearch = item => {
+  if (item === 'up') {
+    store.setSearchIndex(selectedSearchIndex.value - 1)
+    return
+  }
+  store.setSearchIndex(selectedSearchIndex.value + 1)
+}
+
+const fetchSuraDetails = async () => {
+  isLoading.value = true
+  try {
+    const items = await store.dispatch('getSuraDetails')
+    details.value = items
+  } finally {
+    isLoading.value = false
+  }
+}
+
+// Computed properties
+const numberOfVerses = computed(() =>
+  selectedSearch.value ? selectedSearch.value.result.length : 0,
+)
+const activeTab = computed(() => store.getActiveTab)
+const SearchResults = computed(() => store.getSearchResults)
+const selectedSearch = computed(() => (SearchResults.value ? store.getSelectedSearch : {}))
+const selectedSearchIndex = computed(() => store.getSelectedSearchIndex)
+const inputText = computed(() =>
+  selectedSearch.value ? selectedSearch.value.inputText : undefined,
+)
+const searchResults = computed(() =>
+  selectedSearch.value ? selectedSearch.value.result.map(item => item.verseText) : [],
+)
+const versesBasics = computed(() => (selectedSearch.value ? selectedSearch.value.result : []))
+const numberOfWords = computed(() => {
+  if (!selectedSearch.value) return 0
+  return selectedSearch.value.result
+    .map(item => item.verseText.split(' ').length)
+    .reduce((a, b) => a + b, 0)
+})
+const numberOfLetters = computed(() => {
+  if (!selectedSearch.value) return 0
+  return selectedSearch.value.result
+    .map(item => item.verseText.replace(/ /g, '').length)
+    .reduce((a, b) => a + b, 0)
+})
+const fileName = computed(() => (store.getTarget ? store.getTarget.fileName : undefined))
+const parentcount = computed(() =>
+  store.getSelectedSearch ? store.getSelectedSearch.resultsCount : undefined,
+)
+
+// Watch
+watch(versesBasics, () => {
+  createVersesData()
+})
+
+// Lifecycle hooks
+onMounted(() => {
+  if (selectedSearchIndex.value === -1) {
+    getNextSearch('down')
+  }
+  createVersesData()
+})
+</script>
+
+<style scoped>
+.cTable {
+  max-width: 600px;
+}
+</style>

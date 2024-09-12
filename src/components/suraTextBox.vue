@@ -15,20 +15,12 @@
         >
           {{ index + 1 }}
         </v-chip>
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on, attrs }">
-            <div
-              v-if="inputText"
-              class="d-inline"
-              v-html="$options.filters.highlightVerse(item, inputText)"
-              v-bind="attrs"
-              v-on="on"
-            ></div>
-            <div v-else class="d-inline">{{ item }}</div>
-          </template>
-          <!-- Tooltip content -->
-          <span>Hover text or additional info for verse {{ index + 1 }}</span>
-        </v-tooltip>
+        <div
+          v-if="inputText"
+          class="d-inline"
+          v-html="$options.filters.highlightVerse(item, inputText)"
+        ></div>
+        <div v-else class="d-inline">{{ item }}</div>
       </div>
     </div>
     <v-row justify="center" class="suraTextSearchResults">
@@ -43,6 +35,7 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import { useQuranStore } from '@/stores/app'
 import { useNavigation } from '../mixins/mixins'
+import { useGoTo } from 'vuetify' // Add this import
 
 const { prepareToScroll } = useNavigation()
 
@@ -58,12 +51,11 @@ const suraText = ref([])
 // Methods
 const scrollToVerse = verse => {
   if (!document.getElementById('suraBlock')) return
-  setTimeout(() => {
-    vuetify.goTo(verse.toString(), {
-      container: '#suraBlock',
-      offset: 0,
-    })
-  }, 50)
+  const goTo = useGoTo()
+  goTo(verse.toString(), {
+    container: '#suraBlock',
+    offset: 0,
+  })
 }
 
 const setTargetedVerse = index => {
@@ -79,20 +71,20 @@ const fileName = computed(() => store.getTarget.fileName)
 const activeView = computed(() => store.getTarget.activeView)
 
 // Watchers
-watch(scrollTrigger, () => {
-  if (activeView.value === 'detailView') return
-  const verse = prepareToScroll(props.suraTargetedVerseIndex)
-  scrollToVerse(verse)
-})
+// watch(scrollTrigger, () => {
+//   if (activeView.value === 'detailView') return
+//   const verse = prepareToScroll(props.suraTargetedVerseIndex)
+//   scrollToVerse(verse)
+// })
 
-watch(
-  () => props.suraTargetedVerseIndex,
-  () => {
-    if (activeView.value === 'detailView') return
-    const verse = prepareToScroll(props.suraTargetedVerseIndex)
-    scrollToVerse(verse)
-  },
-)
+// watch(
+//   () => props.suraTargetedVerseIndex,
+//   () => {
+//     if (activeView.value === 'detailView') return
+//     const verse = prepareToScroll(props.suraTargetedVerseIndex)
+//     scrollToVerse(verse)
+//   },
+// )
 
 // Filters
 const highlightVerse = (text, value) => {
@@ -113,7 +105,7 @@ onMounted(() => {
 <style>
 .suraText {
   padding: 5px !important;
-  background: white;
+  /* background: white; */
   margin: 1px;
   display: -webkit-inline-box;
   border-radius: 4px;
@@ -122,14 +114,14 @@ onMounted(() => {
 .numChip {
   /* brown lighten-5 */
   /* width: 41px; */
-  background: #efebe9;
+  /* background: #efebe9; */
   margin-left: 6px;
   padding-right: 12px;
   padding-left: 12px;
 }
 .targetedVerse {
   /* yellow accent-1 */
-  background: #ffff8d;
+  background: #424242;
 }
 .TargetedChip {
   color: white !important;

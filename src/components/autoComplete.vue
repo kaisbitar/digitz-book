@@ -2,7 +2,7 @@
   <div class="d-flex autoWrap webKitWidth">
     <v-autocomplete
       v-model="search"
-      :filter="handleFiltering"
+      :custom-filter="handleFiltering"
       :hide-no-data="!search"
       :disabled="isDisabled"
       :items="storedItems"
@@ -11,7 +11,7 @@
       prepend-inner-icon="mdi-magnify"
       bg-color="#fff"
       item-value="verseNumberToQuran"
-      item-text="verseText"
+      item-title="verseText"
       color="blue-darken-4"
       label="ابحث  في الكتاب.."
       ref="autocomplete"
@@ -22,7 +22,7 @@
       multiple
       variant="solo"
     >
-      <template v-slot:no-data>
+      <!-- <template v-slot:no-data>
         <p class="pa-1 text-red">لا يوجد معلومات تطابق البحث!</p>
       </template>
 
@@ -70,7 +70,7 @@
           :btn1Title="'إبحث'"
           :btn2Title="'ضِف للبحث الحالي'"
         />
-      </template>
+      </template> -->
     </v-autocomplete>
   </div>
 </template>
@@ -152,11 +152,14 @@ const disableInputBox = () => {
 }
 
 const handleFiltering = (item, queryText, itemText) => {
-  itemText = ' ' + itemText + ' '
-  if (!matchingStatus.value && itemText.match(queryText) !== null) {
-    return itemText
+  console.log(item, queryText, itemText)
+  text.value = ' ' + text.value + ' '
+  if (!matchingStatus.value && text.value.match(queryText) !== null) {
+    return text.value
   }
-  return itemText.match(new RegExp('([^\u0621-\u064A]+' + queryText + '[^\u0621-\u064A]+)', 'gim'))
+  return text.value.match(
+    new RegExp('([^\u0621-\u064A]+' + queryText + '[^\u0621-\u064A]+)', 'gim'),
+  )
 }
 
 const resultsCount = () => {

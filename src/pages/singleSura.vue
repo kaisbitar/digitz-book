@@ -3,41 +3,29 @@
     <div class="d-flex">
       <appTitle @arrowClick="setTargetFromArrow" :title="fileName" />
       <suraTextSearchResults
-        v-if="activeView === 'textView'"
         style="max-width: 641px"
         :selectedVerse="suraTargetedVerseIndex"
         :suraTextArray="suraTextArray"
         :inputText="inputText"
       />
     </div>
-    <suraText
-      v-if="activeView === 'textView'"
-      :suraTextArray="suraTextWithTashkeel"
-      :suraTargetedVerseIndex="suraTargetedVerseIndex"
+    <!-- <keep-alive> -->
+    <dashbord
       :numberOfLetters="numberOfLetters"
+      :wordIndexes="details.wordIndexes"
       :numberOfVerses="numberOfVerses"
       :numberOfWords="numberOfWords"
-      :inputText="inputText"
+      :suraTextArray="suraTextArray"
+      :chartFreqType="chartFreqType"
+      :chartFreqSeries="chartFreqSeries"
+      :chartOptions="chartOptions"
+      :versesSeries="versesSeries"
+      :versesBasics="versesBasics"
       :isLoading="isLoading"
+      :inputText="inputText"
+      :title="fileName"
     />
-    <keep-alive>
-      <dashbord
-        v-if="activeView !== 'detailView' && details"
-        :numberOfLetters="numberOfLetters"
-        :wordIndexes="details.wordIndexes"
-        :numberOfVerses="numberOfVerses"
-        :numberOfWords="numberOfWords"
-        :suraTextArray="suraTextArray"
-        :chartFreqType="chartFreqType"
-        :chartFreqSeries="chartFreqSeries"
-        :chartOptions="chartOptions"
-        :versesSeries="versesSeries"
-        :versesBasics="versesBasics"
-        :isLoading="isLoading"
-        :inputText="inputText"
-        :title="fileName"
-      />
-    </keep-alive>
+    <!-- </keep-alive> -->
   </div>
 </template>
 

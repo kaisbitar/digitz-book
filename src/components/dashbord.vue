@@ -1,6 +1,5 @@
 <template>
   <div>
-    {{ activeTab }}
     <v-row class="dashboardTabs">
       <dashboardTabs
         :tabs="tabs"
@@ -9,7 +8,9 @@
         class="webKitWidth"
       />
     </v-row>
+    <!-- {{ suraTargetedVerseIndex }} -->
     <suraText
+      v-if="activeTab === 'suraText'"
       :suraTextArray="suraTextArray"
       :suraTargetedVerseIndex="suraTargetedVerseIndex"
       :numberOfLetters="numberOfLetters"
@@ -62,7 +63,7 @@ import dashFrequency from './dashFrequency.vue'
 import dashVerses from './dashVerses.vue'
 import dashboardTabs from './dashboardTabs.vue'
 import dashWords from './dashWords.vue'
-import suraText from '@/components/suraText'
+import suraText from '@/components/suraText.vue'
 
 const props = defineProps([
   'numberOfLetters',
@@ -80,6 +81,7 @@ const store = useQuranStore()
 const windowHeight = ref(window.innerHeight)
 
 const tabs = computed(() => [
+  { title: 'نص', name: 'suraText' },
   { title: 'آية', value: props.numberOfVerses, name: 'numberOfVerses' },
   { title: 'كلمة', value: props.numberOfWords, name: 'numberOfWords' },
   { title: 'حرف', value: props.numberOfLetters, name: 'numberOfLetters' },
@@ -94,7 +96,7 @@ const changeTab = tab => {
 }
 
 const height = computed(() => windowHeight.value - 210)
-const suraTargetedVerseIndex = computed(() => quranStore.getTarget?.verseIndex || 1)
+const suraTargetedVerseIndex = computed(() => store.getTarget.verseIndex || 1)
 
 onMounted(() => {
   window.addEventListener('resize', () => {
@@ -114,8 +116,8 @@ onMounted(() => {
 }
 .dashboardTabs {
   margin-right: 395px;
-  margin-top: -37px;
-  margin-bottom: -1px;
+  margin-top: -47px;
+  margin-bottom: 15px;
   margin-left: 47px;
 }
 a.dashTabs.v-tab--active {
@@ -127,7 +129,7 @@ a.dashTabs.v-tab--active {
   .dashboardTabs {
     margin-right: 0px;
     margin-top: 0px;
-    margin-bottom: 10px;
+    margin-bottom: 14px;
   }
 }
 </style>
