@@ -2,12 +2,12 @@
   <div class="dashVerses d-flex">
     <v-card class="webKitWidth" flat v-show="!showSingleVerse">
       <tableVerses
-        :tableData="versesBasics"
+        :tableData="props.versesBasics"
         :tableHeaders="tableHeaders"
-        :inputText="inputText"
+        :inputText="props.inputText"
         :menuItems="menuItems"
         :activeTableItemId="verseNumberToQuran"
-        :isLoading="isLoading"
+        :isLoading="props.isLoading"
         :groupBy="null"
         :dataType="' عن آية أو رقم'"
         @rowClicked="handleVerseSelection"
@@ -53,10 +53,17 @@ import chartOptions from '../assets/frequecyOptions'
 import tableVerses from './tableVerses.vue'
 import dashSingleVerse from './dashSingleVerse'
 import tableDialogEdit from './tableDialogEdit.vue'
+import { useRouter } from 'vue-router'
 
-// Change this line
+const router = useRouter()
+const quranStore = useQuranStore()
+
 const props = defineProps(['versesBasics', 'isLoading', 'inputText'])
-console.log(props.versesBasics)
+const suraNumber = computed(() => parseInt(fileName.value.replace(/^\D+/g, '')))
+const suraName = computed(() => fileName.value.replace(/[ء-٩]/g, '').replace(/\s/g, ''))
+
+const fileName = computed(() => quranStore.getTarget?.fileName || '001الفاتحة')
+
 const index = ref(1)
 const tableHeaders = ref([
   { text: 'INDEX', value: '', class: 'brown lighten-5 black--text', width: '100' },
@@ -84,7 +91,6 @@ const verseNumberToQuran = ref('')
 const numberOfLetters = ref('')
 const numberOfWords = ref('')
 const verseText = ref('')
-const suraName = ref('')
 const options = ref(chartOptions)
 const windowHeight = ref(window.innerHeight)
 const wordIndexes = ref({})
@@ -133,15 +139,16 @@ const runMenuItem = item => {
 }
 
 const setTargetedSuraAndVerse = item => {
-  suraName.value = item.fileName.replace(/[0-9]/g, '')
-  suraNumber.value = item.fileName.replace(/[ء-٩]/g, '').replace(/\s/g, '')
   if (targetFileName.value === '000المصحف') {
     const target = { fileName: '000المصحف', verseIndex: item.verseNumberToQuran }
     store.setTarget(target)
     return
   }
+
+  const suraNumber = item.fileName.replace(/[ء-٩]/g, '').replace(/\s/g, '')
+  const suraName = item.fileName.replace(/[0-9]/g, '')
   store.setTarget({
-    fileName: `${suraNumber.value}${suraName.value}`,
+    fileName: `${suraNumber}${suraName}`,
     verseIndex: item.verseIndex,
   })
 }
@@ -152,6 +159,7 @@ const goToverseTextView = () => {
 }
 
 const checkAndGo = route => {
+  console.log(router.getRoutes())
   if (router.currentRoute.value.name !== route) {
     router.push({ name: route })
   }

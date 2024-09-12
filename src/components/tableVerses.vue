@@ -2,10 +2,10 @@
   <div class="webKitWidth grey lighten-5">
     <div class="d-flex pt-1 topBar">
       <appSearchBox
-        @searchChanged="changeSearch"
-        @matchChanged="changeMatchingStatus"
-        :inputText="search"
-        :dataType="dataType"
+        @search-changed="changeSearch"
+        @match-changed="changeMatchingStatus"
+        :input-text="search"
+        :data-type="dataType"
       />
     </div>
     <div>
@@ -14,7 +14,7 @@
         class="tableStyle versesTable"
         ref="versesTable"
         :custom-filter="handleFiltering"
-        :footerProps="footerProps"
+        :footer-props="footerProps"
         hide-default-footer
         :height="getTableHeight"
         :headers="tableHeaders"
@@ -27,34 +27,32 @@
         @current-items="setCurrentItems"
         fixed-header
       >
-        <template v-slot:item="props">
+        <template #item="{ item }">
           <tr
-            :id="'verse' + props.item.verseNumberToQuran"
+            :id="`verse${item.verseNumberToQuran}`"
             class="tableItem"
             :class="{
-              mouseOverRow: showMenuIcon === 'icon' + props.item.verseNumberToQuran.toString(),
-              activeTableItem2: activeTableItemIdLocal === props.item.verseNumberToQuran.toString(),
+              mouseOverRow: showMenuIcon === `icon${item.verseNumberToQuran}`,
+              activeTableItem2: activeTableItemIdLocal === item.verseNumberToQuran.toString(),
             }"
-            @click="$emit('rowClicked', props.item)"
-            @mouseover="showMenuIcon = 'icon' + props.item.verseNumberToQuran.toString()"
+            @click="$emit('rowClicked', item)"
+            @mouseover="showMenuIcon = `icon${item.verseNumberToQuran}`"
             @mouseleave="showMenuIcon = 'icon'"
           >
             <appDropMenu
               class="menuIcon"
               :items="menuItems"
-              @itemClicked="passClickedMenuItem"
               :class="{
-                activeIcon: showMenuIcon === 'icon' + props.item.verseNumberToQuran.toString(),
+                activeIcon: showMenuIcon === `icon${item.verseNumberToQuran}`,
               }"
             />
             <td
               :class="{
-                hideIt: showMenuIcon === 'icon' + props.item.verseNumberToQuran.toString(),
+                hideIt: showMenuIcon === `icon${item.verseNumberToQuran}`,
               }"
-              v-html="(page - 1) * 50 + props.index + 1"
             />
             <tableVerseItem
-              v-for="(cellItem, index) in props.item"
+              v-for="(cellItem, index) in item"
               :key="index"
               :search="search"
               :cellItem="cellItem"
@@ -65,9 +63,9 @@
       </v-data-table>
       <tablePagination
         :page="page"
-        :pageCount="pageCount"
-        :currentItemsLength="currentItemsLength"
-        :label="'آية'"
+        :page-count="pageCount"
+        :current-items-length="currentItemsLength"
+        label="آية"
         @pageChanged="changePage"
       />
     </div>
@@ -75,7 +73,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch, onMounted, defineEmits } from 'vue'
 import { useQuranStore } from '@/stores/app'
 import appSearchBox from './appSearchBox.vue'
 import tableVerseItem from './tableVerseItem.vue'
@@ -90,9 +88,9 @@ import {
   isLoading,
   tableHeaders,
 } from '@/mixins/tableOccMixin'
+const emit = defineEmits(['rowClicked', 'activateRowItem', 'handleClickedMenu'])
 
 const props = defineProps(['tableData', 'inputText', 'menuItems', 'activeTableItemId'])
-const emit = defineEmits(['handleClickedMenu'])
 
 const store = useQuranStore()
 

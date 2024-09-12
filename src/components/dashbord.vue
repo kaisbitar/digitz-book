@@ -1,5 +1,6 @@
 <template>
   <div>
+    {{ activeTab }}
     <v-row class="dashboardTabs">
       <dashboardTabs
         :tabs="tabs"
@@ -8,60 +9,47 @@
         class="webKitWidth"
       />
     </v-row>
-    <v-tabs v-model="activeTab" class="webKitWidth">
-      <v-tab
-        transition="fade-transition"
-        reverse-transition="fade-transition"
-        key="numberOfVerses"
-        value="numberOfVerses"
-      >
-        <dashVerses
-          v-if="activeTab === 'numberOfVerses'"
-          class="webKitWidth"
-          :versesBasics="versesBasics"
-          :inputText="inputText"
-          :isLoading="isLoading"
-        />
-      </v-tab>
-      <v-tab
-        transition="fade-transition"
-        reverse-transition="fade-transition"
-        key="numberOfWords"
-        value="numberOfWords"
-      >
-        <dashWords
-          v-if="activeTab === 'numberOfWords'"
-          class="webKitWidth"
-          :suraText="suraTextArray.join(' ')"
-          :numberOfLetters="numberOfLetters"
-          :numberOfWords="numberOfWords"
-          :isLoading="isLoading"
-          :indexes="wordIndexes"
-      /></v-tab>
-      <v-tab
-        transition="fade-transition"
-        reverse-transition="fade-transition"
-        key="numberOfLetters"
-        value="numberOfLetters"
-      >
-        <dashLetters
-          v-if="activeTab === 'numberOfLetters'"
-          class="webKitWidth"
-          :numberOfLetters="numberOfLetters"
-          :suraText="suraTextArray.join('')"
-          :numberOfWords="numberOfWords"
-          :isLoading="isLoading"
-        />
-      </v-tab>
-      <dashFrequency
-        v-if="activeTab === 'frequency'"
-        :chartFreqSeries="chartFreqSeries"
-        :chartOptions="chartOptions"
-        :versesText="suraTextArray"
-        :isLoading="isLoading"
-        :height="height"
-      />
-    </v-tabs>
+    <suraText
+      :suraTextArray="suraTextArray"
+      :suraTargetedVerseIndex="suraTargetedVerseIndex"
+      :numberOfLetters="numberOfLetters"
+      :numberOfVerses="numberOfVerses"
+      :numberOfWords="numberOfWords"
+      :inputText="inputText"
+      :isLoading="isLoading"
+    />
+    <dashVerses
+      v-if="activeTab === 'numberOfVerses'"
+      class="webKitWidth"
+      :versesBasics="props.versesBasics"
+      :inputText="props.inputText"
+      :isLoading="props.isLoading"
+    />
+    <!-- <dashWords
+      v-if="activeTab === 'numberOfWords'"
+      class="webKitWidth"
+      :suraText="suraTextArray.join(' ')"
+      :numberOfLetters="props.numberOfLetters"
+      :numberOfWords="props.numberOfWords"
+      :isLoading="props.isLoading"
+      :indexes="props.wordIndexes"
+    />
+    <dashLetters
+      v-if="activeTab === 'numberOfLetters'"
+      class="webKitWidth"
+      :numberOfLetters="props.numberOfLetters"
+      :suraText="suraTextArray.join('')"
+      :numberOfWords="props.numberOfWords"
+      :isLoading="props.isLoading"
+    /> -->
+    <dashFrequency
+      v-if="activeTab === 'frequency'"
+      :chartFreqSeries="props.chartFreqSeries"
+      :chartOptions="props.chartOptions"
+      :versesText="props.suraTextArray"
+      :isLoading="props.isLoading"
+      :height="height"
+    />
   </div>
 </template>
 
@@ -69,11 +57,12 @@
 import { ref, computed, onMounted } from 'vue'
 
 import { useQuranStore } from '@/stores/app'
-import DashLetters from './dashLetters.vue'
-import DashFrequency from './dashFrequency.vue'
-import DashVerses from './dashVerses.vue'
-import DashboardTabs from './dashboardTabs.vue'
-import DashWords from './dashWords.vue'
+import dashLetters from './dashLetters.vue'
+import dashFrequency from './dashFrequency.vue'
+import dashVerses from './dashVerses.vue'
+import dashboardTabs from './dashboardTabs.vue'
+import dashWords from './dashWords.vue'
+import suraText from '@/components/suraText'
 
 const props = defineProps([
   'numberOfLetters',
@@ -87,13 +76,8 @@ const props = defineProps([
   'inputText',
   'isLoading',
 ])
-console.log(props)
 const store = useQuranStore()
 const windowHeight = ref(window.innerHeight)
-
-const changeTab = tab => {
-  store.setActiveTab(tab)
-}
 
 const tabs = computed(() => [
   { title: 'آية', value: props.numberOfVerses, name: 'numberOfVerses' },
@@ -101,15 +85,22 @@ const tabs = computed(() => [
   { title: 'حرف', value: props.numberOfLetters, name: 'numberOfLetters' },
   { title: 'تواتر', name: 'frequency' },
 ])
-
-const activeTab = computed(() => store.getActiveTab)
+const activeTab = computed({
+  get: () => store.getActiveTab,
+  set: value => store.setActiveTab(value),
+})
+const changeTab = tab => {
+  store.setActiveTab(tab)
+}
 
 const height = computed(() => windowHeight.value - 210)
+const suraTargetedVerseIndex = computed(() => quranStore.getTarget?.verseIndex || 1)
 
 onMounted(() => {
   window.addEventListener('resize', () => {
     windowHeight.value = window.innerHeight
   })
+  changeTab('numberOfVerses')
 })
 </script>
 

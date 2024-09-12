@@ -84,7 +84,7 @@ export const useQuranStore = defineStore('quran', {
     setActiveView(activeView) {
       this.activeView = activeView
     },
-    toggleScrollTrigger() {
+    setScrollTrigger() {
       this.scrollTrigger = !this.scrollTrigger
     },
     setTarget(target) {

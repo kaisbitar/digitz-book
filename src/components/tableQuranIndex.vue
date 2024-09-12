@@ -55,12 +55,14 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onCreated } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useQuranStore } from '@/stores/app'
 import { useRouter } from 'vue-router'
+import { useGoTo } from 'vuetify' // Add this import
 
 const store = useQuranStore()
 const router = useRouter()
+const { goTo } = useGoTo() // Add this line
 
 // Reactive state
 const loading = ref(true)
@@ -100,11 +102,11 @@ const runSura = sura => {
 }
 
 const scrollToIndex = () => {
-  setTimeout(() => {
-    vuetify.goTo('.activeTableItem', {
-      container: '.v-data-table__wrapper',
-    })
-  }, 10)
+  // setTimeout(() => {
+  //   useGoTo('.activeTableItem', {
+  //     container: '.v-data-table__wrapper',
+  //   })
+  // }, 10)
 }
 
 const highlight = (text, search) => {
@@ -135,7 +137,7 @@ watch(search, newValue => {
 })
 
 // Lifecycle hooks
-onCreated(() => {
+onMounted(() => {
   if (!fileName.value) {
     loading.value = false
     return

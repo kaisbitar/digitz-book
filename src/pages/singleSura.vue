@@ -52,8 +52,6 @@ import appTitle from '@/components/appTitle'
 import { useNavigation } from '../mixins/mixins'
 const { setTargetFromArrow } = useNavigation()
 
-const props = defineProps(['activeView'])
-
 const quranStore = useQuranStore()
 
 const chartOptions = ref(chartOptionsConfig)
@@ -72,6 +70,7 @@ const versesSeries = ref([{ data: [] }])
 const wordsSeries = ref([{ data: [] }])
 const details = ref({})
 
+// const activeView = computed(() => store.getActiveView)
 const selectedSearch = computed(() => quranStore.getSelectedSearch)
 const selectedSearchIndex = computed(() => quranStore.getSelectedSearchIndex)
 const inputText = computed(() => selectedSearch.value?.inputText || null)

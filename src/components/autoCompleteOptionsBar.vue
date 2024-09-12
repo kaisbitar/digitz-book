@@ -23,7 +23,7 @@ import { defineProps, defineEmits } from 'vue'
 
 const props = defineProps({
   btn1Title: String,
-  resultCounter: Number,
+  resultCounter: null,
   btn2Title: String,
   secondBtnCondition: Number,
   textValue: String,

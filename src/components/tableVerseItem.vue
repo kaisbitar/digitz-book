@@ -3,6 +3,8 @@
 </template>
 
 <script setup>
+import { defineProps } from 'vue'
+
 defineProps({
   cellItem: {
     type: [String, Number],
