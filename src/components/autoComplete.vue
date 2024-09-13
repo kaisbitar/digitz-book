@@ -1,20 +1,20 @@
 <template>
   <div class="d-flex autoWrap webKitWidth">
     <v-autocomplete
-      v-model="search"
-      :custom-filter="handleFiltering"
+      :filter="handleFiltering"
+      v-model:search="search"
       :hide-no-data="!search"
       :disabled="isDisabled"
       :items="storedItems"
       @click:clear="handleRemoveAllChips()"
-      @keyup.enter="handleNewSearch()"
+      @keyup.enter="handleNewSearch"
       prepend-inner-icon="mdi-magnify"
       bg-color="#fff"
       item-value="verseNumberToQuran"
       item-title="verseText"
       color="blue-darken-4"
       label="ابحث  في الكتاب.."
-      ref="autocomplete"
+      ref="autocompleteRef"
       class="autoBox"
       clearable
       flat
@@ -22,7 +22,7 @@
       multiple
       variant="solo"
     >
-      <!-- <template v-slot:no-data>
+      <template v-slot:no-data>
         <p class="pa-1 text-red">لا يوجد معلومات تطابق البحث!</p>
       </template>
 
@@ -31,7 +31,7 @@
       <template v-slot:prepend-inner>
         <div class="d-flex" @click.prevent="disableInputBox()">
           <autoCompleteChipsBar
-            :chipsData="SearchResults"
+            :chipsData="searchResults"
             :selectedChipIndex="selectedSearchIndex"
             @chipClicked="handleClickedChip"
             @chipRemoved="handleRemovedChip"
@@ -45,7 +45,7 @@
       </template>
 
       <template v-slot:item="{ item, props }">
-        <v-list-item v-bind="props">
+        <div v-bind="props">
           <autoCompleteItem
             :inputText="search"
             :item="item.raw"
@@ -57,10 +57,11 @@
             :title="highlight(item.raw.fileName, search)"
             @clicked="handleSingleItemClicked(item.raw)"
           />
-        </v-list-item>
+        </div>
+        <v-list-item-title></v-list-item-title>
       </template>
 
-      <template v-slot:prepend>
+      <template v-slot:prepend-item>
         <autoCompleteOptionsBar
           class="btnsBar"
           @btn1Clicked="handleNewSearch()"
@@ -70,7 +71,7 @@
           :btn1Title="'إبحث'"
           :btn2Title="'ضِف للبحث الحالي'"
         />
-      </template> -->
+      </template>
     </v-autocomplete>
   </div>
 </template>
@@ -83,6 +84,7 @@ import autoCompleteOptionsBar from './autoCompleteOptionsBar.vue'
 import autoCompleteChipsBar from './autoCompleteChipsBar.vue'
 import appSearchBoxMatch from './appSearchBoxMatch.vue'
 import autoCompleteItem from './autoCompleteItem.vue'
+import { useMixin } from '../mixins/mixins'
 
 const store = useQuranStore()
 const router = useRouter()
@@ -90,13 +92,15 @@ const router = useRouter()
 const isDisabled = ref(false)
 const matchingStatus = ref(false)
 const search = ref(null)
-const autocomplete = ref(null)
+const autocompleteRef = ref(null)
 
 const storedItems = computed(() => store.getOneQuranFile)
 const selectedSearch = computed(() => store.getSelectedSearch)
 const selectedSearchIndex = computed(() => store.getSelectedSearchIndex)
 const inputText = computed(() => selectedSearch.value?.inputText)
-const SearchResults = computed(() => store.getSearchResults)
+const searchResults = computed(() => store.getSearchResults)
+
+const { highlight } = useMixin()
 
 const handleClickedChip = index => {
   store.setSearchIndex(index)
@@ -104,7 +108,7 @@ const handleClickedChip = index => {
 }
 
 const handleRemovedChip = index => {
-  store.setRremoveSearchItem(index)
+  store.setRemoveSearchItem(index)
   if (index !== selectedSearchIndex.value) {
     store.setSearchIndex(selectedSearchIndex.value - 1)
     return
@@ -134,11 +138,11 @@ const handleNewSearch = () => {
 }
 
 const setNewSearch = () => {
-  store.setSearchIndex(SearchResults.value.length)
+  store.setSearchIndex(searchResults.value.length)
   store.setSearchResultsItem({
-    resultsCount: autocomplete.value.filteredItems.length,
-    inputText: autocomplete.value.internalSearch,
-    result: autocomplete.value.filteredItems,
+    resultsCount: autocompleteRef.value.filteredItems.length,
+    inputText: search.value,
+    result: autocompleteRef.value.filteredItems,
   })
   disableInputBox()
 }
@@ -147,24 +151,22 @@ const disableInputBox = () => {
   isDisabled.value = true
   setTimeout(() => {
     isDisabled.value = false
-  }, 10)
-  autocomplete.value.blur()
+  }, 1)
+  autocompleteRef.value.blur()
 }
 
 const handleFiltering = (item, queryText, itemText) => {
-  console.log(item, queryText, itemText)
-  text.value = ' ' + text.value + ' '
-  if (!matchingStatus.value && text.value.match(queryText) !== null) {
-    return text.value
+  search.value = queryText
+  queryText = ' ' + queryText + ' '
+  if (!matchingStatus.value && queryText.match(queryText) !== null) {
+    return queryText
   }
-  return text.value.match(
-    new RegExp('([^\u0621-\u064A]+' + queryText + '[^\u0621-\u064A]+)', 'gim'),
-  )
+  return queryText.match(new RegExp('([^\u0621-\u064A]+' + queryText + '[^\u0621-\u064A]+)', 'gim'))
 }
 
 const resultsCount = () => {
-  if (!autocomplete.value) return
-  return autocomplete.value.filteredItems.length.toString()
+  if (!autocompleteRef.value) return
+  return autocompleteRef.value.filteredItems.length.toString()
 }
 
 const checkAndGo = route => {
@@ -173,22 +175,18 @@ const checkAndGo = route => {
   }
 }
 
-const highlight = (text, search) => {
-  // Implement your highlight logic here
-  return text
-}
-
 watch(inputText, newValue => {
   search.value = newValue
 })
 
 watch(selectedSearchIndex, newValue => {
   if (newValue === -1) return
+  if (!selectedSearch.value) return
   search.value = inputText.value
   store.setTarget({
     fileName:
-      selectedSearch.value.result[0].fileName.replace(/[ء-٩]/g, '').replace(/\s/g, '') +
-      selectedSearch.value.result[0].fileName.replace(/[0-9]/g, ''),
+      selectedSearch.value.result[0].raw.fileName.replace(/[ء-٩]/g, '').replace(/\s/g, '') +
+      selectedSearch.value.result[0].raw.fileName.replace(/[0-9]/g, ''),
     verseIndex: selectedSearch.value.result[0].verseIndex,
   })
 })

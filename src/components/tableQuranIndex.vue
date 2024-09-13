@@ -98,7 +98,7 @@ const runSura = sura => {
   if (router.currentRoute.value.name !== 'singleSura') {
     router.push({ name: 'singleSura' })
   }
-  store.setSearchIndex(-1)
+  store.setSearchIndex(1)
 }
 
 const scrollToIndex = () => {

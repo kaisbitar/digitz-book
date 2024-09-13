@@ -55,15 +55,19 @@ const selectedInput = computed(() => {
 })
 
 const changeView = () => {
-  if (activeView.value === 'detailView') {
-    if (selectedSearchIndex.value > -1) {
+  const isDetailView = activeView.value === 'detailView'
+  const hasSelectedSearch = selectedSearchIndex.value > -1
+
+  if (isDetailView) {
+    if (hasSelectedSearch) {
       checkAndGo('singleSura')
     }
     store.setActiveView('textView')
     store.setScrollTrigger()
     return
   }
-  if (selectedSearchIndex.value > -1) {
+
+  if (hasSelectedSearch) {
     checkAndGo('search')
   }
   store.setActiveView('detailView')
@@ -84,9 +88,9 @@ const toggleDrawer = value => {
 }
 
 const checkAndGo = route => {
-  // if (router.currentRoute.value.name !== route) {
-  //   router.push({ name: route })
-  // }
+  if (router.currentRoute.value.name !== route) {
+    router.push({ name: route })
+  }
 }
 
 onMounted(() => {

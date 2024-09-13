@@ -9,7 +9,7 @@
       />
     </v-row>
     <!-- {{ suraTargetedVerseIndex }} -->
-    <suraText
+    <!-- <suraText
       v-if="activeTab === 'suraText'"
       :suraTextArray="suraTextArray"
       :suraTargetedVerseIndex="suraTargetedVerseIndex"
@@ -18,7 +18,7 @@
       :numberOfWords="numberOfWords"
       :inputText="inputText"
       :isLoading="isLoading"
-    />
+    /> -->
     <dashVerses
       v-if="activeTab === 'numberOfVerses'"
       class="webKitWidth"

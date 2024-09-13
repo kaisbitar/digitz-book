@@ -22,12 +22,12 @@
 </template>
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
-import { useStore } from '@/stores/app'
+import { useQuranStore } from '@/stores/app'
 import dashbord from '../components/dashbord.vue'
 import appTitle from '../components/appTitle'
 import chartOptions from '../assets/frequecyOptions'
 
-const store = useStore()
+const store = useQuranStore()
 
 // Props
 const props = defineProps(['activeView'])
@@ -58,14 +58,16 @@ const getWordsData = tab => {
 }
 
 const createVersesData = () => {
-  versesData.value = versesBasics.value.map(item => ({
-    fileName: item.fileName,
-    verseIndex: item.verseIndex.toString(),
-    verseText: item.verseText,
-    numberOfWords: item.verseText.split(' ').length.toString(),
-    numberOfLetters: item.verseText.replace(/ /g, '').length.toString(),
-    verseNumberToQuran: item.verseNumberToQuran.toString(),
-  }))
+  versesData.value = versesBasics.value.map(item => {
+    return {
+      fileName: item.raw.fileName,
+      verseIndex: item.raw.verseIndex.toString(),
+      verseText: item.raw.verseText,
+      numberOfWords: item.raw.verseText.split(' ').length.toString(),
+      numberOfLetters: item.raw.verseText.replace(/ /g, '').length.toString(),
+      verseNumberToQuran: item.raw.verseNumberToQuran.toString(),
+    }
+  })
 }
 
 const getNextSearch = item => {
@@ -91,8 +93,8 @@ const numberOfVerses = computed(() =>
   selectedSearch.value ? selectedSearch.value.result.length : 0,
 )
 const activeTab = computed(() => store.getActiveTab)
-const SearchResults = computed(() => store.getSearchResults)
-const selectedSearch = computed(() => (SearchResults.value ? store.getSelectedSearch : {}))
+const storeSearchResults = computed(() => store.getSearchResults)
+const selectedSearch = computed(() => (storeSearchResults.value ? store.getSelectedSearch : {}))
 const selectedSearchIndex = computed(() => store.getSelectedSearchIndex)
 const inputText = computed(() =>
   selectedSearch.value ? selectedSearch.value.inputText : undefined,
@@ -104,13 +106,13 @@ const versesBasics = computed(() => (selectedSearch.value ? selectedSearch.value
 const numberOfWords = computed(() => {
   if (!selectedSearch.value) return 0
   return selectedSearch.value.result
-    .map(item => item.verseText.split(' ').length)
+    .map(item => item.raw.verseText.split(' ').length)
     .reduce((a, b) => a + b, 0)
 })
 const numberOfLetters = computed(() => {
   if (!selectedSearch.value) return 0
   return selectedSearch.value.result
-    .map(item => item.verseText.replace(/ /g, '').length)
+    .map(item => item.raw.verseText.replace(/ /g, '').length)
     .reduce((a, b) => a + b, 0)
 })
 const fileName = computed(() => (store.getTarget ? store.getTarget.fileName : undefined))

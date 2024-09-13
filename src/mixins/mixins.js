@@ -1,7 +1,7 @@
 import { storeToRefs } from 'pinia'
 import { useQuranStore } from '../stores/app'
 
-export function useNavigation() {
+export function useMixin() {
   const quranStore = useQuranStore()
   const suraNumber = computed(() => parseInt(quranStore.getTarget.fileName.replace(/^\D+/g, '')))
 
@@ -23,6 +23,7 @@ export function useNavigation() {
   }
 
   const highlight = (text, searchValue) => {
+    // console.log(text, searchValue)
     if (!searchValue) {
       return text
     }

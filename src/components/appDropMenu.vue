@@ -17,7 +17,7 @@
 </template>
 
 <script setup>
-import { ref, defineProps, defineEmits } from 'vue'
+import { ref } from 'vue'
 
 const props = defineProps(['items'])
 const emit = defineEmits(['itemClicked'])

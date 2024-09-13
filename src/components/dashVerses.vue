@@ -159,7 +159,6 @@ const goToverseTextView = () => {
 }
 
 const checkAndGo = route => {
-  console.log(router.getRoutes())
   if (router.currentRoute.value.name !== route) {
     router.push({ name: route })
   }

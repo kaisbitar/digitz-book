@@ -16,12 +16,7 @@
       </div>
     </div>
     <label class="toVerse">
-      <v-select
-        class="toVerse"
-        v-model="selectedIndex"
-        :items="indices"
-        label="إلى الآية"
-      ></v-select>
+      <v-select class="toVerse" :items="indices" label="إلى الآية"></v-select>
     </label>
   </v-row>
 </template>
@@ -75,7 +70,7 @@ const arrowClick = direction => {
 }
 
 watch(selectedIndex, () => {
-  setTargetedVerse(selectedIndex.value)
+  setTargetedVerse(parseInt(selectedIndex.value))
 })
 
 watch(selectedVerse, () => {
@@ -83,7 +78,8 @@ watch(selectedVerse, () => {
 })
 
 onMounted(() => {
-  selectedIndex.value = parseInt(selectedVerse.value)
+  if (!selectedVerse.value) return
+  selectedIndex.value = selectedVerse.value
 })
 </script>
 

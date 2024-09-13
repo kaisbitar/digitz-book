@@ -13,8 +13,8 @@ export const useQuranStore = defineStore('quran', {
       fileName: '001الفاتحة',
       verseIndex: 1,
     },
-    searchResults: [], // Changed from SearchResults to camelCase
-    selectedSearchIndex: 0,
+    searchResults: [], // Changed from searchResults to camelCase
+    selectedSearchIndex: 1,
     oneQuranFile: [],
     tableQuranIndex: [],
     suras: {},
@@ -95,19 +95,19 @@ export const useQuranStore = defineStore('quran', {
     },
     setSearchIndex(index) {
       this.selectedSearchIndex = index
-      this.selectedSearch = this.SearchResults[index]
+      this.selectedSearch = this.searchResults[index]
     },
     resetSuras() {
       this.suras = {}
     },
     setSearchResultsItem(result) {
-      this.SearchResults.push(result)
+      this.searchResults.push(result)
     },
     resetSearchResults() {
-      this.SearchResults = []
+      this.searchResults = []
     },
-    removeSearchItem(index) {
-      this.SearchResults.splice(index, 1)
+    setRemoveSearchItem(index) {
+      this.searchResults.splice(index, 1)
     },
     setOneQuranFile(items) {
       this.oneQuranFile = items

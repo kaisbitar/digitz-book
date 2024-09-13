@@ -8,19 +8,11 @@
         <span v-if="props.textValue" class="yellow ml-1">"{{ props.textValue }}" </span>
         <span class="title mt-n6"> {{ props.resultCounter }}</span> آية
       </v-card>
-      <div v-if="props.secondBtnCondition > -1" class="mr-4">
-        أو
-        <v-btn class="blue lighten-2 white--text mr-4" @click="emit('btn2Clicked')" small>{{
-          props.btn2Title
-        }}</v-btn>
-      </div>
     </v-row>
   </div>
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from 'vue'
-
 const props = defineProps({
   btn1Title: String,
   resultCounter: null,
@@ -29,7 +21,7 @@ const props = defineProps({
   textValue: String,
 })
 
-const emit = defineEmits(['btn1Clicked', 'btn2Clicked'])
+const emit = defineEmits(['btn1Clicked'])
 </script>
 
 <style scoped>

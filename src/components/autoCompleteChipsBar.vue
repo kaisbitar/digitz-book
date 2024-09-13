@@ -8,7 +8,11 @@
               {{ item.resultsCount }}
             </span>
           </div>
-          <v-chip closable @click:close="$emit('chipRemoved', index)">
+          <v-chip
+            closable
+            @click:close="$emit('chipRemoved', index)"
+            @click.prevent="$emit('chipClicked', index)"
+          >
             {{ item.inputText }}
           </v-chip>
         </div>
@@ -18,14 +22,12 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from 'vue'
 // import { fetchAIResponse } from '../api/api.js'
 
 const props = defineProps({
   chipsData: Array,
   selectedChipIndex: Number,
 })
-
 const emit = defineEmits(['chipClicked', 'chipRemoved'])
 
 // const handleChipClick = async (index, word) => {

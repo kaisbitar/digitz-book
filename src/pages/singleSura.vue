@@ -3,6 +3,7 @@
     <div class="d-flex">
       <appTitle @arrowClick="setTargetFromArrow" :title="fileName" />
       <suraTextSearchResults
+        v-if="activeView === 'textView'"
         style="max-width: 641px"
         :selectedVerse="suraTargetedVerseIndex"
         :suraTextArray="suraTextArray"
@@ -10,7 +11,18 @@
       />
     </div>
     <!-- <keep-alive> -->
+    <suraText
+      v-if="activeView === 'textView'"
+      :suraTextArray="suraTextWithTashkeel"
+      :suraTargetedVerseIndex="suraTargetedVerseIndex"
+      :numberOfLetters="numberOfLetters"
+      :numberOfVerses="numberOfVerses"
+      :numberOfWords="numberOfWords"
+      :inputText="inputText"
+      :isLoading="isLoading"
+    />
     <dashbord
+      v-if="activeView === 'detailView' && details"
       :numberOfLetters="numberOfLetters"
       :wordIndexes="details.wordIndexes"
       :numberOfVerses="numberOfVerses"
@@ -37,11 +49,10 @@ import chartOptionsConfig from '@/assets/frequecyOptions'
 import suraText from '@/components/suraText'
 import dashbord from '@/components/dashbord'
 import appTitle from '@/components/appTitle'
-import { useNavigation } from '../mixins/mixins'
-const { setTargetFromArrow } = useNavigation()
+import { useMixin } from '../mixins/mixins'
 
+const { setTargetFromArrow } = useMixin()
 const quranStore = useQuranStore()
-
 const chartOptions = ref(chartOptionsConfig)
 const suraTextWithTashkeel = ref([])
 const numberOfLetters = ref(null)
@@ -58,7 +69,7 @@ const versesSeries = ref([{ data: [] }])
 const wordsSeries = ref([{ data: [] }])
 const details = ref({})
 
-// const activeView = computed(() => store.getActiveView)
+const activeView = computed(() => quranStore.getActiveView)
 const selectedSearch = computed(() => quranStore.getSelectedSearch)
 const selectedSearchIndex = computed(() => quranStore.getSelectedSearchIndex)
 const inputText = computed(() => selectedSearch.value?.inputText || null)
@@ -111,6 +122,14 @@ const prepareData = () => {
   prepareSuraWithTashkeel()
   setSuraToolTip(suraTextArray.value)
 }
+
+const setMushafToolTip = () => {
+  var quranToolTip = tableQuranIndex.value.map(item => {
+    return item.fileName.replace(/[0-9]/g, '')
+  })
+  setSuraToolTip(quranToolTip.shift())
+}
+
 const setSuraToolTip = toolTipText => {
   var x = {
     custom: ({ series, seriesIndex, dataPointIndex, w }) => {
@@ -140,6 +159,7 @@ const setSuraToolTip = toolTipText => {
     ...{ tooltip: x },
   }
 }
+
 const perpareSuraData = () => {
   const letters = []
   const words = []

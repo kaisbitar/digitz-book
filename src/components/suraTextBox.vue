@@ -15,11 +15,7 @@
         >
           {{ index + 1 }}
         </v-chip>
-        <div
-          v-if="inputText"
-          class="d-inline"
-          v-html="$options.filters.highlightVerse(item, inputText)"
-        ></div>
+        <div v-if="inputText" class="d-inline" v-html="highlightVerse(item, inputText)"></div>
         <div v-else class="d-inline">{{ item }}</div>
       </div>
     </div>
@@ -34,10 +30,10 @@
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
 import { useQuranStore } from '@/stores/app'
-import { useNavigation } from '../mixins/mixins'
+import { useMixin } from '../mixins/mixins'
 import { useGoTo } from 'vuetify' // Add this import
 
-const { prepareToScroll } = useNavigation()
+const { prepareToScroll } = useMixin()
 
 // Props
 const props = defineProps(['inputText', 'suraTargetedVerseIndex', 'suraTextArray', 'isLoading'])
