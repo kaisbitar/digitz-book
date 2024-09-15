@@ -93,8 +93,8 @@ const suraIndex = fileName => {
 const runSura = sura => {
   store.setTarget({
     fileName: sura.fileName,
-    verseIndex: null,
-    verseNumberToQuran: sura.verseNumberToQuran,
+    verseIndex: 1,
+    verseNumberToQuran: sura.verseNumberToQuran.toString(),
   })
   if (router.currentRoute.value.name !== 'singleSura') {
     router.push({ name: 'singleSura' })

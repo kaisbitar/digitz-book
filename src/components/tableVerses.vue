@@ -26,13 +26,13 @@
         @update:current-items="setCurrentItems"
         fixed-header
       >
-        <template v-slot:item="{ item }">
+        <template v-slot:item="{ item, index }">
           <tr
             :id="`verse${item.verseNumberToQuran}`"
             class="tableItem"
             :class="{
               mouseOverRow: showMenuIcon === `icon${item.verseNumberToQuran}`,
-              activeTableItemClass: targetVerseNumberToQuran === item.verseNumberToQuran.toString(),
+              activeTableItemClass: isTargetedVerse(item, index, props.targetVerseNumberToQuran),
             }"
             @click="$emit('rowClicked', item)"
             @mouseover="showMenuIcon = `icon${item.verseNumberToQuran}`"
@@ -55,7 +55,7 @@
               :key="index"
               :search="inputText"
               :cellItem="cellItem"
-              @itemClicked="$emit('activateRowItem')"
+              @itemClicked="$emit('activateRowItem', item)"
             />
           </tr>
         </template>
@@ -122,6 +122,7 @@ const pageCount = computed(() => {
 })
 const activeView = computed(() => store.getActiveView)
 const activeTab = computed(() => store.getActiveTab)
+const currentItemsLength = computed(() => currentItems.value.length)
 
 const handleFiltering = (itemText, queryText) => {
   itemText = ' ' + itemText + ' '
@@ -134,20 +135,7 @@ const handleFiltering = (itemText, queryText) => {
 const setCurrentItems = items => {
   if (!items) return
   currentItems.value = items
-  // selectFirstItemInTable()
-}
-
-const scrollToActiveRow = async () => {
-  await nextTick()
-  const activeElements = document.getElementsByClassName('activeTableItemClass')
-  if (activeElements.length > 0) {
-    goTo('.activeTableItemClass', {
-      container: '.versesTable .v-table__wrapper',
-      offset: -100,
-    })
-  } else {
-    console.log('No active elements found')
-  }
+  selectFirstItemInTable()
 }
 
 const selectFirstItemInTable = () => {
@@ -157,8 +145,26 @@ const selectFirstItemInTable = () => {
   //   scrollToActiveRow()
   //   return
   // }
-  emit('activateItem', currentItems.value[0].raw.verseNumberToQuran)
+  // emit('activateItem', currentItems.value[store.getTarget.verseNumberToQuran].raw)
   scrollToActiveRow()
+}
+
+const isTargetedVerse = (item, index, verseNumberToQuran) => {
+  if (verseNumberToQuran === undefined && index === 0) {
+    return true
+  }
+
+  return verseNumberToQuran === item.verseNumberToQuran.toString()
+}
+
+const scrollToActiveRow = async () => {
+  await nextTick()
+  const activeElements = document.getElementsByClassName('activeTableItemClass')
+  if (!activeElements.length > 0) return
+  goTo('.activeTableItemClass', {
+    container: '.versesTable .v-table__wrapper',
+    offset: -100,
+  })
 }
 
 const passClickedMenuItem = item => {
@@ -183,9 +189,6 @@ watch(activeTab, newValue => {
 onMounted(() => {
   scrollToActiveRow()
 })
-
-// Add this computed property
-const currentItemsLength = computed(() => currentItems.value.length)
 </script>
 
 <style>

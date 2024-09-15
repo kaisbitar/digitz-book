@@ -6,9 +6,9 @@
       <span class="thisPage pr-1">{{ label }} </span>
     </div>
     <v-pagination
-      :key="paginationKey"
       v-model="currentPage"
-      :length="pageCount"
+      :length="computedPageCount"
+      :key="computedPageCount"
       active-color="black"
       class="paginator"
     ></v-pagination>
@@ -31,20 +31,14 @@ const emit = defineEmits<{
   (e: 'pageChanged', value: number): void
 }>()
 
-const currentPage = computed({
-  get: () => props.page,
-  set: (value: number) => emit('pageChanged', value),
+const currentPage = ref(props.page)
+
+// Compute pageCount to ensure reactivity
+const computedPageCount = computed(() => props.pageCount)
+
+watch(currentPage, newVal => {
+  emit('pageChanged', newVal)
 })
-
-const paginationKey = ref<number>(0)
-
-watch(
-  () => props.pageCount,
-  () => {
-    // Increment the key to force a re-render of the pagination component
-    paginationKey.value++
-  },
-)
 </script>
 
 <style scoped>

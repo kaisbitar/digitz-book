@@ -10,10 +10,10 @@
         :isLoading="props.isLoading"
         :groupBy="null"
         :dataType="' عن آية أو رقم'"
-        @activateItem="targetVerseNumberToQuran"
+        @activateItem="setTargetedSuraAndVerse"
         @rowClicked="handleVerseClick"
         @handleClickedMenu="runMenuItem"
-        @activateRowItem="goToverseTextView"
+        @activateRowItem="goToVerseTextView"
       />
     </v-card>
     <tableDialogEdit
@@ -67,7 +67,7 @@ const fileName = computed(() => quranStore.getTarget?.fileName || '001الفات
 
 const index = ref(1)
 const tableHeaders = ref([
-  { text: 'INDEX', value: '', class: 'brown lighten-5 black--text', width: '100' },
+  { text: 'INDEX', value: '', class: 'brown-lighten-5 black--text', width: '100' },
   {
     text: 'السورة',
     value: 'fileName',
@@ -118,6 +118,25 @@ const handleVerseClick = item => {
   perpareChartData(item)
 }
 
+const setTargetedSuraAndVerse = item => {
+  if (targetFileName.value === '000المصحف') {
+    const target = {
+      fileName: '000المصحف',
+      verseIndex: item.verseIndex,
+      verseNumberToQuran: item.verseNumberToQuran,
+    }
+    store.setTarget(target)
+    return
+  }
+  const suraNumber = item.fileName.replace(/[ء-٩]/g, '').replace(/\s/g, '')
+  const suraName = item.fileName.replace(/[0-9]/g, '')
+  store.setTarget({
+    fileName: `${suraNumber}${suraName}`,
+    verseIndex: item.verseIndex,
+    verseNumberToQuran: item.verseNumberToQuran,
+  })
+}
+
 const getOneVerseWordIndexes = text => {
   wordIndexes.value = {}
   text.split(' ').forEach((word, index) => {
@@ -137,28 +156,9 @@ const runMenuItem = item => {
   if (item === 'showEditVerse') showEditVerse.value = true
 }
 
-const setTargetedSuraAndVerse = item => {
-  if (targetFileName.value === '000المصحف') {
-    const target = {
-      fileName: '000المصحف',
-      verseIndex: item.verseIndex,
-      verseNumberToQuran: item.verseNumberToQuran,
-    }
-    store.setTarget(target)
-    return
-  }
-
-  const suraNumber = item.fileName.replace(/[ء-٩]/g, '').replace(/\s/g, '')
-  const suraName = item.fileName.replace(/[0-9]/g, '')
-  store.setTarget({
-    fileName: `${suraNumber}${suraName}`,
-    verseIndex: item.verseIndex,
-    verseNumberToQuran: item.verseNumberToQuran,
-  })
-}
-
-const goToverseTextView = () => {
+const goToVerseTextView = value => {
   store.setActiveView('textView')
+  setTargetedSuraAndVerse(value)
   checkAndGo('singleSura')
 }
 

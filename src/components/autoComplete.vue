@@ -149,10 +149,6 @@ const setNewSearch = () => {
 }
 
 const disableInputBox = () => {
-  isDisabled.value = true
-  setTimeout(() => {
-    isDisabled.value = false
-  }, 1)
   autocompleteRef.value.blur()
 }
 

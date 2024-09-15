@@ -23,7 +23,6 @@ export const useQuranStore = defineStore('quran', {
     activeTab: 'numberOfVerses',
     activeView: 'detailView',
     selectedSearch: [],
-    updateDate: '04-18-2021',
     chartFreqType: 'words',
     allVersesWithTashkeel: [], // Added this missing state property
   }),
