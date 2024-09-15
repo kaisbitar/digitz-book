@@ -28,6 +28,7 @@ const handleClick = (event, chartContext, config) => {
   store.setTarget({
     fileName: props.fileName, // Make sure to pass fileName as a prop if needed
     verseIndex: config.dataPointIndex + 1,
+    verseNumberToQuran: 'appChart',
   })
 }
 

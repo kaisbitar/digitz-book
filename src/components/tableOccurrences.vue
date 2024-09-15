@@ -39,13 +39,22 @@
 <script setup>
 import { ref, computed } from 'vue'
 import tablePagination from './tablePagination.vue'
-import {
-  getTableHeight,
-  changeSearch,
-  changeMatchingStatus,
-  dataType,
-} from '@/mixins/tableOccMixin'
-
+import { useTableOcc } from '@/mixins/tableOccMixin'
+// export const {
+//   windowHeight,
+//   collapseDone,
+//   search,
+//   matchingStatus,
+//   getTableHeight,
+//   collapseHeaders,
+//   changeSearch,
+//   changeMatchingStatus,
+//   highlight,
+//   dataType,
+//   footerProps,
+//   tableHeaders,
+//   isLoading,
+// } = useTableOcc({})
 const page = ref(1)
 const pageCount = ref(0)
 const currentItemsLength = ref(0)

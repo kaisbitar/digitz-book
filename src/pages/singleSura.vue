@@ -10,7 +10,6 @@
         :inputText="inputText"
       />
     </div>
-    <!-- <keep-alive> -->
     <suraText
       v-if="activeView === 'textView'"
       :suraTextArray="suraTextWithTashkeel"
@@ -21,8 +20,9 @@
       :inputText="inputText"
       :isLoading="isLoading"
     />
+    <!-- <keep-alive> -->
     <dashbord
-      v-if="activeView === 'detailView' && details"
+      v-if="activeView === 'detailView' && selectedSearchIndex === -1"
       :numberOfLetters="numberOfLetters"
       :wordIndexes="details.wordIndexes"
       :numberOfVerses="numberOfVerses"

@@ -4,23 +4,26 @@
       class="suraText"
       v-for="(item, index) in suraTextArray"
       :key="index"
-      :class="[index - 1, { targetedVerse: index + 1 === parseInt(suraTargetedVerseIndex) }]"
-      @click="setTargetedVerse(index + 1)"
+      :class="[
+        index - 1,
+        { 'bg-yellow-accent-1 targetedVerse': index + 1 === parseInt(suraTargetedVerseIndex) },
+      ]"
+      @click="setTargetedVerse(item, index + 1)"
     >
-      <div :id="'v' + (index + 1)" class="d-inline ml-2">
-        <v-chip
+      <div :id="'v' + (index + 1)">
+        <div
           class="numChip"
           label
-          :class="[{ 'grey white--text': index + 1 === suraTargetedVerseIndex }]"
+          :class="[{ 'bg-grey text-white': index + 1 === suraTargetedVerseIndex }]"
         >
           {{ index + 1 }}
-        </v-chip>
+        </div>
         <div v-if="inputText" class="d-inline" v-html="highlightVerse(item, inputText)"></div>
         <div v-else class="d-inline">{{ item }}</div>
       </div>
     </div>
     <v-row justify="center" class="suraTextSearchResults">
-      <v-overlay color="white" :absolute="true" :opacity="0.8" :value="isLoading">
+      <v-overlay color="white" :model-value="isLoading" scrim="white" :opacity="0.8">
         <v-progress-circular color="indigo" indeterminate></v-progress-circular>
       </v-overlay>
     </v-row>
@@ -44,43 +47,45 @@ const store = useQuranStore()
 // Data
 const suraText = ref([])
 
+const goTo = useGoTo()
 // Methods
-const scrollToVerse = verse => {
+const scrollToVerse = async () => {
+  await nextTick()
   if (!document.getElementById('suraBlock')) return
-  const goTo = useGoTo()
-  goTo(verse.toString(), {
+  goTo('.targetedVerse', {
     container: '#suraBlock',
-    offset: 0,
+    offset: -100,
   })
 }
 
-const setTargetedVerse = index => {
+const setTargetedVerse = (verse, index) => {
   store.setTarget({
     fileName: store.getTarget.fileName,
     verseIndex: index,
+    verseNumberToQuran: verse.verseNumberToQuran,
   })
 }
 
 // Computed properties
-const scrollTrigger = computed(() => store.state.scrollTrigger)
+const scrollTrigger = computed(() => store.getScrollTrigger)
 const fileName = computed(() => store.getTarget.fileName)
 const activeView = computed(() => store.getTarget.activeView)
 
 // Watchers
-// watch(scrollTrigger, () => {
-//   if (activeView.value === 'detailView') return
-//   const verse = prepareToScroll(props.suraTargetedVerseIndex)
-//   scrollToVerse(verse)
-// })
+watch(scrollTrigger, () => {
+  if (activeView.value === 'detailView') return
+  const verse = prepareToScroll(props.suraTargetedVerseIndex)
+  scrollToVerse(verse)
+})
 
-// watch(
-//   () => props.suraTargetedVerseIndex,
-//   () => {
-//     if (activeView.value === 'detailView') return
-//     const verse = prepareToScroll(props.suraTargetedVerseIndex)
-//     scrollToVerse(verse)
-//   },
-// )
+watch(
+  () => props.suraTargetedVerseIndex,
+  () => {
+    if (activeView.value === 'detailView') return
+    const verse = prepareToScroll(props.suraTargetedVerseIndex)
+    scrollToVerse(verse)
+  },
+)
 
 // Filters
 const highlightVerse = (text, value) => {
@@ -88,7 +93,7 @@ const highlightVerse = (text, value) => {
   text = text.replace(/[\u064b-\u064f\u0650-\u0652]/g, '')
   const query = new RegExp(value, 'ig')
   return text.replace(query, match => {
-    return '<span class="orange accent-1 font-weight-bold">' + match + '</span>'
+    return '<span class="bg-orange-lighten-3 font-weight-bold">' + match + '</span>'
   })
 }
 
@@ -110,14 +115,12 @@ onMounted(() => {
 .numChip {
   /* brown lighten-5 */
   /* width: 41px; */
-  /* background: #efebe9; */
+  background: #efebe9;
   margin-left: 6px;
   padding-right: 12px;
   padding-left: 12px;
-}
-.targetedVerse {
-  /* yellow accent-1 */
-  background: #424242;
+  margin-bottom: 4px;
+  display: -webkit-inline-box;
 }
 .TargetedChip {
   color: white !important;

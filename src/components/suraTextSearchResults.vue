@@ -2,22 +2,26 @@
   <v-row v-if="indices" class="selectsWrap d-flex pillsWrap">
     <v-card
       v-if="inputText"
-      class="elevation-0 pl-2 pr-2 label grey lighten-3 ml-2"
+      class="elevation-0 px-2 label bg-grey-lighten-3 ml-2"
       style="width: fit-content"
     >
       "<span class="font-weight-bold">{{ inputText }}</span
-      >" = <span class="title">{{ indices.length }}</span>
-      <span class="caption">مرة</span>
+      >" = <span class="text-h6">{{ indices.length }}</span>
+      <span class="text-caption">مرة</span>
     </v-card>
     <div class="versesArrow d-none d-sm-block">
-      <div><v-icon @click="arrowClick(-1)">mdi-chevron-up</v-icon></div>
-      <div>
-        <v-icon @click="arrowClick(1)" class="">mdi-chevron-down</v-icon>
-      </div>
+      <v-btn icon="mdi-chevron-up" variant="text" @click="arrowClick(-1)"></v-btn>
+      <v-btn icon="mdi-chevron-down" variant="text" @click="arrowClick(1)"></v-btn>
     </div>
-    <label class="toVerse">
-      <v-select class="toVerse" :items="indices" label="إلى الآية"></v-select>
-    </label>
+    <div class="toVerse">
+      <v-select
+        :items="indices"
+        label="إلى الآية"
+        density="compact"
+        variant="outlined"
+        v-model="selectedVerse"
+      ></v-select>
+    </div>
   </v-row>
 </template>
 
@@ -27,8 +31,6 @@ import { useQuranStore } from '@/stores/app'
 
 const props = defineProps(['inputText', 'items', 'suraTextArray'])
 const store = useQuranStore()
-
-const selectedIndex = ref(0)
 
 const selectedVerse = computed(() => {
   if (!store.getTarget) return 1
@@ -58,28 +60,20 @@ const setTargetedVerse = index => {
 }
 
 const arrowClick = direction => {
-  const currentIndex = indices.value.indexOf(selectedIndex.value)
+  const currentIndex = indices.value.indexOf(selectedVerse.value)
   const newIndex = currentIndex + direction
   if (newIndex < 0) {
-    selectedIndex.value = indices.value[indices.value.length - 1]
+    store.setTarget({ ...store.getTarget, verseIndex: indices.value[indices.value.length - 1] })
   } else if (newIndex >= indices.value.length) {
-    selectedIndex.value = indices.value[0]
+    store.setTarget({ ...store.getTarget, verseIndex: indices.value[0] })
   } else {
-    selectedIndex.value = indices.value[newIndex]
+    store.setTarget({ ...store.getTarget, verseIndex: indices.value[newIndex] })
   }
 }
 
-watch(selectedIndex, () => {
-  setTargetedVerse(parseInt(selectedIndex.value))
-})
-
-watch(selectedVerse, () => {
-  selectedIndex.value = parseInt(selectedVerse.value)
-})
-
 onMounted(() => {
   if (!selectedVerse.value) return
-  selectedIndex.value = selectedVerse.value
+  store.setTarget({ ...store.getTarget, verseIndex: selectedVerse.value })
 })
 </script>
 

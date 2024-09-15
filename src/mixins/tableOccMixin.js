@@ -1,5 +1,4 @@
 import { ref, computed, onMounted } from 'vue'
-import appSearchBox from '../components/appSearchBox.vue'
 
 export function useTableOcc(props) {
   const windowHeight = ref(window.innerHeight)
@@ -26,7 +25,7 @@ export function useTableOcc(props) {
     })
   }
 
-  const changeSearch = newSearch => {
+  function changeSearch(newSearch) {
     search.value = newSearch
   }
 
@@ -53,38 +52,4 @@ export function useTableOcc(props) {
     changeMatchingStatus,
     highlight,
   }
-}
-export const {
-  windowHeight,
-  collapseDone,
-  search,
-  matchingStatus,
-  getTableHeight,
-  collapseHeaders,
-  changeSearch,
-  changeMatchingStatus,
-  highlight,
-  dataType,
-  footerProps,
-  tableHeaders,
-  isLoading,
-} = useTableOcc({})
-
-// Export the component separately if needed
-export default {
-  name: 'TableOcc',
-  components: { appSearchBox },
-  props: [
-    'tableData',
-    'tableHeaders',
-    'footerProps',
-    'isLoading',
-    'groupBy',
-    'dataType',
-    'includeTab',
-    'detailElement',
-  ],
-  setup(props) {
-    return useTableOcc(props)
-  },
 }

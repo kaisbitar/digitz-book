@@ -1,57 +1,57 @@
 <template>
-  <v-card outlined class="d-flex pt-2 paginationWrapper" color="grey lighten-5">
-    <div class="currentItemsLength mb-2 mt-1 mr-4 ml-4">
+  <v-card class="d-flex pt-2 paginationWrapper">
+    <div class="itemsLength mb-2 mt-1 mr-4 ml-4">
       <span class="thisPage">هذه الصفحة: </span>
-      <span class="font-weight-bold">{{ currentItemsLength }}</span>
+      <span class="font-weight-bold">{{ itemsLength }}</span>
       <span class="thisPage pr-1">{{ label }} </span>
     </div>
     <v-pagination
-      v-model="pageLocal"
+      :key="paginationKey"
+      v-model="currentPage"
       :length="pageCount"
-      color="brown lighten-4 black--text font-weight-bold"
+      active-color="black"
       class="paginator"
     ></v-pagination>
   </v-card>
 </template>
 
-<script setup>
-import { ref, watch, onMounted } from 'vue'
+<script setup lang="ts">
+import { ref, watch, computed } from 'vue'
 
-const props = defineProps({
-  page: Number,
-  pageCount: Number,
-  currentItemsLength: Number,
-  label: String,
+interface Props {
+  page: number
+  pageCount: number
+  itemsLength: number
+  label: string
+}
+
+const props = defineProps<Props>()
+
+const emit = defineEmits<{
+  (e: 'pageChanged', value: number): void
+}>()
+
+const currentPage = computed({
+  get: () => props.page,
+  set: (value: number) => emit('pageChanged', value),
 })
 
-const emit = defineEmits(['pageChanged'])
-
-const pageLocal = ref(1)
+const paginationKey = ref<number>(0)
 
 watch(
-  () => pageLocal.value,
-  newValue => {
-    emit('pageChanged', newValue)
+  () => props.pageCount,
+  () => {
+    // Increment the key to force a re-render of the pagination component
+    paginationKey.value++
   },
 )
-
-watch(
-  () => props.page,
-  newValue => {
-    pageLocal.value = newValue
-  },
-)
-
-onMounted(() => {
-  pageLocal.value = props.page
-})
 </script>
 
-<style>
-ul.v-pagination.theme--light {
+<style scoped>
+.v-pagination {
   zoom: 0.7;
 }
-.currentItemsLength {
+.itemsLength {
   font-size: 14px;
   width: 113px;
 }

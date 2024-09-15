@@ -2,10 +2,10 @@
   <div class="webKitWidth grey lighten-5">
     <div class="d-flex pt-1 topBar">
       <appSearchBox
-        @search-changed="changeSearch"
-        @match-changed="changeMatchingStatus"
-        :input-text="search"
-        :data-type="dataType"
+        @searchChanged="changeSearch"
+        @matchChanged="changeMatchingStatus"
+        :inputText="inputText"
+        :dataType="dataType"
       />
     </div>
     <div>
@@ -20,20 +20,19 @@
         :headers="tableHeaders"
         :loading="isLoading"
         :items="tableData"
-        :search="search"
+        :search="inputText"
         :items-per-page="50"
-        :page.sync="page"
-        @page-count="pageCount = $event"
-        @current-items="setCurrentItems"
+        v-model:page="page"
+        @update:current-items="setCurrentItems"
         fixed-header
       >
-        <template #item="{ item }">
+        <template v-slot:item="{ item }">
           <tr
             :id="`verse${item.verseNumberToQuran}`"
             class="tableItem"
             :class="{
               mouseOverRow: showMenuIcon === `icon${item.verseNumberToQuran}`,
-              activeTableItem2: activeTableItemIdLocal === item.verseNumberToQuran.toString(),
+              activeTableItemClass: targetVerseNumberToQuran === item.verseNumberToQuran.toString(),
             }"
             @click="$emit('rowClicked', item)"
             @mouseover="showMenuIcon = `icon${item.verseNumberToQuran}`"
@@ -54,7 +53,7 @@
             <tableVerseItem
               v-for="(cellItem, index) in item"
               :key="index"
-              :search="search"
+              :search="inputText"
               :cellItem="cellItem"
               @itemClicked="$emit('activateRowItem')"
             />
@@ -63,8 +62,8 @@
       </v-data-table>
       <tablePagination
         :page="page"
-        :page-count="pageCount"
-        :current-items-length="currentItemsLength"
+        :pageCount="pageCount"
+        :itemsLength="currentItemsLength"
         label="آية"
         @pageChanged="changePage"
       />
@@ -79,40 +78,51 @@ import appSearchBox from './appSearchBox.vue'
 import tableVerseItem from './tableVerseItem.vue'
 import appDropMenu from './appDropMenu.vue'
 import tablePagination from './tablePagination.vue'
-import {
+import { useTableOcc } from '../mixins/tableOccMixin'
+import { useGoTo } from 'vuetify'
+import { nextTick } from 'vue'
+
+const props = defineProps([
+  'tableData',
+  'groupBy',
+  'includeTab',
+  'inputText',
+  'menuItems',
+  'targetVerseNumberToQuran',
+  'isLoading',
+  'dataType',
+  'footerProps',
+  'tableHeaders',
+])
+
+const {
+  matchingStatus,
   getTableHeight,
+  collapseHeaders,
   changeSearch,
   changeMatchingStatus,
-  dataType,
-  footerProps,
-  isLoading,
-  tableHeaders,
-} from '@/mixins/tableOccMixin'
-const emit = defineEmits(['rowClicked', 'activateRowItem', 'handleClickedMenu'])
+  highlight,
+} = useTableOcc(props)
 
-const props = defineProps(['tableData', 'inputText', 'menuItems', 'activeTableItemId'])
-
+const emit = defineEmits(['rowClicked', 'activateRowItem', 'handleClickedMenu', 'activateItem'])
 const store = useQuranStore()
+const goTo = useGoTo()
 
 // Reactive state
-const matchingStatus = ref(false)
 const showMenuIcon = ref(false)
-const activeTableItemIdLocal = ref('')
 const editItem = ref({})
 const page = ref(1)
-const pageCount = ref(0)
-const currentItemsLength = ref(0)
-const search = ref('')
+const itemsPerPage = 50 // Fixed at 50 items per page
 const currentItems = ref([])
 
 // Computed properties
+
+const pageCount = computed(() => {
+  return Math.ceil(props.tableData.length / itemsPerPage)
+})
 const activeView = computed(() => store.getActiveView)
 const activeTab = computed(() => store.getActiveTab)
-const selectedSearch = computed(() => store.getSelectedSearch)
-const selectedSearchIndex = computed(() => store.getSelectedSearchIndex)
-const storeFileName = computed(() => store.getTarget.fileName)
 
-// Methods
 const handleFiltering = (itemText, queryText) => {
   itemText = ' ' + itemText + ' '
   if (!matchingStatus.value && itemText.match(queryText) !== null) {
@@ -124,29 +134,30 @@ const handleFiltering = (itemText, queryText) => {
 const setCurrentItems = items => {
   if (!items) return
   currentItems.value = items
-  currentItemsLength.value = items.length
-  selectFirstItemInTable()
+  // selectFirstItemInTable()
 }
 
-const scrollToActiveRow = () => {
-  if (document.getElementsByClassName('activeTableItem2').length > 0) {
-    setTimeout(() => {
-      vuetify.goTo('.activeTableItem2', {
-        container: '.versesTable .v-data-table__wrapper',
-        offset: 100,
-      })
-    }, 100)
+const scrollToActiveRow = async () => {
+  await nextTick()
+  const activeElements = document.getElementsByClassName('activeTableItemClass')
+  if (activeElements.length > 0) {
+    goTo('.activeTableItemClass', {
+      container: '.versesTable .v-table__wrapper',
+      offset: -100,
+    })
+  } else {
+    console.log('No active elements found')
   }
 }
 
 const selectFirstItemInTable = () => {
   if (!currentItems.value[0]) return
-  if (storeFileName.value === '000المصحف') {
-    activeTableItemIdLocal.value = currentItems.value[0].verseNumberToQuran
-    scrollToActiveRow()
-    return
-  }
-  activeTableItemIdLocal.value = currentItems.value[0].verseNumberToQuran
+  // if (storeFileName.value === '000المصحف') {
+  //   activeTableItemIdLocal.value = currentItems.value[0].raw.verseNumberToQuran
+  //   scrollToActiveRow()
+  //   return
+  // }
+  emit('activateItem', currentItems.value[0].raw.verseNumberToQuran)
   scrollToActiveRow()
 }
 
@@ -158,14 +169,6 @@ const changePage = newPage => {
   page.value = newPage
 }
 
-// Watchers
-watch(
-  () => props.inputText,
-  newValue => {
-    search.value = newValue
-  },
-)
-
 watch(activeView, newValue => {
   if (newValue === 'textView') return
   scrollToActiveRow()
@@ -176,27 +179,13 @@ watch(activeTab, newValue => {
   scrollToActiveRow()
 })
 
-watch(
-  () => props.tableData,
-  () => {
-    page.value = 1
-    scrollToActiveRow()
-  },
-)
-
-watch(
-  () => props.activeTableItemId,
-  newValue => {
-    activeTableItemIdLocal.value = newValue
-  },
-)
-
 // Lifecycle hooks
 onMounted(() => {
-  search.value = props.inputText
-  activeTableItemIdLocal.value = props.activeTableItemId
   scrollToActiveRow()
 })
+
+// Add this computed property
+const currentItemsLength = computed(() => currentItems.value.length)
 </script>
 
 <style>
@@ -206,7 +195,7 @@ onMounted(() => {
 .verse td {
   font-weight: 500;
 }
-.versesTable .v-data-table__wrapper {
+.versesTable .v-table__wrapper {
   overflow-x: hidden;
 }
 .menuIcon {

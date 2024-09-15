@@ -52,7 +52,7 @@ const wrapperHeight = computed(() => {
   const filterSectionDOM = document.getElementById('wrapper')
   return filterSectionDOM ? filterSectionDOM.offsetHeight : 'auto'
 })
-const fileName = computed(() => store.state.target.fileName)
+const fileName = computed(() => store.getTarget.fileName)
 
 // Watchers
 watch(windowHeight, () => {

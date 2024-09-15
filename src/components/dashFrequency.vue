@@ -25,7 +25,7 @@ const props = defineProps({
 
 const store = useQuranStore()
 
-const chartFreqType = computed(() => store.state.chartFreqType)
+const chartFreqType = computed(() => store.getChartFreqType)
 
 const changeType = type => {
   store.setChartFreqType(type)

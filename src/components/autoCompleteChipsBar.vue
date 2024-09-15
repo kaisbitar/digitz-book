@@ -2,8 +2,8 @@
   <div class="d-flex">
     <v-chip-group class="auto-chips black-text" mandatory show-arrows>
       <div v-for="(item, index) in chipsData" :key="index">
-        <div :class="{ 'not-active': index !== selectedChipIndex }">
-          <div class="d-flex labels-holder mr-3">
+        <div :class="{ notActive: index !== selectedChipIndex }">
+          <div class="d-flex labelsHolder mr-3">
             <span class="bg-blue text-white px-1 ml-2">
               {{ item.resultsCount }}
             </span>

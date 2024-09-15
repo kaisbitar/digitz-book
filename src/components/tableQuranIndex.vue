@@ -58,7 +58,7 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import { useQuranStore } from '@/stores/app'
 import { useRouter } from 'vue-router'
-import { useGoTo } from 'vuetify' // Add this import
+import { useGoTo } from 'vuetify'
 
 const store = useQuranStore()
 const router = useRouter()
@@ -94,11 +94,12 @@ const runSura = sura => {
   store.setTarget({
     fileName: sura.fileName,
     verseIndex: null,
+    verseNumberToQuran: sura.verseNumberToQuran,
   })
   if (router.currentRoute.value.name !== 'singleSura') {
     router.push({ name: 'singleSura' })
   }
-  store.setSearchIndex(1)
+  store.setSearchIndex(-1)
 }
 
 const scrollToIndex = () => {
@@ -169,7 +170,7 @@ th {
   opacity: 0.7;
 }
 .activeTableItem,
-.activeTableItem2 {
+.activeTableItemClass {
   color: black !important;
   font-weight: 500 !important;
   background: #efebe9 !important;

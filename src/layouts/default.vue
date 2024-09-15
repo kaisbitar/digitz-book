@@ -4,7 +4,7 @@
       <v-navigation-drawer :width="drawerWidth" v-model="drawer" app right class="grey lighten-4">
         <tableQuranIndex @showDetailToggle="calculateWidth" />
       </v-navigation-drawer>
-      <v-app-bar class="topHeader brown lighten-5" flat app :height="71">
+      <v-app-bar class="topHeader" color="brown-lighten-5" flat app :height="71">
         <v-app-bar-nav-icon @click.stop=";(drawer = !drawer), toggleDrawer(drawer)">
         </v-app-bar-nav-icon>
         <v-progress-linear
@@ -25,9 +25,8 @@
             <div @click="changeView" class="pl-2 pr-2" style="font-size: 12px">detailView</div>
           </v-card>
         </div>
+        <router-view :activeView="activeView" />
       </div>
-
-      <router-view />
     </v-main>
   </v-app>
 </template>
@@ -66,7 +65,6 @@ const changeView = () => {
     store.setScrollTrigger()
     return
   }
-
   if (hasSelectedSearch) {
     checkAndGo('search')
   }

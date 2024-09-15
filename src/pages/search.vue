@@ -1,23 +1,23 @@
 <template>
   <div class="compWrapper">
     <appTitle :title="inputText" @arrowClick="getNextSearch" />
-    <keep-alive>
-      <dashbord
-        v-if="!isLoading"
-        :inputText="inputText"
-        @tabChanged="getWordsData"
-        :chartFreqSeries="[{ data: [] }]"
-        :chartOptions="chartOptions"
-        :numberOfVerses="numberOfVerses"
-        :numberOfWords="numberOfWords"
-        :numberOfLetters="numberOfLetters"
-        :isLoading="isLoading"
-        :wordIndexes="details.wordIndexes"
-        :suraTextArray="searchResults"
-        :versesBasics="versesData"
-        :activeTab="activeTab"
-      />
-    </keep-alive>
+    <!-- <keep-alive> -->
+    <dashbord
+      v-if="!isLoading"
+      :inputText="inputText"
+      @tabChanged="getWordsData"
+      :chartFreqSeries="[{ data: [] }]"
+      :chartOptions="chartOptions"
+      :numberOfVerses="numberOfVerses"
+      :numberOfWords="numberOfWords"
+      :numberOfLetters="numberOfLetters"
+      :isLoading="isLoading"
+      :wordIndexes="details.wordIndexes"
+      :suraTextArray="searchResults"
+      :versesBasics="versesData"
+      :activeTab="activeTab"
+    />
+    <!-- </keep-alive> -->
   </div>
 </template>
 <script setup>
@@ -45,7 +45,7 @@ const tableHeaders = [
   { text: 'السورة', value: 'sura', class: 'grey lighten-2' },
   { text: 'رقم', value: 'verseIndex', class: 'grey lighten-2' },
   { text: 'مصحف', value: 'verseNumberToQuran', class: 'grey lighten-2' },
-  { text: 'نص', value: 'verseText', class: 'grey lighten-2' },
+  // { text: 'نص', value: 'verseText', class: 'grey lighten-2' },
 ]
 
 // Methods
@@ -81,7 +81,7 @@ const getNextSearch = item => {
 const fetchSuraDetails = async () => {
   isLoading.value = true
   try {
-    const items = await store.dispatch('getSuraDetails')
+    const items = await store.getSuraDetails()
     details.value = items
   } finally {
     isLoading.value = false
@@ -93,8 +93,7 @@ const numberOfVerses = computed(() =>
   selectedSearch.value ? selectedSearch.value.result.length : 0,
 )
 const activeTab = computed(() => store.getActiveTab)
-const storeSearchResults = computed(() => store.getSearchResults)
-const selectedSearch = computed(() => (storeSearchResults.value ? store.getSelectedSearch : {}))
+const selectedSearch = computed(() => (store.getSearchResults ? store.getSelectedSearch : {}))
 const selectedSearchIndex = computed(() => store.getSelectedSearchIndex)
 const inputText = computed(() =>
   selectedSearch.value ? selectedSearch.value.inputText : undefined,
@@ -115,10 +114,6 @@ const numberOfLetters = computed(() => {
     .map(item => item.raw.verseText.replace(/ /g, '').length)
     .reduce((a, b) => a + b, 0)
 })
-const fileName = computed(() => (store.getTarget ? store.getTarget.fileName : undefined))
-const parentcount = computed(() =>
-  store.getSelectedSearch ? store.getSelectedSearch.resultsCount : undefined,
-)
 
 // Watch
 watch(versesBasics, () => {

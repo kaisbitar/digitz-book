@@ -1,13 +1,13 @@
 <template>
-  <div flat class="appSearchBox d-flex">
+  <div class="appSearchBox d-flex">
     <v-text-field
       v-model="search"
-      background-color="white"
-      :label="'ابحث عن ' + props.dataType"
-      append-icon="mdi-magnify"
+      bg-color="white"
+      :label="'ابحث عن ' + dataType"
+      append-inner-icon="mdi-magnify"
       clearable
-      outlined
-      dense
+      variant="outlined"
+      density="compact"
     >
       <template #prepend-inner>
         <appSearchBoxMatch

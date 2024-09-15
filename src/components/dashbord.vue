@@ -81,7 +81,7 @@ const store = useQuranStore()
 const windowHeight = ref(window.innerHeight)
 
 const tabs = computed(() => [
-  { title: 'نص', name: 'suraText' },
+  // { title: 'نص', name: 'suraText' },
   { title: 'آية', value: props.numberOfVerses, name: 'numberOfVerses' },
   { title: 'كلمة', value: props.numberOfWords, name: 'numberOfWords' },
   { title: 'حرف', value: props.numberOfLetters, name: 'numberOfLetters' },

@@ -14,7 +14,7 @@ export const useQuranStore = defineStore('quran', {
       verseIndex: 1,
     },
     searchResults: [], // Changed from searchResults to camelCase
-    selectedSearchIndex: 1,
+    selectedSearchIndex: -1,
     oneQuranFile: [],
     tableQuranIndex: [],
     suras: {},
@@ -88,7 +88,11 @@ export const useQuranStore = defineStore('quran', {
       this.scrollTrigger = !this.scrollTrigger
     },
     setTarget(target) {
-      this.target = { fileName: target.fileName, verseIndex: target.verseIndex }
+      this.target = {
+        fileName: target.fileName,
+        verseIndex: target.verseIndex,
+        verseNumberToQuran: target.verseNumberToQuran,
+      }
     },
     resetTarget() {
       this.target = { fileName: '001الفاتحة', verseIndex: null }

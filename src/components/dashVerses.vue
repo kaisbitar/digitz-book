@@ -1,16 +1,17 @@
 <template>
   <div class="dashVerses d-flex">
-    <v-card class="webKitWidth" flat v-show="!showSingleVerse">
+    <v-card class="webKitWidth" flat v-if="!showSingleVerse">
       <tableVerses
         :tableData="props.versesBasics"
         :tableHeaders="tableHeaders"
         :inputText="props.inputText"
         :menuItems="menuItems"
-        :activeTableItemId="verseNumberToQuran"
+        :targetVerseNumberToQuran="targetVerseNumberToQuran"
         :isLoading="props.isLoading"
         :groupBy="null"
         :dataType="' عن آية أو رقم'"
-        @rowClicked="handleVerseSelection"
+        @activateItem="targetVerseNumberToQuran"
+        @rowClicked="handleVerseClick"
         @handleClickedMenu="runMenuItem"
         @activateRowItem="goToverseTextView"
       />
@@ -23,7 +24,7 @@
       :verseText="verseText"
       :showEditVerse="showEditVerse"
     />
-    <div class="pt-5 webKitWidth" outlined v-if="showSingleVerse">
+    <div class="pt-5 webKitWidth" outlined v-show="showSingleVerse">
       <dashSingleVerse
         v-if="showSingleVerse"
         :verseIndex="verseIndex"
@@ -87,9 +88,9 @@ const menuItems = ref([
 ])
 const verseChart = ref([])
 const verseIndex = ref('')
-const verseNumberToQuran = ref('')
-const numberOfLetters = ref('')
-const numberOfWords = ref('')
+const verseNumberToQuran = ref(1)
+const numberOfLetters = ref(0)
+const numberOfWords = ref(0)
 const verseText = ref('')
 const options = ref(chartOptions)
 const windowHeight = ref(window.innerHeight)
@@ -101,12 +102,10 @@ const showSingleVerse = ref(false)
 const store = useQuranStore()
 
 const singleVerseHeight = computed(() => windowHeight.value - 420)
-
 const targetFileName = computed(() => store.getTarget?.fileName)
+const targetVerseNumberToQuran = computed(() => store.getTarget?.verseNumberToQuran)
 
-const targetVerseIndex = computed(() => store.getTarget?.verseIndex)
-
-const handleVerseSelection = item => {
+const handleVerseClick = item => {
   if (!item) return
   verseIndex.value = item.verseIndex
   verseNumberToQuran.value = item.verseNumberToQuran
@@ -140,7 +139,11 @@ const runMenuItem = item => {
 
 const setTargetedSuraAndVerse = item => {
   if (targetFileName.value === '000المصحف') {
-    const target = { fileName: '000المصحف', verseIndex: item.verseNumberToQuran }
+    const target = {
+      fileName: '000المصحف',
+      verseIndex: item.verseIndex,
+      verseNumberToQuran: item.verseNumberToQuran,
+    }
     store.setTarget(target)
     return
   }
@@ -150,6 +153,7 @@ const setTargetedSuraAndVerse = item => {
   store.setTarget({
     fileName: `${suraNumber}${suraName}`,
     verseIndex: item.verseIndex,
+    verseNumberToQuran: item.verseNumberToQuran,
   })
 }
 
@@ -263,7 +267,7 @@ watch(
 </script>
 
 <style>
-tr.v-data-table__selected {
+tr.v-table__wrapper__selected {
   background: #7d92f5 !important;
 }
 .dashTabs {

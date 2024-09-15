@@ -127,6 +127,7 @@ const handleSingleItemClicked = item => {
     fileName:
       item.fileName.replace(/[ء-٩]/g, '').replace(/\s/g, '') + item.fileName.replace(/[0-9]/g, ''),
     verseIndex: item.verseIndex,
+    verseNumberToQuran: item.verseNumberToQuran,
   })
   handleNewSearch()
 }
@@ -188,6 +189,7 @@ watch(selectedSearchIndex, newValue => {
       selectedSearch.value.result[0].raw.fileName.replace(/[ء-٩]/g, '').replace(/\s/g, '') +
       selectedSearch.value.result[0].raw.fileName.replace(/[0-9]/g, ''),
     verseIndex: selectedSearch.value.result[0].verseIndex,
+    verseNumberToQuran: selectedSearch.value.result[0].verseNumberToQuran,
   })
 })
 
