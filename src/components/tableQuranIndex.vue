@@ -39,7 +39,7 @@
         <template v-slot:item="props">
           <tr
             @click="runSura(props.item)"
-            :class="{ activeTableItem: props.item.fileName === fileName }"
+            :class="{ activeSuraItem: props.item.fileName === fileName }"
             class="tableItem"
           >
             <td class="text-right" v-html="highlight(suraIndex(props.item.fileName), search)"></td>
@@ -62,7 +62,7 @@ import { useGoTo } from 'vuetify'
 
 const store = useQuranStore()
 const router = useRouter()
-const { goTo } = useGoTo() // Add this line
+const goTo = useGoTo() // Add this line
 
 // Reactive state
 const loading = ref(true)
@@ -104,9 +104,9 @@ const runSura = sura => {
 
 const scrollToIndex = () => {
   // setTimeout(() => {
-  //   useGoTo('.activeTableItem', {
-  //     container: '.v-data-table__wrapper',
-  //   })
+  goTo('.activeSuraItem', {
+    container: 'v-table__wrapper',
+  })
   // }, 10)
 }
 
@@ -152,6 +152,10 @@ const emit = defineEmits(['showDetailToggle'])
 </script>
 
 <style>
+.v-table--density-default {
+  --v-table-header-height: 56px !important;
+  --v-table-row-height: 12px !important;
+}
 th {
   padding-top: 2px !important;
   height: 25px !important;
@@ -169,7 +173,7 @@ th {
   background: #0000000f !important;
   opacity: 0.7;
 }
-.activeTableItem,
+.activeSuraItem,
 .activeTableItemClass {
   color: black !important;
   font-weight: 500 !important;
@@ -192,7 +196,7 @@ th {
   padding-bottom: 0px;
   margin-bottom: -21px;
 }
-#indexBlock .v-data-table--fixed-header > .v-data-table__wrapper {
+#indexBlock .v-table--fixed-header > .v-table__wrapper {
   overflow-x: hidden !important;
   /* margin-left: -11px; */
 }

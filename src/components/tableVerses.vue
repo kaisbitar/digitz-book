@@ -4,11 +4,12 @@
       <appSearchBox
         @searchChanged="changeSearch"
         @matchChanged="changeMatchingStatus"
-        :inputText="inputText"
+        :inputText="search"
         :dataType="dataType"
       />
     </div>
     <div>
+      {{ inputText }}
       <v-data-table
         loading-text="جاري تحميل البيانات القرآنية ... الرجاء الانتظار"
         class="tableStyle versesTable"
@@ -20,7 +21,7 @@
         :headers="tableHeaders"
         :loading="isLoading"
         :items="tableData"
-        :search="inputText"
+        :search="search"
         :items-per-page="50"
         v-model:page="page"
         @update:current-items="setCurrentItems"
@@ -96,12 +97,13 @@ const props = defineProps([
 ])
 
 const {
-  matchingStatus,
   getTableHeight,
   collapseHeaders,
   changeSearch,
   changeMatchingStatus,
   highlight,
+  search,
+  matchingStatus,
 } = useTableOcc(props)
 
 const emit = defineEmits(['rowClicked', 'activateRowItem', 'handleClickedMenu', 'activateItem'])
@@ -124,12 +126,15 @@ const activeView = computed(() => store.getActiveView)
 const activeTab = computed(() => store.getActiveTab)
 const currentItemsLength = computed(() => currentItems.value.length)
 
-const handleFiltering = (itemText, queryText) => {
-  itemText = ' ' + itemText + ' '
-  if (!matchingStatus.value && itemText.match(queryText) !== null) {
-    return itemText
+const handleFiltering = (item, queryText, itemText) => {
+  // console.log('item', item)
+  // console.log('queryText', queryText)
+  search.value = queryText
+  queryText = ' ' + queryText + ' '
+  if (!matchingStatus.value && queryText.match(queryText) !== null) {
+    return queryText
   }
-  return itemText.match(new RegExp('([^\u0621-\u064A]+' + queryText + '[^\u0621-\u064A]+)', 'gim'))
+  return queryText.match(new RegExp('([^\u0621-\u064A]+' + queryText + '[^\u0621-\u064A]+)', 'gim'))
 }
 
 const setCurrentItems = items => {
@@ -140,12 +145,6 @@ const setCurrentItems = items => {
 
 const selectFirstItemInTable = () => {
   if (!currentItems.value[0]) return
-  // if (storeFileName.value === '000المصحف') {
-  //   activeTableItemIdLocal.value = currentItems.value[0].raw.verseNumberToQuran
-  //   scrollToActiveRow()
-  //   return
-  // }
-  // emit('activateItem', currentItems.value[store.getTarget.verseNumberToQuran].raw)
   scrollToActiveRow()
 }
 
@@ -185,8 +184,16 @@ watch(activeTab, newValue => {
   scrollToActiveRow()
 })
 
+watch(
+  () => props.inputText,
+  newValue => {
+    search.value = newValue
+  },
+)
+
 // Lifecycle hooks
 onMounted(() => {
+  search.value = props.inputText
   scrollToActiveRow()
 })
 </script>

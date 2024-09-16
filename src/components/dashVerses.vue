@@ -4,7 +4,7 @@
       <tableVerses
         :tableData="props.versesBasics"
         :tableHeaders="tableHeaders"
-        :inputText="props.inputText"
+        :inputText="inputText"
         :menuItems="menuItems"
         :targetVerseNumberToQuran="targetVerseNumberToQuran"
         :isLoading="props.isLoading"

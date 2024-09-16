@@ -41,7 +41,7 @@ export function useDetailMixin(props) {
     detailElement,
     detailCount,
     search,
-    footerProps,
+    // footerProps,
     selectedId,
     showChart,
     windowHeight,

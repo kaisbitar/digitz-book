@@ -23,8 +23,8 @@
       v-if="activeTab === 'numberOfVerses'"
       class="webKitWidth"
       :versesBasics="props.versesBasics"
-      :inputText="props.inputText"
-      :isLoading="props.isLoading"
+      :inputText="inputText"
+      :isLoading="isLoading"
     />
     <!-- <dashWords
       v-if="activeTab === 'numberOfWords'"

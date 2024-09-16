@@ -106,7 +106,7 @@ export const useQuranStore = defineStore('quran', {
     setSearchResultsItem(result) {
       this.searchResults.push(result)
     },
-    resetSearchResults() {
+    setResetSearchResults() {
       this.searchResults = []
     },
     setRemoveSearchItem(index) {

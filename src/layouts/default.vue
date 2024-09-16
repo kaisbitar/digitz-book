@@ -22,7 +22,14 @@
       <div class="mainWrap">
         <div class="viewSwitch">
           <v-card :class="{ activeView: activeView === 'detailView' }" class="switchLabel" outlined>
-            <div @click="changeView" class="pl-2 pr-2" style="font-size: 12px">detailView</div>
+            <div
+              @click="changeView"
+              class="pl-2 pr-2 pt-1 d-flex align-center"
+              style="font-size: 12px"
+            >
+              detailView
+              <v-icon size="small" class="mr-1 pb-1">mdi-table</v-icon>
+            </div>
           </v-card>
         </div>
         <router-view :activeView="activeView" />

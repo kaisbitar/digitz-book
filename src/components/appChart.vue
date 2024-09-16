@@ -1,6 +1,6 @@
 <template>
   <div>
-    <apexchart
+    <VueApexCharts
       :options="options"
       :height="height"
       :series="series"
@@ -25,11 +25,11 @@ const myChart = ref(null)
 const windowHeight = ref(window.innerHeight)
 
 const handleClick = (event, chartContext, config) => {
-  store.setTarget({
-    fileName: props.fileName, // Make sure to pass fileName as a prop if needed
-    verseIndex: config.dataPointIndex + 1,
-    verseNumberToQuran: 'appChart',
-  })
+  // store.setTarget({
+  //   fileName: props.fileName, // Make sure to pass fileName as a prop if needed
+  //   verseIndex: config.dataPointIndex + 1,
+  //   verseNumberToQuran: 'appChart',
+  // })
 }
 
 const targetedVerse = computed(() => store.getTarget.verseIndex)

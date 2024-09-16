@@ -29,7 +29,7 @@
       <template v-slot:selection> </template>
 
       <template v-slot:prepend-inner>
-        <div class="d-flex" @click.prevent="disableInputBox()">
+        <div class="d-flex" @click.prevent="disableInputBox">
           <autoCompleteChipsBar
             :chipsData="searchResults"
             :selectedChipIndex="selectedSearchIndex"
@@ -58,7 +58,6 @@
             @clicked="handleSingleItemClicked(item.raw)"
           />
         </div>
-        <v-list-item-title></v-list-item-title>
       </template>
 
       <template v-slot:prepend-item>
@@ -163,7 +162,7 @@ const handleFiltering = (item, queryText, itemText) => {
 
 const resultsCount = () => {
   if (!autocompleteRef.value) return
-  return autocompleteRef.value.filteredItems.length.toString()
+  return autocompleteRef.value.filteredItems.length
 }
 
 const checkAndGo = route => {
@@ -197,6 +196,10 @@ onMounted(() => {
 <style>
 .autoWrap {
   margin-right: 39px;
+  zoom: 1.1;
+}
+.v-overlay__content {
+  left: 3000px !important;
 }
 .v-text-field__prefix {
   color: #b7b7b9;
@@ -214,11 +217,11 @@ onMounted(() => {
 }
 .btnsBar {
   position: sticky;
-  top: 0px;
+  top: -8px;
   z-index: 1;
   background: white;
   height: 35px;
-  padding-top: 11px;
-  padding-bottom: 42px;
+  padding-top: 20px;
+  padding-bottom: 33px;
 }
 </style>
