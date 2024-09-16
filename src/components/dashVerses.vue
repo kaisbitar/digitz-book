@@ -67,19 +67,19 @@ const fileName = computed(() => quranStore.getTarget?.fileName || '001الفات
 
 const index = ref(1)
 const tableHeaders = ref([
-  { text: 'INDEX', value: '', class: 'brown-lighten-5 black--text', width: '100' },
+  { title: 'INDEX', key: '', class: 'brown-lighten-5 black--text', width: '100' },
   {
-    text: 'السورة',
-    value: 'fileName',
+    title: 'السورة',
+    key: 'fileName',
     class: 'brown lighten-5 black--text',
     width: '110',
     filterable: false,
   },
-  { text: 'رقم', value: 'verseIndex', class: 'brown lighten-5 black--text', width: '80' },
-  { text: 'الآية', value: 'verseText', class: 'brown lighten-5 black--text' },
-  { text: 'كلمات', value: 'numberOfWords', class: 'brown lighten-5 black--text', width: '85' },
-  { text: 'حروف', value: 'numberOfLetters', class: 'brown lighten-5 black--text', width: '85' },
-  { text: 'مصحف', value: 'verseNumberToQuran', class: 'brown lighten-5 black--text', width: '90' },
+  { title: 'رقم', key: 'verseIndex', class: 'brown lighten-5 black--text', width: '80' },
+  { title: 'الآية', key: 'verseText', class: 'brown lighten-5 black--text' },
+  { title: 'كلمات', key: 'numberOfWords', class: 'brown lighten-5 black--text', width: '85' },
+  { title: 'حروف', key: 'numberOfLetters', class: 'brown lighten-5 black--text', width: '85' },
+  { title: 'مصحف', key: 'verseNumberToQuran', class: 'brown lighten-5 black--text', width: '90' },
 ])
 const menuItems = ref([
   { title: 'تفصيل ', instuction: 'showSingleVerse' },

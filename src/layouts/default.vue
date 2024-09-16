@@ -191,6 +191,7 @@ onMounted(() => {
 .webKitWidth {
   width: -webkit-fill-available;
 }
+
 /************ Responseive***********/
 @media (max-width: 600px) {
   .titleText {

@@ -24,8 +24,8 @@
     </div>
     <div id="indexBlock">
       <v-data-table
-        :headers="headers"
         :items="data"
+        :headers="headers"
         :loading="loading"
         loading-text="جاري تحميل أسماء السور"
         :search="search"
@@ -71,11 +71,11 @@ const showDetail = ref(false)
 
 // Data that doesn't need to be reactive
 const headers = [
-  { text: 'رقم', value: 'suraIndex', width: 70 },
-  { text: 'السورة', value: 'fileName', width: 100 },
-  { text: 'الآيات', value: 'numberOfVerses', width: 90 },
-  { text: 'كلمات', value: 'numberOfWords', width: 90 },
-  { text: 'حروف', value: 'numberOfLetters', width: 90 },
+  { title: 'رقم', key: 'suraIndex', width: 70 },
+  { title: 'السورة', key: 'fileName', width: 100 },
+  { title: 'الآيات', key: 'numberOfVerses', width: 90 },
+  { title: 'كلمات', key: 'numberOfWords', width: 90 },
+  { title: 'حروف', key: 'numberOfLetters', width: 90 },
 ]
 
 // Computed properties
@@ -187,7 +187,7 @@ th {
   width: 100%;
 }
 .tableStyle tr:nth-child(even) {
-  background-color: #f9f9f980;
+  /* background-color: #f9f9f980; */
 }
 .indexStyle {
   width: auto !important;
@@ -198,7 +198,7 @@ th {
 }
 #indexBlock .v-table--fixed-header > .v-table__wrapper {
   overflow-x: hidden !important;
-  /* margin-left: -11px; */
+  margin-left: -11px;
 }
 .searchWrap {
   width: 220px;

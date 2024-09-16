@@ -40,14 +40,6 @@ const letterSeries = ref([])
 const wordsSeries = ref([])
 const view = ref('detailView')
 
-// Data
-const tableHeaders = [
-  { text: 'السورة', value: 'sura', class: 'grey lighten-2' },
-  { text: 'رقم', value: 'verseIndex', class: 'grey lighten-2' },
-  { text: 'مصحف', value: 'verseNumberToQuran', class: 'grey lighten-2' },
-  // { text: 'نص', value: 'verseText', class: 'grey lighten-2' },
-]
-
 // Methods
 const getWordsData = tab => {
   console.log(tab)

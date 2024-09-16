@@ -9,7 +9,6 @@
       />
     </div>
     <div>
-      {{ inputText }}
       <v-data-table
         loading-text="جاري تحميل البيانات القرآنية ... الرجاء الانتظار"
         class="tableStyle versesTable"
