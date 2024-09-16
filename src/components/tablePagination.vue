@@ -1,5 +1,5 @@
 <template>
-  <v-card class="d-flex pt-2 paginationWrapper" color="grey-lighten-5">
+  <v-card class="d-flex pt-2 paginationWrapper">
     <div class="itemsLength mb-2 mt-1 mr-4 ml-4">
       <span class="thisPage">هذه الصفحة: </span>
       <span class="font-weight-bold">{{ itemsLength }}</span>
@@ -9,7 +9,6 @@
       v-model="currentPage"
       :length="computedPageCount"
       :key="computedPageCount"
-      active-color="black"
       :border="'sm'"
       class="paginator"
     ></v-pagination>

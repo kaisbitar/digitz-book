@@ -1,6 +1,6 @@
 <template>
   <v-card flat>
-    <v-tabs v-model="tab" bg-color="grey-lighten-4" height="37" grow>
+    <v-tabs v-model="tab" height="37" grow>
       <v-tab
         v-for="(item, index) in tabs"
         v-model="item.name"

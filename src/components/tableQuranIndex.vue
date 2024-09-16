@@ -3,21 +3,16 @@
     <div class="d-flex searchWrap mr-1">
       <v-text-field
         v-model="search"
-        background-color="white"
-        append-icon="mdi-magnify"
+        append-inner-icon="mdi-magnify"
         label="سورة أو رقماً فيها.."
-        clear-icon="mdi-close"
+        clearable
         class="mr-2 ml-2 mt-3"
         single-line
-        clearable
-        outlined
-        dense
+        variant="outlined"
+        density="compact"
       ></v-text-field>
       <div class="mt-5">
-        <v-icon
-          :color="showDetail === false ? 'grey' : 'blue'"
-          @click=";(showDetail = !showDetail), $emit('showDetailToggle', showDetail)"
-        >
+        <v-icon :color="showDetail ? 'blue' : 'grey'" @click="toggleShowDetail">
           mdi-format-horizontal-align-center
         </v-icon>
       </div>
@@ -30,7 +25,7 @@
         loading-text="جاري تحميل أسماء السور"
         :search="search"
         :items-per-page="115"
-        :height="'84vh'"
+        :height="'90vh'"
         fixed-header
         hide-default-footer
         class="tableStyle indexStyle"
@@ -149,12 +144,17 @@ onMounted(() => {
 
 // Emits
 const emit = defineEmits(['showDetailToggle'])
+
+const toggleShowDetail = () => {
+  showDetail.value = !showDetail.value
+  emit('showDetailToggle', showDetail.value)
+}
 </script>
 
 <style>
 .v-table--density-default {
   --v-table-header-height: 56px !important;
-  --v-table-row-height: 12px !important;
+  --v-table-row-height: 31px !important;
 }
 th {
   padding-top: 2px !important;
@@ -165,9 +165,6 @@ th {
 }
 .tableItem {
   cursor: pointer;
-  font-weight: 500;
-  color: #544d4d;
-  font-size: 16px !important;
 }
 .tableItem:hover {
   background: #0000000f !important;

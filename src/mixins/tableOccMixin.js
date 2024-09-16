@@ -9,7 +9,7 @@ export function useTableOcc(props) {
   const getTableHeight = computed(() => {
     let tabHeight = 0
     if (props.includeTab) tabHeight = -20
-    return windowHeight.value - 230 + tabHeight
+    return windowHeight.value - 257 + tabHeight
   })
 
   const collapseHeaders = async group => {

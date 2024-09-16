@@ -117,7 +117,7 @@ onMounted(() => {
 .dashboardTabs {
   margin-right: 395px;
   margin-top: -47px;
-  margin-bottom: 15px;
+  margin-bottom: 1px;
   margin-left: 47px;
 }
 a.dashTabs.v-tab--active {

@@ -2,7 +2,6 @@
   <div class="appSearchBox d-flex">
     <v-text-field
       v-model="search"
-      bg-color="white"
       :label="'ابحث عن ' + dataType"
       append-inner-icon="mdi-magnify"
       clearable

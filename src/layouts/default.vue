@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-main>
-      <v-navigation-drawer :width="drawerWidth" v-model="drawer" app right class="grey lighten-4">
+      <v-navigation-drawer :width="drawerWidth" v-model="drawer" app right>
         <tableQuranIndex @showDetailToggle="calculateWidth" />
       </v-navigation-drawer>
       <v-app-bar class="topHeader" color="brown-lighten-5" flat app :height="71">
@@ -157,14 +157,13 @@ onMounted(() => {
   cursor: pointer;
 }
 .activeView {
-  background: #e8e8e8 !important;
-  color: #0c1115 !important;
+  /* background: #e8e8e8 !important; */
+  color: #567a98 !important;
 }
 .switchLabel {
   margin: auto;
   width: fit-content;
-  /* grey lighten-1*/
-  color: #bdbdbd;
+  color: #d6d6d6;
 }
 .v-data-footer {
   justify-content: end;

@@ -16,7 +16,7 @@ import { ar } from 'vuetify/locale'
 export default createVuetify({
   theme: {
     defaultTheme: 'light',
-    // defaultTheme: 'dark',
+    defaultTheme: 'dark',
   },
   locale: {
     locale: 'ar',
