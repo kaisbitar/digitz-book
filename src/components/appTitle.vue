@@ -29,6 +29,7 @@ const arrowClick = direction => {
   width: 200px;
   display: flex;
   margin-bottom: 5px;
+  margin-right: 12px;
 }
 .arrowsWrap {
   width: -webkit-fit-content;

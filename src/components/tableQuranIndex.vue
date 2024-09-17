@@ -1,7 +1,13 @@
 <template>
   <div class="text-center">
     <div class="d-flex searchWrap mr-1">
-      <v-text-field
+      <appSearchBox
+        @searchChanged="changeSearch"
+        @matchChanged="changeMatchingStatus"
+        :inputText="search"
+        :dataType="dataType"
+      />
+      <!-- <v-text-field
         v-model="search"
         append-inner-icon="mdi-magnify"
         label="سورة أو رقماً فيها.."
@@ -15,7 +21,7 @@
         <v-icon :color="showDetail ? 'blue' : 'grey'" @click="toggleShowDetail">
           mdi-format-horizontal-align-center
         </v-icon>
-      </div>
+      </div> -->
     </div>
     <div id="indexBlock">
       <v-data-table
@@ -25,7 +31,7 @@
         loading-text="جاري تحميل أسماء السور"
         :search="search"
         :items-per-page="115"
-        :height="'90vh'"
+        :height="'85vh'"
         fixed-header
         hide-default-footer
         class="tableStyle indexStyle"
@@ -54,11 +60,12 @@ import { ref, computed, watch, onMounted } from 'vue'
 import { useQuranStore } from '@/stores/app'
 import { useRouter } from 'vue-router'
 import { useGoTo } from 'vuetify'
+import { useTableOcc } from '../mixins/tableOccMixin'
 
 const store = useQuranStore()
 const router = useRouter()
 const goTo = useGoTo() // Add this line
-
+const { highlight, changeSearch, changeMatchingStatus } = useTableOcc()
 // Reactive state
 const loading = ref(true)
 const search = ref('')
@@ -99,20 +106,10 @@ const runSura = sura => {
 
 const scrollToIndex = () => {
   // setTimeout(() => {
-  goTo('.activeSuraItem', {
+  goTo('activeSuraItem', {
     container: 'v-table__wrapper',
   })
   // }, 10)
-}
-
-const highlight = (text, search) => {
-  if (!text) return
-  if (search == null) return text
-  text = text.toString()
-  const query = new RegExp(search, 'gi')
-  return text.replace(query, match => {
-    return '<span class="yellow accent-1">' + match + '</span>'
-  })
 }
 
 // Watchers
@@ -152,60 +149,38 @@ const toggleShowDetail = () => {
 </script>
 
 <style>
-.v-table--density-default {
-  --v-table-header-height: 56px !important;
-  --v-table-row-height: 31px !important;
-}
-th {
-  padding-top: 2px !important;
-  height: 25px !important;
-}
-.indexStyle .tableItem {
-  font-weight: 100;
-}
-.tableItem {
-  cursor: pointer;
-}
-.tableItem:hover {
-  background: #0000000f !important;
-  opacity: 0.7;
-}
-.activeSuraItem,
-.activeTableItemClass {
-  color: black !important;
-  font-weight: 500 !important;
-  background: #efebe9 !important;
-}
-.tableStyle td {
-  border: none !important;
-}
-.tableStyle table {
-  border-collapse: collapse;
-  width: 100%;
-}
-.tableStyle tr:nth-child(even) {
-  /* background-color: #f9f9f980; */
-}
 .indexStyle {
   width: auto !important;
 }
+
 .searchBox {
   padding-bottom: 0px;
   margin-bottom: -21px;
 }
-#indexBlock .v-table--fixed-header > .v-table__wrapper {
-  overflow-x: hidden !important;
-  margin-left: -11px;
-}
+
 .searchWrap {
   width: 220px;
   height: 66px;
 }
+
 .v-text-field__slot {
   position: initial;
 }
-label.v-label.theme--light {
+
+/* Update label color for both themes */
+label.v-label {
   font-size: 14px;
   top: 10px;
+  color: rgb(var(--v-theme-text-color));
+}
+
+.tableItem:hover {
+  background: rgba(var(--v-theme-hover-color), var(--v-hover-opacity)) !important;
+  opacity: 0.7;
+}
+
+#indexBlock .v-table--fixed-header > .v-table__wrapper {
+  overflow-x: hidden !important;
+  margin-left: -11px;
 }
 </style>

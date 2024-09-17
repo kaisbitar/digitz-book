@@ -1,5 +1,5 @@
 <template>
-  <div class="webKitWidth grey lighten-5">
+  <div class="webKitWidth">
     <div class="d-flex pt-1 topBar">
       <appSearchBox
         @searchChanged="changeSearch"
@@ -224,5 +224,7 @@ onMounted(() => {
 }
 .topBar {
   height: 49px;
+  margin-right: 13px;
+  margin-bottom: 3px;
 }
 </style>

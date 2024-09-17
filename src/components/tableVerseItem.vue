@@ -4,6 +4,8 @@
 
 <script setup>
 import { defineProps } from 'vue'
+import { useTableOcc } from '../mixins/tableOccMixin'
+const { highlight } = useTableOcc()
 
 defineProps({
   cellItem: {
@@ -15,15 +17,6 @@ defineProps({
     default: '',
   },
 })
-
-const highlight = (text, searchValue) => {
-  if (!searchValue) {
-    return text
-  }
-  return text.replace(new RegExp(searchValue, 'gi'), match => {
-    return '<span style="background:yellow; font-weight: bold;">' + match + '</span>'
-  })
-}
 </script>
 
 <style></style>

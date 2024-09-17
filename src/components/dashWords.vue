@@ -81,7 +81,7 @@ const setXaxis = () => {
 const setDataLabel = positions => {
   if (!this.indexes) return
   var x = {
-    formatter: function(val, opt) {
+    formatter: function (val, opt) {
       return positions[opt.dataPointIndex]
     },
   }

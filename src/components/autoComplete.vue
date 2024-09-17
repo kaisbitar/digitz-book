@@ -9,10 +9,8 @@
       @click:clear="handleRemoveAllChips()"
       @keyup.enter="handleNewSearch"
       prepend-inner-icon="mdi-magnify"
-      bg-color="#fff"
       item-value="verseNumberToQuran"
       item-title="verseText"
-      color="blue-darken-4"
       label="ابحث  في الكتاب.."
       ref="autocompleteRef"
       class="autoBox"
@@ -20,7 +18,7 @@
       flat
       density="compact"
       multiple
-      variant="solo"
+      variant="outlined"
     >
       <template v-slot:no-data>
         <p class="pa-1 text-red">لا يوجد معلومات تطابق البحث!</p>
@@ -202,7 +200,6 @@ onMounted(() => {
   left: 3000px !important;
 }
 .v-text-field__prefix {
-  color: #b7b7b9;
   font-size: 16px;
   margin-top: 9px;
 }
@@ -219,7 +216,6 @@ onMounted(() => {
   position: sticky;
   top: -8px;
   z-index: 1;
-  background: white;
   height: 35px;
   padding-top: 20px;
   padding-bottom: 33px;

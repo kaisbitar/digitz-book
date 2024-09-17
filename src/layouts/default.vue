@@ -4,12 +4,11 @@
       <v-navigation-drawer :width="drawerWidth" v-model="drawer" app right>
         <tableQuranIndex @showDetailToggle="calculateWidth" />
       </v-navigation-drawer>
-      <v-app-bar class="topHeader" color="brown-lighten-5" flat app :height="71">
+      <v-app-bar class="topHeader" flat app :height="71">
         <v-app-bar-nav-icon @click.stop=";(drawer = !drawer), toggleDrawer(drawer)">
         </v-app-bar-nav-icon>
         <v-progress-linear
           class="mt-12"
-          color="blue"
           indeterminate
           rounded
           height="6"
@@ -42,11 +41,13 @@
 import { ref, computed, onMounted } from 'vue'
 import { useQuranStore } from '@/stores/app'
 import { useRouter } from 'vue-router'
+import { useTheme } from 'vuetify'
 import autoComplete from '@/components/autoComplete.vue'
 import tableQuranIndex from '@/components/tableQuranIndex.vue'
 
 const store = useQuranStore()
 const router = useRouter()
+const theme = useTheme()
 
 const drawer = ref(false)
 const drawerWidth = ref(250)
@@ -105,35 +106,50 @@ onMounted(() => {
 </script>
 <style lang="scss">
 @import '@/styles/styles.scss';
+
 .mainWrap {
   margin-top: -2px;
 }
+
 .topHeader {
   height: 58px !important;
 }
+
 .v-application {
   font-family: $body-font-family !important;
+}
+
+.titleText {
+  width: 148px;
+}
+
+.viewSwitch {
+  margin-right: 272px;
+  width: 72px;
+  margin-top: 22px;
+  margin-bottom: -41px;
+  cursor: pointer;
+}
+
+.activeView {
+  // color: rgb(var(--v-theme-background-secondary)) !important;
+}
+
+.switchLabel {
+  margin: auto;
+  width: fit-content;
 }
 .topHeader {
   z-index: 6;
 }
-#footer {
-  width: 100%;
-  direction: ltr;
-  bottom: 0;
-  left: 0;
-  position: fixed;
-  background: #f5f5f5;
-  z-index: 22;
-  color: black;
-}
+
 .titleText {
   width: 148px;
 }
 .compWrapper {
-  padding-right: 19px;
-  padding-left: 19px;
-  margin-top: -48px;
+  // padding-right: 19px;
+  // padding-left: 19px;
+  // margin-top: -48px;
 }
 .suraInfoBox {
   padding: 24px;
@@ -149,49 +165,14 @@ onMounted(() => {
 .downArr {
   margin-top: 18px !important;
 }
-.viewSwitch {
-  margin-right: 272px;
-  width: 72px;
-  margin-top: 22px;
-  margin-bottom: -41px;
-  cursor: pointer;
-}
-.activeView {
-  /* background: #e8e8e8 !important; */
-  color: #567a98 !important;
-}
-.switchLabel {
-  margin: auto;
-  width: fit-content;
-  color: #d6d6d6;
-}
-.v-data-footer {
-  justify-content: end;
-}
-/* width */
+/* Scrollbar styling */
 ::-webkit-scrollbar {
-  width: 5px;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: #a6a6a6;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #000;
+  width: 8px;
 }
 .webKitWidth {
   width: -webkit-fill-available;
 }
-
-/************ Responseive***********/
+/* Responsive styles */
 @media (max-width: 600px) {
   .titleText {
     font-size: 15px;

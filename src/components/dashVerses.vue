@@ -9,7 +9,7 @@
         :targetVerseNumberToQuran="targetVerseNumberToQuran"
         :isLoading="props.isLoading"
         :groupBy="null"
-        :dataType="' عن آية أو رقم'"
+        :dataType="targetFileName"
         @activateItem="setTargetedSuraAndVerse"
         @rowClicked="handleVerseClick"
         @handleClickedMenu="runMenuItem"
@@ -267,9 +267,6 @@ watch(
 </script>
 
 <style>
-tr.v-table__wrapper__selected {
-  background: #7d92f5 !important;
-}
 .dashTabs {
   height: 35px;
   letter-spacing: 0px;

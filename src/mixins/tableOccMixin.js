@@ -9,7 +9,7 @@ export function useTableOcc(props) {
   const getTableHeight = computed(() => {
     let tabHeight = 0
     if (props.includeTab) tabHeight = -20
-    return windowHeight.value - 257 + tabHeight
+    return windowHeight.value - 300 + tabHeight
   })
 
   const collapseHeaders = async group => {
@@ -34,10 +34,12 @@ export function useTableOcc(props) {
     search.value = newMatchingStatus[0]
   }
 
-  const highlight = (text, searchValue) => {
-    if (!searchValue) return text
-    return text.replace(new RegExp(searchValue, 'gi'), match => {
-      return '<span style="background:yellow">' + match + '</span>'
+  const highlight = (text, searchInput) => {
+    if (!text) return
+    text = text.toString()
+    if (!searchInput) return text
+    return text.replace(new RegExp(searchInput, 'gi'), match => {
+      return `<span class="highlight-match">${match}</span>`
     })
   }
 
