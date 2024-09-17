@@ -31,13 +31,7 @@
           :suraName="suraName"
         />
         <div class="d-flex">
-          <appChart
-            class="webKitWidth"
-            :isLoading="isLoading"
-            :series="verseChart"
-            :options="options"
-            :height="height"
-          />
+          <appChart class="webKitWidth" :series="verseChart" :options="options" :height="height" />
         </div>
       </v-window-item>
 
@@ -48,7 +42,6 @@
           :numberOfLetters="numberOfLetters"
           :indexes="wordIndexes"
           :suraText="verseText"
-          :isLoading="isLoading"
           :includeTab="true"
         />
       </v-window-item>
@@ -59,7 +52,6 @@
           :numberOfWords="numberOfWords"
           :numberOfLetters="numberOfLetters"
           :suraText="verseText"
-          :isLoading="isLoading"
         />
       </v-window-item>
     </v-window>
@@ -83,7 +75,7 @@ const props = defineProps({
   inputText: String,
   secondInput: String,
   suraName: String,
-  isLoading: Boolean,
+
   verseChart: Array,
   options: Object,
   height: [String, Number],

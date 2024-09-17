@@ -16,6 +16,8 @@
           absolute
         ></v-progress-linear>
         <h3 class="titleText ml-2 font-weight-thin">الكتاب المرقوم</h3>
+
+        <!-- Main search in the app-->
         <autoComplete class="mt-3" />
       </v-app-bar>
       <div class="mainWrap">
@@ -83,12 +85,6 @@ const calculateWidth = showDetail => {
   drawerWidth.value = showDetail ? 440 : 250
 }
 
-const prepareData = async () => {
-  isLoading.value = true
-  await store.getQuranData()
-  isLoading.value = false
-}
-
 const toggleDrawer = value => {
   store.setDrawerState(value)
 }
@@ -101,7 +97,6 @@ const checkAndGo = route => {
 
 onMounted(() => {
   drawer.value = drawerState.value
-  prepareData()
 })
 </script>
 <style lang="scss">
