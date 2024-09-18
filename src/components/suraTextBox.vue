@@ -4,10 +4,7 @@
       class="suraText"
       v-for="(item, index) in suraTextArray"
       :key="index"
-      :class="[
-        index - 1,
-        { 'bg-yellow-accent-1 targetedVerse': index + 1 === parseInt(suraTargetedVerseIndex) },
-      ]"
+      :class="[index - 1, { targetedVerse: index + 1 === parseInt(suraTargetedVerseIndex) }]"
       @click="setTargetedVerse(item, index + 1)"
     >
       <div :id="'v' + (index + 1)">
@@ -113,19 +110,20 @@ onMounted(() => {
   cursor: pointer;
 }
 .numChip {
-  /* brown lighten-5 */
-  /* width: 41px; */
-  background: #efebe9;
+  background: rgb(var(--v-theme-input-background)) !important;
   margin-left: 6px;
   padding-right: 12px;
   padding-left: 12px;
   margin-bottom: 4px;
   display: -webkit-inline-box;
 }
-.TargetedChip {
-  color: white !important;
-  /* grey darken-1 */
-  background: #757575 !important;
+.targetedVerse {
+  color: rgb(var(--v-theme-on-active-row));
+  background: rgb(var(--v-theme-active-row));
+}
+.targetedVerse .numChip {
+  color: rgb(var(--v-theme-on-active-row)) !important;
+  /* background: #606060 !important; */
 }
 @media (max-width: 655px) {
   .suraTextSearchResults {

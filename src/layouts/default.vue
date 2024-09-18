@@ -167,6 +167,10 @@ onMounted(() => {
 .webKitWidth {
   width: -webkit-fill-available;
 }
+.v-application__wrap {
+  min-height: auto;
+  overflow: hidden;
+}
 /* Responsive styles */
 @media (max-width: 600px) {
   .titleText {
