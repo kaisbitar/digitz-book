@@ -58,16 +58,14 @@ th {
 /* Update active item style for both themes */
 .activeSuraItem,
 .activeTableItemClass {
-  color: rgb(var(--v-theme-text-color)) !important;
+  color: rgb(var(--v-theme-on-active-row)) !important;
   font-weight: 500 !important;
-  background: rgb(var(--v-theme-highlight-color)) !important;
+  background: rgb(var(--v-theme-active-row)) !important;
 }
 
-/* Add styles for dark theme */
-
-.v-theme--dark .activeSuraItem,
-.v-theme--dark .activeTableItemClass {
-  background: rgb(var(--v-theme-highlight-color)) !important;
+.v-input__control {
+  color: rgb(var(--v-theme-on-active-row)) !important;
+  background: rgb(var(--v-theme-input-background)) !important;
 }
 
 .highlight-match {
