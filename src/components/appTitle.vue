@@ -1,14 +1,14 @@
 <template>
   <div class="titleWrap">
     <h2 class="mt-5">{{ title }}</h2>
-    <div class="arrowsWrap">
+    <!-- <div class="arrowsWrap">
       <div @click="arrowClick('up')">
         <v-icon>mdi-chevron-up</v-icon>
       </div>
       <div @click="arrowClick('down')">
         <v-icon class="downArr">mdi-chevron-down</v-icon>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -29,7 +29,6 @@ const arrowClick = direction => {
   width: 200px;
   display: flex;
   margin-bottom: 5px;
-  margin-right: 12px;
 }
 .arrowsWrap {
   width: -webkit-fit-content;

@@ -1,20 +1,13 @@
 <template>
   <v-app>
-    <v-btn @click="toggleTheme">Toggle Theme</v-btn>
     <router-view style="background: rgb(var(--v-theme-surface))" />
   </v-app>
 </template>
 
 <script setup>
-import { useTheme } from 'vuetify'
 import { useQuranStore } from '@/stores/app'
 
 const store = useQuranStore()
-const theme = useTheme()
-
-const toggleTheme = () => {
-  theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
-}
 
 const getTheData = async () => {
   await store.getQuranData()
