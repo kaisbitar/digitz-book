@@ -193,7 +193,6 @@ onMounted(() => {
 
 <style>
 .autoWrap {
-  margin-right: 39px;
   zoom: 1.1;
 }
 .v-overlay__content {

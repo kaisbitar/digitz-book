@@ -5,7 +5,7 @@
         @searchChanged="changeSearch"
         @matchChanged="changeMatchingStatus"
         :inputText="search"
-        :dataType="dataType"
+        :dataType="'السور'"
       />
       <!-- <v-text-field
         v-model="search"
