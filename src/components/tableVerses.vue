@@ -97,7 +97,6 @@ const props = defineProps([
 
 const {
   getTableHeight,
-  collapseHeaders,
   changeSearch,
   changeMatchingStatus,
   highlight,
@@ -213,8 +212,8 @@ onMounted(() => {
   display: none;
 }
 .topBar {
-  height: 49px;
-  margin-right: 13px;
-  margin-bottom: 3px;
+  /* height: 49px; */
+  margin-bottom: 16px;
+  margin-top: 10px;
 }
 </style>

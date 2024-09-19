@@ -206,6 +206,7 @@ const prepareSuraWithTashkeel = () => {
 watch(fileName, prepareData)
 
 onMounted(() => {
+  quranStore.setActiveMode('singleSura')
   prepareData()
 })
 </script>

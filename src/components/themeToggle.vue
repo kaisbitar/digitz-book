@@ -1,9 +1,15 @@
 <template>
   <div class="mr-auto">
-    <v-switch v-model="isDark" @change="toggleTheme" class="theme-switch" hide-details>
+    <v-switch
+      v-model="isDark"
+      @change="toggleTheme"
+      class="theme-switch"
+      hide-details
+      density="comfortable"
+    >
       <template v-slot:thumb>
-        <v-icon v-if="!isDark" color="yellow">mdi-white-balance-sunny</v-icon>
-        <v-icon v-if="isDark">mdi-weather-night</v-icon>
+        <v-icon v-if="!isDark" color="grey">mdi-white-balance-sunny</v-icon>
+        <v-icon v-if="isDark" color="yellow">mdi-moon-waning-crescent</v-icon>
       </template>
     </v-switch>
   </div>
@@ -33,6 +39,6 @@ watch(isDark, newValue => {
 
 /* You might need to adjust the switch size to accommodate larger icons */
 .theme-switch :deep(.v-switch__thumb) {
-  /* transform: scale(1.1); */
+  transform: scale(0.7);
 }
 </style>

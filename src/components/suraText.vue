@@ -16,7 +16,7 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { useQuranStore } from '@/stores/app'
 import suraTextBox from './suraTextBox.vue'
-
+import { useTableOcc } from '../mixins/tableOccMixin'
 // Props
 const props = defineProps([
   'numberOfVerses',
@@ -30,7 +30,7 @@ const props = defineProps([
 
 // Store
 const store = useQuranStore()
-
+const { getTableHeight } = useTableOcc()
 // Reactive data
 const windowHeight = ref(window.innerHeight)
 
@@ -42,7 +42,7 @@ const scrollOptions = () => ({
 })
 
 const getHeight = () => {
-  const heightDif = windowHeight.value - 140
+  const heightDif = getTableHeight.value - 140
   return `height:${heightDif}px`
 }
 

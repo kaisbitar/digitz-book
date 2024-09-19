@@ -6,7 +6,6 @@
       append-inner-icon="mdi-magnify"
       clearable
       variant="outlined"
-      density="compact"
     >
       <template #prepend-inner>
         <appSearchBoxMatch

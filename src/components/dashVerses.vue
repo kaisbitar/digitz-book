@@ -9,7 +9,7 @@
         :targetVerseNumberToQuran="targetVerseNumberToQuran"
         :isLoading="props.isLoading"
         :groupBy="null"
-        :dataType="targetFileName"
+        :dataType="inputText"
         @activateItem="setTargetedSuraAndVerse"
         @rowClicked="handleVerseClick"
         @handleClickedMenu="runMenuItem"
