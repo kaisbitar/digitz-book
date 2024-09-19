@@ -9,7 +9,7 @@
     />
     <!-- </v-row> -->
     <!-- {{ suraTargetedVerseIndex }} -->
-    <!-- <suraText
+    <suraText
       v-if="activeTab === 'suraText'"
       :suraTextArray="suraTextArray"
       :suraTargetedVerseIndex="suraTargetedVerseIndex"
@@ -18,7 +18,7 @@
       :numberOfWords="numberOfWords"
       :inputText="inputText"
       :isLoading="isLoading"
-    />-->
+    />
     <dashVerses
       v-if="activeTab === 'numberOfVerses'"
       class="webKitWidth"
@@ -80,7 +80,7 @@ const props = defineProps([
 const store = useQuranStore()
 
 const tabs = computed(() => [
-  // { title: 'نص', name: 'suraText' },
+  { title: 'نص', name: 'suraText' },
   { title: 'آية', value: props.numberOfVerses, name: 'numberOfVerses' },
   { title: 'كلمة', value: props.numberOfWords, name: 'numberOfWords' },
   { title: 'حرف', value: props.numberOfLetters, name: 'numberOfLetters' },

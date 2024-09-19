@@ -16,7 +16,7 @@
       :numberOfLetters="numberOfLetters"
       :isLoading="isLoading"
       :wordIndexes="details.wordIndexes"
-      :suraTextArray="searchResults"
+      :suraTextArray="suraTextArray"
       :versesBasics="versesData"
       :activeTab="activeTab"
     />

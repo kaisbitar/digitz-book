@@ -13,13 +13,17 @@ export function useTableOcc(props, emit) {
   const activeView = computed(() => store.getActiveView)  
 
   const getTableHeight = computed(() => {
+    if(activeRoute.value === 'singleSura') {
+      return windowHeight.value - 3500
+    }
+
     if(activeRoute.value === 'search') {
       return windowHeight.value - 400 
     }
+
     if(activeView.value === 'textView') {
       return windowHeight.value +30
     }
-    return windowHeight.value - 323
   })
 
   function changeSearch(newSearch) {
