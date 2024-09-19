@@ -17,7 +17,7 @@
         :footer-props="footerProps"
         hide-default-footer
         :height="getTableHeight"
-        :headers="tableHeaders"
+        :headers="tableVersesHeaders"
         :loading="isLoading"
         :items="tableData"
         :search="search"
@@ -31,25 +31,10 @@
             :id="`verse${item.verseNumberToQuran}`"
             class="tableItem"
             :class="{
-              mouseOverRow: showMenuIcon === `icon${item.verseNumberToQuran}`,
               activeTableItemClass: isTargetedVerse(item, index, props.targetVerseNumberToQuran),
             }"
             @click="$emit('rowClicked', item)"
-            @mouseover="showMenuIcon = `icon${item.verseNumberToQuran}`"
-            @mouseleave="showMenuIcon = 'icon'"
           >
-            <appDropMenu
-              class="menuIcon"
-              :items="menuItems"
-              :class="{
-                activeIcon: showMenuIcon === `icon${item.verseNumberToQuran}`,
-              }"
-            />
-            <td
-              :class="{
-                hideIt: showMenuIcon === `icon${item.verseNumberToQuran}`,
-              }"
-            />
             <tableVerseItem
               v-for="(cellItem, index) in item"
               :key="index"
@@ -76,7 +61,6 @@ import { ref, computed, watch, onMounted, defineEmits } from 'vue'
 import { useQuranStore } from '@/stores/app'
 import appSearchBox from './appSearchBox.vue'
 import tableVerseItem from './tableVerseItem.vue'
-import appDropMenu from './appDropMenu.vue'
 import tablePagination from './tablePagination.vue'
 import { useTableOcc } from '../mixins/tableOccMixin'
 import { useGoTo } from 'vuetify'
@@ -87,12 +71,11 @@ const props = defineProps([
   'groupBy',
   'includeTab',
   'inputText',
-  'menuItems',
   'targetVerseNumberToQuran',
   'isLoading',
   'dataType',
   'footerProps',
-  'tableHeaders',
+  'tableVersesHeaders',
 ])
 
 const {
@@ -105,13 +88,11 @@ const {
   handleFiltering,
 } = useTableOcc(props)
 
-const emit = defineEmits(['rowClicked', 'activateRowItem', 'handleClickedMenu', 'activateItem'])
+const emit = defineEmits(['rowClicked', 'activateRowItem', 'activateItem'])
 const store = useQuranStore()
 const goTo = useGoTo()
 
 // Reactive state
-const showMenuIcon = ref(false)
-const editItem = ref({})
 const page = ref(1)
 const itemsPerPage = 50 // Fixed at 50 items per page
 const currentItems = ref([])
@@ -154,10 +135,6 @@ const scrollToActiveRow = async () => {
   })
 }
 
-const passClickedMenuItem = item => {
-  emit('handleClickedMenu', item.instuction)
-}
-
 const changePage = newPage => {
   page.value = newPage
 }
@@ -195,11 +172,6 @@ onMounted(() => {
 }
 .versesTable .v-table__wrapper {
   overflow-x: hidden;
-}
-.menuIcon {
-  display: none;
-  padding-left: 57px !important;
-  cursor: default !important;
 }
 .activeIcon {
   vertical-align: middle;

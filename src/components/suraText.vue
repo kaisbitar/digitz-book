@@ -60,9 +60,9 @@ watch(windowHeight, () => {
 })
 
 // // Lifecycle hooks
-// onMounted(() => {
-//   // Add any mounted logic here
-// })
+onMounted(() => {
+  console.log(props.suraTextArray)
+})
 
 // Expose methods and properties to the template
 defineExpose({

@@ -22,7 +22,7 @@
     />
     <!-- <keep-alive> -->
     <dashbord
-      v-if="activeView === 'detailView' && selectedSearchIndex === -1"
+      v-if="activeView === 'detailView'"
       :numberOfLetters="numberOfLetters"
       :wordIndexes="details.wordIndexes"
       :numberOfVerses="numberOfVerses"
@@ -60,7 +60,6 @@ const numberOfVerses = ref(null)
 const numberOfWords = ref(null)
 const startIndex = ref(null)
 const endIndex = ref(null)
-const view = ref('detailView')
 const suraTextArray = ref([])
 const versesBasics = ref([])
 const isLoading = ref(false)
@@ -70,6 +69,7 @@ const wordsSeries = ref([{ data: [] }])
 const details = ref({})
 
 const activeView = computed(() => quranStore.getActiveView)
+const activeRoute = computed(() => quranStore.getActiveRoute)
 const selectedSearch = computed(() => quranStore.getSelectedSearch)
 const selectedSearchIndex = computed(() => quranStore.getSelectedSearchIndex)
 const inputText = computed(() => selectedSearch.value?.inputText || null)
@@ -206,7 +206,6 @@ const prepareSuraWithTashkeel = () => {
 watch(fileName, prepareData)
 
 onMounted(() => {
-  quranStore.setActiveMode('singleSura')
   prepareData()
 })
 </script>

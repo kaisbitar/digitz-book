@@ -99,7 +99,7 @@ const storedItems = computed(() => store.getOneQuranFile)
 const selectedSearch = computed(() => store.getSelectedSearch)
 const selectedSearchIndex = computed(() => store.getSelectedSearchIndex)
 const inputText = computed(() => selectedSearch.value?.inputText)
-const searchResults = computed(() => store.getSearchResults)
+const searchResults = computed(() => store.getResearchResults)
 
 const { highlight } = useMixin()
 
@@ -119,7 +119,7 @@ const handleRemovedChip = index => {
 }
 
 const handleRemoveAllChips = () => {
-  store.setResetSearchResults()
+  store.setResetResearchResults()
   checkAndGo('singleSura')
 }
 
@@ -141,7 +141,7 @@ const handleNewSearch = () => {
 
 const setNewSearch = () => {
   store.setSearchIndex(searchResults.value.length)
-  store.setSearchResultsItem({
+  store.setResearchResultsItem({
     resultsCount: autocompleteRef.value.filteredItems.length,
     inputText: search.value,
     result: autocompleteRef.value.filteredItems,
@@ -191,7 +191,7 @@ onMounted(() => {
   zoom: 1.1;
 }
 .v-overlay__content {
-  left: 3000px !important;
+  /* left: 3000px !important; */
 }
 .v-text-field__prefix {
   font-size: 16px;
