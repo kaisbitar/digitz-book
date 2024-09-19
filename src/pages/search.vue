@@ -1,6 +1,9 @@
 <template>
-  <div class="compWrapper">
-    <appTitle :title="inputText" @arrowClick="getNextSearch" />
+  <div>
+    <div class="d-flex">
+      <appTitle :title="inputText" @arrowClick="getNextSearch" />
+    </div>
+
     <!-- <keep-alive> -->
     <dashbord
       v-if="!isLoading"

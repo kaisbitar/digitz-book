@@ -53,7 +53,7 @@
             <tableVerseItem
               v-for="(cellItem, index) in item"
               :key="index"
-              :search="inputText"
+              :search="search"
               :cellItem="cellItem"
               @itemClicked="$emit('activateRowItem', item)"
             />
@@ -103,6 +103,7 @@ const {
   highlight,
   search,
   matchingStatus,
+  handleFiltering,
 } = useTableOcc(props)
 
 const emit = defineEmits(['rowClicked', 'activateRowItem', 'handleClickedMenu', 'activateItem'])
@@ -124,17 +125,6 @@ const pageCount = computed(() => {
 const activeView = computed(() => store.getActiveView)
 const activeTab = computed(() => store.getActiveTab)
 const currentItemsLength = computed(() => currentItems.value.length)
-
-const handleFiltering = (item, queryText, itemText) => {
-  // console.log('item', item)
-  // console.log('queryText', queryText)
-  search.value = queryText
-  queryText = ' ' + queryText + ' '
-  if (!matchingStatus.value && queryText.match(queryText) !== null) {
-    return queryText
-  }
-  return queryText.match(new RegExp('([^\u0621-\u064A]+' + queryText + '[^\u0621-\u064A]+)', 'gim'))
-}
 
 const setCurrentItems = items => {
   if (!items) return

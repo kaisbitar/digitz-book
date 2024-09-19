@@ -1,9 +1,9 @@
 <template>
-  <v-app-bar class="topHeader" flat app dense>
+  <v-app-bar height="54" class="topHeader" flat app dense>
     <v-app-bar-nav-icon @click.stop="toggleDrawer"></v-app-bar-nav-icon>
     <h3 class="titleText ml-2 font-weight-thin">الكتاب المرقوم</h3>
     <v-spacer></v-spacer>
-    <themeToggle class="mt-20" />
+    <themeToggle class="mt-n20" />
   </v-app-bar>
 </template>
 

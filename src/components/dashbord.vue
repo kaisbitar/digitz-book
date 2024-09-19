@@ -1,13 +1,13 @@
 <template>
   <div>
-    <v-row class="dashboardTabs">
-      <dashboardTabs
-        :tabs="tabs"
-        :activeTab="activeTab"
-        @tabChanged="changeTab"
-        class="webKitWidth"
-      />
-    </v-row>
+    <!-- <v-row class="dashboardTabs"> -->
+    <dashboardTabs
+      :tabs="tabs"
+      :activeTab="activeTab"
+      @tabChanged="changeTab"
+      class="webKitWidth"
+    />
+    <!-- </v-row> -->
     <!-- {{ suraTargetedVerseIndex }} -->
     <!-- <suraText
       v-if="activeTab === 'suraText'"

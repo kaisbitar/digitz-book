@@ -1,15 +1,7 @@
 <template>
   <v-card flat>
-    <v-tabs v-model="tab" height="37" grow>
-      <v-tab
-        v-for="(item, index) in tabs"
-        v-model="item.name"
-        :href="'#' + item.name"
-        :key="index"
-        :value="item.name"
-        :title="item.title"
-        @click="setActiveTab(item.name)"
-      >
+    <v-tabs v-model="computedTab" height="37" grow>
+      <v-tab v-for="(item, index) in tabs" :key="index" :value="item.name" :title="item.title">
         {{ item.value }} {{ item.title }}
       </v-tab>
     </v-tabs>
@@ -17,27 +9,14 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue'
+import { computed } from 'vue'
 
 const props = defineProps(['tabs', 'activeTab'])
 const emit = defineEmits(['tabChanged'])
 
-const tab = ref('numberOfVerses')
-
-const setActiveTab = activeTab => {
-  tab.value = activeTab
-  emit('tabChanged', activeTab)
-}
-
-watch(
-  () => props.activeTab,
-  newActiveTab => {
-    setActiveTab(newActiveTab)
-  },
-)
-
-onMounted(() => {
-  setActiveTab(props.activeTab)
+const computedTab = computed({
+  get: () => props.activeTab,
+  set: newValue => emit('tabChanged', newValue),
 })
 </script>
 
