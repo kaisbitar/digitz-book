@@ -9,11 +9,11 @@ export function useTableOcc(props, emit) {
 
   
   const windowHeight = computed(() => window.innerHeight)  
-  const activeMode = computed(() => store.getActiveMode)  
+  const activeRoute = computed(() => store.getActiveMode)  
   const activeView = computed(() => store.getActiveView)  
 
   const getTableHeight = computed(() => {
-    if(activeMode.value === 'search') {
+    if(activeRoute.value === 'search') {
       return windowHeight.value - 400 
     }
     if(activeView.value === 'textView') {

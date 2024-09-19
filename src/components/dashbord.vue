@@ -18,7 +18,7 @@
       :numberOfWords="numberOfWords"
       :inputText="inputText"
       :isLoading="isLoading"
-    /> -->
+    />-->
     <dashVerses
       v-if="activeTab === 'numberOfVerses'"
       class="webKitWidth"

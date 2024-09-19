@@ -33,9 +33,9 @@ watch(isDark, newValue => {
 </script>
 
 <style scoped>
-.theme-switch {
+/* .theme-switch {
   margin-left: 15px;
-}
+} */
 
 /* You might need to adjust the switch size to accommodate larger icons */
 .theme-switch :deep(.v-switch__thumb) {

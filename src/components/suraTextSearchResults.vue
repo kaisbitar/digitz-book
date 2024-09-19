@@ -72,6 +72,7 @@ const arrowClick = direction => {
 }
 
 onMounted(() => {
+  console.log(props.value)
   if (!selectedVerse.value) return
   store.setTarget({ ...store.getTarget, verseIndex: selectedVerse.value })
 })
@@ -129,7 +130,7 @@ onMounted(() => {
   margin-left: 19px;
   margin-right: 19px;
   margin-top: -15px;
-  z-index: 72;
+  z-index: 7;
   position: relative;
 }
 .verseLabel {

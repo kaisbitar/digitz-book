@@ -3,7 +3,7 @@
     <v-card class="webKitWidth" flat v-if="!showSingleVerse">
       <tableVerses
         :tableData="props.versesBasics"
-        :tableHeaders="tableHeaders"
+        :tableVersesHeaders="tableVersesHeaders"
         :inputText="inputText"
         :menuItems="menuItems"
         :targetVerseNumberToQuran="targetVerseNumberToQuran"
@@ -66,8 +66,8 @@ const suraName = computed(() => fileName.value.replace(/[ء-٩]/g, '').replace(/
 const fileName = computed(() => quranStore.getTarget?.fileName || '001الفاتحة')
 
 const index = ref(1)
-const tableHeaders = ref([
-  { title: 'INDEX', key: '', class: 'brown-lighten-5 black--text', width: '100' },
+const tableVersesHeaders = ref([
+  // { title: 'INDEX', key: '', class: 'brown-lighten-5 black--text', width: '100' },
   {
     title: 'السورة',
     key: 'fileName',
@@ -159,7 +159,7 @@ const runMenuItem = item => {
 const goToVerseTextView = value => {
   store.setActiveView('textView')
   setTargetedSuraAndVerse(value)
-  checkAndGo('singleSura')
+  // checkAndGo('singleSura')
 }
 
 const checkAndGo = route => {

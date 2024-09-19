@@ -2,9 +2,8 @@
   <div>
     <autoComplete />
     <div class="d-flex">
-      <appTitle :title="inputText" @arrowClick="getNextSearch" />
+      <appTitle :title="inputText" />
     </div>
-
     <!-- <keep-alive> -->
     <dashbord
       v-if="!isLoading"
@@ -40,6 +39,7 @@ const props = defineProps(['activeView'])
 const isLoading = ref(false)
 const details = ref({})
 const versesData = ref([])
+const suraTextArray = ref([])
 const letterSeries = ref([])
 const wordsSeries = ref([])
 const view = ref('detailView')
@@ -66,14 +66,6 @@ const createVersesData = () => {
   })
 }
 
-const getNextSearch = item => {
-  if (item === 'up') {
-    store.setSearchIndex(selectedSearchIndex.value - 1)
-    return
-  }
-  store.setSearchIndex(selectedSearchIndex.value + 1)
-}
-
 const fetchSuraDetails = async () => {
   isLoading.value = true
   try {
@@ -85,12 +77,11 @@ const fetchSuraDetails = async () => {
 }
 
 // Computed properties
-const numberOfVerses = computed(() =>
-  selectedSearch.value ? selectedSearch.value.result.length : 0,
-)
 const activeTab = computed(() => store.getActiveTab)
-const selectedSearch = computed(() => (store.getSearchResults ? store.getSelectedSearch : {}))
+const selectedSearch = computed(() => (store.getResearchResults ? store.getSelectedSearch : {}))
 const selectedSearchIndex = computed(() => store.getSelectedSearchIndex)
+const suraTargetedVerseIndex = computed(() => store.getTarget?.verseIndex || 1)
+
 const inputText = computed(() =>
   selectedSearch.value ? selectedSearch.value.inputText : undefined,
 )
@@ -98,6 +89,9 @@ const searchResults = computed(() =>
   selectedSearch.value ? selectedSearch.value.result.map(item => item.verseText) : [],
 )
 const versesBasics = computed(() => (selectedSearch.value ? selectedSearch.value.result : []))
+const numberOfVerses = computed(() =>
+  selectedSearch.value ? selectedSearch.value.result.length : 0,
+)
 const numberOfWords = computed(() => {
   if (!selectedSearch.value) return 0
   return selectedSearch.value.result
@@ -111,6 +105,15 @@ const numberOfLetters = computed(() => {
     .reduce((a, b) => a + b, 0)
 })
 
+const oneQuranFile = computed(() => quranStore.getOneQuranFile)
+
+const perpareSuraData = () => {
+  oneQuranFile.value.forEach((item, index) => {
+    if (index <= startIndex.value - 1 || index >= endIndex.value) return
+    suraTextArray.value.push(item.verseText)
+  })
+}
+
 // Watch
 watch(versesBasics, () => {
   createVersesData()
@@ -118,10 +121,8 @@ watch(versesBasics, () => {
 
 // Lifecycle hooks
 onMounted(() => {
-  store.setActiveMode('search')
-  if (selectedSearchIndex.value === -1) {
-    getNextSearch('down')
-  }
+  store.setActiveRoute('search')
+  store.setActiveView('detailView')
   createVersesData()
 })
 </script>

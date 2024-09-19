@@ -13,17 +13,17 @@ export const useQuranStore = defineStore('quran', {
       fileName: '001الفاتحة',
       verseIndex: 1,
     },
-    searchResults: [], // Changed from searchResults to camelCase
-    selectedSearchIndex: -1,
+    researchResults: [], // Changed from searchResults to camelCase
+    selectedSearch: [],
+    selectedSearchIndex: null,
     oneQuranFile: [],
     tableQuranIndex: [],
     suras: {},
     scrollTrigger: false,
     drawerState: true,
     activeTab: 'numberOfVerses',
-    activeMode:'search',
+    activeRoute:'search',
     activeView: 'detailView',
-    selectedSearch: [],
     chartFreqType: 'words',
     allVersesWithTashkeel: [], // Added this missing state property
   }),
@@ -40,8 +40,8 @@ export const useQuranStore = defineStore('quran', {
     getTarget: state => {
       return state.target
     },
-    getSearchResults: state => {
-      return state.searchResults
+    getResearchResults: state => {
+      return state.researchResults
     },
     getSelectedSearchIndex: state => {
       return state.selectedSearchIndex
@@ -65,13 +65,13 @@ export const useQuranStore = defineStore('quran', {
       return state.activeTab
     },
     getActiveMode: state => {
-      return state.activeMode
+      return state.activeRoute
     },
     getChartFreqType: state => {
       return state.chartFreqType
     },
     getSelectedSearch: state => {
-      return state.searchResults[state.selectedSearchIndex]
+      return state.researchResults[state.selectedSearchIndex]
     },
     getAllVersesWithTashkeel: state => {
       return state.allVersesWithTashkeel
@@ -84,8 +84,8 @@ export const useQuranStore = defineStore('quran', {
     setActiveTab(activeTab) {
       this.activeTab = activeTab
     },
-    setActiveMode(activeMode) {
-      this.activeMode = activeMode
+    setActiveRoute(activeRoute) {
+      this.activeRoute = activeRoute
     },
     setActiveView(activeView) {
       this.activeView = activeView
@@ -105,19 +105,19 @@ export const useQuranStore = defineStore('quran', {
     },
     setSearchIndex(index) {
       this.selectedSearchIndex = index
-      this.selectedSearch = this.searchResults[index]
+      this.selectedSearch = this.researchResults[index]
     },
     resetSuras() {
       this.suras = {}
     },
-    setSearchResultsItem(result) {
-      this.searchResults.push(result)
+    setResearchResultsItem(result) {
+      this.researchResults.push(result)
     },
-    setResetSearchResults() {
-      this.searchResults = []
+    setResetResearchResults() {
+      this.researchResults = []
     },
     setRemoveSearchItem(index) {
-      this.searchResults.splice(index, 1)
+      this.researchResults.splice(index, 1)
     },
     setOneQuranFile(items) {
       this.oneQuranFile = items

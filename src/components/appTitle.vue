@@ -1,7 +1,7 @@
 <template>
   <div class="titleWrap">
     <h2>{{ title }}</h2>
-    <appView />
+    <appViewToggle />
   </div>
 </template>
 

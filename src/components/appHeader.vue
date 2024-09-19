@@ -1,15 +1,19 @@
 <template>
-  <v-app-bar height="54" class="topHeader" flat app dense>
-    <v-app-bar-nav-icon @click.stop="toggleDrawer"></v-app-bar-nav-icon>
-    <h3 class="titleText ml-2 font-weight-thin">الكتاب المرقوم</h3>
+  <v-app-bar height="50" flat app dense>
+    <template v-slot:prepend>
+      <v-app-bar-nav-icon @click.stop="toggleDrawer"></v-app-bar-nav-icon>
+    </template>
+    <v-app-bar-title>الكتاب المرقوم</v-app-bar-title>
     <v-spacer></v-spacer>
-    <themeToggle class="mt-n20" />
+    <appNavigation />
+    <appDropMenu :components="[themeToggle]"> </appDropMenu>
   </v-app-bar>
 </template>
 
 <script setup>
 import { useQuranStore } from '@/stores/app'
-
+import appDropMenu from './appDropMenu.vue'
+import themeToggle from './themeToggle.vue'
 const store = useQuranStore()
 
 const toggleDrawer = () => {
