@@ -27,6 +27,7 @@
             'on-highlight': '#000000', 
             'active-row':'#eff1f1',
             'on-active-row':'#000000',   
+            'hover-color': '#f7f7f7',
           },
         },
         dark: {
@@ -36,6 +37,7 @@
             'on-highlight': '#000000', 
             'active-row':'#514f4f',
             'on-active-row':'#fff',
+            'hover-color': '#3f3e3e',
           },
         },
       },

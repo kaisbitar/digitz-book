@@ -1,30 +1,26 @@
 import { ref, computed, onMounted } from 'vue'
+import { useQuranStore } from '@/stores/app'
 
-export function useTableOcc(props, emit) { // Add emit as a parameter
-  const windowHeight = ref(window.innerHeight)
-  const collapseDone = ref(false)
+export function useTableOcc(props, emit) { 
+  const store = useQuranStore()
+
   const search = ref('')
   const matchingStatus = ref(false)
 
   
+  const windowHeight = computed(() => window.innerHeight)  
+  const activeMode = computed(() => store.getActiveMode)  
+  const activeView = computed(() => store.getActiveView)  
+
   const getTableHeight = computed(() => {
-    let tabHeight = 0
-    if (props.includeTab) tabHeight = -20
-    return windowHeight.value - 330 + tabHeight
+    if(activeMode.value === 'search') {
+      return windowHeight.value - 400 
+    }
+    if(activeView.value === 'textView') {
+      return windowHeight.value +30
+    }
+    return windowHeight.value - 323
   })
-
-  const collapseHeaders = async group => {
-    // Note: This function needs to be adapted to work with Vue 3 refs
-    // The current implementation using $refs won't work directly
-    // You may need to use template refs or a different approach
-    return new Promise(resolve => {
-      Object.keys(this.$refs).forEach(k => {
-        this.$refs[k].$el.click()
-      })
-
-      resolve()
-    })
-  }
 
   function changeSearch(newSearch) {
     search.value = newSearch
@@ -75,11 +71,9 @@ export function useTableOcc(props, emit) { // Add emit as a parameter
   }
   return {
     windowHeight,
-    collapseDone,
     search,
     matchingStatus,
     getTableHeight,
-    collapseHeaders,
     changeSearch,
     changeMatchingStatus,
     highlight,

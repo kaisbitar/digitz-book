@@ -1,5 +1,6 @@
 <template>
   <div>
+    <autoComplete />
     <div class="d-flex">
       <appTitle :title="inputText" @arrowClick="getNextSearch" />
     </div>
@@ -117,6 +118,7 @@ watch(versesBasics, () => {
 
 // Lifecycle hooks
 onMounted(() => {
+  store.setActiveMode('search')
   if (selectedSearchIndex.value === -1) {
     getNextSearch('down')
   }

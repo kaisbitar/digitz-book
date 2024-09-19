@@ -49,7 +49,7 @@
       :chartOptions="props.chartOptions"
       :versesText="props.suraTextArray"
       :isLoading="props.isLoading"
-      :height="height"
+      :height="chartWindowHeight"
     />
   </div>
 </template>
@@ -78,7 +78,6 @@ const props = defineProps([
   'isLoading',
 ])
 const store = useQuranStore()
-const windowHeight = ref(window.innerHeight)
 
 const tabs = computed(() => [
   // { title: 'نص', name: 'suraText' },
@@ -95,13 +94,10 @@ const changeTab = tab => {
   store.setActiveTab(tab)
 }
 
-const height = computed(() => windowHeight.value - 210)
+const chartWindowHeight = computed(() => window.innerHeight.value - 210)
 const suraTargetedVerseIndex = computed(() => store.getTarget.verseIndex || 1)
 
 onMounted(() => {
-  window.addEventListener('resize', () => {
-    windowHeight.value = window.innerHeight
-  })
   changeTab('numberOfVerses')
 })
 </script>

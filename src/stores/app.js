@@ -21,6 +21,7 @@ export const useQuranStore = defineStore('quran', {
     scrollTrigger: false,
     drawerState: true,
     activeTab: 'numberOfVerses',
+    activeMode:'search',
     activeView: 'detailView',
     selectedSearch: [],
     chartFreqType: 'words',
@@ -63,6 +64,9 @@ export const useQuranStore = defineStore('quran', {
     getActiveTab: state => {
       return state.activeTab
     },
+    getActiveMode: state => {
+      return state.activeMode
+    },
     getChartFreqType: state => {
       return state.chartFreqType
     },
@@ -79,6 +83,9 @@ export const useQuranStore = defineStore('quran', {
     },
     setActiveTab(activeTab) {
       this.activeTab = activeTab
+    },
+    setActiveMode(activeMode) {
+      this.activeMode = activeMode
     },
     setActiveView(activeView) {
       this.activeView = activeView

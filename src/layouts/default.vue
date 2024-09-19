@@ -6,7 +6,6 @@
         <tableQuranIndex @showDetailToggle="calculateWidth" />
       </v-navigation-drawer>
       <div class="mainWrap">
-        <autoComplete />
         <router-view class="mt-n4" :activeView="activeView" />
       </div>
     </v-main>
@@ -39,6 +38,7 @@ onMounted(() => {})
 @import '@/styles/styles.scss';
 
 .mainWrap {
+  margin-top: 23px;
   padding-left: 17px;
   padding-right: 17px;
 }

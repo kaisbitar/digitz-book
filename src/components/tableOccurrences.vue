@@ -42,11 +42,9 @@ import tablePagination from './tablePagination.vue'
 import { useTableOcc } from '@/mixins/tableOccMixin'
 // export const {
 //   windowHeight,
-//   collapseDone,
 //   search,
 //   matchingStatus,
 //   getTableHeight,
-//   collapseHeaders,
 //   changeSearch,
 //   changeMatchingStatus,
 //   highlight,

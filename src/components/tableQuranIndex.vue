@@ -159,8 +159,7 @@ const toggleShowDetail = () => {
 }
 
 .searchWrap {
-  width: 220px;
-  height: 66px;
+  margin-bottom: 10px;
 }
 
 .v-text-field__slot {
@@ -175,8 +174,8 @@ label.v-label {
 }
 
 .tableItem:hover {
-  background: rgba(var(--v-theme-hover-color), var(--v-hover-opacity)) !important;
-  opacity: 0.7;
+  background: rgba(var(--v-theme-hover-color)) !important;
+  /* opacity: 0.7; */
 }
 
 #indexBlock .v-table--fixed-header > .v-table__wrapper {
