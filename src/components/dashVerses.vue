@@ -1,49 +1,18 @@
 <template>
   <div class="dashVerses d-flex">
-    <v-card class="webKitWidth" flat v-if="!showSingleVerse">
+    <v-card class="webKitWidth" flat>
       <tableVerses
         :tableData="props.versesBasics"
         :tableVersesHeaders="tableVersesHeaders"
         :inputText="inputText"
-        :menuItems="menuItems"
         :targetVerseNumberToQuran="targetVerseNumberToQuran"
-        :isLoading="props.isLoading"
         :groupBy="null"
         :dataType="inputText"
         @activateItem="setTargetedSuraAndVerse"
         @rowClicked="handleVerseClick"
-        @handleClickedMenu="runMenuItem"
         @activateRowItem="goToVerseTextView"
       />
     </v-card>
-    <tableDialogEdit
-      v-if="showEditVerse"
-      @close="showEditVerse = false"
-      :suraName="suraNumber + suraName"
-      :verseIndex="verseIndex"
-      :verseText="verseText"
-      :showEditVerse="showEditVerse"
-    />
-    <div class="pt-5 webKitWidth" outlined v-show="showSingleVerse">
-      <dashSingleVerse
-        v-if="showSingleVerse"
-        :verseIndex="verseIndex"
-        @backBtnClicked="showSingleVerse = !showSingleVerse"
-        :verseNumberToQuran="verseNumberToQuran"
-        :numberOfLetters="numberOfLetters"
-        :numberOfWords="numberOfWords"
-        :verseText="verseText"
-        :inputText="inputText"
-        :secondInput="secondInput"
-        :suraName="suraName"
-        :isLoading="isLoading"
-        :verseChart="verseChart"
-        :options="options"
-        :height="singleVerseHeight"
-        :wordIndexes="wordIndexes"
-      />
-      <v-overlay color="white" :absolute="true" :opacity="0.8" :value="isLoading"> </v-overlay>
-    </div>
   </div>
 </template>
 
@@ -60,12 +29,7 @@ const router = useRouter()
 const quranStore = useQuranStore()
 
 const props = defineProps(['versesBasics', 'isLoading', 'inputText'])
-const suraNumber = computed(() => parseInt(fileName.value.replace(/^\D+/g, '')))
-const suraName = computed(() => fileName.value.replace(/[ء-٩]/g, '').replace(/\s/g, ''))
 
-const fileName = computed(() => quranStore.getTarget?.fileName || '001الفاتحة')
-
-const index = ref(1)
 const tableVersesHeaders = ref([
   // { title: 'INDEX', key: '', class: 'brown-lighten-5 black--text', width: '100' },
   {
@@ -81,27 +45,19 @@ const tableVersesHeaders = ref([
   { title: 'حروف', key: 'numberOfLetters', class: 'brown lighten-5 black--text', width: '85' },
   { title: 'مصحف', key: 'verseNumberToQuran', class: 'brown lighten-5 black--text', width: '90' },
 ])
-const menuItems = ref([
-  { title: 'تفصيل ', instuction: 'showSingleVerse' },
-  { title: 'تحرير ', instuction: 'showEditVerse' },
-  { title: 'إلغاء', instuction: 'cancel' },
-])
+
 const verseChart = ref([])
 const verseIndex = ref('')
 const verseNumberToQuran = ref(1)
 const numberOfLetters = ref(0)
 const numberOfWords = ref(0)
 const verseText = ref('')
-const options = ref(chartOptions)
 const windowHeight = ref(window.innerHeight)
 const wordIndexes = ref({})
-const secondInput = ref('')
-const showEditVerse = ref(false)
 const showSingleVerse = ref(false)
 
 const store = useQuranStore()
 
-const singleVerseHeight = computed(() => windowHeight.value - 420)
 const targetFileName = computed(() => store.getTarget?.fileName)
 const targetVerseNumberToQuran = computed(() => store.getTarget?.verseNumberToQuran)
 
@@ -148,122 +104,16 @@ const getOneVerseWordIndexes = text => {
   })
 }
 
-const runMenuItem = item => {
-  if (item === 'showSingleVerse') {
-    showSingleVerse.value = true
-    return
-  }
-  if (item === 'showEditVerse') showEditVerse.value = true
-}
-
 const goToVerseTextView = value => {
   store.setActiveView('textView')
   setTargetedSuraAndVerse(value)
   // checkAndGo('singleSura')
 }
 
-const checkAndGo = route => {
-  if (router.currentRoute.value.name !== route) {
-    router.push({ name: route })
-  }
-}
-
 const perpareChartData = item => {
   const chart = item.verseText.split(' ').map(word => word.length)
   verseChart.value = [{ data: chart }]
 }
-
-const setChartToolTip = () => {
-  options.value = {
-    ...options.value,
-    tooltip: {
-      custom: obj => {
-        return (
-          '<div class= d-flex pt-2 pa-2">' +
-          '<div class=" tipInfo tipInfo2 ">' +
-          verseText.value.split(' ')[obj.dataPointIndex] +
-          '</div>' +
-          '<div class=" tipInfo ">' +
-          obj.series[0][obj.dataPointIndex] +
-          '<span class="tipLabel"> حروف</span></div>' +
-          '</div>'
-        )
-      },
-      shared: true,
-      followCursor: true,
-    },
-  }
-}
-
-const setChartXaxis = () => {
-  options.value = {
-    ...options.value,
-    xaxis: {
-      labels: { show: true },
-      title: {
-        offsetY: 0,
-        text: 'تواتر الكلمات',
-        style: {
-          fontSize: '12px',
-        },
-      },
-      axisTicks: {
-        show: true,
-        maxTicksLimit: 1,
-        interval: 1,
-      },
-      tickAmount: 1,
-      tickPlacement: 'between',
-    },
-  }
-}
-
-const setChartSingleVerse = () => {
-  options.value = {
-    ...options.value,
-    chart: {
-      offsetY: 10,
-      type: 'area',
-      toolbar: {
-        show: false,
-      },
-      events: {
-        mouseMove: (event, chartContext, config) => {
-          secondInput.value = verseText.value.split(' ')[config.dataPointIndex]
-        },
-      },
-    },
-  }
-}
-
-const setChartDataLabels = () => {
-  options.value = {
-    ...options.value,
-    dataLabels: {
-      enabled: true,
-      offsetY: 0,
-      background: {
-        enabled: false,
-      },
-    },
-  }
-}
-
-watch(showSingleVerse, newValue => {
-  if (newValue) {
-    setChartToolTip()
-    setChartSingleVerse()
-    setChartDataLabels()
-    setChartXaxis()
-  }
-})
-
-watch(
-  () => store.getTarget?.fileName,
-  () => {
-    showSingleVerse.value = false
-  },
-)
 </script>
 
 <style>

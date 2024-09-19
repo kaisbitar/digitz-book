@@ -20,9 +20,6 @@ const navigateTo = route => {
   if (router.currentRoute.value.name !== route) {
     router.push({ name: route })
     store.setSearchIndex(-1)
-    // store.setActiveView(route)
-    navigateToTargetedSuraAndVerse()
-    // store.setActiveView(route)
   }
 }
 </script>
