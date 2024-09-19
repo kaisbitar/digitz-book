@@ -1,15 +1,16 @@
 import { ref, computed, onMounted } from 'vue'
 
-export function useTableOcc(props) {
+export function useTableOcc(props, emit) { // Add emit as a parameter
   const windowHeight = ref(window.innerHeight)
   const collapseDone = ref(false)
   const search = ref('')
   const matchingStatus = ref(false)
 
+  
   const getTableHeight = computed(() => {
     let tabHeight = 0
     if (props.includeTab) tabHeight = -20
-    return windowHeight.value - 305 + tabHeight
+    return windowHeight.value - 330 + tabHeight
   })
 
   const collapseHeaders = async group => {
@@ -34,6 +35,15 @@ export function useTableOcc(props) {
     search.value = newMatchingStatus[0]
   }
 
+  const matchChanged = () => {
+    emit('matchChanged', [search.value, matchingStatus.value])
+  }
+  
+  const toggleMatching = () => {
+    matchingStatus.value = !matchingStatus.value
+    matchChanged()
+  }
+
   const highlight = (text, searchInput) => {
     if (!text) return
     text = text.toString()
@@ -43,6 +53,26 @@ export function useTableOcc(props) {
     })
   }
 
+  const handleFiltering = (item, queryText, itemText) => {
+    if (!queryText) return true
+
+    if (!itemText.columns) {
+      itemText.columns = itemText.raw
+    }
+
+    const containsSearch = (text, query) => {
+      if (!matchingStatus.value) {
+        return text.includes(query)
+      }
+  
+      return text.includes(' ' + query + ' ')
+    }
+  
+    return (
+      containsSearch(itemText.columns.fileName, queryText) ||
+      containsSearch(itemText.columns.verseText, queryText)
+    )
+  }
   return {
     windowHeight,
     collapseDone,
@@ -53,5 +83,9 @@ export function useTableOcc(props) {
     changeSearch,
     changeMatchingStatus,
     highlight,
+    handleFiltering,
+    toggleMatching,
+    matchChanged,
+    
   }
 }

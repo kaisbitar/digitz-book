@@ -19,6 +19,9 @@ onMounted(() => {
 </script>
 
 <style>
+.v-selection-control {
+  background: rgb(var(--v-theme-surface)) !important;
+}
 .v-table--density-default {
   --v-table-header-height: 56px !important;
   --v-table-row-height: 31px !important;

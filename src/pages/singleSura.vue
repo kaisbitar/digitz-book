@@ -1,7 +1,7 @@
 <template>
-  <div class="compWrapper">
+  <div>
     <div class="d-flex">
-      <appTitle @arrowClick="setTargetFromArrow" :title="fileName" />
+      <appTitle :title="fileName" />
       <suraTextSearchResults
         v-if="activeView === 'textView'"
         style="max-width: 641px"

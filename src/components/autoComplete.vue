@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex autoWrap webKitWidth">
     <v-autocomplete
-      :filter="handleFiltering"
+      :custom-filter="handleFiltering"
       v-model:search="search"
       :hide-no-data="!search"
       :disabled="isDisabled"
@@ -38,7 +38,7 @@
         <appSearchBoxMatch
           :search="search"
           :matchingStatus="matchingStatus"
-          @clicked="matchingStatus = !matchingStatus"
+          @clicked="toggleMatching"
         />
       </template>
 
@@ -82,7 +82,11 @@ import autoCompleteChipsBar from './autoCompleteChipsBar.vue'
 import appSearchBoxMatch from './appSearchBoxMatch.vue'
 import autoCompleteItem from './autoCompleteItem.vue'
 import { useMixin } from '../mixins/mixins'
+import { useTableOcc } from '../mixins/tableOccMixin'
 
+const props = defineProps(['dataType', 'inputText'])
+const emit = defineEmits(['matchChanged'])
+const { handleFiltering, toggleMatching } = useTableOcc(props, emit)
 const store = useQuranStore()
 const router = useRouter()
 
@@ -147,15 +151,6 @@ const setNewSearch = () => {
 
 const disableInputBox = () => {
   autocompleteRef.value.blur()
-}
-
-const handleFiltering = (item, queryText, itemText) => {
-  search.value = queryText
-  queryText = ' ' + queryText + ' '
-  if (!matchingStatus.value && queryText.match(queryText) !== null) {
-    return queryText
-  }
-  return queryText.match(new RegExp('([^\u0621-\u064A]+' + queryText + '[^\u0621-\u064A]+)', 'gim'))
 }
 
 const resultsCount = () => {

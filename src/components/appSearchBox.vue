@@ -23,24 +23,17 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import { useQuranStore } from '@/stores/app'
 import appSearchBoxMatch from './appSearchBoxMatch.vue'
+import { useTableOcc } from '../mixins/tableOccMixin'
 
 const props = defineProps(['dataType', 'inputText'])
 const emit = defineEmits(['searchChanged', 'matchChanged'])
+const { matchChanged, toggleMatching } = useTableOcc(props, emit)
 
 const store = useQuranStore()
 const search = ref(props.inputText)
 const matchingStatus = ref(false)
 
 const selectedSearchIndex = computed(() => store.getSelectedSearchIndex)
-
-const matchChanged = () => {
-  emit('matchChanged', [search.value, matchingStatus.value])
-}
-
-const toggleMatching = () => {
-  matchingStatus.value = !matchingStatus.value
-  matchChanged()
-}
 
 watch(search, newValue => {
   emit('searchChanged', newValue)
