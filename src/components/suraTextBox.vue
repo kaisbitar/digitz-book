@@ -108,6 +108,7 @@ onMounted(() => {
   display: -webkit-inline-box;
   border-radius: 4px;
   cursor: pointer;
+  font-weight: 200;
 }
 .numChip {
   background: rgb(var(--v-theme-input-background)) !important;
@@ -120,6 +121,7 @@ onMounted(() => {
 .targetedVerse {
   color: rgb(var(--v-theme-on-active-row));
   background: rgb(var(--v-theme-active-row));
+  font-weight: 300;
 }
 .targetedVerse .numChip {
   color: rgb(var(--v-theme-on-active-row)) !important;

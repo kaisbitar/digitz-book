@@ -1,5 +1,5 @@
 <template>
-  <div flat class="appSearchBoxMatch d-flex">
+  <!-- <div flat class="appSearchBoxMatch d-flex">
     <span v-if="props.search && matchingStatus" class="matchLabel mt-2">تطابق</span>
     <v-icon
       :color="matchingStatus === false ? 'grey lighten-1' : 'blue'"
@@ -9,7 +9,7 @@
     >
       mdi-format-letter-matches
     </v-icon>
-  </div>
+  </div> -->
 </template>
 
 <script setup>

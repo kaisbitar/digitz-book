@@ -27,18 +27,12 @@
       hide-default-footer
     >
     </v-data-table>
-    <tablePagination
-      :page="page"
-      :pageCount="pageCount"
-      :currentItemsLength="currentItemsLength"
-      :label="'كلمة'"
-    />
+    <v-pagination v-model="page" :length="pageCount" :key="pageCount" :border="'sm'"></v-pagination>
   </div>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
-import tablePagination from './tablePagination.vue'
 import { useTableOcc } from '@/mixins/tableOccMixin'
 // export const {
 //   windowHeight,

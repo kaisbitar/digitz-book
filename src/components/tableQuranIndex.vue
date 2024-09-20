@@ -1,27 +1,20 @@
 <template>
   <div class="text-center">
-    <div class="d-flex searchWrap mr-1">
+    <div class="d-flex mr-1">
       <appSearchBox
         @searchChanged="changeSearch"
         @matchChanged="changeMatchingStatus"
         :inputText="search"
         :dataType="'السور'"
       />
-      <!-- <v-text-field
-        v-model="search"
-        append-inner-icon="mdi-magnify"
-        label="سورة أو رقماً فيها.."
-        clearable
-        class="mr-2 ml-2 mt-3"
-        single-line
-        variant="outlined"
-        density="compact"
-      ></v-text-field>
-      <div class="mt-5">
-        <v-icon :color="showDetail ? 'blue' : 'grey'" @click="toggleShowDetail">
-          mdi-format-horizontal-align-center
-        </v-icon>
-      </div> -->
+      <v-btn
+        :icon="
+          showDetail ? 'mdi-format-horizontal-align-center' : 'mdi-format-horizontal-align-left'
+        "
+        :color="showDetail ? 'primary' : 'grey'"
+        @click="emit('showDetailToggle')"
+        variant="text"
+      ></v-btn>
     </div>
     <div id="indexBlock">
       <v-data-table
@@ -69,7 +62,7 @@ const { highlight, changeSearch, changeMatchingStatus } = useTableOcc()
 // Reactive state
 const loading = ref(true)
 const search = ref('')
-const showDetail = ref(false)
+const props = defineProps(['showDetail'])
 
 // Data that doesn't need to be reactive
 const headers = [
@@ -117,18 +110,6 @@ watch(fileName, () => {
   scrollToIndex()
 })
 
-watch(search, newValue => {
-  if (newValue === null) {
-    showDetail.value = false
-    emit('showDetailToggle', showDetail.value)
-    return
-  }
-  if (!isNaN(newValue)) {
-    showDetail.value = true
-    emit('showDetailToggle', showDetail.value)
-  }
-})
-
 // Lifecycle hooks
 onMounted(() => {
   if (!fileName.value) {
@@ -141,11 +122,6 @@ onMounted(() => {
 
 // Emits
 const emit = defineEmits(['showDetailToggle'])
-
-const toggleShowDetail = () => {
-  showDetail.value = !showDetail.value
-  emit('showDetailToggle', showDetail.value)
-}
 </script>
 
 <style>
@@ -156,10 +132,6 @@ const toggleShowDetail = () => {
 .searchBox {
   padding-bottom: 0px;
   margin-bottom: -21px;
-}
-
-.searchWrap {
-  margin-bottom: 10px;
 }
 
 .v-text-field__slot {

@@ -1,11 +1,7 @@
 <template>
-  <appTitle :title="fileName" />
-  <dashboardTabs
-    :tabs="tabs"
-    :activeTab="activeTab"
-    @tabChanged="changeTab"
-    class="webKitWidth mb-"
-  />
+  <div class="d-flex">
+    <appToolBar :title="fileName" :tabs="tabs" />
+  </div>
   <suraTextSearchResults
     v-if="activeTab === 'suraText'"
     style="max-width: 641px"
@@ -63,6 +59,13 @@ const versesSeries = ref([{ data: [] }])
 const wordsSeries = ref([{ data: [] }])
 const details = ref({})
 
+const tabs = computed(() => [
+  { title: 'نص', name: 'suraText' },
+  { title: 'آية', value: numberOfVerses.value, name: 'versesTab' },
+  { title: 'كلمة', value: numberOfWords.value, name: 'wordsTab' },
+  { title: 'حرف', value: numberOfLetters.value, name: 'lettersTab' },
+  { title: 'تواتر', name: 'frequency' },
+])
 const chartWindowHeight = computed(() => window.innerHeight - 260)
 const selectedSearch = computed(() => store.getSelectedSearch)
 const inputText = computed(() => selectedSearch.value?.inputText || null)
@@ -88,22 +91,10 @@ const tooltipLabel2 = computed(() => {
   return fileName.value !== '000المصحف' ? 'آية' : 'سورة'
 })
 
-const tabs = computed(() => [
-  { title: 'نص', name: 'suraText' },
-  { title: 'آية', value: numberOfVerses.value, name: 'versesTab' },
-  { title: 'كلمة', value: numberOfWords.value, name: 'wordsTab' },
-  { title: 'حرف', value: numberOfLetters.value, name: 'lettersTab' },
-  { title: 'تواتر', name: 'frequency' },
-])
-
 const activeTab = computed({
   get: () => store.getActiveTab,
   set: value => store.setActiveTab(value),
 })
-
-const changeTab = tab => {
-  store.setActiveTab(tab)
-}
 
 const setSuraBasics = () => {
   numberOfLetters.value = suraBasics.value.numberOfLetters
