@@ -11,13 +11,13 @@ import { setupLayouts } from 'virtual:generated-layouts'
 const routes = [
   {
     path: '',
-    name: 'singleSura',
-    component: () => import('@/pages/singleSura'),
+    name: 'sura',
+    component: () => import('@/pages/Sura'),
   },
   {
     path: '/search',
     name: 'search',
-    component: () => import('@/pages/search.vue'),
+    component: () => import('@/pages/Search'),
   },
 ]
 

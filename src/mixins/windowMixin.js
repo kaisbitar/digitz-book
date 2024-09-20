@@ -8,7 +8,7 @@ export function useWindowMixin() {
   const activeRoute = computed(() => store.getActiveMode)
   const getTableHeight = computed(() => {
     let height = windowHeight.value
-    if(activeRoute.value === 'singleSura') {
+    if(activeRoute.value === 'sura') {
       height = height - 300
     }
 
@@ -21,7 +21,7 @@ export function useWindowMixin() {
 
   const getTextBoxHeight = computed(() => {
     let height = windowHeight.value
-    if(activeRoute.value === 'singleSura') {
+    if(activeRoute.value === 'sura') {
       height = height - 15
     }
 

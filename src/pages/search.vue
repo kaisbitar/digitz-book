@@ -1,25 +1,19 @@
 <template>
   <div>
     <AutoComplete />
-    <div class="d-flex">
-      <h1 class="ml-10">{{ inputText }}</h1>
-    </div>
-    <Dashbord
+    <h1 class="ml-10">{{ inputText }}</h1>
+    <SearchDashboard
       v-if="!isLoading"
       :inputText="inputText"
-      @tabChanged="getWordsData"
       :chartFreqSeries="[{ data: [] }]"
       :chartOptions="chartOptions"
       :numberOfVerses="numberOfVerses"
       :numberOfWords="numberOfWords"
       :numberOfLetters="numberOfLetters"
       :isLoading="isLoading"
-      :wordIndexes="details.wordIndexes"
       :suraTextArray="suraTextArray"
       :versesBasics="versesData"
-      :activeTab="activeTab"
     />
-    <!-- </keep-alive> -->
   </div>
 </template>
 <script setup>
@@ -28,34 +22,19 @@ import { useQuranStore } from '@/stores/app'
 import chartOptions from '../assets/frequecyOptions'
 
 const store = useQuranStore()
-
-// Props
 const props = defineProps(['activeView'])
 
-// Refs
 const isLoading = ref(false)
-const details = ref({})
 const versesData = ref([])
 const suraTextArray = ref([])
-const letterSeries = ref([])
-const wordsSeries = ref([])
-const view = ref('detailView')
-
-const tabs = computed(() => [
-  { title: 'سياق', name: 'suraText' },
-  { title: 'آية', value: numberOfVerses.value, name: 'versesTab' },
-])
-const activeTab = computed(() => store.getActiveTab)
 const selectedSearch = computed(() => (store.getResearchResults ? store.getSelectedSearch : {}))
-const selectedSearchIndex = computed(() => store.getSelectedSearchIndex)
-const suraTargetedVerseIndex = computed(() => store.getTarget?.verseIndex || 1)
+
 
 const inputText = computed(() =>
   selectedSearch.value ? selectedSearch.value.inputText : undefined,
 )
-const searchResults = computed(() =>
-  selectedSearch.value ? selectedSearch.value.result.map(item => item.verseText) : [],
-)
+
+const oneQuranFile = computed(() => quranStore.getOneQuranFile)
 const versesBasics = computed(() => (selectedSearch.value ? selectedSearch.value.result : []))
 const numberOfVerses = computed(() =>
   selectedSearch.value ? selectedSearch.value.result.length : 0,
@@ -72,14 +51,6 @@ const numberOfLetters = computed(() => {
     .map(item => item.raw.verseText.replace(/ /g, '').length)
     .reduce((a, b) => a + b, 0)
 })
-const oneQuranFile = computed(() => quranStore.getOneQuranFile)
-
-const getWordsData = tab => {
-  store.setActiveTab(tab)
-  if (activeTab.value === 'numberOfWords') {
-    fetchSuraDetails()
-  }
-}
 
 const createVersesData = () => {
   versesData.value = versesBasics.value.map(item => {
@@ -92,16 +63,6 @@ const createVersesData = () => {
       verseNumberToQuran: item.raw.verseNumberToQuran.toString(),
     }
   })
-}
-
-const fetchSuraDetails = async () => {
-  isLoading.value = true
-  try {
-    const items = await store.getSuraDetails()
-    details.value = items
-  } finally {
-    isLoading.value = false
-  }
 }
 
 const perpareSuraData = () => {

@@ -110,7 +110,7 @@ const handleRemovedChip = index => {
 
 const handleRemoveAllChips = () => {
   store.setResetSearchResults()
-  checkAndGo('singleSura')
+  checkAndGo('sura')
 }
 
 const handleSingleItemClicked = item => {

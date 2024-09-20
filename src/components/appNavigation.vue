@@ -2,7 +2,7 @@
   <v-btn @click="navigateTo('search')" icon>
     <v-icon class="mr-1">mdi-magnify</v-icon>
   </v-btn>
-  <v-btn @click="navigateTo('singleSura')" icon>
+  <v-btn @click="navigateTo('sura')" icon>
     <v-icon class="mr-1">mdi-book-open-variant</v-icon>
   </v-btn>
 </template>
