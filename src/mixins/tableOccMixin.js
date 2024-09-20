@@ -11,19 +11,31 @@ export function useTableOcc(props, emit) {
   const windowHeight = computed(() => window.innerHeight)  
   const activeRoute = computed(() => store.getActiveMode)  
   const activeView = computed(() => store.getActiveView)  
+  const activeTab = computed(() => store.getActiveTab)
 
   const getTableHeight = computed(() => {
+    let height = windowHeight.value
     if(activeRoute.value === 'singleSura') {
-      return windowHeight.value - 3500
+      height = height - 330
     }
 
     if(activeRoute.value === 'search') {
-      return windowHeight.value - 400 
+        height = height - 410
     }
 
-    if(activeView.value === 'textView') {
-      return windowHeight.value +30
+    return height
+  })
+
+  const getTextBoxHeight = computed(() => {
+    let height = windowHeight.value
+    if(activeRoute.value === 'singleSura') {
+      height = height - 15
     }
+
+    if(activeRoute.value === 'search') {
+        height = height - 90
+    }
+    return height
   })
 
   function changeSearch(newSearch) {
@@ -78,6 +90,7 @@ export function useTableOcc(props, emit) {
     search,
     matchingStatus,
     getTableHeight,
+    getTextBoxHeight,
     changeSearch,
     changeMatchingStatus,
     highlight,

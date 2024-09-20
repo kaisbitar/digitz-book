@@ -5,9 +5,9 @@
       <v-navigation-drawer :width="drawerWidth" v-model="drawer" app right>
         <tableQuranIndex @showDetailToggle="calculateWidth" />
       </v-navigation-drawer>
-      <div class="mainWrap">
-        <router-view class="mt-n4" :activeView="activeView" />
-      </div>
+      <v-container fluid>
+        <router-view />
+      </v-container>
     </v-main>
   </v-app>
 </template>
@@ -25,7 +25,6 @@ const drawer = computed({
   get: () => store.getDrawerState,
   set: value => store.setDrawerState(value),
 })
-const activeView = computed(() => store.getActiveView)
 
 const calculateWidth = showDetail => {
   drawerWidth.value = showDetail ? 440 : 250
@@ -36,12 +35,6 @@ onMounted(() => {})
 
 <style lang="scss">
 @import '@/styles/styles.scss';
-
-.mainWrap {
-  margin-top: 23px;
-  padding-left: 17px;
-  padding-right: 17px;
-}
 
 .v-application {
   font-family: $body-font-family !important;

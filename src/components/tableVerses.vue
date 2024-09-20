@@ -185,7 +185,7 @@ onMounted(() => {
 }
 .topBar {
   /* height: 49px; */
-  margin-bottom: 16px;
-  margin-top: 10px;
+  /* margin-bottom: 16px;
+  margin-top: 10px; */
 }
 </style>

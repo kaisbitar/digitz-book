@@ -19,10 +19,7 @@
 <script setup>
 import { ref, computed, watch, defineProps } from 'vue'
 import { useQuranStore } from '@/stores/app'
-import chartOptions from '../assets/frequecyOptions'
 import tableVerses from './tableVerses.vue'
-import dashSingleVerse from './dashSingleVerse'
-import tableDialogEdit from './tableDialogEdit.vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -52,9 +49,6 @@ const verseNumberToQuran = ref(1)
 const numberOfLetters = ref(0)
 const numberOfWords = ref(0)
 const verseText = ref('')
-const windowHeight = ref(window.innerHeight)
-const wordIndexes = ref({})
-const showSingleVerse = ref(false)
 
 const store = useQuranStore()
 
@@ -68,7 +62,6 @@ const handleVerseClick = item => {
   numberOfLetters.value = item.verseText.replace(/ /g, '').length.toString()
   numberOfWords.value = item.verseText.split(' ').length.toString()
   verseText.value = item.verseText
-  getOneVerseWordIndexes(item.verseText)
   setTargetedSuraAndVerse(item)
   if (targetFileName.value === '000المصحف') return
   perpareChartData(item)
@@ -93,21 +86,10 @@ const setTargetedSuraAndVerse = item => {
   })
 }
 
-const getOneVerseWordIndexes = text => {
-  wordIndexes.value = {}
-  text.split(' ').forEach((word, index) => {
-    if (!wordIndexes.value[word]) {
-      wordIndexes.value[word] = [index + 1]
-      return
-    }
-    wordIndexes.value[word].push(index + 1)
-  })
-}
-
 const goToVerseTextView = value => {
-  store.setActiveView('textView')
+  // store.setActiveView('textView')
+  store.setActiveTab('suraText')
   setTargetedSuraAndVerse(value)
-  // checkAndGo('singleSura')
 }
 
 const perpareChartData = item => {

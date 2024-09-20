@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <v-row outlined class="pa-2 grey lighten-4" id="suraBlock" :style="getHeight()">
+    <v-row outlined :style="getHeight()" id="suraBlock">
       <suraTextBox
         :inputText="inputText"
         :suraTargetedVerseIndex="suraTargetedVerseIndex"
@@ -17,24 +17,13 @@ import { ref, computed, onMounted, watch } from 'vue'
 import { useQuranStore } from '@/stores/app'
 import suraTextBox from './suraTextBox.vue'
 import { useTableOcc } from '../mixins/tableOccMixin'
-// Props
-const props = defineProps([
-  'numberOfVerses',
-  'numberOfWords',
-  'numberOfLetters',
-  'suraTextArray',
-  'inputText',
-  'suraTargetedVerseIndex',
-  'isLoading',
-])
 
-// Store
+const props = defineProps(['suraTextArray', 'inputText', 'suraTargetedVerseIndex', 'isLoading'])
+
 const store = useQuranStore()
-const { getTableHeight } = useTableOcc()
-// Reactive data
+const { getTextBoxHeight } = useTableOcc()
 const windowHeight = ref(window.innerHeight)
 
-// Methods
 const scrollOptions = () => ({
   duration: 1,
   offset: 2,
@@ -42,27 +31,16 @@ const scrollOptions = () => ({
 })
 
 const getHeight = () => {
-  const heightDif = getTableHeight.value - 140
+  const heightDif = getTextBoxHeight.value - 140
   return `height:${heightDif}px`
 }
 
-// Computed properties
-const suraselectedSearch = computed(() => store.getSelectedSearchIndex)
-const wrapperHeight = computed(() => {
-  const filterSectionDOM = document.getElementById('wrapper')
-  return filterSectionDOM ? filterSectionDOM.offsetHeight : 'auto'
-})
-const fileName = computed(() => store.getTarget.fileName)
-
-// Watchers
 watch(windowHeight, () => {
   getHeight()
 })
 
-// // Lifecycle hooks
 onMounted(() => {})
 
-// Expose methods and properties to the template
 defineExpose({
   scrollOptions,
   getHeight,
@@ -70,13 +48,6 @@ defineExpose({
 </script>
 
 <style>
-#suraBlock {
-  padding-right: 9px;
-  padding-left: 9px;
-  /*grey*/
-  border: 1px solid #9e9e9e !important;
-  overflow-y: scroll;
-}
 .sadakAllah {
   height: 40px;
 }
