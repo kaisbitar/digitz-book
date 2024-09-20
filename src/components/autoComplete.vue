@@ -35,11 +35,6 @@
             @chipRemoved="handleRemovedChip"
           />
         </div>
-        <appSearchBoxMatch
-          :search="search"
-          :matchingStatus="matchingStatus"
-          @clicked="toggleMatching"
-        />
       </template>
 
       <template v-slot:item="{ item, props }">
@@ -79,19 +74,17 @@ import { useQuranStore } from '@/stores/app'
 import { useRouter } from 'vue-router'
 import autoCompleteOptionsBar from './autoCompleteOptionsBar.vue'
 import autoCompleteChipsBar from './autoCompleteChipsBar.vue'
-import appSearchBoxMatch from './appSearchBoxMatch.vue'
 import autoCompleteItem from './autoCompleteItem.vue'
 import { useMixin } from '../mixins/mixins'
-import { useTableOcc } from '../mixins/tableOccMixin'
+import { useInputFiltering } from '../mixins/inputFiltering'
 
 const props = defineProps(['dataType', 'inputText'])
 const emit = defineEmits(['matchChanged'])
-const { handleFiltering, toggleMatching } = useTableOcc(props, emit)
+const { handleFiltering } = useInputFiltering()
 const store = useQuranStore()
 const router = useRouter()
 
 const isDisabled = ref(false)
-const matchingStatus = ref(false)
 const search = ref(null)
 const autocompleteRef = ref(null)
 
@@ -119,7 +112,7 @@ const handleRemovedChip = index => {
 }
 
 const handleRemoveAllChips = () => {
-  store.setResetResearchResults()
+  store.setResetSearchResults()
   checkAndGo('singleSura')
 }
 
@@ -141,7 +134,7 @@ const handleNewSearch = () => {
 
 const setNewSearch = () => {
   store.setSearchIndex(searchResults.value.length)
-  store.setResearchResultsItem({
+  store.setSearchResultsItem({
     resultsCount: autocompleteRef.value.filteredItems.length,
     inputText: search.value,
     result: autocompleteRef.value.filteredItems,

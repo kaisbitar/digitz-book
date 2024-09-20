@@ -4,8 +4,8 @@
 
 <script setup>
 import { defineProps } from 'vue'
-import { useTableOcc } from '../mixins/tableOccMixin'
-const { highlight } = useTableOcc()
+import { useInputFiltering } from '../mixins/inputFiltering'
+const { highlight } = useInputFiltering()
 
 defineProps({
   cellItem: {

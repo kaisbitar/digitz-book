@@ -1,58 +1,52 @@
 <template>
-  <div class="webKitWidth">
-    <div class="d-flex pt-1 topBar">
-      <appSearchBox
-        @searchChanged="changeSearch"
-        @matchChanged="changeMatchingStatus"
-        :inputText="search"
-        :dataType="dataType"
-      />
-    </div>
-    <div>
-      <v-data-table
-        loading-text="جاري تحميل البيانات القرآنية ... الرجاء الانتظار"
-        class="tableStyle versesTable"
-        ref="versesTable"
-        :custom-filter="handleFiltering"
-        :footer-props="footerProps"
-        hide-default-footer
-        :height="getTableHeight"
-        :headers="tableVersesHeaders"
-        :loading="isLoading"
-        :items="tableData"
-        :search="search"
-        :items-per-page="50"
-        v-model:page="page"
-        @update:current-items="setCurrentItems"
-        fixed-header
+  <appSearchBox
+    :inputText="search"
+    :dataType="dataType"
+    :prepend-icons="[
+      { name: 'mdi-filter', event: 'filter' },
+      { name: 'mdi-sort', event: 'sort' },
+      { name: 'mdi-magnify', event: 'search' },
+    ]"
+    @update:inputText="changeSearch"
+    @iconEvent="handleIconEvent"
+  />
+  <v-data-table
+    loading-text="جاري تحميل البيانات القرآنية ... الرجاء الانتظار"
+    class="tableStyle versesTable"
+    ref="versesTable"
+    :custom-filter="handleFiltering"
+    :footer-props="footerProps"
+    hide-default-footer
+    :height="getTableHeight"
+    :headers="tableVersesHeaders"
+    :loading="isLoading"
+    :items="tableData"
+    :search="search"
+    :items-per-page="50"
+    v-model:page="page"
+    @update:current-items="setCurrentItems"
+    fixed-header
+  >
+    <template v-slot:item="{ item, index }">
+      <tr
+        :id="`verse${item.verseNumberToQuran}`"
+        class="tableItem"
+        :class="{
+          activeTableItemClass: isTargetedVerse(item, index, props.targetVerseNumberToQuran),
+        }"
+        @click="$emit('rowClicked', item)"
       >
-        <template v-slot:item="{ item, index }">
-          <tr
-            :id="`verse${item.verseNumberToQuran}`"
-            class="tableItem"
-            :class="{
-              activeTableItemClass: isTargetedVerse(item, index, props.targetVerseNumberToQuran),
-            }"
-            @click="$emit('rowClicked', item)"
-          >
-            <tableVerseItem
-              v-for="(cellItem, index) in item"
-              :key="index"
-              :search="search"
-              :cellItem="cellItem"
-              @itemClicked="$emit('activateRowItem', item)"
-            />
-          </tr>
-        </template>
-      </v-data-table>
-      <v-pagination
-        v-model="page"
-        :length="pageCount"
-        :key="pageCount"
-        :border="'sm'"
-      ></v-pagination>
-    </div>
-  </div>
+        <tableVerseItem
+          v-for="(cellItem, key) in item"
+          :key="key"
+          :search="search"
+          :cellItem="cellItem"
+          @itemClicked="$emit('activateRowItem', item)"
+        />
+      </tr>
+    </template>
+  </v-data-table>
+  <v-pagination v-model="page" :length="pageCount" :key="pageCount" :border="'sm'"></v-pagination>
 </template>
 
 <script setup>
@@ -60,7 +54,8 @@ import { ref, computed, watch, onMounted, defineEmits } from 'vue'
 import { useQuranStore } from '@/stores/app'
 import appSearchBox from './appSearchBox.vue'
 import tableVerseItem from './tableVerseItem.vue'
-import { useTableOcc } from '../mixins/tableOccMixin'
+import { useWindowMixin } from '../mixins/windowMixin'
+import { useInputFiltering } from '../mixins/inputFiltering'
 import { useGoTo } from 'vuetify'
 import { nextTick } from 'vue'
 
@@ -76,15 +71,8 @@ const props = defineProps([
   'tableVersesHeaders',
 ])
 
-const {
-  getTableHeight,
-  changeSearch,
-  changeMatchingStatus,
-  highlight,
-  search,
-  matchingStatus,
-  handleFiltering,
-} = useTableOcc(props)
+const { getTableHeight } = useWindowMixin(props)
+const { changeSearch, changeMatchingStatus, search, handleFiltering } = useInputFiltering(props)
 
 const emit = defineEmits(['rowClicked', 'activateRowItem', 'activateItem'])
 const store = useQuranStore()
@@ -155,31 +143,20 @@ onMounted(() => {
   search.value = props.inputText
   scrollToActiveRow()
 })
+
+const handleIconEvent = eventName => {
+  switch (eventName) {
+    case 'filter':
+      break
+    case 'sort':
+      break
+    case 'search':
+      changeMatchingStatus()
+      break
+    default:
+      console.warn(`Unhandled icon event: ${eventName}`)
+  }
+}
 </script>
 
-<style>
-.versesTable {
-  transition: width 0.4s;
-}
-.verse td {
-  font-weight: 500;
-}
-.versesTable .v-table__wrapper {
-  overflow-x: hidden;
-}
-.activeIcon {
-  vertical-align: middle;
-  display: table-cell;
-  border: none;
-  padding-left: 15px;
-}
-.mouseOverRow td:nth-child(2) {
-  opacity: 0;
-  display: none;
-}
-.topBar {
-  /* height: 49px; */
-  /* margin-bottom: 16px;
-  margin-top: 10px; */
-}
-</style>
+<style></style>

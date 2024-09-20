@@ -16,12 +16,12 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { useQuranStore } from '@/stores/app'
 import suraTextBox from './suraTextBox.vue'
-import { useTableOcc } from '../mixins/tableOccMixin'
+import { useWindowMixin } from '../mixins/windowMixin'
 
 const props = defineProps(['suraTextArray', 'inputText', 'suraTargetedVerseIndex', 'isLoading'])
 
 const store = useQuranStore()
-const { getTextBoxHeight } = useTableOcc()
+const { getTextBoxHeight } = useWindowMixin()
 const windowHeight = ref(window.innerHeight)
 
 const scrollOptions = () => ({
