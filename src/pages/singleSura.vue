@@ -1,58 +1,53 @@
 <template>
-  <div>
-    <div class="d-flex">
-      <appTitle :title="fileName" />
-      <suraTextSearchResults
-        v-if="activeView === 'textView'"
-        style="max-width: 641px"
-        :selectedVerse="suraTargetedVerseIndex"
-        :suraTextArray="suraTextArray"
-        :inputText="inputText"
-      />
-    </div>
-    <suraText
-      v-if="activeView === 'textView'"
-      :suraTextArray="suraTextWithTashkeel"
-      :suraTargetedVerseIndex="suraTargetedVerseIndex"
-      :numberOfLetters="numberOfLetters"
-      :numberOfVerses="numberOfVerses"
-      :numberOfWords="numberOfWords"
-      :inputText="inputText"
-      :isLoading="isLoading"
-    />
-    <!-- <keep-alive> -->
-    <dashbord
-      v-if="activeView === 'detailView'"
-      :numberOfLetters="numberOfLetters"
-      :wordIndexes="details.wordIndexes"
-      :numberOfVerses="numberOfVerses"
-      :numberOfWords="numberOfWords"
-      :suraTextArray="suraTextArray"
-      :chartFreqType="chartFreqType"
-      :chartFreqSeries="chartFreqSeries"
-      :chartOptions="chartOptions"
-      :versesSeries="versesSeries"
-      :versesBasics="versesBasics"
-      :isLoading="isLoading"
-      :inputText="inputText"
-      :title="fileName"
-    />
-    <!-- </keep-alive> -->
-  </div>
+  <appTitle :title="fileName" />
+  <dashboardTabs
+    :tabs="tabs"
+    :activeTab="activeTab"
+    @tabChanged="changeTab"
+    class="webKitWidth mb-"
+  />
+  <suraTextSearchResults
+    v-if="activeTab === 'suraText'"
+    style="max-width: 641px"
+    :selectedVerse="suraTargetedVerseIndex"
+    :suraTextArray="suraTextArray"
+    :inputText="inputText"
+  />
+  <suraText
+    v-if="activeTab === 'suraText'"
+    :suraTextArray="suraTextWithTashkeel"
+    :suraTargetedVerseIndex="suraTargetedVerseIndex"
+    :numberOfLetters="numberOfLetters"
+    :numberOfVerses="numberOfVerses"
+    :numberOfWords="numberOfWords"
+    :inputText="inputText"
+    :isLoading="isLoading"
+  />
+  <dashVerses
+    v-if="activeTab === 'versesTab'"
+    class="webKitWidth"
+    :versesBasics="versesBasics"
+    :inputText="inputText"
+    :isLoading="isLoading"
+  />
+  <dashFrequency
+    v-if="activeTab === 'frequency'"
+    :chartFreqSeries="chartFreqSeries"
+    :chartOptions="chartOptions"
+    :versesText="suraTextArray"
+    :isLoading="isLoading"
+    :height="chartWindowHeight"
+  />
 </template>
 
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
 import { useQuranStore } from '@/stores/app'
-import suraTextSearchResults from '@/components/suraTextSearchResults'
 import chartOptionsConfig from '@/assets/frequecyOptions'
-import suraText from '@/components/suraText'
-import dashbord from '@/components/dashbord'
-import appTitle from '@/components/appTitle'
 import { useMixin } from '../mixins/mixins'
 
 const { setTargetFromArrow } = useMixin()
-const quranStore = useQuranStore()
+const store = useQuranStore()
 const chartOptions = ref(chartOptionsConfig)
 const suraTextWithTashkeel = ref([])
 const numberOfLetters = ref(null)
@@ -68,24 +63,22 @@ const versesSeries = ref([{ data: [] }])
 const wordsSeries = ref([{ data: [] }])
 const details = ref({})
 
-const activeView = computed(() => quranStore.getActiveView)
-const activeRoute = computed(() => quranStore.getActiveRoute)
-const selectedSearch = computed(() => quranStore.getSelectedSearch)
-const selectedSearchIndex = computed(() => quranStore.getSelectedSearchIndex)
+const chartWindowHeight = computed(() => window.innerHeight - 260)
+const selectedSearch = computed(() => store.getSelectedSearch)
 const inputText = computed(() => selectedSearch.value?.inputText || null)
-const suraTargetedVerseIndex = computed(() => quranStore.getTarget?.verseIndex || 1)
-const fileName = computed(() => quranStore.getTarget?.fileName || '001الفاتحة')
+const suraTargetedVerseIndex = computed(() => store.getTarget?.verseIndex || 1)
+const fileName = computed(() => store.getTarget?.fileName || '001الفاتحة')
 const suraNumber = computed(() => parseInt(fileName.value.replace(/^\D+/g, '')))
-const tableQuranIndex = computed(() => quranStore.getTableQuranIndex)
+const tableQuranIndex = computed(() => store.getTableQuranIndex)
 const suraBasics = computed(
   () => tableQuranIndex.value[suraNumber.value] || tableQuranIndex.value[1],
 )
-const chartFreqType = computed(() => quranStore.getChartFreqType)
+const chartFreqType = computed(() => store.getChartFreqType)
 const chartFreqSeries = computed(() =>
   chartFreqType.value === 'words' ? wordsSeries.value : letterSeries.value,
 )
-const oneQuranFile = computed(() => quranStore.getOneQuranFile)
-const allVersesWithTashkeel = computed(() => quranStore.getAllVersesWithTashkeel)
+const oneQuranFile = computed(() => store.getOneQuranFile)
+const allVersesWithTashkeel = computed(() => store.getAllVersesWithTashkeel)
 
 const tooltipLabel = computed(() => {
   return chartFreqType.value === 'words' ? 'كلمات' : 'حرف'
@@ -94,6 +87,23 @@ const tooltipLabel = computed(() => {
 const tooltipLabel2 = computed(() => {
   return fileName.value !== '000المصحف' ? 'آية' : 'سورة'
 })
+
+const tabs = computed(() => [
+  { title: 'نص', name: 'suraText' },
+  { title: 'آية', value: numberOfVerses.value, name: 'versesTab' },
+  { title: 'كلمة', value: numberOfWords.value, name: 'wordsTab' },
+  { title: 'حرف', value: numberOfLetters.value, name: 'lettersTab' },
+  { title: 'تواتر', name: 'frequency' },
+])
+
+const activeTab = computed({
+  get: () => store.getActiveTab,
+  set: value => store.setActiveTab(value),
+})
+
+const changeTab = tab => {
+  store.setActiveTab(tab)
+}
 
 const setSuraBasics = () => {
   numberOfLetters.value = suraBasics.value.numberOfLetters
@@ -105,7 +115,7 @@ const setSuraBasics = () => {
 
 const fetchSuraDetails = async () => {
   isLoading.value = true
-  details.value = await quranStore.getSuraDetails()
+  details.value = await store.getSuraDetails()
   isLoading.value = false
 }
 
@@ -206,8 +216,15 @@ const prepareSuraWithTashkeel = () => {
 watch(fileName, prepareData)
 
 onMounted(() => {
+  store.setActiveRoute('singleSura')
   prepareData()
 })
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+#suraBlock {
+  margin: 0;
+  overflow-y: scroll;
+  margin-top: 10px;
+}
+</style>

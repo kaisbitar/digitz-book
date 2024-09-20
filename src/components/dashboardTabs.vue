@@ -1,7 +1,13 @@
 <template>
   <v-card flat>
-    <v-tabs v-model="computedTab" height="37" grow>
-      <v-tab v-for="(item, index) in tabs" :key="index" :value="item.name" :title="item.title">
+    <v-tabs v-model="computedTab" bg-color="" align-tabs="center" grow>
+      <v-tab
+        v-for="(item, index) in tabs"
+        :key="index"
+        :value="item.name"
+        :title="item.title"
+        class="text-none"
+      >
         {{ item.value }} {{ item.title }}
       </v-tab>
     </v-tabs>
@@ -22,12 +28,13 @@ const computedTab = computed({
 
 <style>
 .v-tab {
-  font-size: 17px;
+  font-size: 16px;
+  font-weight: 500;
+  text-transform: none;
   font-family: unset;
-  letter-spacing: 0;
 }
-.v-tab {
-  height: 26px;
-  margin-top: 5px;
+
+.v-tab--selected {
+  background-color: rgba(255, 255, 255, 0.12);
 }
 </style>

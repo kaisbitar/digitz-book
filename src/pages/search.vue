@@ -5,6 +5,32 @@
       <appTitle :title="inputText" />
     </div>
     <!-- <keep-alive> -->
+    <!-- <dashboardTabs
+      :tabs="tabs"
+      :activeTab="activeTab"
+      @tabChanged="changeTab"
+      class="webKitWidth"
+    /> -->
+    <!-- </v-row> -->
+    <!-- {{ suraTargetedVerseIndex }} -->
+    <!-- <suraText
+      v-if="activeTab === 'suraText'"
+      :suraTextArray="suraTextArray"
+      :suraTargetedVerseIndex="suraTargetedVerseIndex"
+      :numberOfLetters="numberOfLetters"
+      :numberOfVerses="numberOfVerses"
+      :numberOfWords="numberOfWords"
+      :inputText="inputText"
+      :isLoading="isLoading"
+    />
+  -->
+    <!-- <dashVerses
+      v-if="activeTab === 'numberOfVerses'"
+      class="webKitWidth"
+      :versesBasics="versesBasics"
+      :inputText="inputText"
+      :isLoading="isLoading"
+    /> -->
     <dashbord
       v-if="!isLoading"
       :inputText="inputText"
@@ -77,7 +103,6 @@ const fetchSuraDetails = async () => {
 }
 
 // Computed properties
-const activeTab = computed(() => store.getActiveTab)
 const selectedSearch = computed(() => (store.getResearchResults ? store.getSelectedSearch : {}))
 const selectedSearchIndex = computed(() => store.getSelectedSearchIndex)
 const suraTargetedVerseIndex = computed(() => store.getTarget?.verseIndex || 1)
