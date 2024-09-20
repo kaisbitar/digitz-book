@@ -45,13 +45,12 @@
           </tr>
         </template>
       </v-data-table>
-      <tablePagination
-        :page="page"
-        :pageCount="pageCount"
-        :itemsLength="currentItemsLength"
-        label="آية"
-        @pageChanged="changePage"
-      />
+      <v-pagination
+        v-model="page"
+        :length="pageCount"
+        :key="pageCount"
+        :border="'sm'"
+      ></v-pagination>
     </div>
   </div>
 </template>
@@ -61,7 +60,6 @@ import { ref, computed, watch, onMounted, defineEmits } from 'vue'
 import { useQuranStore } from '@/stores/app'
 import appSearchBox from './appSearchBox.vue'
 import tableVerseItem from './tableVerseItem.vue'
-import tablePagination from './tablePagination.vue'
 import { useTableOcc } from '../mixins/tableOccMixin'
 import { useGoTo } from 'vuetify'
 import { nextTick } from 'vue'
@@ -133,10 +131,6 @@ const scrollToActiveRow = async () => {
     container: '.versesTable .v-table__wrapper',
     offset: -100,
   })
-}
-
-const changePage = newPage => {
-  page.value = newPage
 }
 
 watch(activeView, newValue => {

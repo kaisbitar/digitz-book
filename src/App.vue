@@ -19,6 +19,9 @@ onMounted(() => {
 </script>
 
 <style>
+html {
+  font-size: 20px !important;
+}
 .v-selection-control {
   background: rgb(var(--v-theme-surface)) !important;
 }
@@ -32,7 +35,7 @@ th {
   height: 25px !important;
 }
 
-.indexStyle .tableItem {
+.tableItem {
   font-weight: 100;
 }
 
@@ -55,8 +58,8 @@ th {
 .activeSuraItem,
 .activeTableItemClass {
   color: rgb(var(--v-theme-on-active-row)) !important;
-  font-weight: 500 !important;
   background: rgb(var(--v-theme-active-row)) !important;
+  font-weight: 300 !important;
 }
 
 .v-input__control {

@@ -3,7 +3,10 @@
     <v-main>
       <AppHeader />
       <v-navigation-drawer :width="drawerWidth" v-model="drawer" app right>
-        <tableQuranIndex @showDetailToggle="calculateWidth" />
+        <tableQuranIndex
+          @showDetailToggle="isShowDetail = !isShowDetail"
+          :showDetail="isShowDetail"
+        />
       </v-navigation-drawer>
       <v-container fluid>
         <router-view />
@@ -18,17 +21,13 @@ import { useQuranStore } from '@/stores/app'
 import { useRouter } from 'vue-router'
 
 const store = useQuranStore()
-
-const drawerWidth = ref(250)
+const isShowDetail = ref(false)
+const drawerWidth = computed(() => (isShowDetail.value ? 490 : 290))
 
 const drawer = computed({
   get: () => store.getDrawerState,
   set: value => store.setDrawerState(value),
 })
-
-const calculateWidth = showDetail => {
-  drawerWidth.value = showDetail ? 440 : 250
-}
 
 onMounted(() => {})
 </script>
@@ -37,11 +36,16 @@ onMounted(() => {})
 @import '@/styles/styles.scss';
 
 .v-application {
-  font-family: $body-font-family !important;
+  // font-family: $body-font-family !important;
+  font-family: system-ui !important;
 }
 
 .activeView {
   // color: rgb(var(--v-theme-background-secondary)) !important;
+}
+
+.v-navigation-drawer__content {
+  margin-top: 13px;
 }
 
 .topHeader {

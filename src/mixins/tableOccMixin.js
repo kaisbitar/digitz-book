@@ -16,11 +16,11 @@ export function useTableOcc(props, emit) {
   const getTableHeight = computed(() => {
     let height = windowHeight.value
     if(activeRoute.value === 'singleSura') {
-      height = height - 330
+      height = height - 300
     }
 
     if(activeRoute.value === 'search') {
-        height = height - 410
+        height = height - 375
     }
 
     return height

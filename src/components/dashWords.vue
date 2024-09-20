@@ -153,9 +153,6 @@ onMounted(() => {
 </script>
 
 <style>
-.appSearchBox {
-  margin-bottom: -21px;
-}
 .wordsChart text {
   text-anchor: start;
 }

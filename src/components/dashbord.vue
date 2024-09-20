@@ -1,14 +1,5 @@
 <template>
   <div>
-    <!-- <v-row class="dashboardTabs"> -->
-    <dashboardTabs
-      :tabs="tabs"
-      :activeTab="activeTab"
-      @tabChanged="changeTab"
-      class="webKitWidth"
-    />
-    <!-- </v-row> -->
-    <!-- {{ suraTargetedVerseIndex }} -->
     <suraText
       v-if="activeTab === 'suraText'"
       :suraTextArray="suraTextArray"
@@ -20,29 +11,12 @@
       :isLoading="isLoading"
     />
     <dashVerses
-      v-if="activeTab === 'numberOfVerses'"
+      v-if="activeTab === 'versesTab'"
       class="webKitWidth"
       :versesBasics="props.versesBasics"
       :inputText="inputText"
       :isLoading="isLoading"
     />
-    <!-- <dashWords
-      v-if="activeTab === 'numberOfWords'"
-      class="webKitWidth"
-      :suraText="suraTextArray.join(' ')"
-      :numberOfLetters="props.numberOfLetters"
-      :numberOfWords="props.numberOfWords"
-      :isLoading="props.isLoading"
-      :indexes="props.wordIndexes"
-    />
-    <dashLetters
-      v-if="activeTab === 'numberOfLetters'"
-      class="webKitWidth"
-      :numberOfLetters="props.numberOfLetters"
-      :suraText="suraTextArray.join('')"
-      :numberOfWords="props.numberOfWords"
-      :isLoading="props.isLoading"
-    /> -->
     <dashFrequency
       v-if="activeTab === 'frequency'"
       :chartFreqSeries="props.chartFreqSeries"
@@ -79,13 +53,6 @@ const props = defineProps([
 ])
 const store = useQuranStore()
 
-const tabs = computed(() => [
-  { title: 'نص', name: 'suraText' },
-  { title: 'آية', value: props.numberOfVerses, name: 'numberOfVerses' },
-  { title: 'كلمة', value: props.numberOfWords, name: 'numberOfWords' },
-  { title: 'حرف', value: props.numberOfLetters, name: 'numberOfLetters' },
-  { title: 'تواتر', name: 'frequency' },
-])
 const activeTab = computed({
   get: () => store.getActiveTab,
   set: value => store.setActiveTab(value),
@@ -98,7 +65,7 @@ const chartWindowHeight = computed(() => window.innerHeight.value - 210)
 const suraTargetedVerseIndex = computed(() => store.getTarget.verseIndex || 1)
 
 onMounted(() => {
-  changeTab('numberOfVerses')
+  changeTab('versesTab')
 })
 </script>
 

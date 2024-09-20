@@ -60,9 +60,6 @@ onMounted(() => {
 <style>
 .appSearchBox {
   width: 219px;
-  position: relative;
-  z-index: 5;
-  background: #7fffd400 !important;
 }
 .matchLabel {
   text-align: center;
