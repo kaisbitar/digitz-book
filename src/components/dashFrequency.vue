@@ -1,7 +1,7 @@
 <template>
   <div class="webKitWidth">
-    <AppChartOptions :intitalType="chartFreqType" @typeChanged="changeType" />
-    <AppChart
+    <ChartRadioButtons :intitalType="chartFreqType" @typeChanged="changeType" />
+    <Chart
       :isLoading="isLoading"
       :series="chartFreqSeries"
       :options="chartOptions"

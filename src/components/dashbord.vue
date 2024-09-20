@@ -71,22 +71,7 @@ onMounted(() => {
   margin-top: 3px !important;
   margin-right: 250px;
 }
-.dashboardTabs {
-  margin-right: 395px;
-  margin-top: -47px;
-  margin-bottom: 1px;
-  margin-left: 47px;
-}
 a.dashTabs.v-tab--active {
   background: aliceblue;
-}
-@media (max-width: 700px) {
-}
-@media (max-width: 978px) {
-  .dashboardTabs {
-    margin-right: 0px;
-    margin-top: 0px;
-    margin-bottom: 14px;
-  }
 }
 </style>

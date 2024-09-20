@@ -2,7 +2,7 @@
   <div>
     <AutoComplete />
     <div class="d-flex">
-      <AppToolBar :title="inputText" :tabs="tabs" />
+      <h1 class="ml-10">{{ inputText }}</h1>
     </div>
     <Dashbord
       v-if="!isLoading"
