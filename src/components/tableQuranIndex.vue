@@ -1,51 +1,40 @@
 <template>
-  <div class="text-center">
-    <div class="d-flex mr-1">
-      <appSearchBox
-        @searchChanged="changeSearch"
-        @matchChanged="changeMatchingStatus"
-        :inputText="search"
-        :dataType="'السور'"
-      />
-      <v-btn
-        :icon="
-          showDetail ? 'mdi-format-horizontal-align-center' : 'mdi-format-horizontal-align-left'
-        "
-        :color="showDetail ? 'primary' : 'grey'"
-        @click="emit('showDetailToggle')"
-        variant="text"
-      ></v-btn>
-    </div>
-    <div id="indexBlock">
-      <v-data-table
-        :items="data"
-        :headers="headers"
-        :loading="loading"
-        loading-text="جاري تحميل أسماء السور"
-        :search="search"
-        :items-per-page="115"
-        :height="'85vh'"
-        fixed-header
-        hide-default-footer
-        class="tableStyle indexStyle"
-        id="indexBlock"
+  <appSearchBox :inputText="search" :dataType="'السور'" />
+  <v-toolbar density="compact" color="surface">
+    <v-btn
+      :icon="showDetail ? 'mdi-format-horizontal-align-center' : 'mdi-format-horizontal-align-left'"
+      :color="showDetail ? 'primary' : 'grey'"
+      @click="emit('showDetailToggle')"
+      variant="text"
+    ></v-btn>
+  </v-toolbar>
+  <v-data-table
+    :items="data"
+    :headers="headers"
+    :loading="loading"
+    loading-text="جاري تحميل أسماء السور"
+    :search="search"
+    :items-per-page="115"
+    :height="'85vh'"
+    fixed-header
+    hide-default-footer
+    class="tableStyle indexStyle"
+    id="indexBlock"
+  >
+    <template v-slot:item="props">
+      <tr
+        @click="runSura(props.item)"
+        :class="{ activeSuraItem: props.item.fileName === fileName }"
+        class="tableItem"
       >
-        <template v-slot:item="props">
-          <tr
-            @click="runSura(props.item)"
-            :class="{ activeSuraItem: props.item.fileName === fileName }"
-            class="tableItem"
-          >
-            <td class="text-right" v-html="highlight(suraIndex(props.item.fileName), search)"></td>
-            <td class="text-right" v-html="highlight(suraName(props.item.fileName), search)"></td>
-            <td class="text-right" v-html="highlight(props.item.numberOfVerses, search)"></td>
-            <td class="text-right" v-html="highlight(props.item.numberOfWords, search)"></td>
-            <td class="text-right" v-html="highlight(props.item.numberOfLetters, search)"></td>
-          </tr>
-        </template>
-      </v-data-table>
-    </div>
-  </div>
+        <td class="text-right" v-html="highlight(suraIndex(props.item.fileName), search)"></td>
+        <td class="text-right" v-html="highlight(suraName(props.item.fileName), search)"></td>
+        <td class="text-right" v-html="highlight(props.item.numberOfVerses, search)"></td>
+        <td class="text-right" v-html="highlight(props.item.numberOfWords, search)"></td>
+        <td class="text-right" v-html="highlight(props.item.numberOfLetters, search)"></td>
+      </tr>
+    </template>
+  </v-data-table>
 </template>
 
 <script setup>
@@ -53,12 +42,12 @@ import { ref, computed, watch, onMounted } from 'vue'
 import { useQuranStore } from '@/stores/app'
 import { useRouter } from 'vue-router'
 import { useGoTo } from 'vuetify'
-import { useTableOcc } from '../mixins/tableOccMixin'
+import { useInputFiltering } from '../mixins/inputFiltering'
 
 const store = useQuranStore()
 const router = useRouter()
 const goTo = useGoTo() // Add this line
-const { highlight, changeSearch, changeMatchingStatus } = useTableOcc()
+const { highlight } = useInputFiltering()
 // Reactive state
 const loading = ref(true)
 const search = ref('')

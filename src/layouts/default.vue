@@ -51,7 +51,11 @@ onMounted(() => {})
 .topHeader {
   z-index: 6;
 }
-
+.v-data-table-header__content {
+  display: flex;
+  align-items: center;
+  padding-bottom: 9px;
+}
 .suraInfoBox {
   padding: 24px;
   margin-left: 10px;

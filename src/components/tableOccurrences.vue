@@ -1,12 +1,7 @@
 <template>
   <div class="grey lighten-5">
     <div class="d-flex pt-1 topBar">
-      <appSearchBox
-        @searchChanged="changeSearch"
-        @matchChanged="changeMatchingStatus"
-        :inputText="search"
-        :dataType="dataType"
-      />
+      <appSearchBox :inputText="search" :dataType="dataType" />
     </div>
     <v-data-table
       :items="tableData"
@@ -33,20 +28,19 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { useTableOcc } from '@/mixins/tableOccMixin'
+import { useWindowMixin } from '@/mixins/windowMixin'
 // export const {
 //   windowHeight,
 //   search,
 //   matchingStatus,
 //   getTableHeight,
-//   changeSearch,
 //   changeMatchingStatus,
 //   highlight,
 //   dataType,
 //   footerProps,
 //   tableHeaders,
 //   isLoading,
-// } = useTableOcc({})
+// } = useWindowMixin({})
 const page = ref(1)
 const pageCount = ref(0)
 const currentItemsLength = ref(0)
