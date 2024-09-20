@@ -1,9 +1,9 @@
 <template>
   <v-app>
     <v-main>
-      <AppHeader />
+      <appHeader />
       <v-navigation-drawer :width="drawerWidth" v-model="drawer" app right>
-        <tableQuranIndex
+        <TableQuranIndex
           @showDetailToggle="isShowDetail = !isShowDetail"
           :showDetail="isShowDetail"
         />

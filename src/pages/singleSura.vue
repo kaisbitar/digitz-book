@@ -1,8 +1,8 @@
 <template>
   <div class="d-flex">
-    <appToolBar :title="fileName" :tabs="tabs" />
+    <AppToolBar :title="fileName" :tabs="tabs" />
   </div>
-  <suraText
+  <SuraText
     v-if="activeTab === 'suraText'"
     :suraTextArray="suraTextWithTashkeel"
     :suraTargetedVerseIndex="suraTargetedVerseIndex"
@@ -12,14 +12,14 @@
     :inputText="inputText"
     :isLoading="isLoading"
   />
-  <dashVerses
+  <DashVerses
     v-if="activeTab === 'versesTab'"
     class="webKitWidth"
     :versesBasics="versesBasics"
     :inputText="inputText"
     :isLoading="isLoading"
   />
-  <dashFrequency
+  <DashFrequency
     v-if="activeTab === 'frequency'"
     :chartFreqSeries="chartFreqSeries"
     :chartOptions="chartOptions"

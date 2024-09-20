@@ -1,10 +1,10 @@
 <template>
   <div>
-    <autoComplete />
+    <AutoComplete />
     <div class="d-flex">
-      <appToolBar :title="inputText" :tabs="tabs" />
+      <AppToolBar :title="inputText" :tabs="tabs" />
     </div>
-    <dashbord
+    <Dashbord
       v-if="!isLoading"
       :inputText="inputText"
       @tabChanged="getWordsData"
@@ -25,7 +25,6 @@
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
 import { useQuranStore } from '@/stores/app'
-import dashbord from '../components/dashbord.vue'
 import chartOptions from '../assets/frequecyOptions'
 
 const store = useQuranStore()

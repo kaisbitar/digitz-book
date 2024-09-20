@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <v-row outlined :style="getHeight()" id="suraBlock">
-      <suraTextBox
+      <SuraTextBox
         :inputText="inputText"
         :suraTargetedVerseIndex="suraTargetedVerseIndex"
         :suraTextArray="suraTextArray"
@@ -15,7 +15,6 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { useQuranStore } from '@/stores/app'
-import suraTextBox from './suraTextBox.vue'
 import { useWindowMixin } from '../mixins/windowMixin'
 
 const props = defineProps(['suraTextArray', 'inputText', 'suraTargetedVerseIndex', 'isLoading'])

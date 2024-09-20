@@ -1,7 +1,7 @@
 <template>
   <v-toolbar color="surface">
     <h3 class="ml-10">{{ title }}</h3>
-    <dashboardTabs
+    <DashboardTabs
       :tabs="tabs"
       :activeTab="activeTab"
       @tabChanged="changeTab"

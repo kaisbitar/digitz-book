@@ -1,5 +1,5 @@
 <template>
-  <appSearchBox
+  <AppSearchBox
     :inputText="search"
     :dataType="dataType"
     :prepend-icons="[
@@ -36,7 +36,7 @@
         }"
         @click="$emit('rowClicked', item)"
       >
-        <tableVerseItem
+        <TableVerseItem
           v-for="(cellItem, key) in item"
           :key="key"
           :search="search"
@@ -52,8 +52,6 @@
 <script setup>
 import { ref, computed, watch, onMounted, defineEmits } from 'vue'
 import { useQuranStore } from '@/stores/app'
-import appSearchBox from './appSearchBox.vue'
-import tableVerseItem from './tableVerseItem.vue'
 import { useWindowMixin } from '../mixins/windowMixin'
 import { useInputFiltering } from '../mixins/inputFiltering'
 import { useGoTo } from 'vuetify'

@@ -28,7 +28,7 @@
 
       <template v-slot:prepend-inner>
         <div class="d-flex" @click.prevent="disableInputBox">
-          <autoCompleteChipsBar
+          <AutoCompleteChipsBar
             :chipsData="searchResults"
             :selectedChipIndex="selectedSearchIndex"
             @chipClicked="handleClickedChip"
@@ -39,7 +39,7 @@
 
       <template v-slot:item="{ item, props }">
         <div v-bind="props">
-          <autoCompleteItem
+          <AutoCompleteItem
             :inputText="search"
             :item="item.raw"
             :chipTitle="' آية ' + item.raw.verseIndex"
@@ -54,7 +54,7 @@
       </template>
 
       <template v-slot:prepend-item>
-        <autoCompleteOptionsBar
+        <AutoCompleteOptionsBar
           class="btnsBar"
           @btn1Clicked="handleNewSearch()"
           :resultCounter="resultsCount()"
@@ -72,9 +72,6 @@
 import { ref, computed, watch, onMounted, nextTick } from 'vue'
 import { useQuranStore } from '@/stores/app'
 import { useRouter } from 'vue-router'
-import autoCompleteOptionsBar from './autoCompleteOptionsBar.vue'
-import autoCompleteChipsBar from './autoCompleteChipsBar.vue'
-import autoCompleteItem from './autoCompleteItem.vue'
 import { useMixin } from '../mixins/mixins'
 import { useInputFiltering } from '../mixins/inputFiltering'
 

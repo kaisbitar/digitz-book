@@ -19,7 +19,6 @@
 <script setup>
 import { ref, computed, watch, defineProps } from 'vue'
 import { useQuranStore } from '@/stores/app'
-import tableVerses from './tableVerses.vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()

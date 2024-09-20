@@ -1,5 +1,5 @@
 <template>
-  <appSearchBox :inputText="search" :dataType="'السور'" />
+  <AppSearchBox :inputText="search" :dataType="'السور'" />
   <v-toolbar density="compact" color="surface">
     <v-btn
       :icon="showDetail ? 'mdi-format-horizontal-align-center' : 'mdi-format-horizontal-align-left'"
