@@ -32,11 +32,8 @@
 import { ref, computed, onMounted } from 'vue'
 
 import { useQuranStore } from '@/stores/app'
-import dashLetters from './dashLetters.vue'
 import dashFrequency from './dashFrequency.vue'
 import dashVerses from './dashVerses.vue'
-import dashboardTabs from './dashboardTabs.vue'
-import dashWords from './dashWords.vue'
 import suraText from '@/components/suraText.vue'
 
 const props = defineProps([
