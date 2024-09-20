@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex">
-    <AppToolBar :title="fileName" :tabs="tabs" />
+    <SingleSuraToolBar :title="fileName" :tabs="tabs" />
   </div>
   <SuraText
     v-if="activeTab === 'suraText'"
