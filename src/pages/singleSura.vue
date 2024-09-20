@@ -2,13 +2,6 @@
   <div class="d-flex">
     <appToolBar :title="fileName" :tabs="tabs" />
   </div>
-  <suraTextSearchResults
-    v-if="activeTab === 'suraText'"
-    style="max-width: 641px"
-    :selectedVerse="suraTargetedVerseIndex"
-    :suraTextArray="suraTextArray"
-    :inputText="inputText"
-  />
   <suraText
     v-if="activeTab === 'suraText'"
     :suraTextArray="suraTextWithTashkeel"

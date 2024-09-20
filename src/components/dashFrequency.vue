@@ -1,7 +1,7 @@
 <template>
   <div class="webKitWidth">
     <appChartOptions :intitalType="chartFreqType" @typeChanged="changeType" />
-    <appChart
+    <AppChart
       :isLoading="isLoading"
       :series="chartFreqSeries"
       :options="chartOptions"
@@ -11,7 +11,7 @@
 </template>
 
 <script setup>
-import appChart from '../components/appChart.vue'
+import AppChart from '../components/AppChart.vue'
 import appChartOptions from './appChartOptions.vue'
 import { defineProps } from 'vue'
 import { useQuranStore } from '@/stores/app'
