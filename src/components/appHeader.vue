@@ -5,15 +5,15 @@
     </template>
     <v-app-bar-title>الكتاب المرقوم</v-app-bar-title>
     <v-spacer></v-spacer>
-    <appNavigation />
-    <appDropMenu :components="[themeToggle]"> </appDropMenu>
+    <AppNavigation />
+    <AppDropMenu :components="[ThemeToggle]"> </AppDropMenu>
   </v-app-bar>
 </template>
 
 <script setup>
 import { useQuranStore } from '@/stores/app'
-import appDropMenu from './appDropMenu.vue'
-import themeToggle from './themeToggle.vue'
+import ThemeToggle from './ThemeToggle.vue'
+
 const store = useQuranStore()
 
 const toggleDrawer = () => {
