@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex">
-    <SingleSuraToolBar :title="fileName" :tabs="tabs" />
+    <SuraToolBar :title="fileName" :tabs="tabs" />
   </div>
   <SuraText
     v-if="activeTab === 'suraText'"
@@ -12,7 +12,7 @@
     :inputText="inputText"
     :isLoading="isLoading"
   />
-  <DashVerses
+  <SuraVerses
     v-if="activeTab === 'versesTab'"
     class="webKitWidth"
     :versesBasics="versesBasics"
@@ -200,7 +200,7 @@ const prepareSuraWithTashkeel = () => {
 watch(fileName, prepareData)
 
 onMounted(() => {
-  store.setActiveRoute('singleSura')
+  store.setActiveRoute('sura')
   prepareData()
 })
 </script>

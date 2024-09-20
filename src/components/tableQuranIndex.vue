@@ -80,8 +80,8 @@ const runSura = sura => {
     verseIndex: 1,
     verseNumberToQuran: sura.verseNumberToQuran.toString(),
   })
-  if (router.currentRoute.value.name !== 'singleSura') {
-    router.push({ name: 'singleSura' })
+  if (router.currentRoute.value.name !== 'sura') {
+    router.push({ name: 'sura' })
   }
   store.setSearchIndex(-1)
 }

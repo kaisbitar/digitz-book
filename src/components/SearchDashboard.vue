@@ -1,31 +1,21 @@
 <template>
-  <div>
-    <SuraText
-      v-if="activeTab === 'suraText'"
-      :suraTextArray="suraTextArray"
-      :suraTargetedVerseIndex="suraTargetedVerseIndex"
-      :numberOfLetters="numberOfLetters"
-      :numberOfVerses="numberOfVerses"
-      :numberOfWords="numberOfWords"
-      :inputText="inputText"
-      :isLoading="isLoading"
+  <SuraText
+    v-if="activeTab === 'suraText'"
+    :suraTextArray="suraTextArray"
+    :suraTargetedVerseIndex="suraTargetedVerseIndex"
+    :numberOfLetters="numberOfLetters"
+    :numberOfVerses="numberOfVerses"
+    :numberOfWords="numberOfWords"
+    :inputText="inputText"
+    :isLoading="isLoading"
     />
-    <DashVerses
+    <SearchVerses
       v-if="activeTab === 'versesTab'"
       class="webKitWidth"
       :versesBasics="props.versesBasics"
       :inputText="inputText"
       :isLoading="isLoading"
     />
-    <DashFrequency
-      v-if="activeTab === 'frequency'"
-      :chartFreqSeries="props.chartFreqSeries"
-      :chartOptions="props.chartOptions"
-      :versesText="props.suraTextArray"
-      :isLoading="props.isLoading"
-      :height="chartWindowHeight"
-    />
-  </div>
 </template>
 
 <script setup>
@@ -41,7 +31,6 @@ const props = defineProps([
   'suraTextArray',
   'versesBasics',
   'chartOptions',
-  'wordIndexes',
   'inputText',
   'isLoading',
 ])
@@ -55,7 +44,6 @@ const changeTab = tab => {
   store.setActiveTab(tab)
 }
 
-const chartWindowHeight = computed(() => window.innerHeight.value - 210)
 const suraTargetedVerseIndex = computed(() => store.getTarget.verseIndex || 1)
 
 onMounted(() => {
