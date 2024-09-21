@@ -5,12 +5,14 @@
     append-inner-icon="mdi-magnify"
     clearable
     variant="outlined"
+    density="compact"
   >
     <template #prepend-inner>
       <v-icon
         v-for="(icon, index) in prependIcons"
         :key="index"
         :icon="icon.name"
+        size="x-small"
         @click="emitIconEvent(icon.event)"
       />
     </template>
@@ -18,7 +20,7 @@
 </template>
 
 <script setup>
-import { computed, watch, onMounted } from 'vue'
+import { computed, watch, onMounted } from "vue"
 
 const props = defineProps({
   dataType: {
@@ -32,35 +34,23 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['update:inputText', 'iconEvent'])
+const emit = defineEmits(["update:inputText", "iconEvent"])
 
 const searchValue = computed({
   get: () => props.inputText,
-  set: value => emit('update:inputText', value),
+  set: (value) => emit("update:inputText", value),
 })
 
 watch(
   () => props.inputText,
-  newValue => {
+  (newValue) => {
     // console.log('newValue', newValue)
-  },
+  }
 )
 
-const emitIconEvent = eventName => {
-  emit('iconEvent', eventName)
+const emitIconEvent = (eventName) => {
+  emit("iconEvent", eventName)
 }
 </script>
 
-<style scoped>
-.matchLabel {
-  text-align: center;
-  font-size: 10px;
-  position: inherit;
-  margin-left: -26px;
-  margin-top: -2px;
-  background: #d6d6d673;
-}
-.v-icon {
-  cursor: pointer;
-}
-</style>
+<style scoped></style>

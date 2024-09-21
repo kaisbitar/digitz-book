@@ -5,7 +5,7 @@ export function useWindowMixin() {
   const store = useQuranStore()
 
   const windowHeight = computed(() => window.innerHeight)  
-  const activeRoute = computed(() => store.getActiveMode)
+  const activeRoute = computed(() => store.getActiveRoute)
   const getTableHeight = computed(() => {
     let height = windowHeight.value
     if(activeRoute.value === 'sura') {

@@ -2,7 +2,11 @@
   <AppSearchBox :inputText="search" :dataType="'السور'" />
   <v-toolbar density="compact" color="surface">
     <v-btn
-      :icon="showDetail ? 'mdi-format-horizontal-align-center' : 'mdi-format-horizontal-align-left'"
+      :icon="
+        showDetail
+          ? 'mdi-format-horizontal-align-center'
+          : 'mdi-format-horizontal-align-left'
+      "
       :color="showDetail ? 'primary' : 'grey'"
       @click="emit('showDetailToggle')"
       variant="text"
@@ -27,22 +31,37 @@
         :class="{ activeSuraItem: props.item.fileName === fileName }"
         class="tableItem"
       >
-        <td class="text-right" v-html="highlight(suraIndex(props.item.fileName), search)"></td>
-        <td class="text-right" v-html="highlight(suraName(props.item.fileName), search)"></td>
-        <td class="text-right" v-html="highlight(props.item.numberOfVerses, search)"></td>
-        <td class="text-right" v-html="highlight(props.item.numberOfWords, search)"></td>
-        <td class="text-right" v-html="highlight(props.item.numberOfLetters, search)"></td>
+        <td
+          class="text-right"
+          v-html="highlight(suraIndex(props.item.fileName), search)"
+        ></td>
+        <td
+          class="text-right"
+          v-html="highlight(suraName(props.item.fileName), search)"
+        ></td>
+        <td
+          class="text-right"
+          v-html="highlight(props.item.numberOfVerses, search)"
+        ></td>
+        <td
+          class="text-right"
+          v-html="highlight(props.item.numberOfWords, search)"
+        ></td>
+        <td
+          class="text-right"
+          v-html="highlight(props.item.numberOfLetters, search)"
+        ></td>
       </tr>
     </template>
   </v-data-table>
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'
-import { useQuranStore } from '@/stores/app'
-import { useRouter } from 'vue-router'
-import { useGoTo } from 'vuetify'
-import { useInputFiltering } from '../mixins/inputFiltering'
+import { ref, computed, watch, onMounted } from "vue"
+import { useQuranStore } from "@/stores/app"
+import { useRouter } from "vue-router"
+import { useGoTo } from "vuetify"
+import { useInputFiltering } from "../mixins/inputFiltering"
 
 const store = useQuranStore()
 const router = useRouter()
@@ -50,16 +69,16 @@ const goTo = useGoTo() // Add this line
 const { highlight } = useInputFiltering()
 // Reactive state
 const loading = ref(true)
-const search = ref('')
-const props = defineProps(['showDetail'])
+const search = ref("")
+const props = defineProps(["showDetail"])
 
 // Data that doesn't need to be reactive
 const headers = [
-  { title: 'رقم', key: 'suraIndex', width: 70 },
-  { title: 'السورة', key: 'fileName', width: 100 },
-  { title: 'الآيات', key: 'numberOfVerses', width: 90 },
-  { title: 'كلمات', key: 'numberOfWords', width: 90 },
-  { title: 'حروف', key: 'numberOfLetters', width: 90 },
+  { title: "رقم", key: "suraIndex", width: 70 },
+  { title: "السورة", key: "fileName", width: 100 },
+  { title: "الآيات", key: "numberOfVerses", width: 90 },
+  { title: "كلمات", key: "numberOfWords", width: 90 },
+  { title: "حروف", key: "numberOfLetters", width: 90 },
 ]
 
 // Computed properties
@@ -67,29 +86,29 @@ const data = computed(() => store.getTableQuranIndex)
 const fileName = computed(() => store.getTarget.fileName)
 
 // Methods
-const suraName = fileName => fileName.replace(/[0-9]/g, '')
+const suraName = (fileName) => fileName.replace(/[0-9]/g, "")
 
-const suraIndex = fileName => {
-  if (fileName === '000المصحف') return '0'
+const suraIndex = (fileName) => {
+  if (fileName === "000المصحف") return "0"
   return parseInt(fileName, 10)
 }
 
-const runSura = sura => {
+const runSura = (sura) => {
   store.setTarget({
     fileName: sura.fileName,
     verseIndex: 1,
     verseNumberToQuran: sura.verseNumberToQuran.toString(),
   })
-  if (router.currentRoute.value.name !== 'sura') {
-    router.push({ name: 'sura' })
+  if (router.currentRoute.value.name !== "sura") {
+    router.push({ name: "sura" })
   }
   store.setSearchIndex(-1)
 }
 
 const scrollToIndex = () => {
   // setTimeout(() => {
-  goTo('activeSuraItem', {
-    container: 'v-table__wrapper',
+  goTo("activeSuraItem", {
+    container: "v-table__wrapper",
   })
   // }, 10)
 }
@@ -110,7 +129,7 @@ onMounted(() => {
 })
 
 // Emits
-const emit = defineEmits(['showDetailToggle'])
+const emit = defineEmits(["showDetailToggle"])
 </script>
 
 <style>
@@ -125,13 +144,6 @@ const emit = defineEmits(['showDetailToggle'])
 
 .v-text-field__slot {
   position: initial;
-}
-
-/* Update label color for both themes */
-label.v-label {
-  font-size: 14px;
-  top: 10px;
-  color: rgb(var(--v-theme-text-color));
 }
 
 .tableItem:hover {

@@ -11,27 +11,35 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch, onMounted } from "vue";
 
-const props = defineProps(['initialType'])
-const emit = defineEmits(['typeChanged'])
+const props = defineProps(["initialType"]);
+const emit = defineEmits(["typeChanged"]);
 
-const type = ref('')
+const type = ref("");
 
 watch(
   () => props.initialType,
-  newValue => {
-    type.value = newValue
-  },
-)
+  (newValue) => {
+    type.value = newValue;
+  }
+);
 
-watch(type, newValue => {
-  emit('typeChanged', newValue)
-})
+watch(type, (newValue) => {
+  emit("typeChanged", newValue);
+});
 
 onMounted(() => {
-  type.value = props.initialType
-})
+  type.value = props.initialType;
+});
 </script>
 
-<style></style>
+<style>
+.chartTitleWrap {
+  zoom: 0.8;
+  position: absolute;
+  z-index: 3;
+  margin-top: 3px !important;
+  margin-right: 250px;
+}
+</style>

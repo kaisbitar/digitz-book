@@ -16,9 +16,9 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import { useQuranStore } from '@/stores/app'
-import { useRouter } from 'vue-router'
+import { ref, computed, onMounted } from "vue"
+import { useQuranStore } from "@/stores/app"
+import { useRouter } from "vue-router"
 
 const store = useQuranStore()
 const isShowDetail = ref(false)
@@ -26,19 +26,14 @@ const drawerWidth = computed(() => (isShowDetail.value ? 490 : 290))
 
 const drawer = computed({
   get: () => store.getDrawerState,
-  set: value => store.setDrawerState(value),
+  set: (value) => store.setDrawerState(value),
 })
 
 onMounted(() => {})
 </script>
 
 <style lang="scss">
-@import '@/styles/styles.scss';
-
-.v-application {
-  // font-family: $body-font-family !important;
-  font-family: system-ui !important;
-}
+@import "@/styles/styles.scss";
 
 .activeView {
   // color: rgb(var(--v-theme-background-secondary)) !important;
@@ -72,9 +67,9 @@ onMounted(() => {})
 }
 /* Scrollbar styling */
 ::-webkit-scrollbar {
-  width: 8px;
+  // width: 8px;
 }
-.webKitWidth {
+.web-kit-width {
   width: -webkit-fill-available;
 }
 .v-application__wrap {

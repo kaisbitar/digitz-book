@@ -1,118 +1,88 @@
 <template>
-  <div class="d-flex autoWrap webKitWidth">
-    <v-autocomplete
-      :custom-filter="handleFiltering"
-      v-model:search="search"
-      :hide-no-data="!search"
-      :disabled="isDisabled"
-      :items="storedItems"
-      @click:clear="handleRemoveAllChips()"
-      @keyup.enter="handleNewSearch"
-      prepend-inner-icon="mdi-magnify"
-      item-value="verseNumberToQuran"
-      item-title="verseText"
-      label="ابحث  في الكتاب.."
-      ref="autocompleteRef"
-      class="autoBox"
-      clearable
-      flat
-      density="compact"
-      multiple
-      variant="outlined"
-    >
-      <template v-slot:no-data>
-        <p class="pa-1 text-red">لا يوجد معلومات تطابق البحث!</p>
-      </template>
+  <v-autocomplete
+    :custom-filter="handleFiltering"
+    v-model:search="search"
+    :items="storedItems"
+    @keyup.enter="handleNewSearch"
+    item-value="verseNumberToQuran"
+    item-title="verseText"
+    label="ابحث  في الكتاب.."
+    ref="autocompleteRef"
+    clearable
+    multiple
+    variant="outlined"
+  >
+    <template v-slot:no-data>
+      <p class="pa-1 text-red">لا يوجد معلومات تطابق البحث!</p>
+    </template>
 
-      <template v-slot:selection> </template>
-
-      <template v-slot:prepend-inner>
-        <div class="d-flex" @click.prevent="disableInputBox">
-          <AutoCompleteChipsBar
-            :chipsData="searchResults"
-            :selectedChipIndex="selectedSearchIndex"
-            @chipClicked="handleClickedChip"
-            @chipRemoved="handleRemovedChip"
-          />
-        </div>
-      </template>
-
-      <template v-slot:item="{ item, props }">
-        <div v-bind="props">
-          <AutoCompleteItem
-            :inputText="search"
-            :item="item.raw"
-            :chipTitle="' آية ' + item.raw.verseIndex"
-            :subtitle="
-              'ترتيب في المصحف:' +
-              highlight(item.raw.verseNumberToQuran.toString(), search)
-            "
-            :mainText="highlight(item.raw.verseText, search)"
-            :title="highlight(item.raw.fileName, search)"
-            @clicked="handleSingleItemClicked(item.raw)"
-          />
-        </div>
-      </template>
-
-      <template v-slot:prepend-item>
-        <AutoCompleteOptionsBar
-          class="btnsBar"
-          @btn1Clicked="handleNewSearch()"
-          :resultCounter="resultsCount()"
-          :secondBtnCondition="selectedSearchIndex"
-          :textValue="search"
-          :btn1Title="'إبحث'"
-          :btn2Title="'ضِف للبحث الحالي'"
+    <template v-slot:selection> </template>
+    <template v-slot:item="{ item, props }">
+      <div v-bind="props">
+        <AutoCompleteItem
+          :inputText="search"
+          :item="item.raw"
+          :chipTitle="' آية ' + item.raw.verseIndex"
+          :subtitle="
+            'ترتيب في المصحف:' +
+            highlight(item.raw.verseNumberToQuran.toString(), search)
+          "
+          :mainText="highlight(item.raw.verseText, search)"
+          :title="highlight(item.raw.fileName, search)"
+          @clicked="handleSingleItemClicked(item.raw)"
         />
-      </template>
-    </v-autocomplete>
-  </div>
+      </div>
+    </template>
+
+    <template v-slot:prepend-item>
+      <SearchCountHeader
+        :searchQuery="search"
+        :wordCount="wordCount"
+        :resultsCount="resultsCount()"
+        @newSearch="handleNewSearch"
+      />
+    </template>
+  </v-autocomplete>
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted, nextTick } from "vue";
-import { useQuranStore } from "@/stores/app";
-import { useRouter } from "vue-router";
-import { useMixin } from "../mixins/mixins";
-import { useInputFiltering } from "../mixins/inputFiltering";
+import { ref, computed, watch, onMounted, nextTick } from "vue"
+import { useQuranStore } from "@/stores/app"
+import { useMixin } from "../mixins/mixins"
+import { useInputFiltering } from "../mixins/inputFiltering"
 
-const props = defineProps(["dataType", "inputText"]);
-const emit = defineEmits(["matchChanged"]);
-const { handleFiltering } = useInputFiltering();
-const store = useQuranStore();
-const router = useRouter();
+const { handleFiltering } = useInputFiltering()
+const { highlight } = useMixin()
+const emit = defineEmits(["matchChanged"])
+const props = defineProps(["dataType"])
+const store = useQuranStore()
 
-const isDisabled = ref(false);
-const search = ref(null);
-const autocompleteRef = ref(null);
+const search = ref(null)
+const autocompleteRef = ref(null)
 
-const storedItems = computed(() => store.getOneQuranFile);
-const selectedSearch = computed(() => store.getSelectedSearch);
-const selectedSearchIndex = computed(() => store.getSelectedSearchIndex);
-const inputText = computed(() => selectedSearch.value?.inputText);
-const searchResults = computed(() => store.getResearchResults);
+const storedItems = computed(() => store.getOneQuranFile)
+const selectedSearch = computed(() => store.getSelectedSearch)
+const selectedSearchIndex = computed(() => store.getSelectedSearchIndex)
+const inputText = computed(() => selectedSearch.value?.inputText)
+const searchResults = computed(() => store.getResearchResults)
+const wordCount = computed(() => {
+  if (!search.value || !autocompleteRef.value?.filteredItems) return 0
 
-const { highlight } = useMixin();
+  const searchString = search.value
+  // .trim()
+  let count = 0
 
-const handleClickedChip = (index) => {
-  store.setSearchIndex(index);
-  checkAndGo("search");
-};
+  autocompleteRef.value.filteredItems.forEach((item) => {
+    const text = item.raw.verseText
+    const regex = new RegExp(searchString, "gi")
+    const matches = text.match(regex)
+    if (matches) {
+      count += matches.length
+    }
+  })
 
-const handleRemovedChip = (index) => {
-  store.setRemoveSearchItem(index);
-  if (index !== selectedSearchIndex.value) {
-    store.setSearchIndex(selectedSearchIndex.value - 1);
-    return;
-  }
-  store.setSearchIndex(index - 1);
-  checkAndGo("search");
-};
-
-const handleRemoveAllChips = () => {
-  store.setResetSearchResults();
-  checkAndGo("sura");
-};
+  return count
+})
 
 const handleSingleItemClicked = (item) => {
   store.setTarget({
@@ -121,49 +91,33 @@ const handleSingleItemClicked = (item) => {
       item.fileName.replace(/[0-9]/g, ""),
     verseIndex: item.verseIndex,
     verseNumberToQuran: item.verseNumberToQuran,
-  });
-  handleNewSearch();
-};
+  })
+  handleNewSearch()
+}
 
 const handleNewSearch = () => {
-  if (!search.value) return;
-  setNewSearch();
-  checkAndGo("search");
-};
-
-const setNewSearch = () => {
-  store.setSearchIndex(searchResults.value.length);
+  if (!search.value) return
+  store.setSearchIndex(searchResults.value.length)
   store.setResearchResultsItem({
     resultsCount: autocompleteRef.value.filteredItems.length,
     inputText: search.value,
     result: autocompleteRef.value.filteredItems,
-  });
-  disableInputBox();
-};
-
-const disableInputBox = () => {
-  autocompleteRef.value.blur();
-};
+  })
+}
 
 const resultsCount = () => {
-  if (!autocompleteRef.value) return;
-  return autocompleteRef.value.filteredItems.length;
-};
-
-const checkAndGo = (route) => {
-  if (router.currentRoute.value.name !== route) {
-    router.push({ name: route });
-  }
-};
+  if (!autocompleteRef.value) return
+  return autocompleteRef.value.filteredItems.length
+}
 
 watch(inputText, (newValue) => {
-  search.value = newValue;
-});
+  search.value = newValue
+})
 
 watch(selectedSearchIndex, (newValue) => {
-  if (newValue === -1) return;
-  if (!selectedSearch.value) return;
-  search.value = inputText.value;
+  if (newValue === -1) return
+  if (!selectedSearch.value) return
+  search.value = inputText.value
   store.setTarget({
     fileName:
       selectedSearch.value.result[0].raw.fileName
@@ -172,12 +126,12 @@ watch(selectedSearchIndex, (newValue) => {
       selectedSearch.value.result[0].raw.fileName.replace(/[0-9]/g, ""),
     verseIndex: selectedSearch.value.result[0].verseIndex,
     verseNumberToQuran: selectedSearch.value.result[0].verseNumberToQuran,
-  });
-});
+  })
+})
 
 onMounted(() => {
   // Any mounted logic here
-});
+})
 </script>
 
 <style>
@@ -205,7 +159,7 @@ onMounted(() => {
   top: -8px;
   z-index: 1;
   height: 35px;
-  padding-top: 20px;
-  padding-bottom: 33px;
+  /* padding-top: 20px;
+  padding-bottom: 33px; */
 }
 </style>

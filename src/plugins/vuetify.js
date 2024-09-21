@@ -32,8 +32,10 @@
         },
         dark: {
           colors: {
+            'surface': '#21212d',
+            'on-surface': '#cdcdcd',
             'input-background': '#313131',
-            'highlight': '#ffff00',
+            'highlight': '#8c8c36',
             'on-highlight': '#000000', 
             'active-row':'#514f4f',
             'on-active-row':'#fff',

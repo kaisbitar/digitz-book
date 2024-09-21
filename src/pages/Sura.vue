@@ -1,40 +1,45 @@
 <template>
-  <SuraToolBar :title="fileName" :tabs="tabs" />
+  <!-- <SuraToolBar :title="fileName" :tabs="tabs" /> -->
+  <AppTabs
+    :title="fileName"
+    :tabs="tabs"
+    :activeTab="activeTab"
+    @tabChanged="changeTab"
+    class="webKitWidth mb-"
+  />
   <SuraText
     v-if="activeTab === 'suraText'"
-    :suraTextArray="suraTextWithTashkeel"
+    :suraTextArray="suraWithTashkeel"
     :isLoading="isLoading"
     :inputText="inputText"
   />
   <Verses
     v-if="activeTab === 'versesTab'"
-    :versesBasics="versesBasics"
-    :isLoading="isLoading"
+    :verses="versesBasics"
     @verseSelected="handleVerseSelected"
-    class="webKitWidth"
+    class="web-kit-width"
   />
   <DashFrequency
     v-if="activeTab === 'frequency'"
     :chartFreqSeries="chartFreqSeries"
     :chartOptions="chartOptions"
     :versesText="suraTextArray"
-    :isLoading="isLoading"
     :height="chartWindowHeight"
   />
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'
-import { useQuranStore } from '@/stores/app'
-import chartOptionsConfig from '@/assets/frequecyOptions'
-import { useMixin } from '../mixins/mixins'
+import { ref, computed, watch, onMounted } from "vue"
+import { useQuranStore } from "@/stores/app"
+import chartOptionsConfig from "@/assets/frequecyOptions"
+import { useMixin } from "../mixins/mixins"
 
-const props = defineProps(["inputText", "verseSelected"]);
+const props = defineProps(["inputText"])
 const { setTargetFromArrow } = useMixin()
 const store = useQuranStore()
 
 const chartOptions = ref(chartOptionsConfig)
-const suraTextWithTashkeel = ref([])
+const suraWithTashkeel = ref([])
 const numberOfLetters = ref(null)
 const numberOfVerses = ref(null)
 const numberOfWords = ref(null)
@@ -49,41 +54,45 @@ const wordsSeries = ref([{ data: [] }])
 const details = ref({})
 
 const tabs = computed(() => [
-  { title: 'نص', name: 'suraText' },
-  { title: 'آية', value: numberOfVerses.value, name: 'versesTab' },
-  { title: 'كلمة', value: numberOfWords.value, name: 'wordsTab' },
-  { title: 'حرف', value: numberOfLetters.value, name: 'lettersTab' },
-  { title: 'تواتر', name: 'frequency' },
+  { title: "نص", name: "suraText" },
+  { title: "آية", value: numberOfVerses.value, name: "versesTab" },
+  { title: "كلمة", value: numberOfWords.value, name: "wordsTab" },
+  { title: "حرف", value: numberOfLetters.value, name: "lettersTab" },
+  { title: "تواتر", name: "frequency" },
 ])
 const chartWindowHeight = computed(() => window.innerHeight - 260)
-const fileName = computed(() => store.getTarget?.fileName || '001الفاتحة')
-const suraNumber = computed(() => parseInt(fileName.value.replace(/^\D+/g, '')))
+const fileName = computed(() => store.getTarget?.fileName || "001الفاتحة")
+const suraNumber = computed(() => parseInt(fileName.value.replace(/^\D+/g, "")))
 const tableQuranIndex = computed(() => store.getTableQuranIndex)
 const suraBasics = computed(
-  () => tableQuranIndex.value[suraNumber.value] || tableQuranIndex.value[1],
+  () => tableQuranIndex.value[suraNumber.value] || tableQuranIndex.value[1]
 )
 const chartFreqType = computed(() => store.getChartFreqType)
 const chartFreqSeries = computed(() =>
-  chartFreqType.value === 'words' ? wordsSeries.value : letterSeries.value,
+  chartFreqType.value === "words" ? wordsSeries.value : letterSeries.value
 )
 const oneQuranFile = computed(() => store.getOneQuranFile)
 const allVersesWithTashkeel = computed(() => store.getAllVersesWithTashkeel)
 
 const tooltipLabel = computed(() => {
-  return chartFreqType.value === 'words' ? 'كلمات' : 'حرف'
+  return chartFreqType.value === "words" ? "كلمات" : "حرف"
 })
 
 const tooltipLabel2 = computed(() => {
-  return fileName.value !== '000المصحف' ? 'آية' : 'سورة'
+  return fileName.value !== "000المصحف" ? "آية" : "سورة"
 })
 
 const activeTab = computed({
   get: () => store.getActiveSuraTab,
-  set: value => store.setActiveSuraTab(value),
+  set: (value) => store.setActiveSuraTab(value),
 })
 
 const handleVerseSelected = (verse) => {
-  store.setActiveSuraTab("suraText");
+  store.setActiveSuraTab("suraText")
+}
+
+const changeTab = (tab) => {
+  store.setActiveSuraTab(tab)
 }
 
 const setSuraBasics = () => {
@@ -103,9 +112,9 @@ const fetchSuraDetails = async () => {
 const prepareData = () => {
   setSuraBasics()
   fetchSuraDetails()
-  if (fileName.value === '000المصحف') {
+  if (fileName.value === "000المصحف") {
     perpareMushafData()
-    suraTextWithTashkeel.value = allVersesWithTashkeel.value
+    suraWithTashkeel.value = allVersesWithTashkeel.value
     setMushafToolTip()
     return
   }
@@ -115,31 +124,31 @@ const prepareData = () => {
 }
 
 const setMushafToolTip = () => {
-  var quranToolTip = tableQuranIndex.value.map(item => {
-    return item.fileName.replace(/[0-9]/g, '')
+  var quranToolTip = tableQuranIndex.value.map((item) => {
+    return item.fileName.replace(/[0-9]/g, "")
   })
   setSuraToolTip(quranToolTip.shift())
 }
 
-const setSuraToolTip = toolTipText => {
+const setSuraToolTip = (toolTipText) => {
   var x = {
     custom: ({ series, seriesIndex, dataPointIndex, w }) => {
       return (
         '<div class="mr-2 ml-2 pt-2">' +
         '<div class="d-flex"><span class="tipInfo"><span class="tipLabel">' +
         tooltipLabel2.value +
-        ' </span> ' +
+        " </span> " +
         parseInt(dataPointIndex + 1) +
-        '</span>' +
+        "</span>" +
         '<span class="tipInfo tipInfo2">' +
         w.globals.series[0][dataPointIndex] +
         ' <span class="tipLabel">' +
         tooltipLabel.value +
-        '</span></span></div>' +
+        "</span></span></div>" +
         '<p class="tipInfo tipText pr-1 pl-2">' +
         toolTipText[dataPointIndex] +
-        '</p>' +
-        '</div>'
+        "</p>" +
+        "</div>"
       )
     },
     shared: true,
@@ -160,44 +169,47 @@ const perpareSuraData = () => {
     if (index <= startIndex.value - 1 || index >= endIndex.value) return
     versesBasics.value.push(buildVerseObject(item))
     suraTextArray.value.push(item.verseText)
-    letters.push(item.verseText.replace(/ /g, '').length)
-    words.push(item.verseText.split(' ').length)
+    letters.push(item.verseText.replace(/ /g, "").length)
+    words.push(item.verseText.split(" ").length)
   })
   letterSeries.value = [{ data: letters }]
   wordsSeries.value = [{ data: words }]
 }
 
-const buildVerseObject = item => ({
+const buildVerseObject = (item) => ({
   fileName: item.fileName,
   verseIndex: item.verseIndex.toString(),
   verseText: item.verseText,
-  numberOfWords: item.verseText.split(' ').length.toString(),
-  numberOfLetters: item.verseText.replace(/ /g, '').length.toString(),
+  numberOfWords: item.verseText.split(" ").length.toString(),
+  numberOfLetters: item.verseText.replace(/ /g, "").length.toString(),
   verseNumberToQuran: item.verseNumberToQuran.toString(),
 })
 
 const perpareMushafData = () => {
-  versesBasics.value = oneQuranFile.value.map(item => buildVerseObject(item))
-  suraTextArray.value = oneQuranFile.value.map(item => item.verseText)
-  letterSeries.value = getMushafSeries('numberOfLetters')
-  versesSeries.value = getMushafSeries('numberOfVerses')
-  wordsSeries.value = getMushafSeries('numberOfWords')
+  versesBasics.value = oneQuranFile.value.map((item) => buildVerseObject(item))
+  suraTextArray.value = oneQuranFile.value.map((item) => item.verseText)
+  letterSeries.value = getMushafSeries("numberOfLetters")
+  versesSeries.value = getMushafSeries("numberOfVerses")
+  wordsSeries.value = getMushafSeries("numberOfWords")
 }
 
-const getMushafSeries = dataType => {
-  const arr = tableQuranIndex.value.map(item => item[dataType])
+const getMushafSeries = (dataType) => {
+  const arr = tableQuranIndex.value.map((item) => item[dataType])
   arr.shift()
   return [{ data: arr }]
 }
 
 const prepareSuraWithTashkeel = () => {
-  suraTextWithTashkeel.value = allVersesWithTashkeel.value.slice(startIndex.value, endIndex.value)
+  suraWithTashkeel.value = allVersesWithTashkeel.value.slice(
+    startIndex.value,
+    endIndex.value
+  )
 }
 
 watch(fileName, prepareData)
 
 onMounted(() => {
-  store.setActiveRoute('sura')
+  store.setActiveRoute("sura")
   prepareData()
 })
 </script>

@@ -5,22 +5,33 @@
 </template>
 
 <script setup>
-import { useQuranStore } from "@/stores/app";
+import { useQuranStore } from "@/stores/app"
 
-const store = useQuranStore();
+const store = useQuranStore()
 
 const getTheData = async () => {
-  await store.getQuranData();
-};
+  await store.getQuranData()
+}
 
 onMounted(() => {
-  getTheData();
-});
+  getTheData()
+})
 </script>
 
-<style>
+<style lang="scss">
+@import "@/styles/styles.scss";
 html {
-  font-size: 20px !important;
+  font-size: 19px !important;
+}
+.v-application {
+  // font-family: $body-font-family !important;
+  font-family: system-ui !important;
+}
+.v-overlay-container {
+  font-family: system-ui;
+}
+.v-tab {
+  font-family: unset;
 }
 .v-selection-control {
   background: rgb(var(--v-theme-surface)) !important;
@@ -43,8 +54,6 @@ th {
   cursor: pointer;
 }
 
-/* Update hover style for both themes */
-
 .tableStyle td {
   border: none !important;
 }
@@ -54,7 +63,7 @@ th {
   width: 100%;
   background: rgb(var(--v-theme-highlight-color)) !important;
 }
-/* Update active item style for both themes */
+
 .activeSuraItem,
 .activeRowClass {
   color: rgb(var(--v-theme-on-active-row)) !important;
@@ -71,5 +80,9 @@ th {
   background-color: rgb(var(--v-theme-highlight));
   color: rgb(var(--v-theme-on-highlight));
   font-weight: bold;
+}
+
+.not-selected {
+  opacity: 0.2 !important;
 }
 </style>
