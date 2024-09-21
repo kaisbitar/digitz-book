@@ -64,7 +64,7 @@ export const useQuranStore = defineStore('quran', {
     getActiveSuraTab: state => {
       return state.activeSuraTab
     },
-    getActiveMode: state => {
+    getActiveRoute: state => {
       return state.activeRoute
     },
     getChartFreqType: state => {

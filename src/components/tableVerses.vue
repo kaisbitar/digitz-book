@@ -47,12 +47,12 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted, defineEmits } from "vue";
-import { useQuranStore } from "@/stores/app";
-import { useWindowMixin } from "../mixins/windowMixin";
-import { useInputFiltering } from "../mixins/inputFiltering";
-import { useGoTo } from "vuetify";
-import { nextTick } from "vue";
+import { ref, computed, watch, onMounted, defineEmits } from "vue"
+import { useQuranStore } from "@/stores/app"
+import { useWindowMixin } from "../mixins/windowMixin"
+import { useInputFiltering } from "../mixins/inputFiltering"
+import { useGoTo } from "vuetify"
+import { nextTick } from "vue"
 
 const props = defineProps([
   "tableData",
@@ -61,76 +61,76 @@ const props = defineProps([
   "isLoading",
   "dataType",
   "tableVersesHeaders",
-]);
+])
 
-const { getTableHeight } = useWindowMixin(props);
+const { getTableHeight } = useWindowMixin(props)
 const { changeSearch, changeMatchingStatus, search, handleFiltering } =
-  useInputFiltering(props);
+  useInputFiltering(props)
 
-const emit = defineEmits(["rowClicked", "activateRowItem"]);
-const store = useQuranStore();
-const goTo = useGoTo();
+const emit = defineEmits(["rowClicked", "activateRowItem"])
+const store = useQuranStore()
+const goTo = useGoTo()
 
-const page = ref(1);
-const itemsPerPage = 50;
+const page = ref(1)
+const itemsPerPage = 50
 
 const pageCount = computed(() => {
-  return Math.ceil(props.tableData.length / itemsPerPage);
-});
-const activeView = computed(() => store.getActiveView);
-const activeTab = computed(() => store.getActiveSuraTab);
+  return Math.ceil(props.tableData.length / itemsPerPage)
+})
+const activeView = computed(() => store.getActiveView)
+const activeTab = computed(() => store.getActiveSuraTab)
 
 const isTargetedVerse = (item, index, verseNumberToQuran) => {
   if (verseNumberToQuran === undefined && index === 0) {
-    return true;
+    return true
   }
 
-  return verseNumberToQuran === item.verseNumberToQuran.toString();
-};
+  return verseNumberToQuran === item.verseNumberToQuran.toString()
+}
 
 const scrollToActiveRow = async () => {
-  await nextTick();
-  const activeElements = document.getElementsByClassName("activeRowClass");
-  if (!activeElements.length > 0) return;
+  await nextTick()
+  const activeElements = document.getElementsByClassName("activeRowClass")
+  if (!activeElements.length > 0) return
   goTo(".activeRowClass", {
     container: ".versesTable .v-table__wrapper",
     offset: -100,
-  });
-};
+  })
+}
 
 watch(activeView, (newValue) => {
-  if (newValue === "textView") return;
-  scrollToActiveRow();
-});
+  if (newValue === "textView") return
+  scrollToActiveRow()
+})
 
 watch(activeTab, (newValue) => {
-  if (newValue !== "numberOfVerses") return;
-  scrollToActiveRow();
-});
+  if (newValue !== "numberOfVerses") return
+  scrollToActiveRow()
+})
 
 watch(
   () => props.inputText,
   (newValue) => {
-    search.value = newValue;
+    search.value = newValue
   }
-);
+)
 
 const handleIconEvent = (eventName) => {
   switch (eventName) {
     case "filter":
-      break;
+      break
     case "search":
-      changeMatchingStatus();
-      break;
+      changeMatchingStatus()
+      break
     default:
-      console.warn(`Unhandled icon event: ${eventName}`);
+      console.warn(`Unhandled icon event: ${eventName}`)
   }
-};
+}
 
 onMounted(() => {
-  search.value = props.inputText;
-  scrollToActiveRow();
-});
+  search.value = props.inputText
+  scrollToActiveRow()
+})
 </script>
 
 <style>

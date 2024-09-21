@@ -5,28 +5,27 @@
     </v-chip>
     <v-list-item>
       <v-list-item-title class="text-blue" v-html="title"></v-list-item-title>
-      <v-list-item-title class="main-text" v-html="mainText"></v-list-item-title>
+      <v-list-item-title
+        class="main-text"
+        v-html="mainText"
+      ></v-list-item-title>
       <v-list-item-subtitle v-html="subtitle"></v-list-item-subtitle>
     </v-list-item>
   </div>
 </template>
 
 <script setup>
-const props = defineProps(['title', 'mainText', 'chipTitle', 'subtitle'])
-const emit = defineEmits(['clicked'])
+const props = defineProps(["title", "mainText", "chipTitle", "subtitle"])
+const emit = defineEmits(["clicked"])
 
 const handleClick = () => {
-  emit('clicked')
+  emit("clicked")
 }
 </script>
 
 <style>
 .v-autocomplete__content {
   max-width: 500px;
-}
-
-.v-overlay-container {
-  font-family: 'Tajawal', sans-serif;
 }
 
 .main-text {

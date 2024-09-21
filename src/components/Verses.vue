@@ -1,6 +1,6 @@
 <template>
-  <tableVerses
-    :tableData="versesBasics"
+  <TableVerses
+    :tableData="verses"
     :tableVersesHeaders="tableVersesHeaders"
     :inputText="inputText"
     :verseQuranKey="verseQuranKey"
@@ -11,13 +11,13 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, defineProps } from "vue";
-import { useQuranStore } from "@/stores/app";
+import { ref, computed, watch, defineProps } from "vue"
+import { useQuranStore } from "@/stores/app"
 
-const store = useQuranStore();
+const store = useQuranStore()
 
-const props = defineProps(["versesBasics", "isLoading", "inputText"]);
-const emit = defineEmits(["verseSelected"]);
+const props = defineProps(["verses", "isLoading", "inputText"])
+const emit = defineEmits(["verseSelected"])
 
 const tableVersesHeaders = ref([
   {
@@ -34,41 +34,41 @@ const tableVersesHeaders = ref([
     width: "80",
   },
   { title: "الآية", key: "verseText", class: "brown lighten-5 black--text" },
-  // {
-  //   title: "كلمات",
-  //   key: "numberOfWords",
-  //   class: "brown lighten-5 black--text",
-  //   width: "85",
-  // },
-  // {
-  //   title: "حروف",
-  //   key: "numberOfLetters",
-  //   class: "brown lighten-5 black--text",
-  //   width: "85",
-  // },
-  // {
-  //   title: "مصحف",
-  //   key: "verseNumberToQuran",
-  //   class: "brown lighten-5 black--text",
-  //   width: "90",
-  // },
-]);
+  {
+    title: "كلمات",
+    key: "numberOfWords",
+    class: "brown lighten-5 black--text",
+    width: "85",
+  },
+  {
+    title: "حروف",
+    key: "numberOfLetters",
+    class: "brown lighten-5 black--text",
+    width: "85",
+  },
+  {
+    title: "مصحف",
+    key: "verseNumberToQuran",
+    class: "brown lighten-5 black--text",
+    width: "90",
+  },
+])
 
-const verseQuranKey = computed(() => store.getTarget?.verseNumberToQuran);
+const verseQuranKey = computed(() => store.getTarget?.verseNumberToQuran)
 
 const handleVerseSelected = (item) => {
-  if (!item) return;
-  setTargetedSuraAndVerse(item);
-  emit("verseSelected", item);
-};
+  if (!item) return
+  setTargetedSuraAndVerse(item)
+  emit("verseSelected", item)
+}
 
 const setTargetedSuraAndVerse = (item) => {
-  const suraNumber = item.fileName.replace(/[ء-٩]/g, "").replace(/\s/g, "");
-  const suraName = item.fileName.replace(/[0-9]/g, "");
+  const suraNumber = item.fileName.replace(/[ء-٩]/g, "").replace(/\s/g, "")
+  const suraName = item.fileName.replace(/[0-9]/g, "")
   store.setTarget({
     fileName: `${suraNumber}${suraName}`,
     verseIndex: item.verseIndex,
     verseNumberToQuran: item.verseNumberToQuran,
-  });
-};
+  })
+}
 </script>

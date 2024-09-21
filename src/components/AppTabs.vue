@@ -1,5 +1,6 @@
 <template>
-  <v-card flat>
+  <v-toolbar color="surface">
+    <h1 class="ml-10">{{ title }}</h1>
     <v-tabs v-model="computedTab" bg-color="" align-tabs="center" grow>
       <v-tab
         v-for="(item, index) in tabs"
@@ -11,27 +12,26 @@
         {{ item.value }} {{ item.title }}
       </v-tab>
     </v-tabs>
-  </v-card>
+  </v-toolbar>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed } from "vue"
 
-const props = defineProps(['tabs', 'activeTab'])
-const emit = defineEmits(['tabChanged'])
+const props = defineProps(["tabs", "activeTab", "title"])
+const emit = defineEmits(["tabChanged"])
 
 const computedTab = computed({
   get: () => props.activeTab,
-  set: newValue => emit('tabChanged', newValue),
+  set: (newValue) => emit("tabChanged", newValue),
 })
 </script>
 
 <style>
-.v-tab {
-  font-size: 16px;
-  font-weight: 500;
-  text-transform: none;
-  font-family: unset;
+.v-tab,
+.no-letter-spacing,
+.v-btn {
+  letter-spacing: 0;
 }
 
 .v-tab--selected {
