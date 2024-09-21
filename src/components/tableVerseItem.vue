@@ -1,11 +1,16 @@
 <template>
-  <td @click="$emit('itemClicked')" class="text-right" v-html="highlight(cellItem, search)"></td>
+  <td
+    @click="$emit('itemClicked')"
+    class="text-right"
+    v-html="highlight(cellItem, search)"
+  ></td>
 </template>
 
 <script setup>
-import { defineProps } from 'vue'
-import { useInputFiltering } from '../mixins/inputFiltering'
-const { highlight } = useInputFiltering()
+import { defineProps } from "vue";
+import { useInputFiltering } from "../mixins/inputFiltering";
+
+const { highlight } = useInputFiltering();
 
 defineProps({
   cellItem: {
@@ -14,9 +19,9 @@ defineProps({
   },
   search: {
     type: String,
-    default: '',
+    default: "",
   },
-})
+});
 </script>
 
 <style></style>

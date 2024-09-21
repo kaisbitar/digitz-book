@@ -1,4 +1,4 @@
-// stores/quranStore.js
+// stores/store.js
 import { defineStore } from 'pinia'
 import {
   fetchSuraDetails,
@@ -21,7 +21,7 @@ export const useQuranStore = defineStore('quran', {
     suras: {},
     scrollTrigger: false,
     drawerState: true,
-    activeTab: 'numberOfVerses',
+    activeSuraTab: 'numberOfVerses',
     activeRoute:'search',
     activeView: 'detailView',
     chartFreqType: 'words',
@@ -61,8 +61,8 @@ export const useQuranStore = defineStore('quran', {
     getActiveView: state => {
       return state.activeView
     },
-    getActiveTab: state => {
-      return state.activeTab
+    getActiveSuraTab: state => {
+      return state.activeSuraTab
     },
     getActiveMode: state => {
       return state.activeRoute
@@ -81,8 +81,8 @@ export const useQuranStore = defineStore('quran', {
     setChartFreqType(chartFreqType) {
       this.chartFreqType = chartFreqType
     },
-    setActiveTab(activeTab) {
-      this.activeTab = activeTab
+    setActiveSuraTab(activeTab) {
+      this.activeSuraTab = activeTab
     },
     setActiveRoute(activeRoute) {
       this.activeRoute = activeRoute

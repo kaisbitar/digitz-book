@@ -1,23 +1,17 @@
 <template>
-  <div class="d-flex">
-    <SuraToolBar :title="fileName" :tabs="tabs" />
-  </div>
+  <SuraToolBar :title="fileName" :tabs="tabs" />
   <SuraText
     v-if="activeTab === 'suraText'"
     :suraTextArray="suraTextWithTashkeel"
-    :suraTargetedVerseIndex="suraTargetedVerseIndex"
-    :numberOfLetters="numberOfLetters"
-    :numberOfVerses="numberOfVerses"
-    :numberOfWords="numberOfWords"
-    :inputText="inputText"
     :isLoading="isLoading"
+    :inputText="inputText"
   />
-  <SuraVerses
+  <Verses
     v-if="activeTab === 'versesTab'"
-    class="webKitWidth"
     :versesBasics="versesBasics"
-    :inputText="inputText"
     :isLoading="isLoading"
+    @verseSelected="handleVerseSelected"
+    class="webKitWidth"
   />
   <DashFrequency
     v-if="activeTab === 'frequency'"
@@ -35,8 +29,10 @@ import { useQuranStore } from '@/stores/app'
 import chartOptionsConfig from '@/assets/frequecyOptions'
 import { useMixin } from '../mixins/mixins'
 
+const props = defineProps(["inputText", "verseSelected"]);
 const { setTargetFromArrow } = useMixin()
 const store = useQuranStore()
+
 const chartOptions = ref(chartOptionsConfig)
 const suraTextWithTashkeel = ref([])
 const numberOfLetters = ref(null)
@@ -60,9 +56,6 @@ const tabs = computed(() => [
   { title: 'تواتر', name: 'frequency' },
 ])
 const chartWindowHeight = computed(() => window.innerHeight - 260)
-const selectedSearch = computed(() => store.getSelectedSearch)
-const inputText = computed(() => selectedSearch.value?.inputText || null)
-const suraTargetedVerseIndex = computed(() => store.getTarget?.verseIndex || 1)
 const fileName = computed(() => store.getTarget?.fileName || '001الفاتحة')
 const suraNumber = computed(() => parseInt(fileName.value.replace(/^\D+/g, '')))
 const tableQuranIndex = computed(() => store.getTableQuranIndex)
@@ -85,9 +78,13 @@ const tooltipLabel2 = computed(() => {
 })
 
 const activeTab = computed({
-  get: () => store.getActiveTab,
-  set: value => store.setActiveTab(value),
+  get: () => store.getActiveSuraTab,
+  set: value => store.setActiveSuraTab(value),
 })
+
+const handleVerseSelected = (verse) => {
+  store.setActiveSuraTab("suraText");
+}
 
 const setSuraBasics = () => {
   numberOfLetters.value = suraBasics.value.numberOfLetters

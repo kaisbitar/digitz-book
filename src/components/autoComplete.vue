@@ -44,7 +44,8 @@
             :item="item.raw"
             :chipTitle="' آية ' + item.raw.verseIndex"
             :subtitle="
-              'ترتيب في المصحف:' + highlight(item.raw.verseNumberToQuran.toString(), search)
+              'ترتيب في المصحف:' +
+              highlight(item.raw.verseNumberToQuran.toString(), search)
             "
             :mainText="highlight(item.raw.verseText, search)"
             :title="highlight(item.raw.fileName, search)"
@@ -69,111 +70,114 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted, nextTick } from 'vue'
-import { useQuranStore } from '@/stores/app'
-import { useRouter } from 'vue-router'
-import { useMixin } from '../mixins/mixins'
-import { useInputFiltering } from '../mixins/inputFiltering'
+import { ref, computed, watch, onMounted, nextTick } from "vue";
+import { useQuranStore } from "@/stores/app";
+import { useRouter } from "vue-router";
+import { useMixin } from "../mixins/mixins";
+import { useInputFiltering } from "../mixins/inputFiltering";
 
-const props = defineProps(['dataType', 'inputText'])
-const emit = defineEmits(['matchChanged'])
-const { handleFiltering } = useInputFiltering()
-const store = useQuranStore()
-const router = useRouter()
+const props = defineProps(["dataType", "inputText"]);
+const emit = defineEmits(["matchChanged"]);
+const { handleFiltering } = useInputFiltering();
+const store = useQuranStore();
+const router = useRouter();
 
-const isDisabled = ref(false)
-const search = ref(null)
-const autocompleteRef = ref(null)
+const isDisabled = ref(false);
+const search = ref(null);
+const autocompleteRef = ref(null);
 
-const storedItems = computed(() => store.getOneQuranFile)
-const selectedSearch = computed(() => store.getSelectedSearch)
-const selectedSearchIndex = computed(() => store.getSelectedSearchIndex)
-const inputText = computed(() => selectedSearch.value?.inputText)
-const searchResults = computed(() => store.getResearchResults)
+const storedItems = computed(() => store.getOneQuranFile);
+const selectedSearch = computed(() => store.getSelectedSearch);
+const selectedSearchIndex = computed(() => store.getSelectedSearchIndex);
+const inputText = computed(() => selectedSearch.value?.inputText);
+const searchResults = computed(() => store.getResearchResults);
 
-const { highlight } = useMixin()
+const { highlight } = useMixin();
 
-const handleClickedChip = index => {
-  store.setSearchIndex(index)
-  checkAndGo('search')
-}
+const handleClickedChip = (index) => {
+  store.setSearchIndex(index);
+  checkAndGo("search");
+};
 
-const handleRemovedChip = index => {
-  store.setRemoveSearchItem(index)
+const handleRemovedChip = (index) => {
+  store.setRemoveSearchItem(index);
   if (index !== selectedSearchIndex.value) {
-    store.setSearchIndex(selectedSearchIndex.value - 1)
-    return
+    store.setSearchIndex(selectedSearchIndex.value - 1);
+    return;
   }
-  store.setSearchIndex(index - 1)
-  checkAndGo('search')
-}
+  store.setSearchIndex(index - 1);
+  checkAndGo("search");
+};
 
 const handleRemoveAllChips = () => {
-  store.setResetSearchResults()
-  checkAndGo('sura')
-}
+  store.setResetSearchResults();
+  checkAndGo("sura");
+};
 
-const handleSingleItemClicked = item => {
+const handleSingleItemClicked = (item) => {
   store.setTarget({
     fileName:
-      item.fileName.replace(/[ء-٩]/g, '').replace(/\s/g, '') + item.fileName.replace(/[0-9]/g, ''),
+      item.fileName.replace(/[ء-٩]/g, "").replace(/\s/g, "") +
+      item.fileName.replace(/[0-9]/g, ""),
     verseIndex: item.verseIndex,
     verseNumberToQuran: item.verseNumberToQuran,
-  })
-  handleNewSearch()
-}
+  });
+  handleNewSearch();
+};
 
 const handleNewSearch = () => {
-  if (!search.value) return
-  setNewSearch()
-  checkAndGo('search')
-}
+  if (!search.value) return;
+  setNewSearch();
+  checkAndGo("search");
+};
 
 const setNewSearch = () => {
-  store.setSearchIndex(searchResults.value.length)
-  store.setSearchResultsItem({
+  store.setSearchIndex(searchResults.value.length);
+  store.setResearchResultsItem({
     resultsCount: autocompleteRef.value.filteredItems.length,
     inputText: search.value,
     result: autocompleteRef.value.filteredItems,
-  })
-  disableInputBox()
-}
+  });
+  disableInputBox();
+};
 
 const disableInputBox = () => {
-  autocompleteRef.value.blur()
-}
+  autocompleteRef.value.blur();
+};
 
 const resultsCount = () => {
-  if (!autocompleteRef.value) return
-  return autocompleteRef.value.filteredItems.length
-}
+  if (!autocompleteRef.value) return;
+  return autocompleteRef.value.filteredItems.length;
+};
 
-const checkAndGo = route => {
+const checkAndGo = (route) => {
   if (router.currentRoute.value.name !== route) {
-    router.push({ name: route })
+    router.push({ name: route });
   }
-}
+};
 
-watch(inputText, newValue => {
-  search.value = newValue
-})
+watch(inputText, (newValue) => {
+  search.value = newValue;
+});
 
-watch(selectedSearchIndex, newValue => {
-  if (newValue === -1) return
-  if (!selectedSearch.value) return
-  search.value = inputText.value
+watch(selectedSearchIndex, (newValue) => {
+  if (newValue === -1) return;
+  if (!selectedSearch.value) return;
+  search.value = inputText.value;
   store.setTarget({
     fileName:
-      selectedSearch.value.result[0].raw.fileName.replace(/[ء-٩]/g, '').replace(/\s/g, '') +
-      selectedSearch.value.result[0].raw.fileName.replace(/[0-9]/g, ''),
+      selectedSearch.value.result[0].raw.fileName
+        .replace(/[ء-٩]/g, "")
+        .replace(/\s/g, "") +
+      selectedSearch.value.result[0].raw.fileName.replace(/[0-9]/g, ""),
     verseIndex: selectedSearch.value.result[0].verseIndex,
     verseNumberToQuran: selectedSearch.value.result[0].verseNumberToQuran,
-  })
-})
+  });
+});
 
 onMounted(() => {
   // Any mounted logic here
-})
+});
 </script>
 
 <style>
