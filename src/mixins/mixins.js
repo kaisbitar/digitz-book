@@ -2,22 +2,22 @@ import { storeToRefs } from 'pinia'
 import { useQuranStore } from '../stores/app'
 
 export function useMixin() {
-  const quranStore = useQuranStore()
-  const suraNumber = computed(() => parseInt(quranStore.getTarget.fileName.replace(/^\D+/g, '')))
+  const store = useQuranStore()
+  const suraNumber = computed(() => parseInt(store.getTarget.fileName.replace(/^\D+/g, '')))
 
-  const prepareToScroll = item => {
+  const createVerseId = item => {
     if (parseInt(item) < 0) return '#v1'
     return '#v' + parseInt(item)
   }
 
   const setTargetFromArrow = direction => {
     if (direction === 'up') {
-      quranStore.setTarget({
-        fileName: quranStore.getTableQuranIndex[suraNumber.value - 1].fileName,
+      store.setTarget({
+        fileName: store.getTableQuranIndex[suraNumber.value - 1].fileName,
       })
     } else {
-      quranStore.setTarget({
-        fileName: quranStore.getTableQuranIndex[suraNumber.value + 1].fileName,
+      store.setTarget({
+        fileName: store.getTableQuranIndex[suraNumber.value + 1].fileName,
       })
     }
   }
@@ -37,7 +37,7 @@ export function useMixin() {
   }
 
   return {
-    prepareToScroll,
+    createVerseId,
     setTargetFromArrow,
     highlight,
   }

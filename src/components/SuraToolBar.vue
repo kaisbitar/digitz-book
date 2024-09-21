@@ -22,12 +22,12 @@ const props = defineProps({
 const store = useQuranStore()
 
 const activeTab = computed({
-  get: () => store.getActiveTab,
-  set: value => store.setActiveTab(value),
+  get: () => store.getActiveSuraTab,
+  set: value => store.setActiveSuraTab(value),
 })
 
 const changeTab = tab => {
-  store.setActiveTab(tab)
+  store.setActiveSuraTab(tab)
 }
 </script>
 

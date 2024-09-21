@@ -2,7 +2,7 @@ import { ref, computed, watch, onMounted } from 'vue'
 import { useQuranStore } from '../stores/app'
 
 export function useDetailMixin(props) {
-  const quranStore = useQuranStore()
+  const store = useQuranStore()
 
   const detailElement = ref('')
   const detailCount = ref(0)
@@ -14,7 +14,7 @@ export function useDetailMixin(props) {
   const groupBy = ref('y')
   const tab = ref(null)
 
-  const fileName = computed(() => quranStore.getTarget.fileName)
+  const fileName = computed(() => store.getTarget.fileName)
 
   function setDetailItem(index, item) {
     selectedId.value = item.x

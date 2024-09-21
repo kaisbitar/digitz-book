@@ -5,17 +5,17 @@
 </template>
 
 <script setup>
-import { useQuranStore } from '@/stores/app'
+import { useQuranStore } from "@/stores/app";
 
-const store = useQuranStore()
+const store = useQuranStore();
 
 const getTheData = async () => {
-  await store.getQuranData()
-}
+  await store.getQuranData();
+};
 
 onMounted(() => {
-  getTheData()
-})
+  getTheData();
+});
 </script>
 
 <style>
@@ -56,7 +56,7 @@ th {
 }
 /* Update active item style for both themes */
 .activeSuraItem,
-.activeTableItemClass {
+.activeRowClass {
   color: rgb(var(--v-theme-on-active-row)) !important;
   background: rgb(var(--v-theme-active-row)) !important;
   font-weight: 300 !important;

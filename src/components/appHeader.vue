@@ -11,14 +11,14 @@
 </template>
 
 <script setup>
-import { useQuranStore } from '@/stores/app'
-import ThemeToggle from './ThemeToggle.vue'
+import { useQuranStore } from "@/stores/app";
+import ThemeToggle from "./ThemeToggle.vue";
 
-const store = useQuranStore()
+const store = useQuranStore();
 
 const toggleDrawer = () => {
-  store.setDrawerState(!store.getDrawerState)
-}
+  store.setDrawerState(!store.getDrawerState);
+};
 </script>
 
 <style scoped></style>
