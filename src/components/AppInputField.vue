@@ -26,18 +26,18 @@ const props = defineProps({
   fieldPlaceHolder: {
     type: String,
   },
-  inputText: String,
+  fieldInput: String,
   prependIcons: {
     type: Array,
     default: () => [],
   },
 })
 
-const emit = defineEmits(["update:inputText", "iconEvent"])
+const emit = defineEmits(["update:fieldInput", "iconEvent"])
 
 const searchValue = computed({
-  get: () => props.inputText,
-  set: (value) => emit("update:inputText", value),
+  get: () => props.fieldInput,
+  set: (value) => emit("update:fieldInput", value),
 })
 
 const emitIconEvent = (eventName) => {

@@ -2,10 +2,9 @@
   <TableVerses
     :tableData="verses"
     :tableVersesHeaders="tableVersesHeaders"
-    :inputText="inputText"
+    :tableInputText="versesInputText"
     :verseQuranKey="verseQuranKey"
-    :groupBy="null"
-    :fieldPlaceHolder="inputText"
+    :fieldPlaceHolder="versesInputText"
     @activateRowItem="handleVerseSelected"
   />
 </template>
@@ -16,7 +15,7 @@ import { useQuranStore } from "@/stores/app"
 
 const store = useQuranStore()
 
-const props = defineProps(["verses", "isLoading", "inputText"])
+const props = defineProps(["verses", "isLoading", "versesInputText"])
 const emit = defineEmits(["verseSelected"])
 
 const tableVersesHeaders = ref([

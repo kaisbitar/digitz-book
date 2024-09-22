@@ -13,7 +13,9 @@
           class="mt-n10 ml-20"
           @click="$emit('update:modelValue', false)"
         ></v-btn>
-        <component :is="componentToRender" v-bind="componentProps" />
+        <template v-for="(component, index) in componentsToRender" :key="index">
+          <component :is="component.component" v-bind="component.props" />
+        </template>
       </v-sheet>
     </template>
   </v-dialog>
@@ -22,8 +24,10 @@
 <script setup>
 defineProps({
   modelValue: Boolean,
-  componentToRender: Object,
-  componentProps: Object,
+  componentsToRender: {
+    type: Array,
+    default: () => [],
+  },
 })
 
 defineEmits(["update:modelValue"])

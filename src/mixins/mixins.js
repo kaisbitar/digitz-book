@@ -22,23 +22,8 @@ export function useMixin() {
     }
   }
 
-  const highlight = (text, searchValue) => {
-    // console.log(text, searchValue)
-    if (!searchValue) {
-      return text
-    }
-
-    let suraChunk =
-      text.indexOf(searchValue) > 53 ? '...' + text.slice(text.indexOf(searchValue) - 30) : text
-
-    return suraChunk.replace(new RegExp(searchValue, 'gi'), match => {
-      return '<span style="background:yellow; font-weight: bold;">' + match + '</span>'
-    })
-  }
-
   return {
     createVerseId,
     setTargetFromArrow,
-    highlight,
   }
 }

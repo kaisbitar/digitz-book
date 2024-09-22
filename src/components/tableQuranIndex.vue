@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <AppSearchBox :inputText="search" :fieldPlaceHolder="'السور'" />
+    <AppInputField :fieldInput="search" :fieldPlaceHolder="'السور'" />
     <v-toolbar density="compact" color="surface">
       <v-btn
         :icon="

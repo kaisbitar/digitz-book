@@ -1,5 +1,4 @@
 <template>
-  <!-- <SuraToolBar :title="fileName" :tabs="tabs" /> -->
   <AppTabs
     :title="fileName"
     :tabs="tabs"
@@ -7,15 +6,22 @@
     @tabChanged="changeTab"
     class="webKitWidth mb-"
   />
+  <AppInputField
+    :fieldInput="suraInputText"
+    :fieldPlaceHolder="fileName"
+    :prepend-icons="[{ name: 'mdi-star-shooting', event: 'search' }]"
+    @update:fieldInput="updateSearchValue"
+  />
   <SuraText
     v-if="activeTab === 'suraText'"
     :suraTextArray="suraWithTashkeel"
     :isLoading="isLoading"
-    :inputText="inputText"
+    :inputText="suraInputText"
   />
   <Verses
     v-if="activeTab === 'versesTab'"
     :verses="versesBasics"
+    :versesInputText="suraInputText"
     :fieldPlaceHolder="fileName"
     @verseSelected="handleVerseSelected"
     class="web-kit-width"
@@ -34,11 +40,14 @@ import { ref, computed, watch, onMounted } from "vue"
 import { useQuranStore } from "@/stores/app"
 import chartOptionsConfig from "@/assets/frequecyOptions"
 import { useMixin } from "../mixins/mixins"
+import { useInputFiltering } from "@/mixins/inputFiltering"
+const { updateSearchValue } = useInputFiltering()
 
-const props = defineProps(["inputText"])
+const props = defineProps(["suraInputText"])
 const { setTargetFromArrow } = useMixin()
 const store = useQuranStore()
 
+const localInputText = ref(props.suraInputText)
 const chartOptions = ref(chartOptionsConfig)
 const suraWithTashkeel = ref([])
 const numberOfLetters = ref(null)
