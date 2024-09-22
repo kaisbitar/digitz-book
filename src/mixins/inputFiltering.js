@@ -6,15 +6,15 @@ export function useInputFiltering() {
   const search = ref('')
   const matchingStatus = ref(false)
 
-  function changeSearch(newSearch) {
+  function updateSearchValue(newSearch) {
     search.value = newSearch
   }
   
-  const highlight = (text, searchInput) => {
+  const highlight = (text, textToHighlight) => {
     if (!text) return
     text = text.toString()
-    if (!searchInput) return text
-    return text.replace(new RegExp(searchInput, 'gi'), match => {
+    if (!textToHighlight) return text
+    return text.replace(new RegExp(textToHighlight, 'gi'), match => {
       return `<span class="highlight-match">${match}</span>`
     })
   }
@@ -26,7 +26,7 @@ export function useInputFiltering() {
       itemText.columns = itemText.raw
     }
     
-    const containsSearch = (text, query) => {
+    const containsQuery = (text, query) => {
       if (!matchingStatus.value) {
         return text.includes(query)
       }
@@ -35,8 +35,8 @@ export function useInputFiltering() {
     }
   
     return (
-      containsSearch(itemText.columns.fileName, queryText) ||
-      containsSearch(itemText.columns.verseText, queryText)
+      containsQuery(itemText.columns.fileName, queryText) ||
+      containsQuery(itemText.columns.verseText, queryText)
     )
   }
   
@@ -48,7 +48,7 @@ export function useInputFiltering() {
   return {
     search,
     matchingStatus,
-    changeSearch,
+    updateSearchValue,
     changeMatchingStatus,
     highlight,
     handleFiltering,

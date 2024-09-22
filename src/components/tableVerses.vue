@@ -1,15 +1,15 @@
 <template>
   <div>
-    <AppSearchBox
-      :inputText="search"
+    <!-- <AppInputField
+      :fieldInput="search"
       :fieldPlaceHolder="fieldPlaceHolder"
       :prepend-icons="[
         { name: 'mdi-filter', event: 'filter' },
         { name: 'mdi-magnify', event: 'search' },
       ]"
-      @update:inputText="changeSearch"
+      @update:fieldInput="updateSearchValue"
       @iconEvent="handleIconEvent"
-    />
+    /> -->
     <v-data-table
       v-model:page="page"
       :custom-filter="handleFiltering"
@@ -56,7 +56,7 @@ import { nextTick } from "vue"
 
 const props = defineProps([
   "tableData",
-  "inputText",
+  "tableInputText",
   "verseQuranKey",
   "isLoading",
   "fieldPlaceHolder",
@@ -64,7 +64,7 @@ const props = defineProps([
 ])
 
 const { getTableHeight } = useWindowMixin(props)
-const { changeSearch, changeMatchingStatus, search, handleFiltering } =
+const { updateSearchValue, changeMatchingStatus, search, handleFiltering } =
   useInputFiltering(props)
 
 const emit = defineEmits(["rowClicked", "activateRowItem"])
@@ -109,7 +109,7 @@ watch(activeTab, (newValue) => {
 })
 
 watch(
-  () => props.inputText,
+  () => props.tableInputText,
   (newValue) => {
     search.value = newValue
   }
@@ -118,9 +118,9 @@ watch(
 const handleIconEvent = (eventName) => {
   switch (eventName) {
     case "filter":
+      changeMatchingStatus()
       break
     case "search":
-      changeMatchingStatus()
       break
     default:
       console.warn(`Unhandled icon event: ${eventName}`)
@@ -128,7 +128,7 @@ const handleIconEvent = (eventName) => {
 }
 
 onMounted(() => {
-  search.value = props.inputText
+  search.value = props.tableInputText
   scrollToActiveRow()
 })
 </script>

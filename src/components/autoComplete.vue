@@ -20,7 +20,6 @@
     <template v-slot:item="{ item, props }">
       <div v-bind="props">
         <AutoCompleteItem
-          :inputText="search"
           :item="item.raw"
           :chipTitle="' آية ' + item.raw.verseIndex"
           :subtitle="

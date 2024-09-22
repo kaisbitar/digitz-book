@@ -1,7 +1,6 @@
 <template>
-  <!-- <v-container> -->
   <v-row no-gutters align="center">
-    <v-col cols="8">
+    <v-col cols="4">
       <v-toolbar-title class="mr-4">"{{ inputText }}"</v-toolbar-title>
     </v-col>
     <v-col>
@@ -15,7 +14,6 @@
       />
     </v-col>
   </v-row>
-  <!-- </v-container> -->
   <v-container>
     <SearchBoard :inputText="inputText" :searchData="searchData" />
   </v-container>
@@ -28,7 +26,7 @@ const store = useQuranStore()
 const props = defineProps(["activeView"])
 const research = computed(() => store.getResearchResults)
 const researchTitles = computed(() =>
-  research.value.map(({ raw }) => inputText)
+  research.value.map((raw) => raw.inputText)
 )
 const selectedSearch = computed(() =>
   store.getResearchResults ? store.getSelectedSearch : {}

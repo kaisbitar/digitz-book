@@ -1,19 +1,20 @@
 <template>
   <v-container class="d-flex">
     <v-icon
-      @click="$emit('chipRemoveAll')"
-      color="red-lighten-2"
-      size="small"
+      v-if="deletable"
       class="mt-3"
+      size="small"
+      color="red-lighten-2"
+      @click="$emit('chipRemoveAll')"
       >mdi-delete</v-icon
     >
     <v-chip-group
       :v-model="selectedChipIndex"
-      @update:modelValue="$emit('chipClicked', $event)"
       mandatory
       show-arrows
       color="primary"
       variant="outlined"
+      @update:modelValue="$emit('chipClicked', $event)"
     >
       <v-chip
         v-for="(item, index) in chipsData"
@@ -37,6 +38,10 @@ const props = defineProps({
   closable: {
     type: Boolean,
     default: false,
+  },
+  deletable: {
+    type: Boolean,
+    default: true,
   },
 })
 

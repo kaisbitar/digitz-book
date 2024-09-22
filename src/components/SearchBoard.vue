@@ -2,13 +2,22 @@
   <Verses
     class="web-kit-width"
     :verses="searchData"
-    :inputText="inputText"
+    :versesInputText="inputText"
     @verseSelected="runSelectedSura"
   />
   <AppScreenDialog
     v-model="showSuraText"
-    :componentToRender="Sura"
-    :componentProps="{ inputText }"
+    :componentsToRender="[
+      {
+        component: AppChipsGroup,
+        props: {
+          chipsData: [inputText],
+          deletable: false,
+          selectedChipIndex: 0,
+        },
+      },
+      { component: Sura, props: { suraInputText: inputText } },
+    ]"
   />
 </template>
 
@@ -16,15 +25,15 @@
 import { ref, computed, onMounted } from "vue"
 import { useQuranStore } from "@/stores/app"
 import Sura from "@/pages/Sura.vue"
+import AppChipsGroup from "./AppChipsGroup.vue"
 
-const props = defineProps(["searchData", "inputText"])
+const props = defineProps(["searchData", "inputText", "suraInputText"])
 const store = useQuranStore()
 
 const suraTextArray = ref([])
 const showSuraText = ref(false)
 
 const oneQuranFile = computed(() => store.getOneQuranFile)
-
 const runSelectedSura = (verse) => {
   const fileName = verse.fileName
   suraTextArray.value = []
