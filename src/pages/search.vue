@@ -1,12 +1,24 @@
 <template>
-  <Research
-    :chipsData="researchResults"
-    :selectedChipIndex="selectedSearchIndex"
-    @chipClicked="handleClickedChip"
-    @chipRemoved="handleRemovedChip"
-  />
-  <v-toolbar-title class="ml-10">{{ inputText }}</v-toolbar-title>
-  <SearchBoard :inputText="inputText" :searchData="searchData" />
+  <!-- <v-container> -->
+  <v-row no-gutters align="center">
+    <v-col cols="8">
+      <v-toolbar-title class="mr-4">"{{ inputText }}"</v-toolbar-title>
+    </v-col>
+    <v-col>
+      <AppChipsGroup
+        :chipsData="researchTitles"
+        :selectedChipIndex="selectedSearchIndex"
+        @chipClicked="handleClickedChip"
+        @chipRemoved="handleRemovedChip"
+        @chipRemoveAll="handleResearchReset"
+        closable
+      />
+    </v-col>
+  </v-row>
+  <!-- </v-container> -->
+  <v-container>
+    <SearchBoard :inputText="inputText" :searchData="searchData" />
+  </v-container>
 </template>
 <script setup>
 import { ref, computed, watch, onMounted } from "vue"
@@ -14,8 +26,10 @@ import { useQuranStore } from "@/stores/app"
 
 const store = useQuranStore()
 const props = defineProps(["activeView"])
-
-const researchResults = computed(() => store.getResearchResults)
+const research = computed(() => store.getResearchResults)
+const researchTitles = computed(() =>
+  research.value.map(({ raw }) => inputText)
+)
 const selectedSearch = computed(() =>
   store.getResearchResults ? store.getSelectedSearch : {}
 )
@@ -47,6 +61,9 @@ const handleRemovedChip = (index) => {
   }
   store.setSearchIndex(index)
   store.setRemoveSearchItem(index)
+}
+const handleResearchReset = () => {
+  store.resetResearchResults()
 }
 
 onMounted(() => {

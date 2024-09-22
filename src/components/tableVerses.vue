@@ -2,7 +2,7 @@
   <div>
     <AppSearchBox
       :inputText="search"
-      :dataType="dataType"
+      :fieldPlaceHolder="fieldPlaceHolder"
       :prepend-icons="[
         { name: 'mdi-filter', event: 'filter' },
         { name: 'mdi-magnify', event: 'search' },
@@ -59,7 +59,7 @@ const props = defineProps([
   "inputText",
   "verseQuranKey",
   "isLoading",
-  "dataType",
+  "fieldPlaceHolder",
   "tableVersesHeaders",
 ])
 

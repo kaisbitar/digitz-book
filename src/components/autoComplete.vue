@@ -54,7 +54,7 @@ import { useInputFiltering } from "../mixins/inputFiltering"
 const { handleFiltering } = useInputFiltering()
 const { highlight } = useMixin()
 const emit = defineEmits(["matchChanged"])
-const props = defineProps(["dataType"])
+const props = defineProps(["fieldPlaceHolder"])
 const store = useQuranStore()
 
 const search = ref(null)
@@ -103,6 +103,7 @@ const handleNewSearch = () => {
     inputText: search.value,
     result: autocompleteRef.value.filteredItems,
   })
+  search.value = ""
 }
 
 const resultsCount = () => {

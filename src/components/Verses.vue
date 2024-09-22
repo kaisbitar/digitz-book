@@ -5,7 +5,7 @@
     :inputText="inputText"
     :verseQuranKey="verseQuranKey"
     :groupBy="null"
-    :dataType="inputText"
+    :fieldPlaceHolder="inputText"
     @activateRowItem="handleVerseSelected"
   />
 </template>

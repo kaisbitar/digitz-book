@@ -21,7 +21,7 @@
         // Use 'surface' for app background color,
         light: {
           colors: {
-            // 'surface': '#ffffff',
+            // 'surface': '#f2ffff',
             'input-background': '#f9f9f9',
             'highlight': '#ffff00', 
             'on-highlight': '#000000', 

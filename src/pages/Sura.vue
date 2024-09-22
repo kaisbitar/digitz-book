@@ -16,6 +16,7 @@
   <Verses
     v-if="activeTab === 'versesTab'"
     :verses="versesBasics"
+    :fieldPlaceHolder="fileName"
     @verseSelected="handleVerseSelected"
     class="web-kit-width"
   />
@@ -193,8 +194,8 @@ const perpareMushafData = () => {
   wordsSeries.value = getMushafSeries("numberOfWords")
 }
 
-const getMushafSeries = (dataType) => {
-  const arr = tableQuranIndex.value.map((item) => item[dataType])
+const getMushafSeries = (fieldPlaceHolder) => {
+  const arr = tableQuranIndex.value.map((item) => item[fieldPlaceHolder])
   arr.shift()
   return [{ data: arr }]
 }

@@ -1,7 +1,7 @@
 <template>
   <v-text-field
     v-model="searchValue"
-    :label="`ابحث في ${dataType}`"
+    :label="`ابحث في ${fieldPlaceHolder}`"
     append-inner-icon="mdi-magnify"
     clearable
     variant="outlined"
@@ -23,9 +23,8 @@
 import { computed, watch, onMounted } from "vue"
 
 const props = defineProps({
-  dataType: {
+  fieldPlaceHolder: {
     type: String,
-    // required: true,
   },
   inputText: String,
   prependIcons: {
@@ -40,13 +39,6 @@ const searchValue = computed({
   get: () => props.inputText,
   set: (value) => emit("update:inputText", value),
 })
-
-watch(
-  () => props.inputText,
-  (newValue) => {
-    // console.log('newValue', newValue)
-  }
-)
 
 const emitIconEvent = (eventName) => {
   emit("iconEvent", eventName)
