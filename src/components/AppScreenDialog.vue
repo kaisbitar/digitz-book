@@ -2,7 +2,8 @@
   <v-dialog
     :modelValue="modelValue"
     @update:modelValue="$emit('update:modelValue', $event)"
-    width="4000"
+    width="1000"
+    height="1000"
   >
     <template v-slot:default="{ isActive }">
       <v-sheet class="pa-10 hide-overflow position-relative">
