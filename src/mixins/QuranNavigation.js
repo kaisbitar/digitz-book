@@ -4,9 +4,6 @@ import { useQuranStore } from '@/stores/app'
 export function useQuranNavigation() { 
   const store = useQuranStore()
 
-  const activeRoute = computed(() => store.getActiveRoute)  
-  const activeView = computed(() => store.getActiveView)  
-
   const navigateToTargetedSuraAndVerse = item => {
     // if (props.targetFileName.value === '000المصحف') {
     //   const target = {

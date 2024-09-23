@@ -5,7 +5,7 @@
     :versesInputText="inputText"
     @verseSelected="runSelectedSura"
   />
-  <AppScreenDialog
+  <AppDialog
     v-model="showSuraText"
     :componentsToRender="[
       {

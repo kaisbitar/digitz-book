@@ -23,7 +23,6 @@ import { ref, computed, watch, onMounted } from "vue"
 import { useQuranStore } from "@/stores/app"
 
 const store = useQuranStore()
-const props = defineProps(["activeView"])
 const research = computed(() => store.getResearchResults)
 const researchTitles = computed(() =>
   research.value.map((raw) => raw.inputText)
@@ -69,7 +68,6 @@ onMounted(() => {
     store.setSearchIndex(0)
   }
   store.setActiveRoute("search")
-  store.setActiveView("detailView")
 })
 </script>
 

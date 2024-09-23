@@ -13,7 +13,7 @@ export const useQuranStore = defineStore('quran', {
       fileName: '001الفاتحة',
       verseIndex: 1,
     },
-    researchResults: [], // Changed from searchResults to camelCase
+    researchResults: [],
     selectedSearch: [],
     selectedSearchIndex: null,
     oneQuranFile: [],
@@ -23,9 +23,9 @@ export const useQuranStore = defineStore('quran', {
     drawerState: true,
     activeSuraTab: 'numberOfVerses',
     activeRoute:'search',
-    activeView: 'detailView',
     chartFreqType: 'words',
-    allVersesWithTashkeel: [], // Added this missing state property
+    allVersesWithTashkeel: [],
+    isDialog: false
   }),
   persist: {
     enabled: true,
@@ -37,6 +37,9 @@ export const useQuranStore = defineStore('quran', {
     ],
   },
   getters: {
+    getIsDialog: state => {
+      return state.isDialog
+    },
     getTarget: state => {
       return state.target
     },
@@ -58,9 +61,7 @@ export const useQuranStore = defineStore('quran', {
     getDrawerState: state => {
       return state.drawerState
     },
-    getActiveView: state => {
-      return state.activeView
-    },
+
     getActiveSuraTab: state => {
       return state.activeSuraTab
     },
@@ -78,6 +79,9 @@ export const useQuranStore = defineStore('quran', {
     },
   },
   actions: {
+    setIsDialog(isDialog) {
+      this.isDialog = isDialog
+    },
     setChartFreqType(chartFreqType) {
       this.chartFreqType = chartFreqType
     },
@@ -87,9 +91,7 @@ export const useQuranStore = defineStore('quran', {
     setActiveRoute(activeRoute) {
       this.activeRoute = activeRoute
     },
-    setActiveView(activeView) {
-      this.activeView = activeView
-    },
+
     setScrollTrigger() {
       this.scrollTrigger = !this.scrollTrigger
     },

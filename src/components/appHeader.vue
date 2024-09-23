@@ -16,7 +16,7 @@
       >
         ابحث
       </v-btn>
-      <AppScreenDialog
+      <AppDialog
         v-model="showAutoComplete"
         :componentToRender="AutoComplete"
         :componentsToRender="[
@@ -42,6 +42,8 @@ const store = useQuranStore()
 const router = useRouter()
 
 const activeRoute = computed(() => router.currentRoute.value.name)
+const researchResults = computed(() => store.getResearchResults())
+
 const showAutoComplete = ref(false)
 
 const openSearchDialog = () => {
@@ -52,6 +54,12 @@ const openSearchDialog = () => {
 const toggleDrawer = () => {
   store.setDrawerState(!store.getDrawerState)
 }
+
+watch(researchResults, (newValue) => {
+  console.log("researchResults changed:", newValue)
+
+  showAutoComplete.value = false
+})
 </script>
 
 <style scoped>
