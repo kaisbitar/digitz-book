@@ -1,24 +1,24 @@
 <template>
-  <v-lazy
+  <!-- <v-lazy
     :min-height="30"
     :options="{ threshold: 0.5 }"
     transition="fade-transition"
-  >
-    <v-container>
-      <div class="d-flex">
-        <div class="verseNumChip">
-          {{ item.verseIndex }}
-        </div>
-        <div>
-          <div class="text-blue mb-n1">{{ item.fileName }}</div>
-          <div v-html="highlight(item.verseText, textToHighlight)"></div>
-          <div class="mt-n1 text-caption text-grey">
-            ترتيب في المصحف {{ item.verseNumberToQuran }}
-          </div>
+  > -->
+  <v-container>
+    <div class="d-flex">
+      <div class="verseNumChip">
+        {{ item.verseIndex }}
+      </div>
+      <div>
+        <div class="text-blue mb-n1">{{ item.fileName }}</div>
+        <div v-html="highlight(item.verseText, textToHighlight)"></div>
+        <div class="mt-n1 text-caption text-grey">
+          ترتيب في المصحف {{ item.verseNumberToQuran }}
         </div>
       </div>
-    </v-container>
-  </v-lazy>
+    </div>
+  </v-container>
+  <!-- </v-lazy> -->
 </template>
 
 <script setup>

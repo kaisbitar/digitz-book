@@ -22,13 +22,23 @@
 </template>
 
 <script setup>
-defineProps({
+import { useQuranStore } from "@/stores/app"
+import { watch } from "vue"
+const store = useQuranStore()
+
+const props = defineProps({
   modelValue: Boolean,
   componentsToRender: {
     type: Array,
     default: () => [],
   },
 })
+watch(
+  () => props.modelValue,
+  (newValue) => {
+    store.setIsDialog(newValue)
+  }
+)
 
 defineEmits(["update:modelValue"])
 </script>

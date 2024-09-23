@@ -1,5 +1,5 @@
 <template>
-  <v-data-table
+  <v-data-table-virtual
     v-model:page="page"
     :custom-filter="handleFiltering"
     :headers="tableVersesHeaders"
@@ -30,7 +30,7 @@
         />
       </tr>
     </template>
-  </v-data-table>
+  </v-data-table-virtual>
 </template>
 
 <script setup>
@@ -51,8 +51,7 @@ const props = defineProps([
 ])
 
 const { getTableHeight } = useWindowMixin(props)
-const { updateSearchValue, changeMatchingStatus, search, handleFiltering } =
-  useInputFiltering(props)
+const { search, handleFiltering } = useInputFiltering(props)
 
 const emit = defineEmits(["rowClicked", "activateRowItem"])
 const store = useQuranStore()
@@ -64,36 +63,36 @@ const itemsPerPage = 50
 const pageCount = computed(() => {
   return Math.ceil(props.tableData.length / itemsPerPage)
 })
-const activeView = computed(() => store.getActiveView)
-const activeTab = computed(() => store.getActiveSuraTab)
 
 const isTargetedVerse = (item, index, verseNumberToQuran) => {
   if (verseNumberToQuran === undefined && index === 0) {
     return true
   }
 
-  return verseNumberToQuran === item.verseNumberToQuran.toString()
+  return verseNumberToQuran === String(item.verseNumberToQuran)
 }
 
 const scrollToActiveRow = async () => {
   await nextTick()
-  const activeElements = document.getElementsByClassName("activeRowClass")
-  if (!activeElements.length > 0) return
-  goTo(".activeRowClass", {
-    container: ".versesTable .v-table__wrapper",
+  // setTimeout(() => {
+  const activeRowItem = store.getIsDialog
+    ? document.querySelectorAll(".v-dialog .activeRowClass")
+    : document.querySelectorAll(".activeRowClass")
+
+  const container = store.getIsDialog
+    ? ".v-dialog .versesTable .v-table__wrapper"
+    : ".versesTable .v-table__wrapper"
+
+  await nextTick()
+  if (activeRowItem.length === 0) return
+  console.log(store.getIsDialog)
+  goTo(activeRowItem[0], {
+    container: container,
     offset: -100,
+    duration: 300,
   })
+  // }, 100)
 }
-
-// watch(activeView, (newValue) => {
-//   if (newValue === "textView") return
-//   scrollToActiveRow()
-// })
-
-watch(activeTab, (newValue) => {
-  if (newValue !== "numberOfVerses") return
-  scrollToActiveRow()
-})
 
 watch(
   () => props.tableInputText,
@@ -104,7 +103,6 @@ watch(
 
 onMounted(() => {
   search.value = props.tableInputText
-  props.tableInputText
   scrollToActiveRow()
 })
 </script>
@@ -113,7 +111,5 @@ onMounted(() => {
 .tableItem td {
   padding-bottom: 10px !important;
   padding-top: 10px !important;
-  overflow-y: auto;
-  overflow-y: auto;
 }
 </style>
