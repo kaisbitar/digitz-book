@@ -74,24 +74,23 @@ const isTargetedVerse = (item, index, verseNumberToQuran) => {
 
 const scrollToActiveRow = async () => {
   await nextTick()
-  // setTimeout(() => {
-  const activeRowItem = store.getIsDialog
-    ? document.querySelectorAll(".v-dialog .activeRowClass")
-    : document.querySelectorAll(".activeRowClass")
+  setTimeout(() => {
+    const activeRowItem = store.getIsDialog
+      ? document.querySelectorAll(".v-dialog .activeRowClass")
+      : document.querySelectorAll(".activeRowClass")
 
-  const container = store.getIsDialog
-    ? ".v-dialog .versesTable .v-table__wrapper"
-    : ".versesTable .v-table__wrapper"
+    const container = store.getIsDialog
+      ? ".v-dialog .versesTable .v-table__wrapper"
+      : ".versesTable .v-table__wrapper"
 
-  await nextTick()
-  if (activeRowItem.length === 0) return
-  console.log(store.getIsDialog)
-  goTo(activeRowItem[0], {
-    container: container,
-    offset: -100,
-    duration: 300,
-  })
-  // }, 100)
+    if (activeRowItem.length === 0) return
+    console.log(store.getIsDialog)
+    goTo(activeRowItem[0], {
+      container: container,
+      offset: -100,
+      duration: 300,
+    })
+  }, 100)
 }
 
 watch(
