@@ -42,8 +42,7 @@ const store = useQuranStore()
 const router = useRouter()
 
 const activeRoute = computed(() => router.currentRoute.value.name)
-const researchResults = computed(() => store.getResearchResults())
-
+const researchResults = computed(() => store.getResearchResults)
 const showAutoComplete = ref(false)
 
 const openSearchDialog = () => {
@@ -55,9 +54,7 @@ const toggleDrawer = () => {
   store.setDrawerState(!store.getDrawerState)
 }
 
-watch(researchResults, (newValue) => {
-  console.log("researchResults changed:", newValue)
-
+watch(researchResults.value, (newValue) => {
   showAutoComplete.value = false
 })
 </script>
