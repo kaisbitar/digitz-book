@@ -112,7 +112,7 @@ export const useQuranStore = defineStore('quran', {
     resetSuras() {
       this.suras = {}
     },
-    setResearchResultsItem(result) {
+    setResearchResults(result) {
       this.researchResults.push(result)
     },
     resetResearchResults() {
