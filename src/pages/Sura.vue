@@ -7,7 +7,7 @@
     class="webKitWidth mb-"
   />
   <AppInputField
-    :fieldInput="suraInputText"
+    :fieldInput="search"
     :fieldPlaceHolder="fileName"
     :prepend-icons="[{ name: 'mdi-star-shooting', event: 'search' }]"
     @update:fieldInput="updateSearchValue"
@@ -16,17 +16,17 @@
     v-if="activeTab === 'suraText'"
     :suraTextArray="suraWithTashkeel"
     :isLoading="isLoading"
-    :inputText="suraInputText"
+    :inputText="search"
   />
   <Verses
     v-if="activeTab === 'versesTab'"
     :verses="versesBasics"
-    :versesInputText="suraInputText"
+    :versesInputText="search"
     :fieldPlaceHolder="fileName"
     @verseSelected="handleVerseSelected"
     class="web-kit-width"
   />
-  <DashFrequency
+  <SuraFrequency
     v-if="activeTab === 'frequency'"
     :chartFreqSeries="chartFreqSeries"
     :chartOptions="chartOptions"
@@ -41,13 +41,12 @@ import { useQuranStore } from "@/stores/app"
 import chartOptionsConfig from "@/assets/frequecyOptions"
 import { useMixin } from "../mixins/mixins"
 import { useInputFiltering } from "@/mixins/inputFiltering"
-const { updateSearchValue } = useInputFiltering()
+const { updateSearchValue, search } = useInputFiltering()
 
 const props = defineProps(["suraInputText"])
 const { setTargetFromArrow } = useMixin()
 const store = useQuranStore()
 
-const localInputText = ref(props.suraInputText)
 const chartOptions = ref(chartOptionsConfig)
 const suraWithTashkeel = ref([])
 const numberOfLetters = ref(null)
@@ -219,6 +218,7 @@ const prepareSuraWithTashkeel = () => {
 watch(fileName, prepareData)
 
 onMounted(() => {
+  search.value = props.suraInputText
   store.setActiveRoute("sura")
   prepareData()
 })
