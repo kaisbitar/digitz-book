@@ -19,6 +19,11 @@
       <AppScreenDialog
         v-model="showAutoComplete"
         :componentToRender="AutoComplete"
+        :componentsToRender="[
+          {
+            component: AutoComplete,
+          },
+        ]"
       />
     </template>
     <template v-slot:append>
@@ -41,7 +46,6 @@ const showAutoComplete = ref(false)
 
 const openSearchDialog = () => {
   showAutoComplete.value = true
-  console.log(activeRoute.value)
   router.push("/search")
 }
 

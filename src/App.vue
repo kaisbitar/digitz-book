@@ -23,16 +23,14 @@ onMounted(() => {
 html {
   font-size: 19px !important;
 }
-.v-application {
+.v-application,
+.v-overlay-container,
+.v-tab {
   // font-family: $body-font-family !important;
   font-family: system-ui !important;
-}
-.v-overlay-container {
-  font-family: system-ui;
-}
-.v-tab {
   font-family: unset;
 }
+
 .v-selection-control {
   background: rgb(var(--v-theme-surface)) !important;
 }
@@ -47,7 +45,7 @@ th {
 }
 
 .tableItem {
-  font-weight: 100;
+  font-weight: 200;
 }
 
 .tableItem {

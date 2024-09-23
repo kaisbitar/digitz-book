@@ -1,49 +1,36 @@
 <template>
-  <div>
-    <!-- <AppInputField
-      :fieldInput="search"
-      :fieldPlaceHolder="fieldPlaceHolder"
-      :prepend-icons="[
-        { name: 'mdi-filter', event: 'filter' },
-        { name: 'mdi-magnify', event: 'search' },
-      ]"
-      @update:fieldInput="updateSearchValue"
-      @iconEvent="handleIconEvent"
-    /> -->
-    <v-data-table
-      v-model:page="page"
-      :custom-filter="handleFiltering"
-      :headers="tableVersesHeaders"
-      :items="tableData"
-      :search="search"
-      :height="getTableHeight"
-      :items-per-page="50"
-      :loading="isLoading"
-      class="tableStyle versesTable"
-      ref="versesTable"
-      loading-text="جاري تحميل البيانات القرآنية ... الرجاء الانتظار"
-      fixed-header
-    >
-      <template v-slot:item="{ item, index }">
-        <tr
-          :id="`verse${item.verseNumberToQuran}`"
-          class="tableItem"
-          :class="{
-            activeRowClass: isTargetedVerse(item, index, verseQuranKey),
-          }"
-          @click="$emit('activateRowItem', item)"
-        >
-          <TableVerseItem
-            v-for="(cellItem, key) in item"
-            :key="key"
-            :search="search"
-            :cellItem="cellItem"
-          />
-        </tr>
-      </template>
-    </v-data-table>
-    <!-- <v-pagination v-model="page" :length="pageCount" :key="pageCount" :border="'sm'"></v-pagination> -->
-  </div>
+  <v-data-table
+    v-model:page="page"
+    :custom-filter="handleFiltering"
+    :headers="tableVersesHeaders"
+    :items="tableData"
+    :search="search"
+    :height="getTableHeight"
+    :items-per-page="50"
+    :loading="isLoading"
+    class="tableStyle versesTable"
+    ref="versesTable"
+    loading-text="جاري تحميل البيانات القرآنية ... الرجاء الانتظار"
+    fixed-header
+  >
+    <template v-slot:item="{ item, index }">
+      <tr
+        :id="`verse${item.verseNumberToQuran}`"
+        class="tableItem"
+        :class="{
+          activeRowClass: isTargetedVerse(item, index, verseQuranKey),
+        }"
+        @click="$emit('activateRowItem', item)"
+      >
+        <TableVerseItem
+          v-for="(cellItem, key) in item"
+          :key="key"
+          :search="search"
+          :cellItem="cellItem"
+        />
+      </tr>
+    </template>
+  </v-data-table>
 </template>
 
 <script setup>
@@ -98,10 +85,10 @@ const scrollToActiveRow = async () => {
   })
 }
 
-watch(activeView, (newValue) => {
-  if (newValue === "textView") return
-  scrollToActiveRow()
-})
+// watch(activeView, (newValue) => {
+//   if (newValue === "textView") return
+//   scrollToActiveRow()
+// })
 
 watch(activeTab, (newValue) => {
   if (newValue !== "numberOfVerses") return
@@ -115,20 +102,9 @@ watch(
   }
 )
 
-const handleIconEvent = (eventName) => {
-  switch (eventName) {
-    case "filter":
-      changeMatchingStatus()
-      break
-    case "search":
-      break
-    default:
-      console.warn(`Unhandled icon event: ${eventName}`)
-  }
-}
-
 onMounted(() => {
   search.value = props.tableInputText
+  props.tableInputText
   scrollToActiveRow()
 })
 </script>
@@ -137,5 +113,7 @@ onMounted(() => {
 .tableItem td {
   padding-bottom: 10px !important;
   padding-top: 10px !important;
+  overflow-y: auto;
+  overflow-y: auto;
 }
 </style>

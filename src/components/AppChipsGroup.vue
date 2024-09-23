@@ -13,7 +13,7 @@
       mandatory
       show-arrows
       color="primary"
-      variant="outlined"
+      variant="tonal"
       @update:modelValue="$emit('chipClicked', $event)"
     >
       <v-chip
@@ -21,6 +21,8 @@
         :key="index"
         :class="chipClasses(index)"
         :closable="closable"
+        prepend-icon="mdi-magnify"
+        icon-size="x-small"
         @click:close="$emit('chipRemoved', index)"
       >
         <span class="theme-text-color">{{ item }}</span>

@@ -20,24 +20,36 @@ export function useInputFiltering() {
   }
   
   const handleFiltering = (item, queryText, itemText) => {
-    if (!queryText) return true
+    // if (!queryText) return true
     
-    if (!itemText.columns) {
-      itemText.columns = itemText.raw
-    }
+    // if (!itemText.columns) {
+    //   itemText.columns = itemText.raw
+    // }
     
-    const containsQuery = (text, query) => {
-      if (!matchingStatus.value) {
-        return text.includes(query)
-      }
+    // const containsQuery = (text, query) => {
+    //   if (!matchingStatus.value) {
+    //     return text.includes(query)
+    //   }
   
-      return text.includes(' ' + query + ' ')
+    //   return text.includes(' ' + query + ' ')
+    // }
+  
+    // return (
+    //   containsQuery(itemText.columns.fileName, queryText) ||
+    //   containsQuery(itemText.columns.verseText, queryText)
+    // )
+  }
+  
+  const handleIconEvent = (eventName) => {
+    switch (eventName) {
+      case "filter":
+        changeMatchingStatus()
+        break
+      case "search":
+        break
+      default:
+        console.warn(`Unhandled icon event: ${eventName}`)
     }
-  
-    return (
-      containsQuery(itemText.columns.fileName, queryText) ||
-      containsQuery(itemText.columns.verseText, queryText)
-    )
   }
   
   const changeMatchingStatus = newMatchingStatus => {
