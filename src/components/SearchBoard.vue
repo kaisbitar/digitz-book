@@ -5,20 +5,7 @@
     :versesInputText="inputText"
     @verseSelected="runSelectedSura"
   />
-  <AppDialog
-    v-model="showSuraText"
-    :componentsToRender="[
-      {
-        component: AppChipsGroup,
-        props: {
-          chipsData: [inputText],
-          deletable: false,
-          selectedChipIndex: 0,
-        },
-      },
-      { component: Sura, props: { suraInputText: inputText } },
-    ]"
-  />
+  <AppDialog v-model="showSuraText" :componentsToRender="componentsToRender" />
 </template>
 
 <script setup>
@@ -44,6 +31,20 @@ const runSelectedSura = (verse) => {
   })
   showSuraText.value = true
 }
+
+const componentsToRender = computed(() => {
+  return [
+    {
+      component: AppChipsGroup,
+      props: {
+        chipsData: [props.inputText],
+        deletable: false,
+        selectedChipIndex: 0,
+      },
+    },
+    { component: Sura, props: { suraInputText: props.inputText } },
+  ]
+})
 
 onMounted(() => {})
 </script>

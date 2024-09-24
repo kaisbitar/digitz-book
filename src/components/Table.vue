@@ -10,10 +10,12 @@
     loading-text="جاري تحميل البيانات القرآنية ... الرجاء الانتظار"
     fixed-header
   >
-    <template v-slot:item="{ item, index }">
+    <template v-slot:item="{ item, index }"
+      >{{ search }}
       <TableRow
         class="tableItem"
         :item="item"
+        :search="search"
         :activeItemKey="activeItemKey"
         :activeItemClass="props.activeItemClass"
         @activateRowItem="$emit('activateRowItem', item)"
@@ -58,6 +60,7 @@ const updateTableHeight = () => {
 }
 
 onMounted(() => {
+  search.value = props.tableInputText
   updateTableHeight()
   window.addEventListener("resize", updateTableHeight)
 })

@@ -21,8 +21,8 @@ const { highlight } = useInputFiltering()
 
 const props = defineProps<{
   item: any
-  index: number
-  search: string | undefined
+  index?: number
+  search?: string
   activeItemKey: string | number
   activeItemClass: string
 }>()
