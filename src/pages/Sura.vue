@@ -15,10 +15,9 @@
   <SuraText
     v-if="activeTab === 'suraText'"
     :suraTextArray="suraWithTashkeel"
-    :isLoading="isLoading"
     :inputText="search"
   />
-  <Verses
+  <TableVerses
     v-if="activeTab === 'versesTab'"
     :verses="versesBasics"
     :versesInputText="search"
@@ -39,12 +38,16 @@
 import { ref, computed, watch, onMounted } from "vue"
 import { useQuranStore } from "@/stores/app"
 import chartOptionsConfig from "@/assets/frequecyOptions"
-import { useMixin } from "../mixins/mixins"
 import { useInputFiltering } from "@/mixins/inputFiltering"
-const { updateSearchValue, search } = useInputFiltering()
+import {
+  prepareSuraData,
+  prepareMushafData,
+  setSuraToolTip,
+  setMushafToolTip,
+} from "@/utils/suraUtils"
 
+const { updateSearchValue, search } = useInputFiltering()
 const props = defineProps(["suraInputText"])
-const { setTargetFromArrow } = useMixin()
 const store = useQuranStore()
 
 const chartOptions = ref(chartOptionsConfig)
@@ -56,7 +59,6 @@ const startIndex = ref(null)
 const endIndex = ref(null)
 const suraTextArray = ref([])
 const versesBasics = ref([])
-const isLoading = ref(false)
 const letterSeries = ref([{ data: [] }])
 const versesSeries = ref([{ data: [] }])
 const wordsSeries = ref([{ data: [] }])
@@ -72,7 +74,7 @@ const tabs = computed(() => [
 const chartWindowHeight = computed(() => window.innerHeight - 260)
 const fileName = computed(() => store.getTarget?.fileName || "001الفاتحة")
 const suraNumber = computed(() => parseInt(fileName.value.replace(/^\D+/g, "")))
-const tableQuranIndex = computed(() => store.getTableQuranIndex)
+const tableQuranIndex = computed(() => store.getQuranIndex)
 const suraBasics = computed(
   () => tableQuranIndex.value[suraNumber.value] || tableQuranIndex.value[1]
 )
@@ -113,106 +115,40 @@ const setSuraBasics = () => {
 }
 
 const fetchSuraDetails = async () => {
-  isLoading.value = true
   details.value = await store.getSuraDetails()
-  isLoading.value = false
 }
 
 const prepareData = () => {
   setSuraBasics()
   fetchSuraDetails()
   if (fileName.value === "000المصحف") {
-    perpareMushafData()
+    prepareMushafData({
+      oneQuranFile,
+      versesBasics,
+      suraTextArray,
+      letterSeries,
+      versesSeries,
+      wordsSeries,
+      tableQuranIndex,
+    })
     suraWithTashkeel.value = allVersesWithTashkeel.value
-    setMushafToolTip()
+    setMushafToolTip({ tableQuranIndex, setSuraToolTip })
     return
   }
-  perpareSuraData()
-  prepareSuraWithTashkeel()
-  setSuraToolTip(suraTextArray.value)
-}
-
-const setMushafToolTip = () => {
-  var quranToolTip = tableQuranIndex.value.map((item) => {
-    return item.fileName.replace(/[0-9]/g, "")
+  prepareSuraData({
+    oneQuranFile,
+    startIndex,
+    endIndex,
+    versesBasics,
+    suraTextArray,
+    letterSeries,
+    wordsSeries,
   })
-  setSuraToolTip(quranToolTip.shift())
-}
-
-const setSuraToolTip = (toolTipText) => {
-  var x = {
-    custom: ({ series, seriesIndex, dataPointIndex, w }) => {
-      return (
-        '<div class="mr-2 ml-2 pt-2">' +
-        '<div class="d-flex"><span class="tipInfo"><span class="tipLabel">' +
-        tooltipLabel2.value +
-        " </span> " +
-        parseInt(dataPointIndex + 1) +
-        "</span>" +
-        '<span class="tipInfo tipInfo2">' +
-        w.globals.series[0][dataPointIndex] +
-        ' <span class="tipLabel">' +
-        tooltipLabel.value +
-        "</span></span></div>" +
-        '<p class="tipInfo tipText pr-1 pl-2">' +
-        toolTipText[dataPointIndex] +
-        "</p>" +
-        "</div>"
-      )
-    },
-    shared: true,
-    followCursor: true,
-  }
-  chartOptions.value = {
-    ...chartOptions.value,
-    ...{ tooltip: x },
-  }
-}
-
-const perpareSuraData = () => {
-  const letters = []
-  const words = []
-  versesBasics.value = []
-  suraTextArray.value = []
-  oneQuranFile.value.forEach((item, index) => {
-    if (index <= startIndex.value - 1 || index >= endIndex.value) return
-    versesBasics.value.push(buildVerseObject(item))
-    suraTextArray.value.push(item.verseText)
-    letters.push(item.verseText.replace(/ /g, "").length)
-    words.push(item.verseText.split(" ").length)
-  })
-  letterSeries.value = [{ data: letters }]
-  wordsSeries.value = [{ data: words }]
-}
-
-const buildVerseObject = (item) => ({
-  fileName: item.fileName,
-  verseIndex: item.verseIndex.toString(),
-  verseText: item.verseText,
-  numberOfWords: item.verseText.split(" ").length.toString(),
-  numberOfLetters: item.verseText.replace(/ /g, "").length.toString(),
-  verseNumberToQuran: item.verseNumberToQuran.toString(),
-})
-
-const perpareMushafData = () => {
-  versesBasics.value = oneQuranFile.value.map((item) => buildVerseObject(item))
-  suraTextArray.value = oneQuranFile.value.map((item) => item.verseText)
-  letterSeries.value = getMushafSeries("numberOfLetters")
-  versesSeries.value = getMushafSeries("numberOfVerses")
-  wordsSeries.value = getMushafSeries("numberOfWords")
-}
-
-const getMushafSeries = (fieldPlaceHolder) => {
-  const arr = tableQuranIndex.value.map((item) => item[fieldPlaceHolder])
-  arr.shift()
-  return [{ data: arr }]
-}
-
-const prepareSuraWithTashkeel = () => {
   suraWithTashkeel.value = allVersesWithTashkeel.value.slice(
     startIndex.value,
     endIndex.value
   )
+  setSuraToolTip({ suraTextArray, tooltipLabel, tooltipLabel2, chartOptions })
 }
 
 watch(fileName, prepareData)
@@ -224,10 +160,4 @@ onMounted(() => {
 })
 </script>
 
-<style lang="scss">
-#suraBlock {
-  margin: 0;
-  overflow-y: scroll;
-  margin-top: 10px;
-}
-</style>
+<style lang="scss"></style>

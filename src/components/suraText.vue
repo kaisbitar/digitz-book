@@ -1,10 +1,10 @@
 <template>
-  <v-container class="sura-text-container">
+  <v-container class="sura-text-container scrolling-container">
     <span
       v-for="(verse, index) in suraTextArray"
       :key="index"
-      :class="{ 'targeted-verse': isTargetedVerse(index) }"
       @click="setTargetedVerse(verse, index + 1)"
+      :class="{ 'active-verse': isTargetedVerse(index) }"
     >
       <span :id="`v${index + 1}`" class="verse-content">
         <span
@@ -23,35 +23,20 @@
 <script setup>
 import { ref, computed, watch, onMounted } from "vue"
 import { useQuranStore } from "@/stores/app"
-import { useMixin } from "../mixins/mixins"
+import { useWindowMixin } from "../mixins/windowMixin"
+import { useGoTo } from "vuetify"
 
-const { createVerseId } = useMixin()
+const { scrollToActiveItem } = useWindowMixin()
 
 const props = defineProps(["inputText", "suraTextArray"])
 
 const store = useQuranStore()
+const goTo = useGoTo()
 
 const suraTargetedVerseIndex = computed(() => store.getTarget?.verseIndex)
 const isTargetedVerse = computed(
   () => (index) => index + 1 === parseInt(suraTargetedVerseIndex.value)
 )
-
-watch(
-  () => props.suraTargetedVerseIndex,
-  () => {
-    const verse = createVerseId(props.suraTargetedVerseIndex)
-    scrollToVerse(verse)
-  }
-)
-
-const scrollToVerse = async () => {
-  await nextTick()
-  if (!document.getElementById("suraBlock")) return
-  goTo(".targetedVerse", {
-    container: "#suraBlock",
-    offset: -100,
-  })
-}
 
 const setTargetedVerse = (verse, index) => {
   store.setTarget({
@@ -73,7 +58,7 @@ const highlightVerseText = (text, value) => {
 }
 
 onMounted(() => {
-  scrollToVerse(createVerseId(props.suraTargetedVerseIndex))
+  scrollToActiveItem(".active-verse", ".sura-text-container")
 })
 </script>
 

@@ -7,7 +7,7 @@ import {
   fetchAllVersesWithTashkeel,
 } from '../api/api.js'
 
-export const useQuranStore = defineStore('quran', {
+export const useQuranStore = defineStore('Quran', {
   state: () => ({
     target: {
       fileName: '001الفاتحة',
@@ -17,7 +17,7 @@ export const useQuranStore = defineStore('quran', {
     selectedSearch: [],
     selectedSearchIndex: null,
     oneQuranFile: [],
-    tableQuranIndex: [],
+    QuranIndex: [],
     suras: {},
     scrollTrigger: false,
     drawerState: true,
@@ -31,7 +31,7 @@ export const useQuranStore = defineStore('quran', {
     enabled: true,
     strategies: [
       {
-        key: 'quran-store',
+        key: 'Quran-store',
         storage: localStorage,
       },
     ],
@@ -52,8 +52,8 @@ export const useQuranStore = defineStore('quran', {
     getOneQuranFile: state => {
       return state.oneQuranFile
     },
-    getTableQuranIndex: state => {
-      return state.tableQuranIndex
+    getQuranIndex: state => {
+      return state.QuranIndex
     },
     getScrollTrigger: state => {
       return state.scrollTrigger
@@ -127,9 +127,8 @@ export const useQuranStore = defineStore('quran', {
     setAllVersesWithTashkeel(items) {
       this.allVersesWithTashkeel = items
     },
-    setTableQuranIndex(items) {
-      this.tableQuranIndex = items
-      console.log('items', this.tableQuranIndex)
+    setQuranIndex(items) {
+      this.QuranIndex = items
     },
     setDrawerState(drawerState) {
       this.drawerState = drawerState
@@ -149,11 +148,11 @@ export const useQuranStore = defineStore('quran', {
       const versesWithTashkeel = await fetchAllVersesWithTashkeel(appApi)
       this.setAllVersesWithTashkeel(versesWithTashkeel)
 
-      const quranFile = await fetchOneQuranFile(appApi)
-      this.setOneQuranFile(quranFile)
+      const QuranFile = await fetchOneQuranFile(appApi)
+      this.setOneQuranFile(QuranFile)
 
       const tableIndex = await fetchtableQuranIndex(appApi)
-      this.setTableQuranIndex(tableIndex)
+      this.setQuranIndex(tableIndex)
     },
 
     async getSuraDetails() {

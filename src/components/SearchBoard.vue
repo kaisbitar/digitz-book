@@ -1,5 +1,5 @@
 <template>
-  <Verses
+  <TableVerses
     class="web-kit-width"
     :verses="searchData"
     :versesInputText="inputText"
