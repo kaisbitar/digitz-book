@@ -21,7 +21,7 @@ import { useQuranStore } from "@/stores/app"
 import { useRouter } from "vue-router"
 
 const store = useQuranStore()
-const isShowDetail = ref(false)
+const isShowDetail = ref(true)
 const drawerWidth = computed(() => (isShowDetail.value ? 490 : 290))
 
 const drawer = computed({

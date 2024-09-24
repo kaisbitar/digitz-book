@@ -1,40 +1,48 @@
 <template>
-  <v-container class="d-flex">
-    <v-icon
-      v-if="deletable"
-      class="mt-3"
-      size="small"
-      color="red-lighten-2"
-      @click="$emit('chipRemoveAll')"
-      >mdi-delete</v-icon
-    >
-    <v-chip-group
-      :v-model="selectedChipIndex"
-      mandatory
-      show-arrows
-      color="primary"
-      variant="tonal"
-      @update:modelValue="$emit('chipClicked', $event)"
-    >
-      <v-chip
-        v-for="(item, index) in chipsData"
-        :key="index"
-        :class="chipClasses(index)"
-        :closable="closable"
-        prepend-icon="mdi-magnify"
-        icon-size="x-small"
-        @click:close="$emit('chipRemoved', index)"
-      >
-        <span class="theme-text-color">{{ item }}</span>
-      </v-chip>
-    </v-chip-group>
-  </v-container>
+  <v-row no-gutters align="center">
+    <v-col v-if="chipsTitle" cols="4">
+      <v-toolbar-title class="mr-4">"{{ chipsTitle }}"</v-toolbar-title>
+    </v-col>
+    <v-col>
+      <v-container class="d-flex">
+        <v-icon
+          v-if="deletable"
+          class="mt-3"
+          size="small"
+          color="red-lighten-2"
+          @click="$emit('chipRemoveAll')"
+          >mdi-delete</v-icon
+        >
+        <v-chip-group
+          :v-model="selectedChipIndex"
+          mandatory
+          show-arrows
+          color="primary"
+          variant="tonal"
+          @update:modelValue="$emit('chipClicked', $event)"
+        >
+          <v-chip
+            v-for="(item, index) in chipsData"
+            :key="index"
+            :class="chipClasses(index)"
+            :closable="closable"
+            prepend-icon="mdi-magnify"
+            icon-size="x-small"
+            @click:close="$emit('chipRemoved', index)"
+          >
+            <span class="theme-text-color">{{ item }}</span>
+          </v-chip>
+        </v-chip-group>
+      </v-container>
+    </v-col>
+  </v-row>
 </template>
 
 <script setup>
 import { computed } from "vue"
 
 const props = defineProps({
+  chipsTitle: String,
   chipsData: Array,
   selectedChipIndex: Number,
   closable: {

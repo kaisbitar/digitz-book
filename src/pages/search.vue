@@ -1,19 +1,13 @@
 <template>
-  <v-row no-gutters align="center">
-    <v-col cols="4">
-      <v-toolbar-title class="mr-4">"{{ inputText }}"</v-toolbar-title>
-    </v-col>
-    <v-col>
-      <AppChipsGroup
-        :chipsData="researchTitles"
-        :selectedChipIndex="selectedSearchIndex"
-        @chipClicked="handleClickedChip"
-        @chipRemoved="handleRemovedChip"
-        @chipRemoveAll="handleResearchReset"
-        closable
-      />
-    </v-col>
-  </v-row>
+  <AppChipsGroup
+    :chipsTitle="inputText"
+    :chipsData="researchTitles"
+    :selectedChipIndex="selectedSearchIndex"
+    @chipClicked="handleClickedChip"
+    @chipRemoved="handleRemovedChip"
+    @chipRemoveAll="handleResearchReset"
+    closable
+  />
   <v-container>
     <SearchBoard :inputText="inputText" :searchData="searchData" />
   </v-container>
@@ -53,12 +47,13 @@ const handleClickedChip = (index) => {
 
 const handleRemovedChip = (index) => {
   if (index !== selectedSearchIndex.value) {
-    store.setSearchIndex(selectedSearchIndex.value - 1)
-    return
+    store.setSearchIndex(Math.max(selectedSearchIndex.value - 1, 0))
+  } else {
+    store.setRemoveSearchItem(index)
+    store.setSearchIndex(Math.max(index - 1, 0))
   }
-  store.setSearchIndex(index)
-  store.setRemoveSearchItem(index)
 }
+
 const handleResearchReset = () => {
   store.resetResearchResults()
 }

@@ -7,18 +7,29 @@
       ref="myChart"
       @markerClick="handleClick"
     />
-    <v-overlay :modelValue="isLoading" :absolute="true" :opacity="0.6" color="white">
+    <v-overlay
+      :modelValue="isLoading"
+      :absolute="true"
+      :opacity="0.6"
+      color="white"
+    >
       <v-progress-circular color="indigo" indeterminate></v-progress-circular>
     </v-overlay>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import { useQuranStore } from '@/stores/app'
-import VueApexCharts from 'vue3-apexcharts'
+import { ref, computed, onMounted } from "vue"
+import { useQuranStore } from "@/stores/app"
+import VueApexCharts from "vue3-apexcharts"
 
-const props = defineProps(['height', 'options', 'series', 'isLoading', 'includeTab'])
+const props = defineProps([
+  "height",
+  "options",
+  "series",
+  "isLoading",
+  "includeTab",
+])
 const store = useQuranStore()
 
 const myChart = ref(null)
@@ -56,7 +67,7 @@ onMounted(() => {
 .apexcharts-tooltip {
   background: none !important;
   color: rgb(31, 31, 31);
-  font-family: 'Tajawal', sans-serif;
+  font-family: "Tajawal", sans-serif;
   font-size: 19px !important;
   white-space: normal !important;
   max-width: 300px;
