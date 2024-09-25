@@ -22,7 +22,6 @@ export function useWindowMixin(props) {
         : `${activeItem}`
 
       const activeVerseItem = document.querySelector(activeRowSelector)
-      console.log(isDialog)
       if (!activeVerseItem) return
       const baseContainer = isDialog ? `.v-dialog ${container}` : `${container}`
       goTo(activeVerseItem, {

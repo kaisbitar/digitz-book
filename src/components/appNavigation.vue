@@ -1,24 +1,30 @@
 <template>
-  <v-btn @click="navigateTo('sura')" icon>
-    <v-icon size="small" class="mr-1">mdi-book-open-variant</v-icon>
+  <v-btn
+    :class="activeRoute === 'sura' ? 'selected' : 'not-selected'"
+    @click="$emit('navigateTo', 'sura')"
+    icon
+    size="small"
+  >
+    <v-icon>mdi-book-open-variant</v-icon>
   </v-btn>
-  <v-btn @click="navigateTo('search')" icon>
-    <v-icon size="small" class="mr-1">mdi-magnify</v-icon>
+
+  <v-btn
+    :class="activeRoute === 'search' ? 'selected' : 'not-selected'"
+    @click="$emit('navigateTo', 'search')"
+    icon
+    size="small"
+  >
+    <v-icon>mdi-magnify</v-icon>
   </v-btn>
 </template>
 
 <script setup>
 import { useRouter } from "vue-router"
-import { useQuranStore } from "@/stores/app" // Adjust the import path as needed
+import { useQuranStore } from "@/stores/app"
+import { defineEmits } from "vue"
 
-const router = useRouter()
-const store = useQuranStore()
-
-const navigateTo = (route) => {
-  if (router.currentRoute.value.name !== route) {
-    router.push({ name: route })
-  }
-}
+defineEmits(["navigateTo"])
+defineProps(["activeRoute"])
 </script>
 
 <style></style>
