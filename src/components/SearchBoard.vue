@@ -26,7 +26,6 @@ import { ref, computed, onMounted } from "vue"
 import { useQuranStore } from "@/stores/app"
 import Sura from "@/pages/Sura.vue"
 import SearchChipsGroup from "./SearchChipsGroup.vue"
-import AppNavigation from "./AppNavigation.vue"
 
 const props = defineProps(["searchData", "inputText", "suraInputText"])
 const store = useQuranStore()

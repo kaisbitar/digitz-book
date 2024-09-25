@@ -1,7 +1,9 @@
 <template>
   <v-dialog
     :modelValue="modelValue"
+    width="900"
     @update:modelValue="$emit('update:modelValue', $event)"
+    @click:outside="handleClose"
   >
     <template v-slot:default="{ isActive }">
       <div class="closing-button">
@@ -15,7 +17,7 @@
       <v-sheet>
         <v-container>
           <SearchChipsGroup
-            :chipsData="inputText"
+            :chipsData="[inputText]"
             :deletable="false"
             :selectedChipIndex="0"
           />
@@ -32,19 +34,24 @@ import { watch, onBeforeUnmount } from "vue"
 import Sura from "@/pages/Sura.vue"
 
 const store = useQuranStore()
+const emit = defineEmits(["update:modelValue"])
 
 const props = defineProps({
   modelValue: Boolean,
   inputText: String,
 })
+
+const handleClose = () => {
+  emit("update:modelValue", false)
+  store.setIsDialog(false)
+}
+
 watch(
   () => props.modelValue,
   (newValue) => {
     store.setIsDialog(newValue)
   }
 )
-
-defineEmits(["update:modelValue"])
 
 onBeforeUnmount(() => {
   store.setIsDialog(false) // Set isDialog to false when component is destroyed

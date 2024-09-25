@@ -73,10 +73,7 @@ const resultsCount = () => {
 }
 
 const handleNewSearch = (value) => {
-  if (!search.value) {
-    console.log(value)
-    return
-  }
+  if (!search.value) return
   store.setSearchIndex(searchResults.value.length)
   store.setResearchResults({
     resultsCount: autocompleteRef.value.filteredItems.length,

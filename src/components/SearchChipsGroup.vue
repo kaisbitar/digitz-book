@@ -1,40 +1,44 @@
 <template>
   <v-row no-gutters align="center">
-    <v-col v-if="chipsTitle" cols="4">
+    <v-col v-if="chipsTitle" cols="3">
       <v-toolbar-title>"{{ chipsTitle }}"</v-toolbar-title>
     </v-col>
-    <v-col>
-      <div class="d-flex">
-        <v-icon
-          v-if="deletable"
-          class="mt-3"
-          size="small"
-          color="red-lighten-2"
-          @click="$emit('chipRemoveAll')"
-          >mdi-delete</v-icon
-        >
-        <v-chip-group
-          :v-model="selectedChipIndex"
-          mandatory
-          show-arrows
-          color="primary"
-          variant="tonal"
-          @update:modelValue="$emit('chipClicked', $event)"
-        >
-          <v-chip
-            v-for="(item, index) in chipsData"
-            :key="index"
-            :class="chipClasses(index)"
-            :closable="closable"
-            prepend-icon="mdi-magnify"
-            icon-size="x-small"
-            @click:close="$emit('chipRemoved', index)"
+    <v-row align="center">
+      <v-tooltip location="right" open>
+        <template #activator="{ props }">
+          <v-icon
+            v-if="deletable"
+            v-bind="props"
+            class="mt-3"
+            size="x-small"
+            color="red-lighten-2"
+            @click="$emit('chipRemoveAll')"
+            >mdi-delete</v-icon
           >
-            <span class="theme-text-color">{{ item }}</span>
-          </v-chip>
-        </v-chip-group>
-      </div>
-    </v-col>
+        </template>
+        <span>Remove all chips</span>
+      </v-tooltip>
+      <v-chip-group
+        :v-model="selectedChipIndex"
+        mandatory
+        show-arrows
+        color="primary"
+        variant="tonal"
+        @update:modelValue="$emit('chipClicked', $event)"
+      >
+        <v-chip
+          v-for="(item, index) in chipsData"
+          :key="index"
+          :class="chipClasses(index)"
+          :closable="closable"
+          prepend-icon="mdi-magnify"
+          icon-size="x-small"
+          @click:close="$emit('chipRemoved', index)"
+        >
+          <span class="theme-text-color">{{ item }}</span>
+        </v-chip>
+      </v-chip-group>
+    </v-row>
   </v-row>
 </template>
 
@@ -66,9 +70,6 @@ const chipClasses = computed(() => (index) => [
 <style scoped>
 .selected-chip {
   color: rgb(var(--v-theme-primary)) !important;
-}
-.theme-text-color {
-  color: rgb(var(--v-theme-on-surface)) !important;
 }
 .count-color,
 .custom-close-icon ::v-deep(.v-chip__close) {

@@ -86,4 +86,7 @@ th {
 .not-selected {
   opacity: 0.2 !important;
 }
+.theme-text-color {
+  color: rgb(var(--v-theme-on-surface)) !important;
+}
 </style>

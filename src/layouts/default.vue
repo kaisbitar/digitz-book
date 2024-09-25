@@ -4,17 +4,17 @@
       <AppHeader />
       <v-navigation-drawer :width="drawerWidth" v-model="drawer" app right>
         <v-icon
-          :class="isShowDetail ? 'selected' : 'not-selected'"
+          :class="drawer ? 'selected' : 'not-selected'"
           class=""
           variant="tonal"
           color="green"
           size="small"
-          @click="isShowDetail = !isShowDetail"
+          @click="drawer = !drawer"
         >
           mdi-details </v-icon
         ><TableQuranIndex
-          @showDetailToggle="isShowDetail = !isShowDetail"
-          :showDetail="isShowDetail"
+          @showDetailToggle="drawer = !drawer"
+          :showDetail="drawer"
         ></TableQuranIndex>
       </v-navigation-drawer>
       <v-container fluid>
@@ -31,15 +31,33 @@ import { useQuranStore } from "@/stores/app"
 import { useRouter } from "vue-router"
 
 const store = useQuranStore()
-const isShowDetail = ref(false)
-const drawerWidth = computed(() => (isShowDetail.value ? 700 : 310))
+const router = useRouter()
+
+const isShowSuraDetail = ref(false)
+const drawerWidth = computed(() => (drawer.value ? 600 : 310))
+const activeRoute = computed(() => router.currentRoute.value.name)
 
 const drawer = computed({
   get: () => store.getDrawerState,
   set: (value) => store.setDrawerState(value),
 })
 
-onMounted(() => {})
+const handleLanding = () => {
+  console.log(activeRoute)
+  if (activeRoute.value !== "sura") {
+    drawer.value = false
+    return
+  }
+  drawer.value = true
+}
+
+watch(activeRoute, () => {
+  handleLanding()
+})
+
+onMounted(() => {
+  handleLanding()
+})
 </script>
 
 <style lang="scss">
