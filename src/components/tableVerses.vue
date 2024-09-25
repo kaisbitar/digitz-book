@@ -6,6 +6,7 @@
     :tableInputText="versesInputText"
     :activeItemClass="'active-verse-table'"
     :scrollingContainerClass="'verses-container'"
+    :height="240"
     :activeItemKey="targetedIndex"
     :fieldPlaceHolder="versesInputText"
     @activateRowItem="handleVerseSelected"

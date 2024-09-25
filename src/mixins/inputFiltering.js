@@ -17,28 +17,6 @@ export function useInputFiltering() {
       return `<span class="highlight-match">${match}</span>`
     })
   }
-
-  const handleFiltering = (item, queryText, itemText) => {
-    if (!queryText) return true
-
-    if (!itemText.columns) {
-      itemText.columns = itemText.raw
-    }
-
-    const containsQuery = (text, query) => {
-      if (!matchingStatus.value) {
-        return text.includes(query)
-      }
-
-      return text.includes(" " + query + " ")
-    }
-
-    return (
-      containsQuery(itemText.columns.fileName, queryText) ||
-      containsQuery(itemText.columns.verseText, queryText)
-    )
-  }
-
   const handleIconEvent = (eventName) => {
     switch (eventName) {
       case "filter":
@@ -61,6 +39,5 @@ export function useInputFiltering() {
     updateSearchValue,
     changeMatchingStatus,
     highlight,
-    handleFiltering,
   }
 }

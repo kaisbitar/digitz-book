@@ -1,17 +1,27 @@
 <template>
   <v-app>
     <v-main>
-      <appHeader />
+      <AppHeader />
       <v-navigation-drawer :width="drawerWidth" v-model="drawer" app right>
-        <TableQuranIndex
+        <v-icon
+          :class="isShowDetail ? 'selected' : 'not-selected'"
+          class=""
+          variant="tonal"
+          color="green"
+          size="small"
+          @click="isShowDetail = !isShowDetail"
+        >
+          mdi-details </v-icon
+        ><TableQuranIndex
           @showDetailToggle="isShowDetail = !isShowDetail"
           :showDetail="isShowDetail"
-        />
+        ></TableQuranIndex>
       </v-navigation-drawer>
       <v-container fluid>
         <router-view />
       </v-container>
     </v-main>
+    <v-footer border></v-footer>
   </v-app>
 </template>
 
@@ -21,8 +31,8 @@ import { useQuranStore } from "@/stores/app"
 import { useRouter } from "vue-router"
 
 const store = useQuranStore()
-const isShowDetail = ref(true)
-const drawerWidth = computed(() => (isShowDetail.value ? 490 : 290))
+const isShowDetail = ref(false)
+const drawerWidth = computed(() => (isShowDetail.value ? 700 : 340))
 
 const drawer = computed({
   get: () => store.getDrawerState,
@@ -35,46 +45,13 @@ onMounted(() => {})
 <style lang="scss">
 @import "@/styles/styles.scss";
 
-.activeView {
-  // color: rgb(var(--v-theme-background-secondary)) !important;
-}
-
-.v-navigation-drawer__content {
-  margin-top: 13px;
-}
-
-.topHeader {
-  z-index: 6;
-}
 .v-data-table-header__content {
   display: flex;
   align-items: center;
   padding-bottom: 9px;
 }
-.suraInfoBox {
-  padding: 24px;
-  margin-left: 10px;
-  width: 181.5px;
-  display: flex;
+.v-navigation-drawer__content {
+  height: auto;
+  overflow: hidden !important;
 }
-
-.numberInfo {
-  width: 191px;
-  margin-top: -9px;
-}
-.downArr {
-  margin-top: 18px !important;
-}
-/* Scrollbar styling */
-::-webkit-scrollbar {
-  // width: 8px;
-}
-.web-kit-width {
-  width: -webkit-fill-available;
-}
-.v-application__wrap {
-  min-height: auto;
-  overflow: hidden;
-}
-/* Responsive styles */
 </style>

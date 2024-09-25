@@ -1,31 +1,18 @@
-import { computed } from "vue"
+import { computed, nextTick } from "vue"
 import { useQuranStore } from "@/stores/app"
 import { useGoTo } from "vuetify"
 
-export function useWindowMixin() {
+export function useWindowMixin(props) {
   const store = useQuranStore()
   const goTo = useGoTo()
 
   const windowHeight = computed(() => window.innerHeight)
-  const activeRoute = computed(() => store.getActiveRoute)
 
-  const getHeightAdjustment = (route) => {
-    const adjustments = {
-      sura: { table: 300, textBox: 15 },
-      search: { table: 375, textBox: 90 },
-    }
-    return adjustments[route] || { table: 0, textBox: 0 }
+  const dynamicTableHeight = ref(0)
+  const updateTableHeight = async (height) => {
+    await nextTick()
+    dynamicTableHeight.value = window.innerHeight - height
   }
-
-  const getTableHeight = computed(() => {
-    const adjustment = getHeightAdjustment(activeRoute.value)
-    return windowHeight.value - adjustment.table
-  })
-
-  const getTextBoxHeight = computed(() => {
-    const adjustment = getHeightAdjustment(activeRoute.value)
-    return windowHeight.value - adjustment.textBox
-  })
 
   const scrollToItem = async (activeItem, container, isDialog) => {
     await nextTick()
@@ -35,8 +22,8 @@ export function useWindowMixin() {
         : `${activeItem}`
 
       const activeVerseItem = document.querySelector(activeRowSelector)
+      console.log(isDialog)
       if (!activeVerseItem) return
-
       const baseContainer = isDialog ? `.v-dialog ${container}` : `${container}`
       goTo(activeVerseItem, {
         container: baseContainer,
@@ -58,8 +45,8 @@ export function useWindowMixin() {
 
   return {
     windowHeight,
-    getTableHeight,
-    getTextBoxHeight,
+    updateTableHeight,
+    dynamicTableHeight,
     scrollToActiveItem,
     scrollNoDialog,
   }

@@ -4,7 +4,6 @@
     :tabs="tabs"
     :activeTab="activeTab"
     @tabChanged="changeTab"
-    class="webKitWidth mb-"
   />
   <AppInputField
     :fieldInput="search"
@@ -23,7 +22,6 @@
     :versesInputText="search"
     :fieldPlaceHolder="fileName"
     @verseSelected="handleVerseSelected"
-    class="web-kit-width"
   />
   <SuraFrequency
     v-if="activeTab === 'frequency'"

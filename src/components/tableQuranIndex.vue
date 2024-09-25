@@ -1,13 +1,22 @@
 <template>
-  <Table
-    :tableData="indexData"
-    :tableHeaders="indexHeaders"
-    :fieldPlaceHolder="'السور'"
-    :activeItemClass="'active-Quran-index'"
-    :scrollingContainerClass="'index-container'"
-    :activeItemKey="targetedIndex"
-    @activateRowItem="handleIndexSelected"
-  />
+  <v-container>
+    <AppInputField
+      :fieldInput="search"
+      :fieldPlaceHolder="'السور'"
+      @update:fieldInput="updateSearchValue"
+    />
+    <Table
+      :tableData="indexData"
+      :tableInputText="search"
+      :tableHeaders="indexHeaders"
+      :fieldPlaceHolder="'السور'"
+      :activeItemClass="'active-Quran-index'"
+      :scrollingContainerClass="'index-container'"
+      :height="200"
+      :activeItemKey="targetedIndex"
+      @activateRowItem="handleIndexSelected"
+    />
+  </v-container>
 </template>
 
 <script setup>
@@ -15,7 +24,9 @@ import { ref, computed, watch, defineProps } from "vue"
 import { useQuranStore } from "@/stores/app"
 import { useRouter } from "vue-router"
 import { useWindowMixin } from "../mixins/windowMixin"
+import { useInputFiltering } from "../mixins/inputFiltering"
 const { scrollToActiveItem } = useWindowMixin()
+const { updateSearchValue, search } = useInputFiltering()
 
 const router = useRouter()
 const store = useQuranStore()
@@ -24,11 +35,12 @@ const props = defineProps(["isShowDetail"])
 
 const indexData = computed(() => store.getQuranIndex)
 const indexHeaders = ref([
-  { title: "رقم", key: "suraIndex", width: 70 },
+  { title: "رقم", key: "suraIndex", width: 10 },
   { title: "السورة", key: "fileName", width: 100 },
   { title: "الآيات", key: "numberOfVerses", width: 90 },
   { title: "كلمات", key: "numberOfWords", width: 90 },
   { title: "حروف", key: "numberOfLetters", width: 90 },
+  { title: "مصحف", key: "verseNumberToQuran", width: 90 },
 ])
 const targetedIndex = computed(() => {
   return store.getTarget.fileName
@@ -61,9 +73,4 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
-/* #indexBlock .v-table--fixed-header > .v-table__wrapper {
-  overflow-x: hidden !important;
-  margin-left: -11px;
-} */
-</style>
+<style scoped></style>
