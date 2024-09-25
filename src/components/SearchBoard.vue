@@ -1,18 +1,32 @@
 <template>
+  <SearchChipsGroup
+    :chipsTitle="inputText"
+    :chipsData="researchTitles"
+    :selectedChipIndex="selectedSearchIndex"
+    @chipClicked="handleClickedChip"
+    @chipRemoved="handleRemovedChip"
+    @chipRemoveAll="handleResearchReset"
+    closable
+  />
   <TableVerses
     class="web-kit-width"
     :verses="searchData"
     :versesInputText="inputText"
     @verseSelected="runSelectedSura"
   />
-  <AppDialog v-model="showSuraText" :componentsToRender="componentsToRender" />
+  <SearchSuraDialog
+    v-model="showSuraText"
+    :inputText="inputText"
+    :componentsToRender="componentsToRender"
+  />
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from "vue"
 import { useQuranStore } from "@/stores/app"
 import Sura from "@/pages/Sura.vue"
-import AppChipsGroup from "./AppChipsGroup.vue"
+import SearchChipsGroup from "./SearchChipsGroup.vue"
+import AppNavigation from "./AppNavigation.vue"
 
 const props = defineProps(["searchData", "inputText", "suraInputText"])
 const store = useQuranStore()
@@ -21,6 +35,26 @@ const suraTextArray = ref([])
 const showSuraText = ref(false)
 
 const oneQuranFile = computed(() => store.getOneQuranFile)
+const research = computed(() => store.getResearchResults)
+const researchTitles = computed(() =>
+  research.value.map((raw) => raw.inputText)
+)
+const selectedSearchIndex = computed(() => store.getSelectedSearchIndex)
+
+const componentsToRender = computed(() => {
+  return [
+    {
+      component: SearchChipsGroup,
+      props: {
+        chipsData: [props.inputText],
+        deletable: false,
+        selectedChipIndex: 0,
+      },
+    },
+    { component: Sura, props: { suraInputText: props.inputText } },
+  ]
+})
+
 const runSelectedSura = (verse) => {
   const fileName = verse.fileName
   suraTextArray.value = []
@@ -32,21 +66,28 @@ const runSelectedSura = (verse) => {
   showSuraText.value = true
 }
 
-const componentsToRender = computed(() => {
-  return [
-    {
-      component: AppChipsGroup,
-      props: {
-        chipsData: [props.inputText],
-        deletable: false,
-        selectedChipIndex: 0,
-      },
-    },
-    { component: Sura, props: { suraInputText: props.inputText } },
-  ]
-})
+const handleClickedChip = (index) => {
+  store.setSearchIndex(index)
+}
 
-onMounted(() => {})
+const handleRemovedChip = (index) => {
+  if (index !== selectedSearchIndex.value) {
+    store.setSearchIndex(Math.max(selectedSearchIndex.value - 1, 0))
+  } else {
+    store.setRemoveSearchItem(index)
+    store.setSearchIndex(Math.max(index - 1, 0))
+  }
+}
+
+const handleResearchReset = () => {
+  store.resetResearchResults()
+}
+
+onMounted(() => {
+  if (selectedSearchIndex.value === -1) {
+    store.setSearchIndex(0)
+  }
+})
 </script>
 
 <style></style>

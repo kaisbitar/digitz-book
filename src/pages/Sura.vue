@@ -13,8 +13,8 @@
   />
   <SuraText
     v-if="activeTab === 'suraText'"
-    :suraTextArray="suraWithTashkeel"
     :inputText="search"
+    :suraTextArray="suraWithTashkeel"
   />
   <TableVerses
     v-if="activeTab === 'versesTab'"
@@ -63,7 +63,7 @@ const wordsSeries = ref([{ data: [] }])
 const details = ref({})
 
 const tabs = computed(() => [
-  { title: "نص", name: "suraText" },
+  { title: "سياق", name: "suraText" },
   { title: "آية", value: numberOfVerses.value, name: "versesTab" },
   { title: "كلمة", value: numberOfWords.value, name: "wordsTab" },
   { title: "حرف", value: numberOfLetters.value, name: "lettersTab" },
@@ -73,7 +73,7 @@ const chartWindowHeight = computed(() => window.innerHeight - 260)
 const fileName = computed(() => store.getTarget?.fileName || "001الفاتحة")
 const suraNumber = computed(() => parseInt(fileName.value.replace(/^\D+/g, "")))
 const tableQuranIndex = computed(() => store.getQuranIndex)
-const suraBasics = computed(
+const suraKeys = computed(
   () => tableQuranIndex.value[suraNumber.value] || tableQuranIndex.value[1]
 )
 const chartFreqType = computed(() => store.getChartFreqType)
@@ -105,11 +105,11 @@ const changeTab = (tab) => {
 }
 
 const setSuraBasics = () => {
-  numberOfLetters.value = suraBasics.value.numberOfLetters
-  numberOfVerses.value = suraBasics.value.numberOfVerses
-  numberOfWords.value = suraBasics.value.numberOfWords
-  startIndex.value = suraBasics.value.verseNumberToQuran - 1
-  endIndex.value = suraBasics.value.numberOfVerses + startIndex.value
+  numberOfLetters.value = suraKeys.value.numberOfLetters
+  numberOfVerses.value = suraKeys.value.numberOfVerses
+  numberOfWords.value = suraKeys.value.numberOfWords
+  startIndex.value = suraKeys.value.verseNumberToQuran - 1
+  endIndex.value = suraKeys.value.numberOfVerses + startIndex.value
 }
 
 const fetchSuraDetails = async () => {

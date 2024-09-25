@@ -1,5 +1,6 @@
 <template>
   <v-container>
+    <v-btn v-if="searchQuery && wordCount" variant="tonal">ابحث</v-btn>
     "{{ searchQuery }}"
     <v-chip
       :color="resultsCount > 0 ? 'green' : 'red'"

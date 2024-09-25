@@ -1,4 +1,6 @@
 <template>
+  <!-- <v-autocomplete :items="storedItems" hide-details="" autofocus> -->
+  <!-- </v-autocomplete> -->
   <v-autocomplete
     v-model:search="search"
     :items="storedItems"
@@ -7,43 +9,38 @@
     item-title="verseText"
     label="ابحث  في الكتاب.."
     ref="autocompleteRef"
-    variant="outlined"
     clearable
+    active
     prepend-inner-icon="mdi-file-search"
     @keyup.enter="handleNewSearch"
+    @click:option="(item) => handleNewSearch(item)"
+    hide-details
+    persistentClear
+    menu
   >
     <template v-slot:no-data>
       <p class="pa-1 text-red">لا يوجد معلومات تطابق البحث!</p>
     </template>
 
     <template v-slot:selection> </template>
-    <template v-slot:append-inner>
-      <v-btn
-        v-if="search"
-        @click="handleNewSearch"
-        prepend-icon="mdi-magnify"
-        color="green"
-        variant="tonal"
-      >
-        رتل
-      </v-btn>
-    </template>
+    <!-- <template v-slot:message>sd </template> -->
 
     <template v-slot:prepend-item>
-      <v-sheet position="fixed" width="100%" class="mt-n2 mb-8" z-index="1000">
-        <SearchCountHeader
-          :searchQuery="search"
-          :wordCount="wordCount"
-          :resultsCount="resultsCount()"
-          @newSearch="handleNewSearch"
-        />
-      </v-sheet>
+      <!-- <v-sheet position="fixed" width="100%" class="mt-n2 mb-8" z-index="1000"> -->
+      <SearchCountHeader
+        class="search-count-header"
+        :searchQuery="search"
+        :wordCount="wordCount"
+        :resultsCount="resultsCount()"
+        @newSearch="handleNewSearch"
+      />
+      <!-- </v-sheet> -->
     </template>
 
     <template v-slot:item="{ item, props }">
-      <div v-bind="props" class="mt-10">
-        <VerseDropMenu :item="item.raw" :textToHighlight="search" />
-      </div>
+      <v-list-item v-bind="props" class="mt-10">
+        <!-- <VerseDropMenu :item="item.raw" :textToHighlight="search" /> -->
+      </v-list-item>
     </template>
   </v-autocomplete>
 </template>
@@ -80,8 +77,11 @@ const resultsCount = () => {
   return autocompleteRef.value.filteredItems.length
 }
 
-const handleNewSearch = () => {
-  if (!search.value) return
+const handleNewSearch = (value) => {
+  if (!search.value) {
+    console.log(value)
+    return
+  }
   store.setSearchIndex(searchResults.value.length)
   store.setResearchResults({
     resultsCount: autocompleteRef.value.filteredItems.length,
@@ -91,7 +91,18 @@ const handleNewSearch = () => {
   search.value = ""
 }
 
-onMounted(() => {})
+onMounted(() => {
+  console.log(autocompleteRef.value)
+  // if (autocompleteRef.value) {
+  //   autocompleteRef.value.active = true // Open the menu on mount
+  // }
+})
 </script>
 
-<style></style>
+<style>
+.search-count-header {
+  position: fixed;
+  z-index: 5;
+  background: rgb(var(--v-theme-surface));
+}
+</style>

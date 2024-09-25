@@ -32,7 +32,7 @@ import { useRouter } from "vue-router"
 
 const store = useQuranStore()
 const isShowDetail = ref(false)
-const drawerWidth = computed(() => (isShowDetail.value ? 700 : 340))
+const drawerWidth = computed(() => (isShowDetail.value ? 700 : 310))
 
 const drawer = computed({
   get: () => store.getDrawerState,

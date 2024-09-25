@@ -1,10 +1,10 @@
 <template>
   <v-row no-gutters align="center">
     <v-col v-if="chipsTitle" cols="4">
-      <v-toolbar-title class="mr-4">"{{ chipsTitle }}"</v-toolbar-title>
+      <v-toolbar-title>"{{ chipsTitle }}"</v-toolbar-title>
     </v-col>
     <v-col>
-      <v-container class="d-flex">
+      <div class="d-flex">
         <v-icon
           v-if="deletable"
           class="mt-3"
@@ -33,7 +33,7 @@
             <span class="theme-text-color">{{ item }}</span>
           </v-chip>
         </v-chip-group>
-      </v-container>
+      </div>
     </v-col>
   </v-row>
 </template>

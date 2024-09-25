@@ -6,16 +6,11 @@
         size="small"
         @click.stop="toggleDrawer"
       ></v-app-bar-nav-icon>
-      <AppNavigation />
-      <v-btn
-        :class="activeRoute === 'search' ? 'selected' : 'not-selected'"
-        variant="tonal"
-        color="green"
-        @click="openSearchDialog()"
-      >
-        ابحث
-      </v-btn>
-      <AppDialog
+      <AppNavigation
+        :activeRoute="activeRoute"
+        @navigateTo="handleNavigation"
+      />
+      <AutoCompleteDialog
         v-model="showAutoComplete"
         :componentToRender="AutoComplete"
         :componentsToRender="[
@@ -49,6 +44,16 @@ const openSearchDialog = () => {
   router.push("/search")
 }
 
+const handleNavigation = (route) => {
+  if (route === "search") {
+    showAutoComplete.value = true
+    router.push("/search")
+    return
+  }
+  showAutoComplete.value = false
+  router.push(route)
+}
+
 const toggleDrawer = () => {
   store.setDrawerState(!store.getDrawerState)
 }
@@ -62,10 +67,10 @@ watch(researchResults.value, (newValue) => {
 .v-toolbar-title {
   width: 163px;
 }
-.max-width-auto-complete {
+/* .max-width-auto-complete {
   min-width: 611px;
   max-width: 911px;
   margin-left: auto;
   width: fit-content;
-}
+} */
 </style>
