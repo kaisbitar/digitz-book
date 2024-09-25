@@ -1,21 +1,19 @@
 <template>
-  <!-- <v-autocomplete :items="storedItems" hide-details="" autofocus> -->
-  <!-- </v-autocomplete> -->
   <v-autocomplete
     v-model:search="search"
     :items="storedItems"
-    :menu-props="{ maxWidth: '100%' }"
+    :menu-props="{ maxWidth: '100%', maxHeight: '500px' }"
     item-value="verseNumberToQuran"
     item-title="verseText"
     label="ابحث  في الكتاب.."
     ref="autocompleteRef"
     clearable
-    active
     prepend-inner-icon="mdi-file-search"
     @keyup.enter="handleNewSearch"
     @click:option="(item) => handleNewSearch(item)"
     hide-details
     persistentClear
+    autofocus
     menu
   >
     <template v-slot:no-data>
@@ -23,24 +21,21 @@
     </template>
 
     <template v-slot:selection> </template>
-    <!-- <template v-slot:message>sd </template> -->
 
-    <template v-slot:prepend-item>
-      <!-- <v-sheet position="fixed" width="100%" class="mt-n2 mb-8" z-index="1000"> -->
+    <template v-slot:prepend-item class="search-count-header mt-n2">
       <SearchCountHeader
-        class="search-count-header"
+        class="search-count-header mt-n2"
         :searchQuery="search"
         :wordCount="wordCount"
         :resultsCount="resultsCount()"
         @newSearch="handleNewSearch"
       />
-      <!-- </v-sheet> -->
     </template>
 
     <template v-slot:item="{ item, props }">
-      <v-list-item v-bind="props" class="mt-10">
-        <!-- <VerseDropMenu :item="item.raw" :textToHighlight="search" /> -->
-      </v-list-item>
+      <div v-bind="props">
+        <VerseDropMenu :item="item.raw" :textToHighlight="search" />
+      </div>
     </template>
   </v-autocomplete>
 </template>
@@ -91,17 +86,11 @@ const handleNewSearch = (value) => {
   search.value = ""
 }
 
-onMounted(() => {
-  console.log(autocompleteRef.value)
-  // if (autocompleteRef.value) {
-  //   autocompleteRef.value.active = true // Open the menu on mount
-  // }
-})
+onMounted(() => {})
 </script>
 
 <style>
 .search-count-header {
-  position: fixed;
   z-index: 5;
   background: rgb(var(--v-theme-surface));
 }
