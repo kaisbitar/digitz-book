@@ -9,7 +9,6 @@
       <AppNavigation />
       <v-btn
         :class="activeRoute === 'search' ? 'selected' : 'not-selected'"
-        prepend-icon="$vuetify"
         variant="tonal"
         color="green"
         @click="openSearchDialog()"

@@ -1,17 +1,18 @@
 <template>
-  <v-data-table-virtual
-    :custom-filter="handleFiltering"
+  <v-data-table
     :headers="tableHeaders"
     :items="tableData"
     :search="search"
-    :height="dynamicTableHeight"
     class="tableStyle"
     :class="scrollingContainerClass"
-    loading-text="جاري تحميل البيانات القرآنية ... الرجاء الانتظار"
+    :height="dynamicTableHeight"
+    loading-text="جاري تحميل
+    البيانات القرآنية ... الرجاء الانتظار"
     fixed-header
+    items-per-page="-1"
+    hide-default-footer
   >
-    <template v-slot:item="{ item, index }"
-      >{{ search }}
+    <template v-slot:item="{ item }">
       <TableRow
         class="tableItem"
         :item="item"
@@ -21,15 +22,13 @@
         @activateRowItem="$emit('activateRowItem', item)"
       />
     </template>
-  </v-data-table-virtual>
+  </v-data-table>
 </template>
 
 <script setup lang="ts">
 import { ref, watch, onMounted, defineEmits, onBeforeUnmount } from "vue"
 import { useWindowMixin } from "../mixins/windowMixin"
 import { useInputFiltering } from "../mixins/inputFiltering"
-
-const { highlight } = useInputFiltering()
 
 interface TableItem {
   [key: string]: any
@@ -40,30 +39,19 @@ interface TableItem {
 const props = defineProps<{
   tableData: TableItem[]
   tableHeaders: any[]
+  height: number
   tableInputText?: string
   activeItemKey: string | number
   activeItemClass: string
   scrollingContainerClass: string
 }>()
 
-const { getTableHeight } = useWindowMixin()
-const dynamicTableHeight = ref(0) // New reactive variable for dynamic height
-
-const { search, handleFiltering } = useInputFiltering()
+const { search } = useInputFiltering()
+const { updateTableHeight, dynamicTableHeight } = useWindowMixin()
 
 const emit = defineEmits<{
   (e: "activateRowItem", item: TableItem): void
 }>()
-
-const updateTableHeight = () => {
-  dynamicTableHeight.value = window.innerHeight - 200
-}
-
-onMounted(() => {
-  search.value = props.tableInputText
-  updateTableHeight()
-  window.addEventListener("resize", updateTableHeight)
-})
 
 watch(
   () => props.tableInputText,
@@ -72,8 +60,10 @@ watch(
   }
 )
 
-onBeforeUnmount(() => {
-  window.removeEventListener("resize", updateTableHeight)
+onMounted(() => {
+  search.value = props.tableInputText
+  updateTableHeight(props.height)
+  window.addEventListener("resize", updateTableHeight)
 })
 </script>
 
@@ -81,5 +71,12 @@ onBeforeUnmount(() => {
 .tableItem td {
   padding-bottom: 10px !important;
   padding-top: 10px !important;
+}
+.v-table__wrapper {
+  width: auto;
+  overflow-x: hidden !important;
+}
+.v-table--fixed-height > .v-table__wrapper {
+  overflow-y: auto;
 }
 </style>

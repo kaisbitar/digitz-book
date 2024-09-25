@@ -1,21 +1,20 @@
 <template>
-  <v-dialog
-    :modelValue="modelValue"
-    @update:modelValue="$emit('update:modelValue', $event)"
-    width="1000"
-    height="1000"
-  >
+  <v-dialog activator="parent" width="900">
     <template v-slot:default="{ isActive }">
-      <v-sheet class="pa-10 hide-overflow position-relative">
-        <v-btn
-          icon="mdi-arrow-right"
-          size="small"
-          class="mt-n10 ml-20"
-          @click="$emit('update:modelValue', false)"
-        ></v-btn>
+      <v-sheet class="" rounded position="relative">
+        <div>
+          <v-btn
+            icon="mdi-close"
+            size="small"
+            class=""
+            @click="$emit('update:modelValue', false), (isActive.value = false)"
+          ></v-btn>
+        </div>
+        <!-- <v-container class="mt-n15 pl-5 pr-5"> -->
         <template v-for="(component, index) in componentsToRender" :key="index">
           <component :is="component.component" v-bind="component.props" />
         </template>
+        <!-- </v-container> -->
       </v-sheet>
     </template>
   </v-dialog>
@@ -42,3 +41,10 @@ watch(
 
 defineEmits(["update:modelValue"])
 </script>
+
+<style lang="scss">
+// .v-dialog .v-row .v-row--no-gutters {
+//   margin-top: -96px;
+//   margin-right: 31px;
+// }
+</style>
