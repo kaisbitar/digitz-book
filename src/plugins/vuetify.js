@@ -34,7 +34,7 @@ export default createVuetify({
       dark: {
         colors: {
           surface: "#21212d",
-          "on-surface": "#f0f1f3",
+          "on-surface": "#ccc",
           "input-background": "#313131",
           highlight: "#8c8c36",
           "on-highlight": "#000000",

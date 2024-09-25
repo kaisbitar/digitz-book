@@ -1,7 +1,7 @@
 <template>
   <v-app-bar class="" height="60" border flat>
     <template v-slot:prepend>
-      <v-app-bar-title>الكتاب المرقوم</v-app-bar-title>
+      <v-toolbar-title>الكتاب المرقوم</v-toolbar-title>
       <v-app-bar-nav-icon
         size="small"
         @click.stop="toggleDrawer"

@@ -2,7 +2,7 @@
   <v-dialog
     :modelValue="modelValue"
     @update:modelValue="$emit('update:modelValue', $event)"
-    @click:outside="handleClose"
+    @click.prevent:outside="handleClose"
     width="700"
     class="auto-complete-dialog"
     height="900"
