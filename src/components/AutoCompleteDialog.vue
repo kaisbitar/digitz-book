@@ -2,20 +2,24 @@
   <v-dialog
     :modelValue="modelValue"
     @update:modelValue="$emit('update:modelValue', $event)"
+    @click:outside="handleClose"
+    width="700"
+    class="auto-complete-dialog"
+    height="900"
+    :transition="'fade'"
   >
     <template v-slot:default="{ isActive }">
-      <div class="closing-button">
-        <v-btn
-          variant="tonal"
-          size="small"
-          @click="$emit('update:modelValue', false), (isActive.value = false)"
-          >X
-        </v-btn>
-      </div>
-      <!-- <template v-for="(component, index) in componentsToRender" :key="index">
-        <component :is="component.component" v-bind="component.props" />
-      </template> -->
-      <AutoComplete />
+      <v-container>
+        <div class="closing-button">
+          <v-btn
+            variant="outlined"
+            size="small"
+            @click="$emit('update:modelValue', false), (isActive.value = false)"
+            >X
+          </v-btn>
+        </div>
+        <AutoComplete />
+      </v-container>
     </template>
   </v-dialog>
 </template>
@@ -23,23 +27,25 @@
 <script setup>
 import { useQuranStore } from "@/stores/app"
 import { watch, onBeforeUnmount } from "vue"
+
 const store = useQuranStore()
 
+const emit = defineEmits(["update:modelValue"])
 const props = defineProps({
   modelValue: Boolean,
-  componentsToRender: {
-    type: Array,
-    default: () => [],
-  },
 })
+
+const handleClose = () => {
+  emit("update:modelValue", false)
+  store.setIsDialog(false)
+}
+
 watch(
   () => props.modelValue,
   (newValue) => {
     store.setIsDialog(newValue)
   }
 )
-
-defineEmits(["update:modelValue"])
 
 onBeforeUnmount(() => {
   store.setIsDialog(false) // Set isDialog to false when component is destroyed

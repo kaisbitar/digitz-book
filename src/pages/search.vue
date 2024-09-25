@@ -1,6 +1,4 @@
 <template>
-  <AutoComplete />
-
   <SearchBoard :inputText="inputText" :searchData="searchData" />
 </template>
 <script setup>

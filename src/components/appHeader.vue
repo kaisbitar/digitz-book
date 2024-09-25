@@ -12,12 +12,7 @@
       />
       <AutoCompleteDialog
         v-model="showAutoComplete"
-        :componentToRender="AutoComplete"
-        :componentsToRender="[
-          {
-            component: AutoComplete,
-          },
-        ]"
+        @update:modelValue="closeSearchDialog"
       />
     </template>
     <template v-slot:append>
@@ -42,6 +37,10 @@ const showAutoComplete = ref(false)
 const openSearchDialog = () => {
   showAutoComplete.value = true
   router.push("/search")
+}
+
+const closeSearchDialog = () => {
+  showAutoComplete.value = false
 }
 
 const handleNavigation = (route) => {
