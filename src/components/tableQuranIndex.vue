@@ -36,11 +36,11 @@ const props = defineProps(["isShowSuraDetail"])
 const indexData = computed(() => store.getQuranIndex)
 const indexHeaders = ref([
   { title: "رقم", key: "suraIndex", width: 10 },
-  { title: "السورة", key: "fileName", width: 50 },
-  { title: "الآيات", key: "numberOfVerses", width: 30 },
-  { title: "كلمات", key: "numberOfWords", width: 30 },
-  { title: "حروف", key: "numberOfLetters", width: 30 },
-  { title: "مصحف", key: "verseNumberToQuran", width: 30 },
+  { title: "السورة", key: "fileName", width: 70 },
+  { title: "الآيات", key: "numberOfVerses", width: 20 },
+  { title: "كلمات", key: "numberOfWords", width: 20 },
+  { title: "حروف", key: "numberOfLetters", width: 20 },
+  { title: "مصحف", key: "verseNumberToQuran", width: 20 },
 ])
 const targetedIndex = computed(() => {
   return store.getTarget.fileName

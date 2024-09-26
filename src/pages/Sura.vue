@@ -1,5 +1,5 @@
 <template>
-  <AppTabs
+  <SuraHeader
     :title="fileName"
     :tabs="tabs"
     :activeTab="activeTab"

@@ -6,22 +6,26 @@
     @click:outside="handleClose"
   >
     <template v-slot:default="{ isActive }">
-      <div class="closing-button">
-        <v-btn
-          variant="tonal"
-          size="small"
-          @click="$emit('update:modelValue', false), (isActive.value = false)"
-          >X
-        </v-btn>
-      </div>
-      <v-sheet>
+      <v-sheet rounded="xl">
         <v-container>
-          <SearchChipsGroup
-            :chipsData="[inputText]"
-            :deletable="false"
-            :selectedChipIndex="0"
+          <div class="closing-button">
+            <v-chip
+              variant="flat"
+              color="red-darken-4"
+              class="text-black font-bold"
+              size="x-small"
+              @click="
+                $emit('update:modelValue', false), (isActive.value = false)
+              "
+            >
+            </v-chip>
+          </div>
+          <SearchCountHeader
+            :searchQuery="searchData.inputText"
+            :wordCount="searchData.wordCount"
+            :resultsCount="searchData.resultsCount"
           />
-          <Sura :suraInputText="inputText" />
+          <Sura :suraInputText="searchData.inputText" />
         </v-container>
       </v-sheet>
     </template>
@@ -38,7 +42,8 @@ const emit = defineEmits(["update:modelValue"])
 
 const props = defineProps({
   modelValue: Boolean,
-  inputText: String,
+  searchData: Object,
+  searchIndex: Number,
 })
 
 const handleClose = () => {
@@ -63,6 +68,8 @@ onBeforeUnmount(() => {
   width: 44px;
   margin-right: auto;
   z-index: 52;
-  margin-left: 6px;
+  margin-left: -22px;
+  margin-bottom: -26px;
+  zoom: 0.7;
 }
 </style>

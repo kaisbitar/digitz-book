@@ -3,7 +3,7 @@
     :headers="tableHeaders"
     :items="tableData"
     :search="search"
-    class="tableStyle"
+    class="tableStyle bordered"
     :class="scrollingContainerClass"
     :height="dynamicTableHeight"
     loading-text="جاري تحميل
