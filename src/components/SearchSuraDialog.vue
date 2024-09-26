@@ -9,8 +9,8 @@
       <v-sheet rounded="xl">
         <v-container>
           <AppClosingBar @close="handleClose" />
+          "{{ searchData.inputText }}"
           <SearchCountHeader
-            :searchQuery="searchData.inputText"
             :wordCount="searchData.wordCount"
             :versesCount="searchData.versesCount"
           />

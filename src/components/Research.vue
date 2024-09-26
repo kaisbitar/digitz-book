@@ -1,80 +1,41 @@
 <template>
-  <SearchCountHeader
-    :searchQuery="chipsTitle"
-    :wordCount="chipsData[selectedChipIndex]?.wordCount"
-    :versesCount="chipsData[selectedChipIndex]?.versesCount"
-  />
-  <v-row align="center">
-    <v-tooltip location="right" open>
-      <template #activator="{ props }">
-        <v-icon
-          v-if="deletable"
-          v-bind="props"
-          class="mt-3"
-          size="x-small"
-          color="red-lighten-2"
-          @click="$emit('chipRemoveAll')"
-          >mdi-delete</v-icon
-        >
-      </template>
-      <span>حذف الكل</span>
-    </v-tooltip>
-    <v-chip-group
-      :v-model="selectedChipIndex"
-      mandatory
-      show-arrows
-      color="primary"
-      variant="tonal"
-      @update:modelValue="$emit('chipClicked', $event)"
-    >
-      <v-chip
-        v-for="(item, index) in chipsData"
-        :key="index"
-        :class="chipClasses(index)"
-        :closable="closable"
-        prepend-icon="mdi-magnify"
-        icon-size="large"
-        @click:close="$emit('chipRemoved', index)"
-      >
-        <span class="chip-number">{{ index + 1 }}</span>
-        <span class="theme-text-color">{{ item.inputText }}</span>
-      </v-chip>
-    </v-chip-group>
+  <v-row
+    class="d-flex flex-wrap align-center mb-4"
+    :class="breakpoint === 'mobile' ? 'flex-column' : ''"
+    justify="space-between"
+  >
+    <v-col>
+      <h1>{{ chipsTitle }}</h1>
+      <SearchCountHeader
+        :wordCount="chipsData[selectedChipIndex]?.wordCount"
+        :versesCount="chipsData[selectedChipIndex]?.versesCount"
+      />
+    </v-col>
+    <v-col> <ResearchTitles /></v-col>
   </v-row>
 </template>
 
 <script setup>
 import { computed } from "vue"
+import { useQuranStore } from "@/stores/app"
 
+const store = useQuranStore()
 const props = defineProps({
   chipsTitle: String,
   chipsData: Object,
-  selectedChipIndex: Number,
-  closable: {
-    type: Boolean,
-    default: false,
-  },
-  deletable: {
-    type: Boolean,
-    default: true,
-  },
 })
 
 const emit = defineEmits(["chipClicked", "chipRemoved", "chipRemoveAll"])
-
-const chipClasses = computed(() => (index) => [
-  index === props.selectedChipIndex ? "selected-chip" : "not-selected",
-  "custom-close-icon",
-])
+const selectedChipIndex = computed(() => store.getSelectedSearchIndex)
+const breakpoint = computed(() =>
+  window.innerWidth < 600 ? "mobile" : "desktop"
+)
 </script>
 
 <style scoped>
-.selected-chip {
-  color: rgb(var(--v-theme-primary)) !important;
-}
-.count-color,
-.custom-close-icon ::v-deep(.v-chip__close) {
-  color: rgb(var(--v-theme-on-surface)) !important;
-  opacity: 0.5 !important;
+@media (max-width: 600px) {
+  .flex-column {
+    flex-direction: column !important;
+  }
 }
 </style>

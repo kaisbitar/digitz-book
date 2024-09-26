@@ -3,6 +3,8 @@
     :title="fileName"
     :tabs="tabs"
     :activeTab="activeTab"
+    :numberOfVerses="numberOfVerses"
+    :numberOfWords="numberOfWords"
     @tabChanged="changeTab"
   />
   <AppInputField
@@ -64,9 +66,9 @@ const details = ref({})
 
 const tabs = computed(() => [
   { title: "سياق", name: "suraText" },
-  { title: "آية", value: numberOfVerses.value, name: "versesTab" },
-  { title: "كلمة", value: numberOfWords.value, name: "wordsTab" },
-  { title: "حرف", value: numberOfLetters.value, name: "lettersTab" },
+  { title: "آية", value: numberOfVerses, name: "versesTab" },
+  // { title: "كلمة", value: numberOfWords, name: "wordsTab" },
+  // { title: "حرف", value: numberOfLetters, name: "lettersTab" },
   { title: "تواتر", name: "frequency" },
 ])
 const chartWindowHeight = computed(() => window.innerHeight - 260)

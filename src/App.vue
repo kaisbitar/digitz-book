@@ -22,7 +22,9 @@ onMounted(() => {
 @import "@/styles/styles.scss";
 html {
   font-size: 19px !important;
-  // overflow: hidden;
+}
+body {
+  overflow: hidden;
 }
 .v-application,
 .v-overlay-container,
@@ -50,10 +52,13 @@ th {
   font-weight: 200;
 }
 
+.tableStyle tr {
+  background: rgb(var(--v-theme-second-background));
+}
+
 .tableStyle td {
   border: none !important;
 }
-
 // .tableStyle table {
 //   border-collapse: collapse;
 //   width: 100%;
