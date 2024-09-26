@@ -40,7 +40,7 @@ const indexHeaders = ref([
   { title: "الآيات", key: "numberOfVerses" },
   { title: "كلمات", key: "numberOfWords" },
   { title: "حروف", key: "numberOfLetters" },
-  { title: "مصحف", key: "verseNumberToQuran" },
+  { title: "مصحف", key: "verseNumberToQuran", width: 2000 },
 ])
 const targetedIndex = computed(() => {
   return store.getTarget.fileName

@@ -1,16 +1,13 @@
 <template>
-  <Research
-    :chipsTitle="inputText"
-    :chipsData="research"
-    :selectedChipIndex="selectedChipIndex"
-    @chipClicked="handleClickedChip"
-    @chipRemoved="handleRemovedChip"
-    @chipRemoveAll="handleResearchReset"
-    closable
+  <Research :chipsTitle="inputText" :chipsData="research" />
+  <AppInputField
+    :fieldInput="search"
+    :fieldPlaceHolder="inputText"
+    @update:fieldInput="updateSearchValue"
   />
   <TableVerses
     :verses="searchData"
-    :versesInputText="inputText"
+    :versesInputText="search"
     @verseSelected="runSelectedSura"
   />
   <SearchSuraDialog v-model="showSuraText" :searchData="dialogData" />
@@ -20,6 +17,8 @@
 import { ref, computed, onMounted } from "vue"
 import { useQuranStore } from "@/stores/app"
 import { useCounting } from "@/mixins/counting"
+import { useInputFiltering } from "@/mixins/inputFiltering"
+const { updateSearchValue, search } = useInputFiltering()
 
 const props = defineProps(["searchData", "inputText"])
 const store = useQuranStore()
@@ -52,21 +51,13 @@ const prepareDialogData = (data) => {
     versesCount: suraSearchVerses.length,
   }
 }
-
-const handleClickedChip = (index) => {
-  store.setSearchIndex(index)
-}
-
-const handleRemovedChip = (index) => {
-  store.setRemoveSearchItem(index)
-  store.setSearchIndex(index - 1)
-}
-
-const handleResearchReset = () => {
-  store.resetResearchResults()
-}
+watch(selectedChipIndex, () => {
+  console.log(props.inputText.value)
+  search.value = props.inputText
+})
 
 onMounted(() => {
+  search.value = props.inputText
   if (selectedChipIndex.value === -1) {
     store.setSearchIndex(0)
   }

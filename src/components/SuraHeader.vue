@@ -1,30 +1,50 @@
 <template>
-  <v-toolbar color="surface">
-    <h1 class="ml-10">{{ title }}</h1>
-    <v-tabs v-model="computedTab" bg-color="" align-tabs="center" grow>
-      <v-tab
-        v-for="(item, index) in tabs"
-        :key="index"
-        :value="item.name"
-        :title="item.title"
-        class="text-none"
-      >
-        {{ item.value }} {{ item.title }}
-      </v-tab>
-    </v-tabs>
-  </v-toolbar>
+  <v-row
+    class="d-flex flex-wrap align-center mb-4"
+    :class="breakpoint === 'mobile' ? 'flex-column' : ''"
+    justify="space-between"
+  >
+    <v-col
+      ><h1 :style="{ color: $vuetify.theme.currentTheme }">
+        {{ title }}
+      </h1>
+      <SearchCountHeader
+        :wordCount="numberOfWords"
+        :versesCount="numberOfVerses"
+    /></v-col>
+    <v-col>
+      <v-tabs v-model="computedTab" bg-color="" align-tabs="center" grow>
+        <v-tab
+          v-for="(item, index) in tabs"
+          :key="index"
+          :value="item.name"
+          :title="item.title"
+          class="text-none"
+          >{{ item.title }}
+        </v-tab>
+      </v-tabs>
+    </v-col>
+  </v-row>
 </template>
 
 <script setup>
 import { computed } from "vue"
 
-const props = defineProps(["tabs", "activeTab", "title"])
+const props = defineProps([
+  "tabs",
+  "activeTab",
+  "title",
+  "numberOfWords",
+  "numberOfVerses",
+])
 const emit = defineEmits(["tabChanged"])
-
 const computedTab = computed({
   get: () => props.activeTab,
   set: (newValue) => emit("tabChanged", newValue),
 })
+const breakpoint = computed(() =>
+  window.innerWidth < 600 ? "mobile" : "desktop"
+)
 </script>
 
 <style>

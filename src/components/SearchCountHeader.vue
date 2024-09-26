@@ -1,5 +1,4 @@
 <template>
-  "{{ searchQuery }}"
   <v-chip
     class="ml-1"
     :color="versesCount > 0 ? 'green' : 'red'"
@@ -14,9 +13,6 @@
 
 <script setup>
 const props = defineProps({
-  searchQuery: {
-    type: String,
-  },
   wordCount: {
     type: Number,
   },

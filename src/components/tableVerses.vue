@@ -6,7 +6,7 @@
     :tableInputText="versesInputText"
     :activeItemClass="'active-verse-table'"
     :scrollingContainerClass="'verses-container'"
-    :height="240"
+    :height="340"
     :activeItemKey="targetedIndex"
     :fieldPlaceHolder="versesInputText"
     @activateRowItem="handleVerseSelected"
@@ -32,23 +32,28 @@ const tableVersesHeaders = ref([
   {
     title: "السورة",
     key: "fileName",
+    width: "20px",
   },
   {
     title: "رقم",
     key: "verseIndex",
+    width: "20px",
   },
-  { title: "الآية", key: "verseText" },
+  { title: "الآية", key: "verseText", width: "1200px" },
   {
     title: "كلمات",
     key: "numberOfWords",
+    width: "20px",
   },
   {
     title: "حروف",
     key: "numberOfLetters",
+    width: "20px",
   },
   {
     title: "مصحف",
     key: "verseNumberToQuran",
+    width: "20px",
   },
 ])
 

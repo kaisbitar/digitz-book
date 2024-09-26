@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar class="" height="60" border flat>
+  <v-app-bar class="" height="40" border flat>
     <template v-slot:prepend>
       <v-toolbar-title>الكتاب المرقوم</v-toolbar-title>
       <v-app-bar-nav-icon
@@ -16,7 +16,7 @@
       />
     </template>
     <template v-slot:append>
-      <v-icon @click="handleNavigation('/')">mdi-home</v-icon>
+      <v-icon size="small" @click="handleNavigation('/')">mdi-home</v-icon>
       <AppDropMenu :components="[ThemeToggle]"> </AppDropMenu>
     </template>
   </v-app-bar>
@@ -65,5 +65,6 @@ watch(researchResults.value, (newValue) => {
 <style scoped>
 .v-toolbar-title {
   width: 163px;
+  margin-top: -7px;
 }
 </style>

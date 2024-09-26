@@ -2,7 +2,7 @@
   <v-app>
     <v-main>
       <AppHeader v-if="activeRoute !== 'home'" />
-      <v-navigation-drawer :width="drawerWidth" v-model="drawer" app right>
+      <v-navigation-drawer v-model="drawer" width="650" :scrim="false" right>
         <TableQuranIndex></TableQuranIndex>
       </v-navigation-drawer>
       <v-container>
@@ -30,11 +30,13 @@ const drawer = computed({
 })
 
 const handleLanding = () => {
-  if (activeRoute.value !== "sura") {
-    drawer.value = false
+  if (activeRoute.value === "sura") {
+    drawer.value = true
     return
   }
-  drawer.value = true
+  if (activeRoute.value === "search") {
+    drawer.value = false
+  }
 }
 
 watch(activeRoute, () => {
@@ -42,7 +44,7 @@ watch(activeRoute, () => {
 })
 
 onMounted(() => {
-  handleLanding()
+  // handleLanding()
 })
 </script>
 
@@ -53,9 +55,5 @@ onMounted(() => {
   display: flex;
   align-items: center;
   padding-bottom: 9px;
-}
-.v-navigation-drawer__content {
-  height: auto;
-  overflow: hidden !important;
 }
 </style>

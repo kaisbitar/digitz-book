@@ -24,9 +24,10 @@
 
     <template v-slot:prepend-item class="d-flex search-count-header mt-n2">
       <v-container
-        ><v-btn @click="handleNewSearch" variant="tonal">ابحث</v-btn>
+        ><v-btn @click="handleNewSearch" variant="tonal">ابحث</v-btn> "{{
+          search
+        }}"
         <SearchCountHeader
-          :searchQuery="search"
           :wordCount="computedWordCount"
           :versesCount="versesCount()"
       /></v-container>
@@ -80,7 +81,7 @@ const handleNewSearch = (value) => {
 onMounted(() => {})
 </script>
 
-<style>
+<style scoped>
 .search-count-header {
   z-index: 5;
   background: rgb(var(--v-theme-surface));

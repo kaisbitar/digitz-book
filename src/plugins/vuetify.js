@@ -23,6 +23,7 @@ export default createVuetify({
       light: {
         colors: {
           surface: "#f5f5f5",
+          "second-background": "#ededed",
           "input-background": "#ededed",
           highlight: "#ffff00",
           "on-highlight": "#000000",
@@ -34,6 +35,7 @@ export default createVuetify({
       dark: {
         colors: {
           surface: "#21212d",
+          "second-background": "#2b2b38",
           "on-surface": "#ccc",
           "input-background": "#313131",
           highlight: "#8c8c36",
