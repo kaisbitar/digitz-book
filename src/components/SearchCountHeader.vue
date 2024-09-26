@@ -1,28 +1,18 @@
 <template>
-  <v-container>
-    <v-btn v-if="searchQuery && wordCount" variant="tonal">ابحث</v-btn>
-    "{{ searchQuery }}"
-    <v-chip
-      :color="versesCount > 0 ? 'green' : 'red'"
-      class="ml-2"
-      variant="tonal"
-    >
-      {{ wordCount }} مرة
-    </v-chip>
-    <span class="text-caption">في</span>
-    <v-chip
-      color="info"
-      :color="versesCount > 0 ? 'green' : 'red'"
-      class="mr-2"
-    >
-      {{ versesCount }} آية</v-chip
-    >
-  </v-container>
+  "{{ searchQuery }}"
+  <v-chip
+    class="ml-1"
+    :color="versesCount > 0 ? 'green' : 'red'"
+    variant="tonal"
+  >
+    <span class="text-caption">{{ wordCount }} مرة</span>
+  </v-chip>
+  <v-chip color="info" :color="versesCount > 0 ? 'green' : 'red'">
+    <span class="text-caption">{{ versesCount }} آية</span>
+  </v-chip>
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from "vue"
-
 const props = defineProps({
   searchQuery: {
     type: String,

@@ -26,38 +26,29 @@ const emit = defineEmits(["verseSelected"])
 
 const tableVersesHeaders = ref([
   {
-    title: "تسلسل",
+    title: "",
     key: "index",
-    class: "brown lighten-5 black--text",
-    width: "50",
   },
   {
     title: "السورة",
     key: "fileName",
-    class: "brown lighten-5 black--text",
-    width: "110",
-    filterable: false,
   },
   {
     title: "رقم",
     key: "verseIndex",
-    class: "brown lighten-5 black--text",
   },
-  { title: "الآية", key: "verseText", class: "brown lighten-5 black--text" },
+  { title: "الآية", key: "verseText" },
   {
     title: "كلمات",
     key: "numberOfWords",
-    class: "brown lighten-5 black--text",
   },
   {
     title: "حروف",
     key: "numberOfLetters",
-    class: "brown lighten-5 black--text",
   },
   {
     title: "مصحف",
     key: "verseNumberToQuran",
-    class: "brown lighten-5 black--text",
   },
 ])
 

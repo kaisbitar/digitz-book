@@ -46,22 +46,19 @@ th {
 }
 
 .tableItem {
-  font-weight: 200;
-}
-
-.tableItem {
   cursor: pointer;
+  font-weight: 200;
 }
 
 .tableStyle td {
   border: none !important;
 }
 
-.tableStyle table {
-  border-collapse: collapse;
-  width: 100%;
-  background: rgb(var(--v-theme-highlight-color)) !important;
-}
+// .tableStyle table {
+//   border-collapse: collapse;
+//   width: 100%;
+//   background: rgb(var(--v-theme-highlight-color)) !important;
+// }
 
 .activeSuraItem,
 .active-verse-table,
@@ -84,7 +81,7 @@ th {
 }
 
 .not-selected {
-  opacity: 0.2 !important;
+  opacity: 0.4 !important;
 }
 .theme-text-color {
   color: rgb(var(--v-theme-on-surface)) !important;
