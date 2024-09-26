@@ -35,7 +35,7 @@ const props = defineProps(["isShowSuraDetail"])
 
 const indexData = computed(() => store.getQuranIndex)
 const indexHeaders = ref([
-  { title: "رقم", key: "suraIndex" },
+  { title: "رقم", key: "index" }, //Must be called index
   { title: "السورة", key: "fileName" },
   { title: "الآيات", key: "numberOfVerses" },
   { title: "كلمات", key: "numberOfWords" },

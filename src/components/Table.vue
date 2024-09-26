@@ -20,6 +20,7 @@
         :search="search"
         :activeItemKey="activeItemKey"
         :activeItemClass="props.activeItemClass"
+        :headerKeys="tableHeaders.map((header) => header.key)"
         @activateRowItem="$emit('activateRowItem', item)"
       />
     </template>
