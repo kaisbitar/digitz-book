@@ -10,6 +10,12 @@ import { setupLayouts } from "virtual:generated-layouts"
 
 const routes = [
   {
+    path: "/",
+    name: "home",
+    component: () => import("@/pages/Home"),
+  },
+  ,
+  {
     path: "/sura",
     name: "sura",
     component: () => import("@/pages/Sura"),

@@ -16,6 +16,7 @@
       />
     </template>
     <template v-slot:append>
+      <v-icon @click="handleNavigation('/')">mdi-home</v-icon>
       <AppDropMenu :components="[ThemeToggle]"> </AppDropMenu>
     </template>
   </v-app-bar>
