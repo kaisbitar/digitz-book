@@ -5,11 +5,13 @@
     @click="$emit('activateRowItem', item)"
   >
     <td>{{ computedIndex }}</td>
-    <td
-      v-for="(cellItem, key) in item"
-      :key="key"
-      v-html="highlight(cellItem, search)"
-    ></td>
+    <td v-for="(cellItem, key) in item" :key="key">
+      <span
+        v-if="String(key) !== 'index'"
+        :key="key"
+        v-html="highlight(cellItem, search)"
+      ></span>
+    </td>
   </tr>
 </template>
 

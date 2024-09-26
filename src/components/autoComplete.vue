@@ -22,14 +22,14 @@
 
     <template v-slot:selection> </template>
 
-    <template v-slot:prepend-item class="search-count-header mt-n2">
-      <SearchCountHeader
-        class="search-count-header mt-n2"
-        :searchQuery="search"
-        :wordCount="computedWordCount"
-        :versesCount="versesCount()"
-        @newSearch="handleNewSearch"
-      />
+    <template v-slot:prepend-item class="d-flex search-count-header mt-n2">
+      <v-container
+        ><v-btn @click="handleNewSearch" variant="tonal">ابحث</v-btn>
+        <SearchCountHeader
+          :searchQuery="search"
+          :wordCount="computedWordCount"
+          :versesCount="versesCount()"
+      /></v-container>
     </template>
 
     <template v-slot:item="{ item, props }">

@@ -1,5 +1,5 @@
 <template>
-  <SearchHeader
+  <Research
     :chipsTitle="inputText"
     :chipsData="research"
     :selectedChipIndex="selectedChipIndex"
@@ -20,7 +20,6 @@
 import { ref, computed, onMounted } from "vue"
 import { useQuranStore } from "@/stores/app"
 import { useCounting } from "@/mixins/counting"
-import SearchHeader from "./SearchHeader.vue"
 
 const props = defineProps(["searchData", "inputText"])
 const store = useQuranStore()
