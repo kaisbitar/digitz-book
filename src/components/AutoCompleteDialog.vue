@@ -2,7 +2,7 @@
   <v-dialog
     :modelValue="modelValue"
     @update:modelValue="$emit('update:modelValue', $event)"
-    @click.prevent:outside="handleClose"
+    @click:outside="handleClose"
     width="700"
     class="auto-complete-dialog"
     height="900"
@@ -10,13 +10,15 @@
   >
     <template v-slot:default="{ isActive }">
       <v-container>
-        <div class="closing-button">
-          <v-btn
-            variant="outlined"
-            size="small"
+        <div class="closing-button-autocomplete">
+          <v-chip
+            variant="flat"
+            color="red-darken-4"
+            class="text-black font-bold"
+            size="x-small"
             @click="$emit('update:modelValue', false), (isActive.value = false)"
-            >X
-          </v-btn>
+          >
+          </v-chip>
         </div>
         <AutoComplete />
       </v-container>
@@ -53,10 +55,11 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="scss">
-.closing-button {
+.closing-button-autocomplete {
   width: 44px;
   margin-right: auto;
   z-index: 52;
-  margin-left: 6px;
+  margin-left: -27px;
+  zoom: 0.7;
 }
 </style>

@@ -22,7 +22,7 @@ onMounted(() => {
 @import "@/styles/styles.scss";
 html {
   font-size: 19px !important;
-  overflow: hidden;
+  // overflow: hidden;
 }
 .v-application,
 .v-overlay-container,

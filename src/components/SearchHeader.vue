@@ -1,7 +1,17 @@
 <template>
   <v-row no-gutters align="center">
-    <v-col v-if="chipsTitle" cols="3">
+    <v-col v-if="chipsTitle" cols="2">
       <v-toolbar-title>"{{ chipsTitle }}"</v-toolbar-title>
+    </v-col>
+    <v-col class="theme-text-color ma-3" cols="4">
+      ذكرت:
+      <v-chip size="large" color="green"
+        >{{ chipsData[selectedChipIndex]?.wordCount }} مرة
+      </v-chip>
+      في:
+      <v-chip size="large" color="blue"
+        >{{ chipsData[selectedChipIndex]?.resultsCount }} آية
+      </v-chip>
     </v-col>
     <v-row align="center">
       <v-tooltip location="right" open>
@@ -16,7 +26,7 @@
             >mdi-delete</v-icon
           >
         </template>
-        <span>Remove all chips</span>
+        <span>حذف الكل</span>
       </v-tooltip>
       <v-chip-group
         :v-model="selectedChipIndex"
@@ -32,10 +42,10 @@
           :class="chipClasses(index)"
           :closable="closable"
           prepend-icon="mdi-magnify"
-          icon-size="x-small"
+          icon-size="large"
           @click:close="$emit('chipRemoved', index)"
         >
-          <span class="theme-text-color">{{ item }}</span>
+          <span class="theme-text-color">{{ item.inputText }}</span>
         </v-chip>
       </v-chip-group>
     </v-row>
@@ -47,7 +57,7 @@ import { computed } from "vue"
 
 const props = defineProps({
   chipsTitle: String,
-  chipsData: Array,
+  chipsData: Object,
   selectedChipIndex: Number,
   closable: {
     type: Boolean,

@@ -76,6 +76,7 @@ const handleNewSearch = (value) => {
   if (!search.value) return
   store.setSearchIndex(searchResults.value.length)
   store.setResearchResults({
+    wordCount: wordCount.value,
     resultsCount: autocompleteRef.value.filteredItems.length,
     inputText: search.value,
     result: autocompleteRef.value.filteredItems,

@@ -36,26 +36,22 @@ const tableVersesHeaders = ref([
     title: "رقم",
     key: "verseIndex",
     class: "brown lighten-5 black--text",
-    width: "80",
   },
   { title: "الآية", key: "verseText", class: "brown lighten-5 black--text" },
   {
     title: "كلمات",
     key: "numberOfWords",
     class: "brown lighten-5 black--text",
-    width: "85",
   },
   {
     title: "حروف",
     key: "numberOfLetters",
     class: "brown lighten-5 black--text",
-    width: "85",
   },
   {
     title: "مصحف",
     key: "verseNumberToQuran",
     class: "brown lighten-5 black--text",
-    width: "90",
   },
 ])
 

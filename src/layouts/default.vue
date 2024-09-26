@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-main>
-      <AppHeader v-if="activeRoute !== 'landing-page'" />
+      <AppHeader v-if="activeRoute !== 'home'" />
       <v-navigation-drawer :width="drawerWidth" v-model="drawer" app right>
         <v-icon
           :class="drawer ? 'selected' : 'not-selected'"

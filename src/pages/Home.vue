@@ -3,7 +3,9 @@
   <v-container class="justify-center fill-height">
     <div class="text-center d-flex">
       <v-col cols="6" class="d-flex flex-column align-center">
-        <v-icon @click="goToPage('sura')" size="100">mdi-book</v-icon>
+        <v-icon @click="goToPage('sura')" size="100"
+          >mdi-book-open-variant</v-icon
+        >
         <h2 class="text-lg theme-text-color">سور</h2>
       </v-col>
       <v-col cols="6" class="d-flex flex-column align-center">
