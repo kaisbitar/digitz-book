@@ -5,7 +5,7 @@
     @click="$emit('activateRowItem', item)"
   >
     <td>{{ computedIndex }}</td>
-    <template v-for="key in Object.keys(item)" :key="key">
+    <template v-for="key in headerKeys" :key="key">
       <td
         v-if="String(key) !== 'index'"
         v-html="highlight(item[key], search)"
@@ -26,6 +26,7 @@ const props = defineProps<{
   search?: string
   activeItemKey: string | number
   activeItemClass: string
+  headerKeys: string[] // Add headerKeys prop
 }>()
 const computedIndex = computed(() =>
   props.activeItemClass == "active-Quran-index" ? props.index : props.index + 1

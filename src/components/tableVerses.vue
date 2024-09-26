@@ -26,7 +26,7 @@ const emit = defineEmits(["verseSelected"])
 
 const tableVersesHeaders = ref([
   {
-    title: "",
+    title: "Index",
     key: "index",
   },
   {
