@@ -4,28 +4,31 @@
     :class="{ [activeItemClass]: isTargetedRow(item, index, activeItemKey) }"
     @click="$emit('activateRowItem', item)"
   >
+    <td>{{ computedIndex }}</td>
     <td
       v-for="(cellItem, key) in item"
       :key="key"
-      class="text-right"
       v-html="highlight(cellItem, search)"
     ></td>
   </tr>
 </template>
 
 <script setup lang="ts">
-import { defineProps } from "vue"
-import { useInputFiltering } from "../mixins/inputFiltering"
+import { defineProps, computed } from "vue"
+import { useInputFiltering } from "@/mixins/inputFiltering"
 
 const { highlight } = useInputFiltering()
 
 const props = defineProps<{
   item: any
-  index?: number
+  index: number
   search?: string
   activeItemKey: string | number
   activeItemClass: string
 }>()
+const computedIndex = computed(() =>
+  props.activeItemClass == "active-Quran-index" ? props.index : props.index + 1
+)
 
 const isTargetedRow = (item: any, index: number, id: string | number) => {
   if (id === undefined && index === 0) {

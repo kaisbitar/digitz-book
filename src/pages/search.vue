@@ -10,7 +10,7 @@ const store = useQuranStore()
 const selectedSearch = computed(() =>
   store.getResearchResults ? store.getSelectedSearch : {}
 )
-const selectedSearchData = computed(() => selectedSearch.value?.result || [])
+const selectedSearchData = computed(() => selectedSearch.value?.verses || [])
 
 const inputText = computed(() => selectedSearch.value?.inputText || "")
 
@@ -27,7 +27,6 @@ const searchData = computed(() =>
 
 onMounted(() => {
   store.setActiveRoute("search")
-  store.setIsDialog(false)
 })
 </script>
 

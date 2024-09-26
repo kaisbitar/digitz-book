@@ -23,9 +23,9 @@
 import { ref, computed, watch, defineProps } from "vue"
 import { useQuranStore } from "@/stores/app"
 import { useRouter } from "vue-router"
-import { useWindowMixin } from "../mixins/windowMixin"
-import { useInputFiltering } from "../mixins/inputFiltering"
-const { scrollToActiveItem } = useWindowMixin()
+import { useWindow } from "@/mixins/window"
+import { useInputFiltering } from "@/mixins/inputFiltering"
+const { scrollToActiveItem } = useWindow()
 const { updateSearchValue, search } = useInputFiltering()
 
 const router = useRouter()

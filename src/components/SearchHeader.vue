@@ -10,7 +10,7 @@
       </v-chip>
       في:
       <v-chip size="large" color="blue"
-        >{{ chipsData[selectedChipIndex]?.resultsCount }} آية
+        >{{ chipsData[selectedChipIndex]?.versesCount }} آية
       </v-chip>
     </v-col>
     <v-row align="center">
@@ -45,6 +45,7 @@
           icon-size="large"
           @click:close="$emit('chipRemoved', index)"
         >
+          <span class="chip-number">{{ index + 1 }}</span>
           <span class="theme-text-color">{{ item.inputText }}</span>
         </v-chip>
       </v-chip-group>

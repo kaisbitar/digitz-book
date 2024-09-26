@@ -1,7 +1,7 @@
 <template>
   <Table
     :tableType="'verses'"
-    :tableData="verses"
+    :tableData="versesWithIndex"
     :tableHeaders="tableVersesHeaders"
     :tableInputText="versesInputText"
     :activeItemClass="'active-verse-table'"
@@ -16,8 +16,8 @@
 <script setup>
 import { ref, computed, defineProps } from "vue"
 import { useQuranStore } from "@/stores/app"
-import { useWindowMixin } from "../mixins/windowMixin"
-const { scrollToActiveItem } = useWindowMixin()
+import { useWindow } from "@/mixins/window"
+const { scrollToActiveItem } = useWindow()
 
 const store = useQuranStore()
 
@@ -25,6 +25,12 @@ const props = defineProps(["verses", "isLoading", "versesInputText"])
 const emit = defineEmits(["verseSelected"])
 
 const tableVersesHeaders = ref([
+  {
+    title: "تسلسل",
+    key: "index",
+    class: "brown lighten-5 black--text",
+    width: "50",
+  },
   {
     title: "السورة",
     key: "fileName",
@@ -54,6 +60,13 @@ const tableVersesHeaders = ref([
     class: "brown lighten-5 black--text",
   },
 ])
+
+const versesWithIndex = computed(() => {
+  return props.verses.map((verse, index) => ({
+    ...verse,
+    index: index,
+  }))
+})
 
 const targetedIndex = computed(() => {
   return (

@@ -3,21 +3,9 @@
     <v-main>
       <AppHeader v-if="activeRoute !== 'home'" />
       <v-navigation-drawer :width="drawerWidth" v-model="drawer" app right>
-        <v-icon
-          :class="drawer ? 'selected' : 'not-selected'"
-          class=""
-          variant="tonal"
-          color="green"
-          size="small"
-          @click="drawer = !drawer"
-        >
-          mdi-details </v-icon
-        ><TableQuranIndex
-          @showDetailToggle="drawer = !drawer"
-          :showDetail="drawer"
-        ></TableQuranIndex>
+        <TableQuranIndex></TableQuranIndex>
       </v-navigation-drawer>
-      <v-container fluid>
+      <v-container>
         <router-view />
       </v-container>
     </v-main>
@@ -33,7 +21,6 @@ import { useRouter } from "vue-router"
 const store = useQuranStore()
 const router = useRouter()
 
-const isShowSuraDetail = ref(false)
 const drawerWidth = computed(() => (drawer.value ? 600 : 310))
 const activeRoute = computed(() => router.currentRoute.value.name)
 
@@ -43,7 +30,6 @@ const drawer = computed({
 })
 
 const handleLanding = () => {
-  console.log(activeRoute)
   if (activeRoute.value !== "sura") {
     drawer.value = false
     return
