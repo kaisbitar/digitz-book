@@ -1,7 +1,7 @@
 <template>
   <v-autocomplete
     v-model:search="search"
-    :items="storedItems"
+    :items="OneQuranFile"
     :menu-props="{ maxWidth: '100%', maxHeight: '500px' }"
     item-value="verseNumberToQuran"
     item-title="verseText"
@@ -26,8 +26,8 @@
       <SearchCountHeader
         class="search-count-header mt-n2"
         :searchQuery="search"
-        :wordCount="wordCount"
-        :resultsCount="resultsCount()"
+        :wordCount="computedWordCount"
+        :versesCount="versesCount()"
         @newSearch="handleNewSearch"
       />
     </template>
@@ -43,31 +43,24 @@
 <script setup>
 import { ref, computed, onMounted } from "vue"
 import { useQuranStore } from "@/stores/app"
+import { useCounting } from "@/mixins/counting"
 
 const store = useQuranStore()
-
 const search = ref(null)
+const { wordCount } = useCounting()
 const autocompleteRef = ref(null)
 
-const storedItems = computed(() => store.getOneQuranFile)
+const OneQuranFile = computed(() => store.getOneQuranFile)
 const searchResults = computed(() => store.getResearchResults)
 
-const wordCount = computed(() => {
-  if (!search.value || !autocompleteRef.value?.filteredItems) return 0
-  const searchString = search.value.trim()
-  let count = 0
-  autocompleteRef.value.filteredItems.forEach((item) => {
-    const text = item.raw.verseText
-    const regex = new RegExp(searchString, "gi")
-    const matches = text.match(regex)
-    if (matches) {
-      count += matches.length
-    }
-  })
-  return count
-})
-
-const resultsCount = () => {
+const computedWordCount = computed(() =>
+  wordCount(search.value, extractVersesFromFilter(autocompleteRef.value))
+)
+const extractVersesFromFilter = (data) => {
+  if (!data?.filteredItems) return []
+  return data.filteredItems.map((item) => item.raw)
+}
+const versesCount = () => {
   if (!autocompleteRef.value) return
   return autocompleteRef.value.filteredItems.length
 }
@@ -76,10 +69,10 @@ const handleNewSearch = (value) => {
   if (!search.value) return
   store.setSearchIndex(searchResults.value.length)
   store.setResearchResults({
-    wordCount: wordCount.value,
-    resultsCount: autocompleteRef.value.filteredItems.length,
+    wordCount: computedWordCount.value,
+    versesCount: versesCount(),
     inputText: search.value,
-    result: autocompleteRef.value.filteredItems,
+    verses: autocompleteRef.value.filteredItems,
   })
   search.value = ""
 }

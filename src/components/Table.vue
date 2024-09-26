@@ -12,10 +12,11 @@
     items-per-page="-1"
     hide-default-footer
   >
-    <template v-slot:item="{ item }">
+    <template v-slot:item="{ item, index }">
       <TableRow
         class="tableItem"
         :item="item"
+        :index="index"
         :search="search"
         :activeItemKey="activeItemKey"
         :activeItemClass="props.activeItemClass"
@@ -27,8 +28,8 @@
 
 <script setup lang="ts">
 import { ref, watch, onMounted, defineEmits, onBeforeUnmount } from "vue"
-import { useWindowMixin } from "../mixins/windowMixin"
-import { useInputFiltering } from "../mixins/inputFiltering"
+import { useWindow } from "@/mixins/window"
+import { useInputFiltering } from "@/mixins/inputFiltering"
 
 interface TableItem {
   [key: string]: any
@@ -47,7 +48,7 @@ const props = defineProps<{
 }>()
 
 const { search } = useInputFiltering()
-const { updateTableHeight, dynamicTableHeight } = useWindowMixin()
+const { updateTableHeight, dynamicTableHeight } = useWindow()
 
 const emit = defineEmits<{
   (e: "activateRowItem", item: TableItem): void
@@ -74,7 +75,7 @@ onMounted(() => {
 }
 .v-table__wrapper {
   width: auto;
-  overflow-x: hidden !important;
+  /* overflow-x: hidden !important; */
 }
 .v-table--fixed-height > .v-table__wrapper {
   overflow-y: auto;

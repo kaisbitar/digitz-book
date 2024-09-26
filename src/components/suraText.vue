@@ -23,10 +23,10 @@
 <script setup>
 import { ref, computed, watch, onMounted } from "vue"
 import { useQuranStore } from "@/stores/app"
-import { useWindowMixin } from "../mixins/windowMixin"
+import { useWindow } from "@/mixins/window"
 import { useGoTo } from "vuetify"
 
-const { scrollToActiveItem } = useWindowMixin()
+const { scrollToActiveItem } = useWindow()
 
 const props = defineProps(["inputText", "suraTextArray"])
 

@@ -16,29 +16,20 @@
 </template>
 
 <script setup>
-import { useTheme } from 'vuetify'
-import { ref, watch } from 'vue'
+import { useTheme } from "vuetify"
+import { ref, watch } from "vue"
 
 const theme = useTheme()
 
 const isDark = ref(theme.global.current.value.dark)
 
 const toggleTheme = () => {
-  theme.global.name.value = isDark.value ? 'dark' : 'light'
+  theme.global.name.value = isDark.value ? "dark" : "light"
 }
 
-watch(isDark, newValue => {
+watch(isDark, (newValue) => {
   toggleTheme()
 })
 </script>
 
-<style scoped>
-/* .theme-switch {
-  margin-left: 15px;
-} */
-
-/* You might need to adjust the switch size to accommodate larger icons */
-.theme-switch :deep(.v-switch__thumb) {
-  transform: scale(0.7);
-}
-</style>
+<style scoped></style>

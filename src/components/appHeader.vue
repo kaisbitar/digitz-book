@@ -66,10 +66,4 @@ watch(researchResults.value, (newValue) => {
 .v-toolbar-title {
   width: 163px;
 }
-/* .max-width-auto-complete {
-  min-width: 611px;
-  max-width: 911px;
-  margin-left: auto;
-  width: fit-content;
-} */
 </style>

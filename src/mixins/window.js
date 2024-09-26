@@ -2,7 +2,7 @@ import { computed, nextTick } from "vue"
 import { useQuranStore } from "@/stores/app"
 import { useGoTo } from "vuetify"
 
-export function useWindowMixin(props) {
+export function useWindow(props) {
   const store = useQuranStore()
   const goTo = useGoTo()
 

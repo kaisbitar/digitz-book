@@ -2,64 +2,56 @@
   <SearchHeader
     :chipsTitle="inputText"
     :chipsData="research"
-    :selectedChipIndex="selectedSearchIndex"
+    :selectedChipIndex="selectedChipIndex"
     @chipClicked="handleClickedChip"
     @chipRemoved="handleRemovedChip"
     @chipRemoveAll="handleResearchReset"
     closable
   />
   <TableVerses
-    class="web-kit-width"
     :verses="searchData"
     :versesInputText="inputText"
     @verseSelected="runSelectedSura"
   />
-  <SearchSuraDialog
-    v-model="showSuraText"
-    :searchData="research[selectedSearchIndex]"
-  />
+  <SearchSuraDialog v-model="showSuraText" :searchData="dialogData" />
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from "vue"
 import { useQuranStore } from "@/stores/app"
-import Sura from "@/pages/Sura.vue"
+import { useCounting } from "@/mixins/counting"
 import SearchHeader from "./SearchHeader.vue"
 
-const props = defineProps(["searchData", "inputText", "suraInputText"])
+const props = defineProps(["searchData", "inputText"])
 const store = useQuranStore()
+const { wordCount } = useCounting()
 
-const suraTextArray = ref([])
 const showSuraText = ref(false)
+const dialogData = ref({})
 
-const oneQuranFile = computed(() => store.getOneQuranFile)
 const research = computed(() => store.getResearchResults)
+const selectedChipIndex = computed(() => store.getSelectedSearchIndex)
+const tagetedSura = computed(() => store.getTarget)
 
-const selectedSearchIndex = computed(() => store.getSelectedSearchIndex)
+const runSelectedSura = () => {
+  dialogData.value = prepareDialogData(
+    research.value[selectedChipIndex.value].verses
+  )
+  showSuraText.value = true
+}
 
-// const componentsToRender = computed(() => {
-//   return [
-//     {
-//       component: SearchHeader,
-//       props: {
-//         chipsData: [props.inputText],
-//         deletable: false,
-//         selectedChipIndex: 0,
-//       },
-//     },
-//     { component: Sura, props: { suraInputText: props.inputText } },
-//   ]
-// })
-
-const runSelectedSura = (verse) => {
-  const fileName = verse.fileName
-  suraTextArray.value = []
-  oneQuranFile.value.forEach((item) => {
-    if (item.fileName === fileName) {
-      suraTextArray.value.push(item.verseText)
+const prepareDialogData = (data) => {
+  let suraSearchVerses = []
+  data.forEach((element) => {
+    if (element.raw.fileName === tagetedSura.value.fileName) {
+      suraSearchVerses.push(element.raw)
     }
   })
-  showSuraText.value = true
+  return {
+    inputText: props.inputText,
+    wordCount: wordCount(props.inputText, suraSearchVerses),
+    versesCount: suraSearchVerses.length,
+  }
 }
 
 const handleClickedChip = (index) => {
@@ -67,12 +59,8 @@ const handleClickedChip = (index) => {
 }
 
 const handleRemovedChip = (index) => {
-  if (index !== selectedSearchIndex.value) {
-    store.setSearchIndex(Math.max(selectedSearchIndex.value - 1, 0))
-  } else {
-    store.setRemoveSearchItem(index)
-    store.setSearchIndex(Math.max(index - 1, 0))
-  }
+  store.setRemoveSearchItem(index)
+  store.setSearchIndex(index - 1)
 }
 
 const handleResearchReset = () => {
@@ -80,7 +68,7 @@ const handleResearchReset = () => {
 }
 
 onMounted(() => {
-  if (selectedSearchIndex.value === -1) {
+  if (selectedChipIndex.value === -1) {
     store.setSearchIndex(0)
   }
 })
