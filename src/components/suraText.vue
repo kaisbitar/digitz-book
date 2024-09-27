@@ -4,7 +4,9 @@
       v-for="(verse, index) in suraTextArray"
       :key="index"
       @click="setTargetedVerse(verse, index + 1)"
-      :class="{ 'active-verse': isTargetedVerse(index) }"
+      :class="{
+        'active-verse': isTargetedVerse(index),
+      }"
     >
       <span :id="`v${index + 1}`" class="verse-content">
         <span
@@ -13,7 +15,7 @@
         >
           {{ index + 1 }}
         </span>
-        <span v-if="inputText" v-html="highlightVerseText(verse, inputText)" />
+        <span v-if="inputText" v-html="highlight(verse, inputText)" />
         <span v-else>{{ verse }}</span>
       </span>
     </span>
@@ -32,6 +34,8 @@ const props = defineProps(["inputText", "suraTextArray"])
 
 const store = useQuranStore()
 const goTo = useGoTo()
+import { useInputFiltering } from "@/mixins/inputFiltering"
+const { search, highlight } = useInputFiltering()
 
 const suraTargetedVerseIndex = computed(() => store.getTarget?.verseIndex)
 const isTargetedVerse = computed(
@@ -62,11 +66,13 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import "@/styles/styles.scss";
+
 .sura-text-container {
   display: block;
-  line-height: 2.5;
-  max-height: 79vh;
+  line-height: 2;
+  max-height: 68vh;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -77,26 +83,27 @@ onMounted(() => {
 }
 
 .num-chip {
-  /* background: rgb(var(--v-theme-on-highlight)); */
+  background: rgb(var(--v-theme-verse-number-chip));
   margin: 0 6px;
   padding: 2px 6px;
   border-radius: 12px;
-  font-size: 0.8em;
-}
-
-.targeted-verse {
-  color: rgb(var(--v-theme-on-active-row));
-  background: rgb(var(--v-theme-active-row));
-  font-weight: 300;
-}
-
-.targeted-verse .num-chip {
-  color: rgb(var(--v-theme-on-active-row));
+  font-size: 0.9em;
+  color: rgb(var(--v-theme-on-verse-number-chip));
+  font-weight: 600;
+  border: 1px solid #000;
 }
 
 .active-chip {
   background: rgb(var(--v-theme-on-active-row));
   color: rgb(var(--v-theme-active-row));
+  border: 3px solid #131313d9;
+}
+.active-verse .verse-content {
+  padding: 8px 4px 9px 8px;
+  border-radius: 4px;
+  background: rgb(var(--v-theme-active-row));
+  border: 1px solid #131313d9;
+  font-weight: 700;
 }
 
 @media (max-width: 655px) {

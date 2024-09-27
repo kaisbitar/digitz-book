@@ -22,14 +22,16 @@ export default createVuetify({
       // Use 'surface' for app background color,
       light: {
         colors: {
-          surface: "#f5f5f5",
-          "second-background": "#ededed",
-          "input-background": "#ededed",
+          surface: "#ededed",
+          "second-background": "#f5f5f5",
+          "input-background": "#fff",
           highlight: "#ffff00",
           "on-highlight": "#000000",
           "active-row": "#e0e0e0",
           "on-active-row": "#000",
           "hover-color": "#f7f7f7",
+          "verse-number-chip": "#7B7B7B",
+          "on-verse-number-chip": "#7B7B7B",
         },
       },
       dark: {
@@ -41,8 +43,10 @@ export default createVuetify({
           highlight: "#8c8c36",
           "on-highlight": "#000000",
           "active-row": "#514f4f",
-          "on-active-row": "#fff",
+          "on-active-row": "#d4cfcf",
           "hover-color": "#3f3e3e",
+          "verse-number-chip": "#bdbcbc",
+          "on-verse-number-chip": "#000000",
         },
       },
       // testing: {

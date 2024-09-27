@@ -59,6 +59,10 @@ th {
 .tableStyle td {
   border: none !important;
 }
+
+.sura-text-container {
+  background: rgb(var(--v-theme-second-background));
+}
 // .tableStyle table {
 //   border-collapse: collapse;
 //   width: 100%;
@@ -71,7 +75,7 @@ th {
 .active-Quran-index {
   color: rgb(var(--v-theme-on-active-row)) !important;
   background: rgb(var(--v-theme-active-row)) !important;
-  font-weight: 300 !important;
+  font-weight: 700;
 }
 
 .v-input__control {

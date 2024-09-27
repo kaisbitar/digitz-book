@@ -5,11 +5,10 @@
       <v-navigation-drawer v-model="drawer" width="650" :scrim="false" right>
         <TableQuranIndex></TableQuranIndex>
       </v-navigation-drawer>
-      <v-container>
+      <v-container class="pb-0">
         <router-view />
       </v-container>
     </v-main>
-    <v-footer border></v-footer>
   </v-app>
 </template>
 
