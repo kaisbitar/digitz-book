@@ -1,16 +1,16 @@
 // stores/store.js
-import { defineStore } from 'pinia'
+import { defineStore } from "pinia"
 import {
   fetchSuraDetails,
   fetchOneQuranFile,
   fetchtableQuranIndex,
   fetchAllVersesWithTashkeel,
-} from '../api/api.js'
+} from "../api/api.js"
 
-export const useQuranStore = defineStore('Quran', {
+export const useQuranStore = defineStore("Quran", {
   state: () => ({
     target: {
-      fileName: '001الفاتحة',
+      fileName: "001الفاتحة",
       verseIndex: 1,
     },
     researchResults: [],
@@ -21,64 +21,71 @@ export const useQuranStore = defineStore('Quran', {
     suras: {},
     scrollTrigger: false,
     drawerState: true,
-    activeSuraTab: 'numberOfVerses',
-    activeRoute:'search',
-    chartFreqType: 'words',
+    activeSuraTab: "numberOfVerses",
+    activeRoute: "search",
+    chartFreqType: "words",
     allVersesWithTashkeel: [],
-    isDialog: false
+    isDialog: false,
+    fontSize: "19px",
   }),
   persist: {
     enabled: true,
     strategies: [
       {
-        key: 'Quran-store',
+        key: "Quran-store",
         storage: localStorage,
       },
     ],
   },
   getters: {
-    getIsDialog: state => {
+    getFontSize: (state) => {
+      return state.fontSize
+    },
+    getIsDialog: (state) => {
       return state.isDialog
     },
-    getTarget: state => {
+    getTarget: (state) => {
       return state.target
     },
-    getResearchResults: state => {
+    getResearchResults: (state) => {
       return state.researchResults
     },
-    getSelectedSearchIndex: state => {
+    getSelectedSearchIndex: (state) => {
       return state.selectedSearchIndex
     },
-    getOneQuranFile: state => {
+    getOneQuranFile: (state) => {
       return state.oneQuranFile
     },
-    getQuranIndex: state => {
+    getQuranIndex: (state) => {
       return state.QuranIndex
     },
-    getScrollTrigger: state => {
+    getScrollTrigger: (state) => {
       return state.scrollTrigger
     },
-    getDrawerState: state => {
+    getDrawerState: (state) => {
       return state.drawerState
     },
 
-    getActiveSuraTab: state => {
+    getActiveSuraTab: (state) => {
       return state.activeSuraTab
     },
-    getActiveRoute: state => {
+    getActiveRoute: (state) => {
       return state.activeRoute
     },
-    getChartFreqType: state => {
+    getChartFreqType: (state) => {
       return state.chartFreqType
     },
-    getSelectedSearch: state => {
+    getSelectedSearch: (state) => {
       return state.researchResults[state.selectedSearchIndex]
     },
-    getAllVersesWithTashkeel: state => {
+    getAllVersesWithTashkeel: (state) => {
       return state.allVersesWithTashkeel
     },
   },
   actions: {
+    setFontSize(state) {
+      this.fontSize = state
+    },
     setIsDialog(isDialog) {
       this.isDialog = isDialog
     },
@@ -103,7 +110,7 @@ export const useQuranStore = defineStore('Quran', {
       }
     },
     resetTarget() {
-      this.target = { fileName: '001الفاتحة', verseIndex: null }
+      this.target = { fileName: "001الفاتحة", verseIndex: null }
     },
     setSearchIndex(index) {
       this.selectedSearchIndex = index
@@ -137,7 +144,8 @@ export const useQuranStore = defineStore('Quran', {
       this.suras[this.target.fileName].suraDetails = suraDetails.suraDetails
     },
     setSuraChartData(suraChartData) {
-      this.suras[this.target.fileName].suraChartData = suraChartData.suraChartData
+      this.suras[this.target.fileName].suraChartData =
+        suraChartData.suraChartData
     },
 
     // API Fetching Actions

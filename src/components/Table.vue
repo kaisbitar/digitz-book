@@ -14,7 +14,7 @@
   >
     <template v-slot:item="{ item, index }">
       <TableRow
-        class="tableItem"
+        class="tableItem v-border"
         :item="item"
         :index="index"
         :search="search"
@@ -23,6 +23,16 @@
         :headerKeys="tableHeaders.map((header) => header.key)"
         @activateRowItem="$emit('activateRowItem', item)"
       />
+      <!-- <TableRowMobile
+        class="tableItem v-border"
+        :item="item"
+        :index="index"
+        :search="search"
+        :activeItemKey="activeItemKey"
+        :activeItemClass="props.activeItemClass"
+        :headerKeys="tableHeaders.map((header) => header.key)"
+        @activateRowItem="$emit('activateRowItem', item)"
+      /> -->
     </template>
   </v-data-table>
 </template>
@@ -49,8 +59,7 @@ const props = defineProps<{
 }>()
 
 const { search } = useInputFiltering()
-const { updateTableHeight, dynamicTableHeight } = useWindow()
-
+const { updateTableHeight, dynamicTableHeight, breakpoint } = useWindow()
 const emit = defineEmits<{
   (e: "activateRowItem", item: TableItem): void
 }>()

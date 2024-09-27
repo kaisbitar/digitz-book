@@ -1,7 +1,7 @@
 <template>
   <Table
     :tableType="'verses'"
-    :tableData="versesWithIndex"
+    :tableData="verses"
     :tableHeaders="tableVersesHeaders"
     :tableInputText="versesInputText"
     :activeItemClass="'active-verse-table'"
@@ -11,6 +11,16 @@
     :fieldPlaceHolder="versesInputText"
     @activateRowItem="handleVerseSelected"
   />
+  <!-- <TableRowMobile
+    class="tableItem v-border"
+    :item="item"
+    :index="index"
+    :search="search"
+    :activeItemKey="activeItemKey"
+    :activeItemClass="props.activeItemClass"
+    :headerKeys="tableHeaders.map((header) => header.key)"
+    @activateRowItem="$emit('activateRowItem', item)"
+  /> -->
 </template>
 
 <script setup>
