@@ -1,23 +1,4 @@
-<template>
-  <div class="table-mobile-view tableStyle">
-    <v-list
-      ><v-list-item
-        v-model="selectedItem"
-        v-for="(item, index) in data"
-        :key="index"
-        :active="isTargetedRow(item.verseNumberToQuran)"
-        @click="selectItem(item)"
-        :active-class="activeItemClass"
-      >
-        <VerseDropMenu
-          :item="item"
-          :textToHighlight="tableInputText"
-          class="tableItem"
-        />
-      </v-list-item>
-    </v-list>
-  </div>
-</template>
+<template></template>
 
 <script setup lang="ts">
 import { defineProps, computed, watch, onMounted, defineEmits } from "vue"

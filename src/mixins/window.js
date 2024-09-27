@@ -1,16 +1,16 @@
 import { computed, nextTick } from "vue"
 import { useQuranStore } from "@/stores/app"
 import { useGoTo } from "vuetify"
+import { he } from "vuetify/locale"
 
 export function useWindow(props) {
   const store = useQuranStore()
   const goTo = useGoTo()
 
   const windowHeight = computed(() => window.innerHeight)
-
   const dynamicTableHeight = ref(0)
-  const updateTableHeight = async (height) => {
-    await nextTick()
+
+  const updateTableHeight = (height) => {
     dynamicTableHeight.value = window.innerHeight - height
   }
 
@@ -41,9 +41,19 @@ export function useWindow(props) {
     const isDialog = store.getIsDialog
     await scrollToItem(activeItem, container, isDialog)
   }
-  const breakpoint = computed(() =>
-    window.innerWidth < 600 ? "mobile" : "desktop"
-  )
+
+  const breakpoint = ref(window.innerWidth < 900 ? "mobile" : "desktop")
+  const currentBreakpoint = computed(() => breakpoint.value)
+
+  const updateBreakpoint = () => {
+    breakpoint.value = window.innerWidth < 900 ? "mobile" : "desktop"
+  }
+
+  window.addEventListener("resize", updateBreakpoint, updateTableHeight)
+
+  onBeforeUnmount(() => {
+    window.removeEventListener("resize", updateBreakpoint, updateTableHeight)
+  })
 
   return {
     windowHeight,
@@ -51,6 +61,6 @@ export function useWindow(props) {
     dynamicTableHeight,
     scrollToActiveItem,
     scrollNoDialog,
-    breakpoint,
+    currentBreakpoint,
   }
 }

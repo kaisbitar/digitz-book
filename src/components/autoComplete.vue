@@ -34,9 +34,11 @@
     </template>
 
     <template v-slot:item="{ item, props }">
-      <div v-bind="props">
-        <VerseDropMenu :item="item.raw" :textToHighlight="search" />
-      </div>
+      <v-list v-bind="props">
+        <v-list-item @click="handleNewSearch">
+          <VerseDropMenu :item="item.raw" :textToHighlight="search" />
+        </v-list-item>
+      </v-list>
     </template>
   </v-autocomplete>
 </template>

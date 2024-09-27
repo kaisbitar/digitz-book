@@ -4,20 +4,18 @@
     :options="{ threshold: 0.5 }"
     transition="fade-transition"
   >
-    <v-container class="pb-0">
-      <div class="d-flex">
-        <v-chip class="verseNumChip" size="small" variant="text">
-          {{ item.verseIndex }}</v-chip
-        >
-        <div>
-          <div class="text-blue mb-n1">{{ item.fileName }}</div>
-          <div v-html="highlight(item.verseText, textToHighlight)"></div>
-          <div class="mt-n1 text-caption text-grey">
-            ترتيب في المصحف {{ item.verseNumberToQuran }}
-          </div>
+    <div class="d-flex">
+      <div>
+        <div class="text-blue mb-n1">{{ item.fileName }}</div>
+        <div v-html="highlight(item.verseText, textToHighlight)"></div>
+        <div class="mt-n1 text-caption text-grey">
+          <span class="ml-7">رقم: {{ item.verseIndex }}</span>
+          <span class="ml-7">كلمة: {{ item.numberOfWords }} </span>
+          <span class="ml-7">حرف: {{ item.numberOfLetters }} </span>
+          <span class="ml-7">مصحف: {{ item.verseNumberToQuran }}</span>
         </div>
       </div>
-    </v-container>
+    </div>
   </v-lazy>
 </template>
 
@@ -33,16 +31,4 @@ const handleClick = () => {
 }
 </script>
 
-<style>
-.verseNumChip {
-  /* width: 53px; */
-  height: 28px;
-  background-color: rgb(var(--v-theme-input-background));
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  /* margin-right: -10px; */
-  margin-left: 18px;
-  margin-top: 26px;
-}
-</style>
+<style></style>

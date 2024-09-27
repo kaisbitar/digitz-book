@@ -22,7 +22,6 @@
     v-if="activeTab === 'versesTab'"
     :verses="versesBasics"
     :versesInputText="search"
-    :fieldPlaceHolder="fileName"
     @verseSelected="handleVerseSelected"
   />
   <SuraFrequency

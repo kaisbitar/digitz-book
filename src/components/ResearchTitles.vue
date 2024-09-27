@@ -1,6 +1,7 @@
 <template>
   <v-chip-group
-    :v-model="selectedChipIndex"
+    column
+    v-model="selectedItem"
     mandatory
     show-arrows
     color="primary"
@@ -22,10 +23,10 @@
       v-for="(item, index) in research"
       :key="index"
       :class="chipClasses(index)"
-      icon-size="large"
+      icon-size="x-small"
       closable
       @click="handleClickedChip(index)"
-      @click:close="handleRemovedChip"
+      @click:close="handleRemovedChip(index)"
     >
       <v-chip size="x-small" class="theme-text-color mr-n1 ml-1">{{
         item.wordCount
@@ -63,6 +64,11 @@ const handleRemovedChip = (index) => {
 const handleResearchReset = () => {
   store.resetResearchResults()
 }
+
+const selectedItem = ref(null)
+onMounted(() => {
+  selectedItem.value = props.selectedChipIndex
+})
 </script>
 
 <style scoped>

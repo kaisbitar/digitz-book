@@ -14,7 +14,7 @@
   >
     <template v-slot:item="{ item, index }">
       <TableRow
-        class="tableItem v-border"
+        class="tableItem"
         :item="item"
         :index="index"
         :search="search"
@@ -23,16 +23,6 @@
         :headerKeys="tableHeaders.map((header) => header.key)"
         @activateRowItem="$emit('activateRowItem', item)"
       />
-      <!-- <TableRowMobile
-        class="tableItem v-border"
-        :item="item"
-        :index="index"
-        :search="search"
-        :activeItemKey="activeItemKey"
-        :activeItemClass="props.activeItemClass"
-        :headerKeys="tableHeaders.map((header) => header.key)"
-        @activateRowItem="$emit('activateRowItem', item)"
-      /> -->
     </template>
   </v-data-table>
 </template>
@@ -59,7 +49,7 @@ const props = defineProps<{
 }>()
 
 const { search } = useInputFiltering()
-const { updateTableHeight, dynamicTableHeight, breakpoint } = useWindow()
+const { updateTableHeight, dynamicTableHeight } = useWindow()
 const emit = defineEmits<{
   (e: "activateRowItem", item: TableItem): void
 }>()
@@ -71,10 +61,17 @@ watch(
   }
 )
 
+watch(
+  () => props.tableInputText,
+  (newValue) => {
+    search.value = newValue
+  }
+)
+
 onMounted(() => {
+  // window.addEventListener("resize", () => updateTableHeight(props.height))
   search.value = props.tableInputText
   updateTableHeight(props.height)
-  window.addEventListener("resize", updateTableHeight)
 })
 </script>
 

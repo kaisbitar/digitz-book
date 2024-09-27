@@ -1,9 +1,5 @@
 <template>
-  <v-row
-    class="d-flex flex-wrap align-center mb-4"
-    :class="breakpoint === 'mobile' ? 'flex-column' : ''"
-    justify="space-between"
-  >
+  <v-row class="mb-4">
     <v-col>
       <h1>{{ chipsTitle }}</h1>
       <SearchCountHeader
@@ -16,7 +12,7 @@
 </template>
 
 <script setup>
-import { computed } from "vue"
+import { computed, onMounted } from "vue"
 import { useQuranStore } from "@/stores/app"
 
 const store = useQuranStore()
