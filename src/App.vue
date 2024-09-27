@@ -12,16 +12,24 @@ const store = useQuranStore()
 const getTheData = async () => {
   await store.getQuranData()
 }
+const dynamicFontSize = computed(() => store.getFontSize)
 
 onMounted(() => {
   getTheData()
+  document.documentElement.style.setProperty(
+    "--dynamic-font-size",
+    dynamicFontSize.value
+  )
+  document.documentElement.style.setProperty("font-size", dynamicFontSize.value)
 })
 </script>
 
 <style lang="scss">
 @import "@/styles/styles.scss";
 html {
-  font-size: 19px !important;
+  font-size: var(--font-size);
+
+  // font-size: 19px !important;
 }
 body {
   overflow: hidden;
@@ -43,8 +51,7 @@ body {
 }
 
 th {
-  padding-top: 2px !important;
-  height: 25px !important;
+  height: 5px !important;
 }
 
 .tableItem {
@@ -54,6 +61,11 @@ th {
 
 .tableStyle tr {
   background: rgb(var(--v-theme-second-background));
+}
+tr.tableItem.active-verse-table.tableItem.v-border td {
+  //
+  // border-bottom: 2px solid rgb(var(--v-theme-on-active-row));
+  // border-top: 2px solid rgb(var(--v-theme-on-active-row));
 }
 
 .tableStyle td {

@@ -17,7 +17,7 @@
     </template>
     <template v-slot:append>
       <v-icon size="small" @click="handleNavigation('/')">mdi-home</v-icon>
-      <AppDropMenu :components="[ThemeToggle]"> </AppDropMenu>
+      <AppDropMenu :components="[ThemeToggle, AppZoom]"> </AppDropMenu>
     </template>
   </v-app-bar>
 </template>
@@ -25,6 +25,7 @@
 <script setup>
 import { useQuranStore } from "@/stores/app"
 import ThemeToggle from "./themeToggle.vue"
+import AppZoom from "./AppZoom.vue"
 import { useRouter } from "vue-router"
 
 const store = useQuranStore()

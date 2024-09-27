@@ -1,10 +1,10 @@
 import axios from "axios"
 
 export function fetchOneQuranFile(appApi) {
-  return getData(appApi + "api/Quran-model")
+  return getData(appApi + "api/quran-model")
 }
 export function fetchtableQuranIndex(appApi) {
-  return getData(appApi + "api/Quran-index")
+  return getData(appApi + "api/quran-index")
 }
 export function fetchAllVersesWithTashkeel(appApi) {
   return getData(appApi + "api/with-tashkeel")

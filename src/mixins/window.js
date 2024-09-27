@@ -41,6 +41,9 @@ export function useWindow(props) {
     const isDialog = store.getIsDialog
     await scrollToItem(activeItem, container, isDialog)
   }
+  const breakpoint = computed(() =>
+    window.innerWidth < 600 ? "mobile" : "desktop"
+  )
 
   return {
     windowHeight,
@@ -48,5 +51,6 @@ export function useWindow(props) {
     dynamicTableHeight,
     scrollToActiveItem,
     scrollNoDialog,
+    breakpoint,
   }
 }
