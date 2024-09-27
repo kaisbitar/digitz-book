@@ -28,15 +28,14 @@ onMounted(() => {
 @import "@/styles/styles.scss";
 html {
   font-size: var(--font-size);
-
-  // font-size: 19px !important;
 }
 body {
   overflow: hidden;
 }
 .v-application,
 .v-overlay-container,
-.v-tab {
+.v-tab,
+.text-caption {
   // font-family: $body-font-family !important;
   font-family: system-ui !important;
   font-family: unset;
@@ -56,16 +55,10 @@ th {
 
 .tableItem {
   cursor: pointer;
-  font-weight: 200;
 }
 
 .tableStyle tr {
   background: rgb(var(--v-theme-second-background));
-}
-tr.tableItem.active-verse-table.tableItem.v-border td {
-  //
-  // border-bottom: 2px solid rgb(var(--v-theme-on-active-row));
-  // border-top: 2px solid rgb(var(--v-theme-on-active-row));
 }
 
 .tableStyle td {
@@ -75,11 +68,9 @@ tr.tableItem.active-verse-table.tableItem.v-border td {
 .sura-text-container {
   background: rgb(var(--v-theme-second-background));
 }
-// .tableStyle table {
-//   border-collapse: collapse;
-//   width: 100%;
-//   background: rgb(var(--v-theme-highlight-color)) !important;
-// }
+.table-style-mobile .v-list-item {
+  background: rgb(var(--v-theme-second-background));
+}
 
 .activeSuraItem,
 .active-verse-table,
@@ -87,7 +78,7 @@ tr.tableItem.active-verse-table.tableItem.v-border td {
 .active-Quran-index {
   color: rgb(var(--v-theme-on-active-row)) !important;
   background: rgb(var(--v-theme-active-row)) !important;
-  font-weight: 700;
+  // font-weight: 700;
 }
 
 .v-input__control {

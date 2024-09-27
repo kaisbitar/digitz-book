@@ -1,6 +1,7 @@
 <template>
   <Table
     :tableType="'verses'"
+    v-if="currentBreakpoint === 'desktop'"
     :tableData="verses"
     :tableHeaders="tableVersesHeaders"
     :tableInputText="versesInputText"
@@ -8,26 +9,25 @@
     :scrollingContainerClass="'verses-container'"
     :height="250"
     :activeItemKey="targetedIndex"
-    :fieldPlaceHolder="versesInputText"
     @activateRowItem="handleVerseSelected"
   />
-  <!-- <TableRowMobile
-    class="tableItem v-border"
-    :item="item"
-    :index="index"
-    :search="search"
-    :activeItemKey="activeItemKey"
-    :activeItemClass="props.activeItemClass"
-    :headerKeys="tableHeaders.map((header) => header.key)"
-    @activateRowItem="$emit('activateRowItem', item)"
-  /> -->
+  <TableRowMobile
+    class="table-style-mobile"
+    v-if="currentBreakpoint === 'mobile'"
+    :data="fitleredVeses"
+    :headerKeys="tableVersesHeaders"
+    :tableInputText="versesInputText"
+    :activeItemKey="targetedIndex"
+    :activeItemClass="'active-verse-table'"
+    @activateRowItem="handleVerseSelected"
+  />
 </template>
 
 <script setup>
 import { ref, computed, defineProps } from "vue"
 import { useQuranStore } from "@/stores/app"
 import { useWindow } from "@/mixins/window"
-const { scrollToActiveItem } = useWindow()
+const { scrollToActiveItem, currentBreakpoint } = useWindow()
 
 const store = useQuranStore()
 
@@ -67,11 +67,14 @@ const tableVersesHeaders = ref([
   },
 ])
 
-const versesWithIndex = computed(() => {
-  return props.verses.map((verse, index) => ({
-    ...verse,
-    index: index,
-  }))
+const fitleredVeses = computed(() => {
+  if (!props.versesInputText) return props.verses
+  return props.verses
+    .filter((verse) => verse.verseText.includes(props.versesInputText)) // Filter based on versesInputText
+    .map((verse, index) => ({
+      ...verse,
+      index: index,
+    }))
 })
 
 const targetedIndex = computed(() => {

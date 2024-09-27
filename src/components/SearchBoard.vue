@@ -52,7 +52,6 @@ const prepareDialogData = (data) => {
   }
 }
 watch(selectedChipIndex, () => {
-  console.log(props.inputText.value)
   search.value = props.inputText
 })
 
