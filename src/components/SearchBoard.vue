@@ -10,7 +10,7 @@
     :versesInputText="search"
     @verseSelected="runSelectedSura"
   />
-  <SearchSuraDialog v-model="showSuraText" :searchData="dialogData" />
+  <SearchSuraDialog v-model="showSura" :searchData="dialogData" />
 </template>
 
 <script setup>
@@ -24,7 +24,7 @@ const props = defineProps(["searchData", "inputText"])
 const store = useQuranStore()
 const { wordCount } = useCounting()
 
-const showSuraText = ref(false)
+const showSura = ref(false)
 const dialogData = ref({})
 
 const research = computed(() => store.getResearchResults)
@@ -32,10 +32,11 @@ const selectedChipIndex = computed(() => store.getSelectedSearchIndex)
 const tagetedSura = computed(() => store.getTarget)
 
 const runSelectedSura = () => {
+  store.setIsDialog(true)
   dialogData.value = prepareDialogData(
     research.value[selectedChipIndex.value].verses
   )
-  showSuraText.value = true
+  showSura.value = true
 }
 
 const prepareDialogData = (data) => {
@@ -55,6 +56,9 @@ watch(selectedChipIndex, () => {
   search.value = props.inputText
 })
 
+watch(showSura, (value) => {
+  if (!value) store.setIsDialog(false)
+})
 onMounted(() => {
   search.value = props.inputText
   if (selectedChipIndex.value === -1) {
