@@ -1,20 +1,39 @@
-<template></template>
+<template>
+  <div class="table-mobile-view tableStyle" :class="scrollingContainerClass">
+    <v-list
+      ><v-list-item
+        v-model="selectedItem"
+        v-for="(item, index) in data"
+        :key="index"
+        :active="isTargetedRow(item.verseNumberToQuran)"
+        @click="selectItem(item)"
+        :active-class="activeItemClass"
+      >
+        <VerseDropMenu
+          :item="item"
+          :textToHighlight="tableInputText"
+          class="tableItem"
+        />
+      </v-list-item>
+    </v-list>
+  </div>
+</template>
 
 <script setup lang="ts">
 import { defineProps, computed, watch, onMounted, defineEmits } from "vue"
-import { useInputFiltering } from "@/mixins/inputFiltering"
 import { ref } from "vue"
 
-const selectedItem = ref(null)
+const selectedItem = ref("")
 const emit = defineEmits<{
   (e: "activateRowItem", item: String): void
 }>()
 const props = defineProps<{
   data: any
   tableInputText?: string
-  activeItemKey: string | number
+  activeItemKey: string
   activeItemClass: string
   headerKeys: string[]
+  scrollingContainerClass: string
 }>()
 
 const isTargetedRow = (item: any) => {
@@ -32,7 +51,7 @@ onMounted(() => {
 
 <style scoped>
 .table-mobile-view {
-  max-height: 451px;
+  max-height: 69vh;
   overflow-y: scroll;
 }
 </style>
