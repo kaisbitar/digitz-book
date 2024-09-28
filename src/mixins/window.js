@@ -25,14 +25,13 @@ export function useWindow(props) {
 
       if (!activeVerseItem) return
       const baseContainer = isDialog ? `.v-dialog ${container}` : `${container}`
-      console.log(activeItem, container)
       goTo(activeVerseItem, {
         container: baseContainer,
         offset: -100,
         duration: 400,
         easing: "easeInOutCubic",
       })
-    }, 1000)
+    }, 100)
   }
 
   const scrollNoDialog = async (activeItem, container) => {

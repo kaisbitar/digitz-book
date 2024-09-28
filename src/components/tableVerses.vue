@@ -99,22 +99,18 @@ const setTargetedSuraAndVerse = (item) => {
     verseNumberToQuran: item.verseNumberToQuran,
   })
 }
+const tableCssTag =
+  currentBreakpoint.value === "mobile"
+    ? ".verses-container"
+    : ".verses-container .v-table__wrapper"
 
-watch(targetedIndex, () => {
-  scrollToActiveItem(
-    ".active-verse-table",
-    ".verses-container .v-table__wrapper"
-  )
-  scrollToActiveItem(".active-verse-table", ".v-dialog .verses-container")
-})
+const scrollToActive = () => {
+  scrollToActiveItem(".active-verse-table", `${tableCssTag}`)
+}
 
-onMounted(() => {
-  scrollToActiveItem(
-    ".active-verse-table",
-    ".verses-container .v-table__wrapper"
-  )
-  scrollToActiveItem(".active-verse-table", ".verses-container")
-})
+watch(targetedIndex, scrollToActive)
+
+onMounted(scrollToActive)
 </script>
 
 <style scoped>
