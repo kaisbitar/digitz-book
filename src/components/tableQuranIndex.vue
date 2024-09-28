@@ -25,7 +25,7 @@ import { useQuranStore } from "@/stores/app"
 import { useRouter } from "vue-router"
 import { useWindow } from "@/mixins/window"
 import { useInputFiltering } from "@/mixins/inputFiltering"
-const { scrollToActiveItem } = useWindow()
+const { scrollToActiveItem, currentBreakpoint } = useWindow()
 const { updateSearchValue, search } = useInputFiltering()
 
 const router = useRouter()
@@ -52,9 +52,13 @@ const handleIndexSelected = (sura) => {
     verseIndex: 1,
     verseNumberToQuran: sura.verseNumberToQuran.toString(),
   })
+  if (currentBreakpoint.value === "mobile") {
+    store.setDrawerState(false)
+  }
   if (router.currentRoute.value.name !== "sura") {
     router.push({ name: "sura" })
   }
+
   store.setSearchIndex(-1)
 }
 

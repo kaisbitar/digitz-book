@@ -50,6 +50,7 @@ const props = defineProps<{
 
 const { search } = useInputFiltering()
 const { updateTableHeight, dynamicTableHeight } = useWindow()
+
 const emit = defineEmits<{
   (e: "activateRowItem", item: TableItem): void
 }>()
@@ -69,7 +70,7 @@ watch(
 )
 
 onMounted(() => {
-  // window.addEventListener("resize", () => updateTableHeight(props.height))
+  window.addEventListener("resize", () => updateTableHeight(props.height))
   search.value = props.tableInputText
   updateTableHeight(props.height)
 })

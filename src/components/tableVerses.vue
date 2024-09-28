@@ -11,7 +11,7 @@
     :activeItemKey="targetedIndex"
     @activateRowItem="handleVerseSelected"
   />
-  <TableRowMobile
+  <TableMobile
     class="table-style-mobile"
     v-if="currentBreakpoint === 'mobile'"
     :data="fitleredVeses"
@@ -19,6 +19,7 @@
     :tableInputText="versesInputText"
     :activeItemKey="targetedIndex"
     :activeItemClass="'active-verse-table'"
+    :scrollingContainerClass="'verses-container'"
     @activateRowItem="handleVerseSelected"
   />
 </template>
@@ -104,6 +105,7 @@ watch(targetedIndex, () => {
     ".active-verse-table",
     ".verses-container .v-table__wrapper"
   )
+  scrollToActiveItem(".active-verse-table", ".v-dialog .verses-container")
 })
 
 onMounted(() => {
@@ -111,5 +113,12 @@ onMounted(() => {
     ".active-verse-table",
     ".verses-container .v-table__wrapper"
   )
+  scrollToActiveItem(".active-verse-table", ".verses-container")
 })
 </script>
+
+<style scoped>
+.v-list {
+  height: 401px !important;
+}
+</style>

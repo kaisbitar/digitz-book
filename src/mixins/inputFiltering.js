@@ -9,14 +9,24 @@ export function useInputFiltering() {
     search.value = newSearch
   }
 
-  const highlight = (text, textToHighlight) => {
-    if (!text) return
-    text = text.toString()
-    if (!textToHighlight) return text
-    return text.replace(new RegExp(textToHighlight, "gi"), (match) => {
-      return `<span class="highlight-match">${match}</span>`
-    })
+  const highlightedText = ref("")
+
+  const highlight = (text, search) => {
+    if (!search) return text
+    const regex = new RegExp(`(${search})`, "gi")
+    return text
+      .split(" ")
+      .map((word) => {
+        return `<span class="highlight-word" @mouseover="() => captureHoveredWord('${word}')">${word}</span>`
+      })
+      .join(" ")
   }
+
+  const captureHoveredWord = (word) => {
+    highlightedText.value = word // Store or handle the hovered word
+    console.log(word) // Handle the hovered word as needed
+  }
+
   const handleIconEvent = (eventName) => {
     switch (eventName) {
       case "filter":
@@ -39,5 +49,6 @@ export function useInputFiltering() {
     updateSearchValue,
     changeMatchingStatus,
     highlight,
+    captureHoveredWord,
   }
 }
