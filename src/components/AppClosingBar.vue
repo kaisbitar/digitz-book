@@ -1,22 +1,15 @@
 <template>
-  <!-- <v-toolbar class="mb-n16"> -->
-  <!-- <v-spacer></v-spacer>
-  <v-btn icon @click="$emit('close')" class="closing-button">
-    <v-icon>mdi-arrow-left</v-icon>
-  </v-btn> -->
-  <!-- </v-toolbar> -->
-  <div class="closing-button">
+  <!-- <div class="closing-button">
     <v-btn icon @click="$emit('close')" variant="flat">
       <v-icon>mdi-arrow-left</v-icon>
     </v-btn>
-    <!-- <v-chip
-      variant="flat"
-      color="red-darken-4"
-      size="x-small"
-      @click="$emit('close')"
-    >
-    </v-chip> -->
-  </div>
+  </div> -->
+  <v-toolbar>
+    <v-spacer></v-spacer>
+    <v-btn icon @click="$emit('close')">
+      <v-icon>mdi-arrow-left</v-icon>
+    </v-btn>
+  </v-toolbar>
 </template>
 
 <script setup>
@@ -34,7 +27,7 @@ const emit = defineEmits(["close"])
   margin-bottom: -26px;
 }
 .v-toolbar {
-  background: rgb(var(--v-theme-surface)) !important;
+  background: rgb(var(--v-theme-second-background)) !important;
   color: rgb(var(--v-theme-on-surface)) !important;
 }
 </style>

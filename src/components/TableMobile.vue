@@ -1,5 +1,5 @@
 <template>
-  <div class="table-mobile-view tableStyle" :class="scrollingContainerClass">
+  <div class="table-mobile-view" :class="scrollingContainerClass">
     <v-list
       ><v-list-item
         v-model="selectedItem"
@@ -52,7 +52,8 @@ onMounted(() => {
 
 <style scoped>
 .table-mobile-view {
-  max-height: 69vh;
+  max-height: 74vh;
   overflow-y: scroll;
+  margin-top: -16px !important;
 }
 </style>

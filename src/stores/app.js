@@ -19,7 +19,6 @@ export const useQuranStore = defineStore("Quran", {
     oneQuranFile: [],
     QuranIndex: [],
     suras: {},
-    scrollTrigger: false,
     drawerState: true,
     versesMobileView: false,
     activeSuraTab: "numberOfVerses",
@@ -63,9 +62,6 @@ export const useQuranStore = defineStore("Quran", {
     getQuranIndex: (state) => {
       return state.QuranIndex
     },
-    getScrollTrigger: (state) => {
-      return state.scrollTrigger
-    },
     getDrawerState: (state) => {
       return state.drawerState
     },
@@ -104,10 +100,6 @@ export const useQuranStore = defineStore("Quran", {
     },
     setActiveRoute(activeRoute) {
       this.activeRoute = activeRoute
-    },
-
-    setScrollTrigger() {
-      this.scrollTrigger = !this.scrollTrigger
     },
     setTarget(target) {
       this.target = {

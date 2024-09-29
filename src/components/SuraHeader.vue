@@ -1,11 +1,11 @@
 <template>
-  <v-row
-    class="d-flex flex-wrap align-center mb-4"
+  <div
+    class="d-flex flex-wrap mb-1"
     :class="breakpoint === 'mobile' ? 'flex-column' : ''"
     justify="space-between"
   >
-    <v-col
-      ><h1 :style="{ color: $vuetify.theme.currentTheme }">
+    <div class="mb-1 ml-2">
+      <h1 :style="{ color: $vuetify.theme.currentTheme }">
         {{ title }}
       </h1>
       <AppCountChips
@@ -13,20 +13,24 @@
         :versesCount="numberOfVerses"
         :letterCount="numberOfLetters"
         sura
-    /></v-col>
-    <v-col>
-      <v-tabs v-model="computedTab" bg-color="" align-tabs="center" grow>
-        <v-tab
-          v-for="(item, index) in tabs"
-          :key="index"
-          :value="item.name"
-          :title="item.title"
-          class="text-none"
-          >{{ item.title }}
-        </v-tab>
-      </v-tabs>
-    </v-col>
-  </v-row>
+      />
+    </div>
+    <v-tabs
+      v-model="computedTab"
+      fixed-tabs
+      grow
+      density="comfortable"
+      class="sura-tabs"
+    >
+      <v-tab
+        v-for="(item, index) in tabs"
+        :key="index"
+        :value="item.name"
+        :title="item.title"
+        >{{ item.title }}
+      </v-tab>
+    </v-tabs>
+  </div>
 </template>
 
 <script setup>
@@ -56,8 +60,14 @@ const breakpoint = computed(() =>
 .v-btn {
   letter-spacing: 0;
 }
-
+.sura-tabs {
+  min-height: 50px;
+  margin-bottom: 4px;
+}
 .v-tab--selected {
   background-color: rgba(255, 255, 255, 0.12);
+}
+.v-tabs--density-comfortable {
+  --v-tabs-height: auto !important;
 }
 </style>

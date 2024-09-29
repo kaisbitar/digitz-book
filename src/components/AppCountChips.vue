@@ -9,6 +9,7 @@
     {{ versesCount }} آية
   </v-chip>
   <v-chip
+    v-if="wordCount >= 0"
     size="x-small"
     variant="outlined"
     class="ml-1"

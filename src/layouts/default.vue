@@ -12,7 +12,7 @@
         >
           <TableQuranIndex></TableQuranIndex> </v-navigation-drawer
       ></v-hover>
-      <v-container class="pb-0">
+      <v-container class="pt-2 pb-2">
         <router-view />
       </v-container>
     </v-main>
@@ -55,7 +55,9 @@ onMounted(() => {
 
 <style lang="scss">
 @import "@/styles/styles.scss";
-
+.main-wrapp {
+  padding-top: 10px;
+}
 .v-data-table-header__content {
   display: flex;
   align-items: center;

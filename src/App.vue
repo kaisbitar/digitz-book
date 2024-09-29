@@ -39,15 +39,13 @@ body {
 .v-application,
 .v-overlay-container,
 .v-tab,
-.text-caption {
+.text-caption,
+.text-h2 {
   // font-family: $body-font-family !important;
   font-family: system-ui !important;
   font-family: unset;
 }
 
-.v-selection-control {
-  background: rgb(var(--v-theme-surface)) !important;
-}
 .v-table--density-default {
   --v-table-header-height: 56px !important;
   --v-table-row-height: 31px !important;
@@ -61,18 +59,19 @@ th {
   cursor: pointer;
 }
 
-.tableStyle tr {
-  background: rgb(var(--v-theme-second-background));
-}
-
 .tableStyle td {
   border: none !important;
 }
 
-.sura-text-container {
+.table-mobile-view .v-list-item {
   background: rgb(var(--v-theme-second-background));
 }
-.table-style-mobile .v-list-item {
+
+.tableStyle tr {
+  background: rgb(var(--v-theme-second-background));
+}
+
+.sura-text-container {
   background: rgb(var(--v-theme-second-background));
 }
 
@@ -112,5 +111,8 @@ th {
 
 .letter-count {
   color: rgb(var(--v-theme-letterCount)) !important;
+}
+.v-toolbar__content {
+  // position: absolute !important;
 }
 </style>
