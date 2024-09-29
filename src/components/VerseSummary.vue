@@ -1,16 +1,9 @@
 <template>
-  <v-lazy
-    :min-height="30"
-    :options="{ threshold: 0.5 }"
-    transition="fade-transition"
-  >
-    <div class="d-flex mt-2 align-center">
-      <v-chip
-        size="x-small"
-        variant="outlined"
-        class=".fixed-width ml-2 text-caption"
-        >{{ index + 1 }}</v-chip
-      >
+  <v-lazy :options="{ threshold: 0.5 }" transition="fade-transition">
+    <div class="d-flex mt-2 align-center mr-n3">
+      <v-chip size="x-small" variant="outlined" class="fixed-width ml-2">
+        {{ index + 1 }}
+      </v-chip>
 
       <div>
         <div class="text-blue mb-n1">{{ item.fileName }}</div>
@@ -40,8 +33,11 @@ const handleClick = () => {
 
 <style>
 .fixed-width .v-chip__content {
-  min-width: 50px !important; /* Set your desired fixed width here */
-  max-width: 50px !important; /* Ensure it does not exceed this width */
-  text-align: center; /* Center text if needed */
+  /* text-align: center; */
+  /* z-index: 1000; */
+}
+.v-list-item__content {
+  padding-right: 12px;
+  margin-right: -9px;
 }
 </style>

@@ -3,19 +3,18 @@
     :tableType="'verses'"
     v-if="!showMobileView"
     :tableData="verses"
-    :tableHeaders="tableVersesHeaders"
+    :tableHeaders="versesHeaders"
     :tableInputText="versesInputText"
     :activeItemClass="'active-verse-table'"
     :scrollingContainerClass="'verses-container'"
-    :height="250"
+    :height="210"
     :activeItemKey="targetedIndex"
     @activateRowItem="handleVerseSelected"
   />
   <TableMobile
-    class="table-style-mobile"
     v-if="showMobileView"
     :data="fitleredVeses"
-    :headerKeys="tableVersesHeaders"
+    :headerKeys="verses"
     :tableInputText="versesInputText"
     :activeItemKey="targetedIndex"
     :activeItemClass="'active-verse-table'"
@@ -35,7 +34,7 @@ const store = useQuranStore()
 const props = defineProps(["verses", "isLoading", "versesInputText"])
 const emit = defineEmits(["verseSelected"])
 
-const tableVersesHeaders = ref([
+const versesHeaders = ref([
   {
     title: "Index",
     key: "index",
@@ -101,16 +100,17 @@ const setTargetedSuraAndVerse = (item) => {
     verseNumberToQuran: item.verseNumberToQuran,
   })
 }
-const tableCssTag =
-  currentBreakpoint.value === "mobile"
+
+const tableCssTag = computed(() =>
+  showMobileView.value
     ? ".verses-container"
     : ".verses-container .v-table__wrapper"
-
+)
 const scrollToActive = () => {
-  scrollToActiveItem(".active-verse-table", `${tableCssTag}`)
+  scrollToActiveItem(".active-verse-table", `${tableCssTag.value}`)
 }
 
-watch(targetedIndex, scrollToActive)
+watch(showMobileView, scrollToActive)
 
 onMounted(scrollToActive)
 </script>

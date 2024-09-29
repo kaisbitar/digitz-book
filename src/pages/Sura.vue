@@ -20,6 +20,7 @@
   </div>
   <SuraText
     v-if="activeTab === 'suraText'"
+    class="mt-n2"
     :inputText="search"
     :suraTextArray="suraWithTashkeel"
   />

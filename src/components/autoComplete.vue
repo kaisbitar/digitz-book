@@ -90,6 +90,5 @@ onMounted(() => {})
 <style scoped>
 .search-count-header {
   z-index: 5;
-  background: rgb(var(--v-theme-surface));
 }
 </style>

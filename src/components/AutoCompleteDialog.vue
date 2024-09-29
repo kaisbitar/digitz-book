@@ -3,15 +3,17 @@
     :modelValue="modelValue"
     @update:modelValue="$emit('update:modelValue', $event)"
     @click:outside="handleClose"
-    width="700"
-    class="auto-complete-dialog"
-    height="900"
     :transition="'fade'"
+    fullscreen
+    :overlay="false"
   >
     <template v-slot:default="{ isActive }">
       <AppClosingBar @close="handleClose" />
-      <v-container>
-        <AutoComplete />
+      <v-container class="mb-2 auto-complete-container">
+        <AutoComplete
+          v-click-outside="handleClose"
+          class="auto-complete-dialog"
+        />
       </v-container>
     </template>
   </v-dialog>
@@ -28,4 +30,10 @@ const handleClose = () => {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.auto-complete-container {
+  padding: 52px;
+  padding-right: 15px;
+  margin-top: -112px;
+}
+</style>

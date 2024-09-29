@@ -22,9 +22,10 @@ export function useWindow(props) {
         : `${activeItem}`
 
       const activeVerseItem = document.querySelector(activeRowSelector)
-
       if (!activeVerseItem) return
+
       const baseContainer = isDialog ? `.v-dialog ${container}` : `${container}`
+      console.log(baseContainer)
       goTo(activeVerseItem, {
         container: baseContainer,
         offset: -100,
