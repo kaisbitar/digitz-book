@@ -1,22 +1,23 @@
 <template>
-  <!-- <VerseDetails :verse="selectedVerseText" /> -->
-
+  <VerseDetails v-model="showVerseDetails" :verse="selectedVerseText" />
   <SuraHeader
     :title="fileName"
     :tabs="tabs"
     :activeTab="activeTab"
     :numberOfVerses="numberOfVerses"
     :numberOfWords="numberOfWords"
+    :numberOfLetters="numberOfLetters"
     @tabChanged="changeTab"
   />
-  <AppInputField
-    :fieldInput="search"
-    :fieldPlaceHolder="fileName"
-    :prepend-icons="[
-      { name: 'mdi-star-shooting', event: 'search', value: 'ssdsd' },
-    ]"
-    @update:fieldInput="updateSearchValue"
-  />
+  <div class="d-flex">
+    <AppInputField
+      :fieldInput="search"
+      :fieldPlaceHolder="`سورة ${fileName}`"
+      :prepend-icons="[{ name: 'mdi-star-shooting', event: 'search' }]"
+      @update:fieldInput="updateSearchValue"
+    />
+    <AppFilterActions v-if="showFilterActions" />
+  </div>
   <SuraText
     v-if="activeTab === 'suraText'"
     :inputText="search"
@@ -26,13 +27,12 @@
     v-if="activeTab === 'versesTab'"
     :verses="versesBasics"
     :versesInputText="search"
-    @verseSelected="handleVerseSelected"
+    @verseSelected="handleVerseSelectedOnTable"
   />
   <SuraFrequency
     v-if="activeTab === 'frequency'"
     :chartFreqSeries="chartFreqSeries"
     :chartOptions="chartOptions"
-    :versesText="suraTextArray"
     :height="chartWindowHeight"
   />
 </template>
@@ -67,6 +67,7 @@ const versesSeries = ref([{ data: [] }])
 const wordsSeries = ref([{ data: [] }])
 const suraDetails = ref({})
 const selectedVerseText = ref("")
+const showVerseDetails = ref(false)
 
 const tabs = computed(() => [
   { title: "سياق", name: "suraText" },
@@ -100,9 +101,13 @@ const activeTab = computed({
   set: (value) => store.setActiveSuraTab(value),
 })
 
-const handleVerseSelected = (verse) => {
+const showFilterActions = computed(() => {
+  return activeTab.value === "versesTab"
+})
+
+const handleVerseSelectedOnTable = (verse) => {
   selectedVerseText.value = verse.verseText
-  // store.setActiveSuraTab("suraText")
+  showVerseDetails.value = true
 }
 
 const changeTab = (tab) => {

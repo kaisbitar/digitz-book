@@ -2,7 +2,7 @@
   <v-row class="mb-4">
     <v-col>
       <h1>{{ chipsTitle }}</h1>
-      <SearchCountHeader
+      <AppCountChips
         :wordCount="chipsData[selectedChipIndex]?.wordCount"
         :versesCount="chipsData[selectedChipIndex]?.versesCount"
       />

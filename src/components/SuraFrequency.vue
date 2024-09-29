@@ -1,13 +1,11 @@
 <template>
-  <div class="web-kit-width">
-    <ChartRadioButtons :intitalType="chartFreqType" @typeChanged="changeType" />
-    <Chart
-      :isLoading="isLoading"
-      :series="chartFreqSeries"
-      :options="chartOptions"
-      :height="height"
-    />
-  </div>
+  <ChartRadioButtons :intitalType="chartFreqType" @typeChanged="changeType" />
+  <Chart
+    :isLoading="isLoading"
+    :series="chartFreqSeries"
+    :options="chartOptions"
+    :height="height"
+  />
 </template>
 
 <script setup>

@@ -6,6 +6,8 @@
 
 <script setup>
 import { useQuranStore } from "@/stores/app"
+import { useWindow } from "@/mixins/window"
+const { currentBreakpoint } = useWindow()
 
 const store = useQuranStore()
 
@@ -15,12 +17,14 @@ const getTheData = async () => {
 const dynamicFontSize = computed(() => store.getFontSize)
 
 onMounted(() => {
+  if (currentBreakpoint.value === "mobile") {
+    store.setVersesMobileView(true)
+  }
   getTheData()
   document.documentElement.style.setProperty(
     "--dynamic-font-size",
     dynamicFontSize.value
   )
-  document.documentElement.style.setProperty("font-size", dynamicFontSize.value)
 })
 </script>
 
@@ -97,5 +101,16 @@ th {
 }
 .theme-text-color {
   color: rgb(var(--v-theme-on-surface)) !important;
+}
+.verses-count {
+  color: rgb(var(--v-theme-versesCount)) !important;
+}
+
+.word-count {
+  color: rgb(var(--v-theme-wordCount)) !important;
+}
+
+.letter-count {
+  color: rgb(var(--v-theme-letterCount)) !important;
 }
 </style>

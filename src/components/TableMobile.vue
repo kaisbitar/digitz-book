@@ -9,8 +9,9 @@
         @click="selectItem(item)"
         :active-class="activeItemClass"
       >
-        <VerseDropMenu
+        <VerseSummary
           :item="item"
+          :index="index"
           :textToHighlight="tableInputText"
           class="tableItem"
         />

@@ -4,10 +4,17 @@
     :options="{ threshold: 0.5 }"
     transition="fade-transition"
   >
-    <div class="d-flex">
+    <div class="d-flex mt-2 align-center">
+      <v-chip
+        size="x-small"
+        variant="outlined"
+        class=".fixed-width ml-2 text-caption"
+        >{{ index + 1 }}</v-chip
+      >
+
       <div>
         <div class="text-blue mb-n1">{{ item.fileName }}</div>
-        <div v-html="highlight(item.verseText, textToHighlight)"></div>
+        <div v-html="highlight(item.verseText, textToHighlight)" />
         <div class="mt-n1 text-caption text-grey">
           <span class="ml-7">رقم: {{ item.verseIndex }}</span>
           <span class="ml-7">كلمة: {{ item.numberOfWords }} </span>
@@ -23,7 +30,7 @@
 import { useInputFiltering } from "@/mixins/inputFiltering"
 const { highlight } = useInputFiltering()
 
-const props = defineProps(["item", "textToHighlight"])
+const props = defineProps(["item", "textToHighlight", "index"])
 const emit = defineEmits(["verseClicked"])
 
 const handleClick = () => {
@@ -31,4 +38,10 @@ const handleClick = () => {
 }
 </script>
 
-<style></style>
+<style>
+.fixed-width .v-chip__content {
+  min-width: 50px !important; /* Set your desired fixed width here */
+  max-width: 50px !important; /* Ensure it does not exceed this width */
+  text-align: center; /* Center text if needed */
+}
+</style>

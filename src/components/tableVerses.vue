@@ -1,7 +1,7 @@
 <template>
   <Table
     :tableType="'verses'"
-    v-if="currentBreakpoint === 'desktop'"
+    v-if="!showMobileView"
     :tableData="verses"
     :tableHeaders="tableVersesHeaders"
     :tableInputText="versesInputText"
@@ -13,7 +13,7 @@
   />
   <TableMobile
     class="table-style-mobile"
-    v-if="currentBreakpoint === 'mobile'"
+    v-if="showMobileView"
     :data="fitleredVeses"
     :headerKeys="tableVersesHeaders"
     :tableInputText="versesInputText"
@@ -68,10 +68,12 @@ const tableVersesHeaders = ref([
   },
 ])
 
+const showMobileView = computed(() => store.getVersesMobileView)
+
 const fitleredVeses = computed(() => {
   if (!props.versesInputText) return props.verses
   return props.verses
-    .filter((verse) => verse.verseText.includes(props.versesInputText)) // Filter based on versesInputText
+    .filter((verse) => verse.verseText.includes(props.versesInputText))
     .map((verse, index) => ({
       ...verse,
       index: index,

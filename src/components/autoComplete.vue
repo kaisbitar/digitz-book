@@ -27,16 +27,20 @@
         ><v-btn @click="handleNewSearch" variant="tonal">ابحث</v-btn> "{{
           search
         }}"
-        <SearchCountHeader
+        <AppCountChips
           :wordCount="computedWordCount"
           :versesCount="versesCount()"
       /></v-container>
     </template>
 
-    <template v-slot:item="{ item, props }">
+    <template v-slot:item="{ item, index, props }">
       <v-list v-bind="props">
         <v-list-item @click="handleNewSearch">
-          <VerseDropMenu :item="item.raw" :textToHighlight="search" />
+          <VerseSummary
+            :index="index"
+            :item="item.raw"
+            :textToHighlight="search"
+          />
         </v-list-item>
       </v-list>
     </template>
