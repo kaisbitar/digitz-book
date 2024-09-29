@@ -24,6 +24,7 @@
       :key="index"
       :class="chipClasses(index)"
       icon-size="x-small"
+      variant="outlined"
       closable
       @click="handleClickedChip(index)"
       @click:close="handleRemovedChip(index)"
@@ -71,13 +72,4 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
-/* .selected-chip {
-  color: rgb(var(--v-theme-primary)) !important;
-} */
-/* .count-color,
-.custom-close-icon ::v-deep(.v-chip__close) {
-  color: rgb(var(--v-theme-on-surface)) !important;
-  opacity: 0.5 !important;
-} */
-</style>
+<style scoped></style>

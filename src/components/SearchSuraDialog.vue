@@ -6,9 +6,9 @@
     @click:outside="handleClose"
   >
     <template v-slot:default="{ isActive }">
+      <AppClosingBar @close="handleClose" />
       <v-sheet rounded="xl">
         <v-container>
-          <AppClosingBar @close="handleClose" />
           "{{ searchData.inputText }}"
           <AppCountChips
             :wordCount="searchData.wordCount"
