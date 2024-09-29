@@ -84,7 +84,7 @@ th {
   // font-weight: 700;
 }
 
-.v-input__control {
+.v-field {
   color: rgb(var(--v-theme-on-active-row)) !important;
   background: rgb(var(--v-theme-input-background)) !important;
 }

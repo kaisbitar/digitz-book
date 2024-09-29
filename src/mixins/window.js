@@ -25,7 +25,6 @@ export function useWindow(props) {
       if (!activeVerseItem) return
 
       const baseContainer = isDialog ? `.v-dialog ${container}` : `${container}`
-      console.log(baseContainer)
       goTo(activeVerseItem, {
         container: baseContainer,
         offset: -100,

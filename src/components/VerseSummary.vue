@@ -1,22 +1,22 @@
 <template>
-  <v-lazy :options="{ threshold: 0.5 }" transition="fade-transition">
-    <div class="d-flex mt-2 align-center mr-n3">
-      <v-chip size="x-small" variant="outlined" class="fixed-width ml-2">
-        {{ index + 1 }}
-      </v-chip>
+  <!-- <v-lazy :options="{ threshold: 0.9 }" transition="fade-transition"> -->
+  <div class="d-flex mt-2 align-center mr-n3">
+    <v-chip size="x-small" variant="outlined" class="fixed-width ml-2">
+      {{ index + 1 }}
+    </v-chip>
 
-      <div>
-        <div class="text-blue mb-n1">{{ item.fileName }}</div>
-        <div v-html="highlight(item.verseText, textToHighlight)" />
-        <div class="mt-n1 text-caption text-grey">
-          <span class="ml-7">رقم: {{ item.verseIndex }}</span>
-          <span class="ml-7">كلمة: {{ item.numberOfWords }} </span>
-          <span class="ml-7">حرف: {{ item.numberOfLetters }} </span>
-          <span class="ml-7">مصحف: {{ item.verseNumberToQuran }}</span>
-        </div>
+    <div>
+      <div class="text-blue mb-n1">{{ item.fileName }}</div>
+      <div v-html="highlight(item.verseText, textToHighlight)" />
+      <div class="mt-n1 text-caption text-grey">
+        <span class="ml-7">رقم: {{ item.verseIndex }}</span>
+        <span class="ml-7">كلمة: {{ item.numberOfWords }} </span>
+        <span class="ml-7">حرف: {{ item.numberOfLetters }} </span>
+        <span class="ml-7">مصحف: {{ item.verseNumberToQuran }}</span>
       </div>
     </div>
-  </v-lazy>
+  </div>
+  <!-- </v-lazy> -->
 </template>
 
 <script setup>

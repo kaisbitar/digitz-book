@@ -26,8 +26,10 @@
         v-for="(item, index) in tabs"
         :key="index"
         :value="item.name"
-        :title="item.title"
-        >{{ item.title }}
+        :icons="item.icon"
+      >
+        <v-icon v-if="item.icon" class="ml-1" :icon="item.icon" />
+        {{ item.title }}
       </v-tab>
     </v-tabs>
   </div>
@@ -69,5 +71,11 @@ const breakpoint = computed(() =>
 }
 .v-tabs--density-comfortable {
   --v-tabs-height: auto !important;
+}
+.v-tab {
+  color: rgb(var(--v-theme-on-surface));
+}
+.v-tab--selected {
+  color: rgb(var(--v-theme-on-active-row));
 }
 </style>
