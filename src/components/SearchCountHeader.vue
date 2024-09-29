@@ -1,13 +1,20 @@
 <template>
   <v-chip
-    class="ml-1"
-    :color="versesCount > 0 ? 'green' : 'red'"
-    variant="tonal"
+    size="x-small"
+    variant="outlined"
+    :color="versesCount > 0 ? 'blue' : 'red'"
   >
-    <span class="text-caption">{{ wordCount }} مرة</span>
+    {{ versesCount }} آية
   </v-chip>
-  <v-chip color="info" :color="versesCount > 0 ? 'green' : 'red'">
-    <span class="text-caption">{{ versesCount }} آية</span>
+  <v-chip
+    class="mr-2"
+    :color="versesCount > 0 ? 'green' : 'red'"
+    variant="outlined"
+    size="x-small"
+  >
+    <span>{{ wordCount }} </span>
+    <span v-if="sura">كلمة</span>
+    <span v-else>مرة</span>
   </v-chip>
 </template>
 
@@ -19,7 +26,14 @@ const props = defineProps({
   versesCount: {
     type: Number,
   },
+  sura: {
+    type: Boolean,
+  },
 })
 </script>
 
-<style></style>
+<style>
+.v-chip__content {
+  font-size: 14px !important;
+}
+</style>

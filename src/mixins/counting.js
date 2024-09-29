@@ -7,7 +7,14 @@ export function useCounting() {
     parseInt(store.getTarget.fileName.replace(/^\D+/g, ""))
   )
 
-  const wordCount = (search, data) => {
+  const countVerseWords = (verseText) => {
+    return String(verseText.split(" ").length)
+  }
+  const countVerseLetters = (verseText) => {
+    return String(verseText.replace(/ /g, "").length)
+  }
+
+  const countWordMatch = (search, data) => {
     if (!search || !data) return 0
     const searchString = search.trim()
     let count = 0
@@ -36,6 +43,8 @@ export function useCounting() {
 
   return {
     setSuraFromArrow,
-    wordCount,
+    countWordMatch,
+    countVerseWords,
+    countVerseLetters,
   }
 }

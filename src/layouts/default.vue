@@ -2,9 +2,16 @@
   <v-app>
     <v-main>
       <AppHeader v-if="activeRoute !== 'home'" />
-      <v-navigation-drawer v-model="drawer" width="650" :scrim="false" right>
-        <TableQuranIndex></TableQuranIndex>
-      </v-navigation-drawer>
+      <v-hover v-slot="{ isHovering, props }"
+        ><v-navigation-drawer
+          v-bind="props"
+          v-model="drawer"
+          :width="isHovering ? 600 : 310"
+          :scrim="false"
+          right
+        >
+          <TableQuranIndex></TableQuranIndex> </v-navigation-drawer
+      ></v-hover>
       <v-container class="pb-0">
         <router-view />
       </v-container>
@@ -20,7 +27,6 @@ import { useRouter } from "vue-router"
 const store = useQuranStore()
 const router = useRouter()
 
-const drawerWidth = computed(() => (drawer.value ? 600 : 310))
 const activeRoute = computed(() => router.currentRoute.value.name)
 
 const drawer = computed({

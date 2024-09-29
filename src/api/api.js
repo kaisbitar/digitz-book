@@ -13,7 +13,7 @@ export function fetchSuraDetails(appApi, fileName) {
   return getData(appApi + "api/view/sura-details/" + fileName)
 }
 export function fetchWordMeaning(appApi, word) {
-  return getData(appApi + "/api/scrape", { params: { query: word } })
+  return getData(appApi + `api/scrape/${word}`)
 }
 function getData(path) {
   return axios.get(path).then((response) => {

@@ -50,14 +50,14 @@ import { useCounting } from "@/mixins/counting"
 
 const store = useQuranStore()
 const search = ref(null)
-const { wordCount } = useCounting()
+const { countWordMatch } = useCounting()
 const autocompleteRef = ref(null)
 
 const OneQuranFile = computed(() => store.getOneQuranFile)
 const searchResults = computed(() => store.getResearchResults)
 
 const computedWordCount = computed(() =>
-  wordCount(search.value, extractVersesFromFilter(autocompleteRef.value))
+  countWordMatch(search.value, extractVersesFromFilter(autocompleteRef.value))
 )
 const extractVersesFromFilter = (data) => {
   if (!data?.filteredItems) return []
