@@ -22,7 +22,7 @@ const { updateSearchValue, search } = useInputFiltering()
 
 const props = defineProps(["searchData", "inputText"])
 const store = useQuranStore()
-const { wordCount } = useCounting()
+const { countWordMatch } = useCounting()
 
 const showSura = ref(false)
 const dialogData = ref({})
@@ -48,7 +48,7 @@ const prepareDialogData = (data) => {
   })
   return {
     inputText: props.inputText,
-    wordCount: wordCount(props.inputText, suraSearchVerses),
+    wordCount: countWordMatch(props.inputText, suraSearchVerses),
     versesCount: suraSearchVerses.length,
   }
 }

@@ -23,11 +23,12 @@ export default createVuetify({
       light: {
         colors: {
           surface: "#ededed",
+          "on-surface": "4c4c4c",
           "second-background": "#f5f5f5",
           "input-background": "#fff",
           highlight: "#ffff00",
           "on-highlight": "#000000",
-          "active-row": "#353540",
+          "active-row": "#f9f9f9",
           "on-active-row": "#000",
           "hover-color": "#f7f7f7",
           "verse-number-chip": "#fafafa",

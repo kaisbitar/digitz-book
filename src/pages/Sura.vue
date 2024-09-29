@@ -1,4 +1,6 @@
 <template>
+  <!-- <VerseDetails :verse="selectedVerseText" /> -->
+
   <SuraHeader
     :title="fileName"
     :tabs="tabs"
@@ -10,7 +12,9 @@
   <AppInputField
     :fieldInput="search"
     :fieldPlaceHolder="fileName"
-    :prepend-icons="[{ name: 'mdi-star-shooting', event: 'search' }]"
+    :prepend-icons="[
+      { name: 'mdi-star-shooting', event: 'search', value: 'ssdsd' },
+    ]"
     @update:fieldInput="updateSearchValue"
   />
   <SuraText
@@ -61,20 +65,19 @@ const versesBasics = ref([])
 const letterSeries = ref([{ data: [] }])
 const versesSeries = ref([{ data: [] }])
 const wordsSeries = ref([{ data: [] }])
-const details = ref({})
+const suraDetails = ref({})
+const selectedVerseText = ref("")
 
 const tabs = computed(() => [
   { title: "سياق", name: "suraText" },
   { title: "آية", value: numberOfVerses, name: "versesTab" },
-  // { title: "كلمة", value: numberOfWords, name: "wordsTab" },
-  // { title: "حرف", value: numberOfLetters, name: "lettersTab" },
   { title: "تواتر", name: "frequency" },
 ])
 const chartWindowHeight = computed(() => window.innerHeight - 260)
 const fileName = computed(() => store.getTarget?.fileName || "001الفاتحة")
 const suraNumber = computed(() => parseInt(fileName.value.replace(/^\D+/g, "")))
 const tableQuranIndex = computed(() => store.getQuranIndex)
-const suraKeys = computed(
+const suraKeyValues = computed(
   () => tableQuranIndex.value[suraNumber.value] || tableQuranIndex.value[1]
 )
 const chartFreqType = computed(() => store.getChartFreqType)
@@ -98,7 +101,8 @@ const activeTab = computed({
 })
 
 const handleVerseSelected = (verse) => {
-  store.setActiveSuraTab("suraText")
+  selectedVerseText.value = verse.verseText
+  // store.setActiveSuraTab("suraText")
 }
 
 const changeTab = (tab) => {
@@ -106,15 +110,15 @@ const changeTab = (tab) => {
 }
 
 const setSuraBasics = () => {
-  numberOfLetters.value = suraKeys.value.numberOfLetters
-  numberOfVerses.value = suraKeys.value.numberOfVerses
-  numberOfWords.value = suraKeys.value.numberOfWords
-  startIndex.value = suraKeys.value.verseNumberToQuran - 1
-  endIndex.value = suraKeys.value.numberOfVerses + startIndex.value
+  numberOfLetters.value = suraKeyValues.value.numberOfLetters
+  numberOfVerses.value = suraKeyValues.value.numberOfVerses
+  numberOfWords.value = suraKeyValues.value.numberOfWords
+  startIndex.value = suraKeyValues.value.verseNumberToQuran - 1
+  endIndex.value = suraKeyValues.value.numberOfVerses + startIndex.value
 }
 
 const fetchSuraDetails = async () => {
-  details.value = await store.getSuraDetails()
+  suraDetails.value = await store.getSuraDetails()
 }
 
 const prepareData = () => {

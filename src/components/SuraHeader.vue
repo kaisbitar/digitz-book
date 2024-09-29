@@ -11,6 +11,7 @@
       <SearchCountHeader
         :wordCount="numberOfWords"
         :versesCount="numberOfVerses"
+        :sura="true"
     /></v-col>
     <v-col>
       <v-tabs v-model="computedTab" bg-color="" align-tabs="center" grow>
