@@ -6,7 +6,7 @@
     variant="outlined"
   >
     <v-icon>
-      {{ isMobileView ? "mdi-format-list-bulleted" : "mdi-table" }}
+      {{ isMobileView ? "mdi-format-list-bulleted" : "mdi-view-list" }}
     </v-icon>
   </v-btn>
 </template>

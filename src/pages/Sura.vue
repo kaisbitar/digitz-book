@@ -70,10 +70,16 @@ const suraDetails = ref({})
 const selectedVerseText = ref("")
 const showVerseDetails = ref(false)
 
+const isMobileView = computed(() => store.getVersesMobileView)
 const tabs = computed(() => [
-  { title: "سياق", name: "suraText" },
-  { title: "آية", value: numberOfVerses, name: "versesTab" },
-  { title: "تواتر", name: "frequency" },
+  { title: "سياق", name: "suraText", icon: "mdi-text-box-outline" },
+  {
+    title: "آية",
+    value: numberOfVerses,
+    name: "versesTab",
+    icon: isMobileView.value ? "mdi-format-list-bulleted" : "mdi-view-list",
+  },
+  { title: "تواتر", name: "frequency", icon: "mdi-chart-bar" },
 ])
 const chartWindowHeight = computed(() => window.innerHeight - 260)
 const fileName = computed(() => store.getTarget?.fileName || "001الفاتحة")
