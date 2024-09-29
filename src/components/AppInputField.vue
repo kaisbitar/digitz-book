@@ -6,6 +6,7 @@
     clearable
     variant="outlined"
     density="compact"
+    class="ml-2"
   >
     <template #prepend-inner>
       <v-icon

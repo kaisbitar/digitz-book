@@ -8,10 +8,11 @@
       ><h1 :style="{ color: $vuetify.theme.currentTheme }">
         {{ title }}
       </h1>
-      <SearchCountHeader
+      <AppCountChips
         :wordCount="numberOfWords"
         :versesCount="numberOfVerses"
-        :sura="true"
+        :letterCount="numberOfLetters"
+        sura
     /></v-col>
     <v-col>
       <v-tabs v-model="computedTab" bg-color="" align-tabs="center" grow>
@@ -37,6 +38,7 @@ const props = defineProps([
   "title",
   "numberOfWords",
   "numberOfVerses",
+  "numberOfLetters",
 ])
 const emit = defineEmits(["tabChanged"])
 const computedTab = computed({

@@ -1,10 +1,13 @@
 <template>
   <Research :chipsTitle="inputText" :chipsData="research" />
-  <AppInputField
-    :fieldInput="search"
-    :fieldPlaceHolder="inputText"
-    @update:fieldInput="updateSearchValue"
-  />
+  <div class="d-flex">
+    <AppInputField
+      :fieldInput="search"
+      :fieldPlaceHolder="inputText"
+      @update:fieldInput="updateSearchValue"
+    />
+    <AppFilterActions />
+  </div>
   <TableVerses
     :verses="searchData"
     :versesInputText="search"
@@ -30,6 +33,10 @@ const dialogData = ref({})
 const research = computed(() => store.getResearchResults)
 const selectedChipIndex = computed(() => store.getSelectedSearchIndex)
 const tagetedSura = computed(() => store.getTarget)
+
+const handleShowVersesMobileView = () => {
+  store.setVersesMobileView(!store.getVersesMobileView)
+}
 
 const runSelectedSura = () => {
   store.setIsDialog(true)

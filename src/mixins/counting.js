@@ -1,4 +1,3 @@
-import { storeToRefs } from "pinia"
 import { useQuranStore } from "../stores/app"
 
 export function useCounting() {
@@ -8,10 +7,11 @@ export function useCounting() {
   )
 
   const countVerseWords = (verseText) => {
-    return String(verseText.split(" ").length)
+    if (verseText === "") return 0
+    return verseText.split(" ").length
   }
   const countVerseLetters = (verseText) => {
-    return String(verseText.replace(/ /g, "").length)
+    return verseText.replace(/ /g, "").length || 0
   }
 
   const countWordMatch = (search, data) => {

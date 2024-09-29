@@ -10,7 +10,7 @@
         <v-container>
           <AppClosingBar @close="handleClose" />
           "{{ searchData.inputText }}"
-          <SearchCountHeader
+          <AppCountChips
             :wordCount="searchData.wordCount"
             :versesCount="searchData.versesCount"
           />

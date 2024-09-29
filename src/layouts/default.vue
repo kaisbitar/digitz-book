@@ -2,7 +2,7 @@
   <v-app>
     <v-main>
       <AppHeader v-if="activeRoute !== 'home'" />
-      <v-hover v-slot="{ isHovering, props }"
+      <v-hover v-slot="{ isHovering, props }" open-delay="200" close-delay="200"
         ><v-navigation-drawer
           v-bind="props"
           v-model="drawer"

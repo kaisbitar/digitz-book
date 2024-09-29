@@ -21,6 +21,7 @@ export const useQuranStore = defineStore("Quran", {
     suras: {},
     scrollTrigger: false,
     drawerState: true,
+    versesMobileView: false,
     activeSuraTab: "numberOfVerses",
     activeRoute: "search",
     chartFreqType: "words",
@@ -38,6 +39,9 @@ export const useQuranStore = defineStore("Quran", {
     ],
   },
   getters: {
+    getVersesMobileView: (state) => {
+      return state.versesMobileView
+    },
     getFontSize: (state) => {
       return state.fontSize
     },
@@ -83,6 +87,9 @@ export const useQuranStore = defineStore("Quran", {
     },
   },
   actions: {
+    setVersesMobileView(state) {
+      this.versesMobileView = state
+    },
     setFontSize(state) {
       this.fontSize = state
     },

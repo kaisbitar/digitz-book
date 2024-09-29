@@ -1,43 +1,48 @@
 <template>
-  <!-- <v-dialog
-        :modelValue="modelValue"
-        width="900"
-        @update:modelValue="$emit('update:modelValue', $event)"
-        @click:outside="handleClose"
-      > -->
-  <!-- <template v-slot:default="{ isActive }"> -->
-  <v-container>
-    <div class="text-h3">
-      <span v-for="(word, index) in verseWords" :key="index">
-        <v-tooltip bottom>
-          <template v-slot:activator="{ props }">
-            <span
-              v-bind="props"
-              class="mx-1"
-              @mouseover="displayMeaning(word)"
-              >{{ word }}</span
-            >
-          </template>
-          <!-- Display the meaning as HTML inside the tooltip, each array element separated -->
-          <span v-if="meanings[word]">
-            <span
-              v-for="(meaning, i) in meanings[word]"
-              :key="i"
-              v-html="meaning"
-            ></span>
+  <v-dialog
+    :modelValue="modelValue"
+    fullscreen
+    @update:modelValue="$emit('update:modelValue', $event)"
+    @click:outside="handleClose"
+  >
+    <template #default="{ isActive }">
+      <v-toolbar>
+        <v-spacer></v-spacer>
+        <v-btn icon @click="handleClose">
+          <v-icon>mdi-arrow-left</v-icon>
+        </v-btn>
+      </v-toolbar>
+      <v-container>
+        <div class="text-h3">
+          <span v-for="(word, index) in verseWords" :key="index">
+            <v-tooltip bottom>
+              <template v-slot:activator="{ props }">
+                <span
+                  v-bind="props"
+                  class="mx-1"
+                  @mouseover="displayMeaning(word)"
+                  >{{ word }}</span
+                >
+              </template>
+              <span v-if="meanings[word]">
+                <span
+                  v-for="(meaning, i) in meanings[word]"
+                  :key="i"
+                  v-html="meaning"
+                ></span>
+              </span>
+              <span v-else>Loading...</span>
+            </v-tooltip>
           </span>
-          <span v-else>Loading...</span>
-        </v-tooltip>
-      </span>
-    </div>
-
-    <div class="text-h3">
-      <span class="text-caption">كلمة</span>{{ countVerseWords(verse) }}
-    </div>
-    <div class="text-h3">
-      <span class="text-caption">حرف</span>{{ countVerseLetters(verse) }}
-    </div>
-  </v-container>
+        </div>
+        <AppCountChips
+          :wordCount="countVerseWords(verse)"
+          :letterCount="countVerseLetters(verse)"
+          verse
+        />
+      </v-container>
+    </template>
+  </v-dialog>
 </template>
 
 <script setup>

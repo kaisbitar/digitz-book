@@ -33,6 +33,9 @@ export default createVuetify({
           "hover-color": "#f7f7f7",
           "verse-number-chip": "#fafafa",
           "on-verse-number-chip": "#7B7B7B",
+          versesCount: "#049098",
+          wordCount: "#639804",
+          letterCount: "#5d0498",
         },
       },
       dark: {
@@ -48,6 +51,9 @@ export default createVuetify({
           "hover-color": "#3f3e3e",
           "verse-number-chip": "#575353",
           "on-verse-number-chip": "#000000",
+          versesCount: "#9eefff",
+          wordCount: "#33FF57",
+          letterCount: "#ffd576",
         },
       },
       // testing: {
