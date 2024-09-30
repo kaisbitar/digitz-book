@@ -1,8 +1,12 @@
 <template>
-  <span v-for="(word, index) in verse" :key="index">
+  <div v-for="(word, index) in verseWords" :key="index" class="d-inline-block">
     <v-tooltip bottom>
       <template v-slot:activator="{ props }">
-        <span v-bind="props" class="mx-1" @mouseover="displayMeaning(word)">
+        <span
+          v-bind="props"
+          @mouseover="displayMeaning(word)"
+          class="word-tooltip ml-2"
+        >
           {{ word }}
         </span>
       </template>
@@ -17,7 +21,7 @@
         <v-progress-circular indeterminate></v-progress-circular
       ></span>
     </v-tooltip>
-  </span>
+  </div>
 </template>
 
 <script setup>
@@ -41,3 +45,8 @@ const displayMeaning = async (word) => {
   }
 }
 </script>
+<style lang="scss">
+.word-tooltip {
+  font-size: 30px;
+}
+</style>

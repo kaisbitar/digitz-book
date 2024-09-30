@@ -1,6 +1,6 @@
 <template>
   <v-chip
-    v-if="!verse"
+    v-if="!isVerse"
     size="x-small"
     variant="outlined"
     class="ml-1"
@@ -16,7 +16,7 @@
     :class="wordCount <= 0 ? 'text-red' : 'word-count'"
   >
     <span class="ml-1">{{ wordCount }} </span>
-    <span v-if="sura || verse"> كلمة</span>
+    <span v-if="isSura || isVerse"> كلمة</span>
     <span v-else> مرة </span>
   </v-chip>
   <v-chip
@@ -41,10 +41,10 @@ const props = defineProps({
   versesCount: {
     type: Number,
   },
-  sura: {
+  isSura: {
     type: Boolean,
   },
-  verse: {
+  isVerse: {
     type: Boolean,
   },
 })
