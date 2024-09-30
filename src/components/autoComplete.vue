@@ -35,13 +35,13 @@
 
     <template v-slot:item="{ item, index, props }">
       <v-list v-bind="props">
-        <v-list-item @click="handleNewSearch">
-          <VerseSummary
-            :index="index"
-            :item="item.raw"
-            :textToHighlight="search"
-          />
-        </v-list-item>
+        <VerseSummary
+          class="mr-5"
+          @click="handleNewSearch"
+          :index="index"
+          :item="item.raw"
+          :textToHighlight="search"
+        />
       </v-list>
     </template>
   </v-autocomplete>
@@ -90,5 +90,8 @@ onMounted(() => {})
 <style scoped>
 .search-count-header {
   z-index: 5;
+}
+.v-list.v-theme--dark.v-list--density-default.v-list--one-line {
+  background: rgb(var(--v-theme-second-background));
 }
 </style>

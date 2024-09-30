@@ -12,6 +12,7 @@ export const useQuranStore = defineStore("Quran", {
     target: {
       fileName: "001الفاتحة",
       verseIndex: 1,
+      verseNumberToQuran: 1,
     },
     researchResults: [],
     selectedSearch: [],

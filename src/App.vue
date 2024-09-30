@@ -92,7 +92,6 @@ th {
 .highlight-match {
   background-color: rgb(var(--v-theme-highlight));
   color: rgb(var(--v-theme-on-highlight));
-  font-weight: bold;
 }
 
 .not-selected {
@@ -112,7 +111,13 @@ th {
 .letter-count {
   color: rgb(var(--v-theme-letterCount)) !important;
 }
-.v-toolbar__content {
-  // position: absolute !important;
+.dialog-header {
+  display: flex;
+  align-items: center;
+  margin-top: -60px;
+  z-index: 852;
+  position: relative;
+  margin-right: 15px;
+  max-width: 80%;
 }
 </style>

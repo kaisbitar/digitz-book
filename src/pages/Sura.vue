@@ -1,5 +1,9 @@
 <template>
-  <VerseDetails v-model="showVerseDetails" :verse="selectedVerseText" />
+  <VerseDetails
+    v-model="showVerseDetails"
+    :verse="selectedVerseText"
+    :title="fileName"
+  />
   <SuraHeader
     :title="fileName"
     :tabs="tabs"

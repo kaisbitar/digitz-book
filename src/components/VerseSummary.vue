@@ -1,7 +1,7 @@
 <template>
   <!-- <v-lazy :options="{ threshold: 0.9 }" transition="fade-transition"> -->
-  <div class="d-flex mt-2 align-center mr-n3">
-    <v-chip size="x-small" variant="outlined" class="fixed-width ml-2">
+  <div class="d-flex mt-2 align-center">
+    <v-chip size="x-small" variant="outlined" class="fixed-width ml-3">
       {{ index + 1 }}
     </v-chip>
 

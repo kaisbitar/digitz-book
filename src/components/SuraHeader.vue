@@ -12,7 +12,7 @@
         :wordCount="numberOfWords"
         :versesCount="numberOfVerses"
         :letterCount="numberOfLetters"
-        sura
+        isSura
       />
     </div>
     <v-tabs

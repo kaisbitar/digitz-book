@@ -4,11 +4,12 @@
     @update:modelValue="$emit('update:modelValue', $event)"
     @click:outside="handleClose"
     fullscreen
+    transition="slide-x-transition"
   >
     <template v-slot:default="{ isActive }">
       <v-sheet>
         <AppClosingBar @close="handleClose" />
-        <div class="sura-dialog-header">
+        <div class="dialog-header">
           <h1 class="ml-1">{{ searchData.inputText }}</h1>
           <AppCountChips
             :wordCount="searchData.wordCount"
@@ -39,14 +40,4 @@ const handleClose = () => {
 }
 </script>
 
-<style lang="scss">
-.sura-dialog-header {
-  display: flex;
-  align-items: center;
-  margin-top: -60px;
-  z-index: 852;
-  position: relative;
-  margin-right: 15px;
-  max-width: 80%;
-}
-</style>
+<style lang="scss"></style>

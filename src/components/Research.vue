@@ -1,6 +1,6 @@
 <template>
   <v-row class="mb-1">
-    <v-col class="pb-1">
+    <v-col cols="5" class="pb-1">
       <h1>{{ chipsTitle }}</h1>
       <AppCountChips
         :wordCount="chipsData[selectedChipIndex]?.wordCount"
