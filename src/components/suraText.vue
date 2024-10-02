@@ -73,8 +73,8 @@ onMounted(() => {
 .sura-text-container {
   display: block;
   line-height: 1.8;
-  min-height: 73vh;
-  max-height: 73vh;
+  min-height: 72vh;
+  max-height: 72vh;
   overflow-y: auto;
 }
 

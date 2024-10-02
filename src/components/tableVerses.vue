@@ -119,4 +119,9 @@ onMounted(scrollToActive)
 .v-list {
   height: 401px !important;
 }
+.tableStyle {
+  min-height: 71vh;
+  max-height: 72vh;
+  margin-top: -5px !important;
+}
 </style>

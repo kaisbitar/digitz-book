@@ -1,7 +1,7 @@
 <template>
-  <v-row class="mb-1">
+  <v-row class="research-row">
     <v-col cols="5" class="pb-1">
-      <h1>{{ chipsTitle }}</h1>
+      <h1 class="mb-n1">{{ chipsTitle }}</h1>
       <AppCountChips
         :wordCount="chipsData[selectedChipIndex]?.wordCount"
         :versesCount="chipsData[selectedChipIndex]?.versesCount"
@@ -31,6 +31,12 @@ const breakpoint = computed(() =>
 </script>
 
 <style scoped>
+.research-row {
+  max-height: 135px;
+  overflow: scroll;
+  position: relative;
+  margin-bottom: 7px;
+}
 @media (max-width: 600px) {
   .flex-column {
     flex-direction: column !important;

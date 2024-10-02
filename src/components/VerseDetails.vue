@@ -1,7 +1,6 @@
 <template>
   <v-dialog
     :modelValue="modelValue"
-    fullscreen
     @update:modelValue="$emit('update:modelValue', $event)"
     @click:outside="handleClose"
     transition="slide-x-transition"

@@ -7,7 +7,7 @@
   <v-toolbar>
     <v-spacer></v-spacer>
     <v-btn icon @click="$emit('close')">
-      <v-icon>mdi-arrow-left</v-icon>
+      <v-icon>mdi-less-than</v-icon>
     </v-btn>
   </v-toolbar>
 </template>

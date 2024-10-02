@@ -1,11 +1,11 @@
 <template>
   <div
-    class="d-flex flex-wrap mb-1"
+    class="d-flex flex-wrap mb-2 mt-1"
     :class="breakpoint === 'mobile' ? 'flex-column' : ''"
     justify="space-between"
   >
-    <div class="mb-1 ml-2">
-      <h1 :style="{ color: $vuetify.theme.currentTheme }">
+    <div class="sura-title mb-1 ml-2">
+      <h1 class="mb-n1" :style="{ color: $vuetify.theme.currentTheme }">
         {{ title }}
       </h1>
       <AppCountChips

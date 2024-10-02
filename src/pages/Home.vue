@@ -34,6 +34,6 @@ const goToPage = (page) => {
   font-size: 2rem;
 }
 .fill-height {
-  height: 100vh; /* Full viewport height */
+  height: 100vh;
 }
 </style>

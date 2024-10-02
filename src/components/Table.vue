@@ -83,7 +83,6 @@ onMounted(() => {
 }
 .v-table__wrapper {
   width: auto;
-  /* overflow-x: hidden !important; */
 }
 .v-table--fixed-height > .v-table__wrapper {
   overflow-y: auto;
