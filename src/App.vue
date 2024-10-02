@@ -32,10 +32,11 @@ onMounted(() => {
 @import "@/styles/styles.scss";
 html {
   font-size: var(--font-size);
+  // overflow: hidden;
+  // position: relative;
 }
-body {
-  overflow: hidden;
-}
+// body {
+// }
 .v-application,
 .v-overlay-container,
 .v-tab,
@@ -113,11 +114,11 @@ th {
 }
 .dialog-header {
   display: flex;
-  align-items: center;
-  margin-top: -60px;
-  z-index: 852;
+  /* margin-top: -48px; */
   position: relative;
-  margin-right: 15px;
-  max-width: 80%;
+  /* margin-right: initial; */
+  justify-content: flex-end;
+  margin-left: 56px;
+  align-items: baseline;
 }
 </style>

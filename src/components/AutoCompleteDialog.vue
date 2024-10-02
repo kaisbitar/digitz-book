@@ -3,7 +3,7 @@
     :modelValue="modelValue"
     @update:modelValue="$emit('update:modelValue', $event)"
     @click:outside="handleClose"
-    :transition="'fade'"
+    transition="fab"
     fullscreen
     :overlay="false"
   >

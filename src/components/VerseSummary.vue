@@ -9,10 +9,10 @@
       <div class="text-blue mb-n1">{{ item.fileName }}</div>
       <div v-html="highlight(item.verseText, textToHighlight)" />
       <div class="mt-n1 text-caption text-grey">
-        <span class="ml-7">رقم: {{ item.verseIndex }}</span>
-        <span class="ml-7">كلمة: {{ item.numberOfWords }} </span>
-        <span class="ml-7">حرف: {{ item.numberOfLetters }} </span>
-        <span class="ml-7">مصحف: {{ item.verseNumberToQuran }}</span>
+        <span class="ml-5">رقم: {{ item.verseIndex }}</span>
+        <span class="ml-5">كلمة: {{ item.numberOfWords }} </span>
+        <span class="ml-5">حرف: {{ item.numberOfLetters }} </span>
+        <span class="ml-5">مصحف: {{ item.verseNumberToQuran }}</span>
       </div>
     </div>
   </div>

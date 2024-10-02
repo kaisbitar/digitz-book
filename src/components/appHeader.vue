@@ -1,5 +1,11 @@
 <template>
-  <v-app-bar class="" height="40" border flat>
+  <v-app-bar
+    class="position-fixed"
+    density="compact"
+    border
+    :elevation="2"
+    rounded="lg"
+  >
     <template v-slot:prepend>
       <v-toolbar-title>الكتاب المرقوم</v-toolbar-title>
       <v-app-bar-nav-icon
@@ -17,7 +23,7 @@
     </template>
     <template v-slot:append>
       <v-icon size="small" @click="handleNavigation('/')">mdi-home</v-icon>
-      <AppDropMenu :components="[ThemeToggle, AppZoom]"> </AppDropMenu>
+      <AppSettings :components="[ThemeToggle, AppZoom]"> </AppSettings>
     </template>
   </v-app-bar>
 </template>

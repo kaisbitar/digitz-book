@@ -25,10 +25,11 @@ export function useWindow(props) {
       if (!activeVerseItem) return
 
       const baseContainer = isDialog ? `.v-dialog ${container}` : `${container}`
+
       goTo(activeVerseItem, {
         container: baseContainer,
         offset: -100,
-        duration: 400,
+        duration: 300,
         easing: "easeInOutCubic",
       })
     }, 100)

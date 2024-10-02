@@ -52,7 +52,8 @@ onMounted(() => {
 
 <style scoped>
 .table-mobile-view {
-  max-height: 74vh;
+  min-height: 73vh;
+  max-height: 73vh;
   overflow-y: scroll;
   margin-top: -16px !important;
 }

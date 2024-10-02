@@ -33,13 +33,7 @@ watch(dynamicFontSize, (newSize) => {
   document.documentElement.style.setProperty("--dynamic-font-size", newSize)
   document.documentElement.style.setProperty("font-size", newSize)
 })
-onMounted(() => {
-  //   document.documentElement.style.setProperty(
-  //     "--dynamic-font-size",
-  //     dynamicFontSize.value
-  //   )
-  //   document.documentElement.style.setProperty("font-size", dynamicFontSize.value)
-})
+onMounted(() => {})
 </script>
 
 <style lang="scss">

@@ -40,8 +40,50 @@ const verseWords = computed(() => props.verse.split(" "))
 const displayMeaning = async (word) => {
   const appApi = import.meta.env.VITE_APP_API_URL
   if (!meanings[word]) {
-    // const response = await fetchWordMeaning(appApi, word)
-    // meanings[word] = response
+    const suffixes = [
+      "ة",
+      "ون",
+      "ين",
+      "ات",
+      "ي",
+      "ا",
+      "ي",
+      "ت",
+      "ون",
+      "ين",
+      "ات",
+      "ي",
+      "اء",
+      "ي",
+      "ات",
+      "ي",
+      "ين",
+      "ات",
+      "ي",
+      "ة",
+      "ي",
+      "ات",
+      "ي",
+      "ون",
+      "ين",
+      "ات",
+      "ي",
+      "ا",
+      "ي",
+      "ت",
+      "هم",
+      "نك",
+    ] // Expanded suffixes
+    // for (const suffix of suffixes) {
+    //   if (word.endsWith(suffix)) {
+    //     console.log(word.slice(0, -suffix.length))
+    //     return word.slice(0, -suffix.length)
+    // }
+    // }
+    const response = await fetchWordMeaning(appApi, word)
+    meanings[word] = response
+    console.log(response)
+    return meanings[word]
   }
 }
 </script>
