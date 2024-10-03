@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-import { ref, computed, defineProps } from "vue"
+import { ref, computed } from "vue"
 import { useQuranStore } from "@/stores/app"
 import { useWindow } from "@/mixins/window"
 const { scrollToActiveItem, currentBreakpoint } = useWindow()

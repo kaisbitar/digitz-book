@@ -20,7 +20,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, defineProps } from "vue"
+import { ref, computed, watch } from "vue"
 import { useQuranStore } from "@/stores/app"
 import { useRouter } from "vue-router"
 import { useWindow } from "@/mixins/window"

@@ -19,10 +19,6 @@
 </template>
 
 <script setup>
-import { useRouter } from "vue-router"
-import { useQuranStore } from "@/stores/app"
-import { defineEmits } from "vue"
-
 defineEmits(["navigateTo"])
 defineProps(["activeRoute"])
 </script>
