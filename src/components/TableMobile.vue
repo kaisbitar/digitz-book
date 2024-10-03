@@ -21,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, computed, watch, onMounted, defineEmits } from "vue"
+import { computed, watch, onMounted } from "vue"
 import { ref } from "vue"
 
 const selectedItem = ref("")
