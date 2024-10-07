@@ -46,9 +46,6 @@ const handleClose = () => {
 </script>
 
 <style lang="scss">
-.dialog-sura .sura-title {
-  // zoom: 0.7;
-}
 .dialog-header-count-chips {
   display: flex;
   align-items: center;

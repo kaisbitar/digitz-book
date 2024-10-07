@@ -1,9 +1,4 @@
 <template>
-  <VerseDetails
-    v-model="showVerseDetails"
-    :verse="selectedVerseText"
-    :title="fileName"
-  />
   <SuraHeader
     :title="fileName"
     :tabs="tabs"
@@ -39,6 +34,11 @@
     :chartFreqSeries="chartFreqSeries"
     :chartOptions="chartOptions"
     :height="chartWindowHeight"
+  />
+  <VerseDetails
+    v-model="showVerseDetails"
+    :verse="selectedVerseText"
+    :title="fileName"
   />
 </template>
 

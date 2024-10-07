@@ -23,9 +23,9 @@
 
     <template v-slot:selection> </template>
 
-    <template v-slot:prepend-item class="d-flex search-count-header mt-n2">
-      <v-container
-        ><v-btn @click="handleNewSearch" variant="tonal">ابحث</v-btn> "{{
+    <template v-slot:prepend-item>
+      <v-container>
+        <v-btn @click="handleNewSearch" variant="tonal">ابحث</v-btn> "{{
           search
         }}"
         <AppCountChips
@@ -34,7 +34,7 @@
       /></v-container>
     </template>
 
-    <template v-slot:item="{ item, index, props }">
+    <template v-slot:item="{ item, index, props }" class="mt-5">
       <v-list v-bind="props">
         <VerseSummary
           class="mr-5"
@@ -89,9 +89,6 @@ onMounted(() => {})
 </script>
 
 <style scoped>
-.search-count-header {
-  z-index: 5;
-}
 .v-list.v-theme--dark.v-list--density-default.v-list--one-line {
   background: rgb(var(--v-theme-second-background));
 }
