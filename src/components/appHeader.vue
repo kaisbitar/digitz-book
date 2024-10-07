@@ -72,6 +72,6 @@ watch(researchResults.value, (newValue) => {
 <style scoped>
 .v-toolbar-title {
   width: 163px;
-  margin-top: -7px;
+  /* margin-top: -7px;  */
 }
 </style>

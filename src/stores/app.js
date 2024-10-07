@@ -20,7 +20,7 @@ export const useQuranStore = defineStore("Quran", {
     oneQuranFile: [],
     QuranIndex: [],
     suras: {},
-    drawerState: true,
+    drawerState: false,
     versesMobileView: false,
     activeSuraTab: "numberOfVerses",
     activeRoute: "search",
@@ -169,7 +169,7 @@ export const useQuranStore = defineStore("Quran", {
       }
 
       if (!this.suras[this.target.fileName].suraDetails) {
-        const appApi = import.meta.VUE_APP_API_URL
+        const appApi = import.meta.env.VITE_APP_API_URL
         const suraDetails = await fetchSuraDetails(appApi, this.target.fileName)
         this.setSuraDetails({ suraDetails })
         return suraDetails

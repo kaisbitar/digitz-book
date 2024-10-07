@@ -120,8 +120,8 @@ onMounted(scrollToActive)
   height: 401px !important;
 }
 .tableStyle {
-  min-height: 71vh;
-  max-height: 72vh;
+  min-height: 66vh;
+  max-height: 66vh;
   margin-top: -5px !important;
 }
 </style>
