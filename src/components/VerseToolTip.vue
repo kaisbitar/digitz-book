@@ -1,40 +1,37 @@
 <template>
   <div v-for="(word, index) in verseWords" :key="index" class="d-inline-block">
-    <v-tooltip bottom>
-      <template v-slot:activator="{ props }">
-        <span
-          v-bind="props"
-          @mouseover="displayMeaning(word)"
-          class="word-tooltip ml-2"
-        >
-          {{ word }}
-        </span>
-      </template>
-      <template
-        v-if="meanings[word]"
-        v-for="(meaning, i) in meanings[word]"
-        :key="i"
-      >
-        <v-card class="pa-4 mb-1 elevation-2">
-          <v-card-title
-            class="text-h6"
-            v-html="highlight(meaning.word, word)"
-          />
-          <v-card-text>
-            <div class="meaning mb-2">
-              <strong>المعنى: </strong>
-              <span v-html="highlight(meaning.meaning, word)" />
-            </div>
-            <div class="dictionary-source">
-              <em>المصدر: {{ meaning.dictionary }}</em>
-            </div>
-          </v-card-text>
-        </v-card>
-      </template>
-      <template v-else>
-        <v-progress-circular indeterminate></v-progress-circular
-      ></template>
-    </v-tooltip>
+    <!-- <v-tooltip bottom> -->
+    <!-- <template v-slot:activator="{ props }"> -->
+    <span
+      v-bind="props"
+      @click="displayMeaning(word)"
+      class="word-tooltip ml-2"
+    >
+      {{ word }}
+    </span>
+    <!-- </template> -->
+    <template
+      v-if="meanings[word]"
+      v-for="(meaning, i) in meanings[word]"
+      :key="i"
+    >
+      <v-card class="pa-4 mb-1 elevation-12 bg-yellow">
+        <v-card-title class="text-h6" v-html="highlight(meaning.word, word)" />
+        <v-card-text>
+          <div class="meaning mb-2">
+            <strong>المعنى: </strong>
+            <span v-html="highlight(meaning.meaning, word)" />
+          </div>
+          <div class="dictionary-source">
+            <em>المصدر: {{ meaning.dictionary }}</em>
+          </div>
+        </v-card-text>
+      </v-card>
+    </template>
+    <!-- <template v-else>
+      <v-progress-circular indeterminate></v-progress-circular
+    ></template> -->
+    <!-- </v-tooltip> -->
   </div>
 </template>
 
