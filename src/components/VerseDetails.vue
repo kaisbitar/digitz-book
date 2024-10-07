@@ -3,20 +3,27 @@
     :modelValue="modelValue"
     @update:modelValue="$emit('update:modelValue', $event)"
     @click:outside="handleClose"
-    transition="slide-x-transition"
+    transition="slide-y-transition"
+    :fullscreen="currentBreakpoint === 'mobile'"
+    :width="currentBreakpoint === 'mobile' ? '100%' : '70%'"
+    max-width="1200"
+    height="100%"
   >
     <template #default="{ isActive }">
       <v-sheet>
         <AppClosingBar @close="handleClose" />
         <div class="dialog-header">
-          <h1 class="ml-1">{{ title }}: {{ selectedVerseIndex }}</h1>
+          <AppCountChips
+            :wordCount="countVerseWords(verse)"
+            :letterCount="countVerseLetters(verse)"
+            isSura
+          />
+          <span class="mr-2">{{ title }} : {{ selectedVerseIndex }}</span>
         </div>
-        <v-container class="ml-1"><VerseToolTip :verse="verse" /></v-container>
-        <AppCountChips
-          :wordCount="countVerseWords(verse)"
-          :letterCount="countVerseLetters(verse)"
-          isVerse
-        />
+        <v-container class="ml-1 pa-9">
+          <VerseToolTip :verse="verse" />
+        </v-container>
+
         <SuraFrequency
           :chartFreqSeries="[{ data: verseLengths }]"
           :chartOptions="chartOptions"
@@ -31,6 +38,8 @@
 import { useCounting } from "@/mixins/counting"
 import chartOptionsConfig from "@/assets/frequecyOptions"
 import { useQuranStore } from "@/stores/app"
+import { useWindow } from "@/mixins/window"
+const { currentBreakpoint } = useWindow()
 
 const store = useQuranStore()
 const emit = defineEmits(["update:modelValue"])

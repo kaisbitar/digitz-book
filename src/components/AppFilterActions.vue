@@ -1,26 +1,17 @@
 <template>
-  <v-btn
-    @click="handleShowVersesMobileView"
-    class="mr-1"
-    size="large"
-    variant="outlined"
-  >
-    <v-icon>
-      {{ isMobileView ? "mdi-format-list-bulleted" : "mdi-view-list" }}
-    </v-icon>
-  </v-btn>
+  <v-switch v-model="isMobileView" class="mr-1" label="" />
 </template>
 
 <script setup>
 import { useQuranStore } from "@/stores/app"
+import { computed } from "vue"
 
 const store = useQuranStore()
 
-const isMobileView = computed(() => store.getVersesMobileView)
-
-const handleShowVersesMobileView = () => {
-  store.setVersesMobileView(!store.getVersesMobileView)
-}
+const isMobileView = computed({
+  get: () => store.getVersesMobileView,
+  set: (value) => store.setVersesMobileView(value),
+})
 </script>
 
 <style scoped></style>

@@ -1,6 +1,6 @@
 <template>
   <v-chip
-    v-if="!isVerse"
+    v-if="versesCount >= 0"
     size="x-small"
     variant="outlined"
     class="ml-1"
@@ -16,7 +16,7 @@
     :class="wordCount <= 0 ? 'text-red' : 'word-count'"
   >
     <span class="ml-1">{{ wordCount }} </span>
-    <span v-if="isSura || isVerse"> كلمة</span>
+    <span v-if="isSura"> كلمة</span>
     <span v-else> مرة </span>
   </v-chip>
   <v-chip

@@ -34,6 +34,6 @@ const handleClose = () => {
 .auto-complete-container {
   padding: 52px;
   padding-right: 15px;
-  margin-top: -112px;
+  margin-top: -52px;
 }
 </style>

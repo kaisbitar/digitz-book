@@ -10,22 +10,41 @@
           {{ word }}
         </span>
       </template>
-      <span v-if="meanings[word]">
-        <span
-          v-for="(meaning, i) in meanings[word]"
-          :key="i"
-          v-html="meaning"
-        ></span>
-      </span>
-      <span v-else>
+      <template
+        v-if="meanings[word]"
+        v-for="(meaning, i) in meanings[word]"
+        :key="i"
+      >
+        <v-card class="pa-4 mb-1 elevation-2">
+          <v-card-title
+            class="text-h6"
+            v-html="highlight(meaning.word, word)"
+          />
+          <v-card-text>
+            <div class="meaning mb-2">
+              <strong>المعنى: </strong>
+              <span v-html="highlight(meaning.meaning, word)" />
+            </div>
+            <div class="dictionary-source">
+              <em>المصدر: {{ meaning.dictionary }}</em>
+            </div>
+          </v-card-text>
+        </v-card>
+      </template>
+      <template v-else>
         <v-progress-circular indeterminate></v-progress-circular
-      ></span>
+      ></template>
     </v-tooltip>
   </div>
 </template>
 
 <script setup>
-import { fetchWordMeaning } from "../api/api.js"
+import { fetchWordMeaning } from "@/api/api.js"
+import { ref, reactive, computed } from "vue"
+import { extractFromDictionnary } from "@/utils/dictionaryUtils.js"
+import { useInputFiltering } from "@/mixins/inputFiltering"
+
+const { highlight } = useInputFiltering()
 
 const props = defineProps({
   verse: {
@@ -34,61 +53,22 @@ const props = defineProps({
   },
 })
 const meanings = reactive({})
+const dialog = ref(false)
+const currentWord = ref("")
 
 const verseWords = computed(() => props.verse.split(" "))
 
 const displayMeaning = async (word) => {
+  currentWord.value = word
+  dialog.value = true
   const appApi = import.meta.env.VITE_APP_API_URL
+
   if (!meanings[word]) {
-    const suffixes = [
-      "ة",
-      "ون",
-      "ين",
-      "ات",
-      "ي",
-      "ا",
-      "ي",
-      "ت",
-      "ون",
-      "ين",
-      "ات",
-      "ي",
-      "اء",
-      "ي",
-      "ات",
-      "ي",
-      "ين",
-      "ات",
-      "ي",
-      "ة",
-      "ي",
-      "ات",
-      "ي",
-      "ون",
-      "ين",
-      "ات",
-      "ي",
-      "ا",
-      "ي",
-      "ت",
-      "هم",
-      "نك",
-    ] // Expanded suffixes
-    // for (const suffix of suffixes) {
-    //   if (word.endsWith(suffix)) {
-    //     console.log(word.slice(0, -suffix.length))
-    //     return word.slice(0, -suffix.length)
-    // }
-    // }
     const response = await fetchWordMeaning(appApi, word)
-    meanings[word] = response
-    console.log(response)
+    meanings[word] = extractFromDictionnary(response[0], currentWord)
+    console.log(meanings[word])
     return meanings[word]
   }
 }
 </script>
-<style lang="scss">
-.word-tooltip {
-  font-size: 30px;
-}
-</style>
+<style lang="scss"></style>

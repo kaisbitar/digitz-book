@@ -6,6 +6,8 @@
     :options="chartOptions"
     :height="height"
   />
+  <ChartRadioButtons :intitalType="chartFreqType" @typeChanged="changeType" />
+  {{ chartFreqSeries }}
 </template>
 
 <script setup>

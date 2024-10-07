@@ -114,11 +114,10 @@ th {
 }
 .dialog-header {
   display: flex;
-  /* margin-top: -48px; */
+  margin-top: -35px;
   position: relative;
-  /* margin-right: initial; */
   justify-content: flex-end;
   margin-left: 56px;
-  align-items: baseline;
+  align-items: center;
 }
 </style>

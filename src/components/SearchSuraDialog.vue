@@ -3,16 +3,21 @@
     :modelValue="modelValue"
     @update:modelValue="$emit('update:modelValue', $event)"
     @click:outside="handleClose"
-    transition="slide-x-transition"
+    transition="slide-y-transition"
+    :fullscreen="currentBreakpoint === 'mobile'"
+    :width="currentBreakpoint === 'mobile' ? '100%' : '70%'"
+    max-width="1200"
+    height="100%"
   >
     <template v-slot:default="{ isActive }">
       <v-sheet>
         <AppClosingBar @close="handleClose" />
         <div class="dialog-header">
-          <div class="dialog-header-count-chips">
-            <AppCountChips :wordCount="searchData.wordCount" :isVerse="false" />
-          </div>
-          <span>{{ searchData.inputText }}</span>
+          <AppCountChips
+            :wordCount="searchData.wordCount"
+            :versesCount="searchData.versesCount"
+          />
+          <span class="mr-2">{{ searchData.inputText }}</span>
         </div>
 
         <v-container class="dialog-sura">
@@ -25,6 +30,8 @@
 
 <script setup>
 import Sura from "@/pages/Sura.vue"
+import { useWindow } from "@/mixins/window"
+const { currentBreakpoint } = useWindow()
 
 const emit = defineEmits(["update:modelValue"])
 
@@ -40,10 +47,10 @@ const handleClose = () => {
 
 <style lang="scss">
 .dialog-sura .sura-title {
-  zoom: 0.7;
+  // zoom: 0.7;
 }
 .dialog-header-count-chips {
   display: flex;
-  flex-direction: column;
+  align-items: center;
 }
 </style>
