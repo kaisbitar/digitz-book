@@ -5,11 +5,19 @@
       <v-icon>mdi-less-than</v-icon>
     </v-btn>
   </v-toolbar>
+  <div v-if="closingBarData" class="dialog-header">
+    <AppCountChips
+      :wordCount="closingBarData.wordCount"
+      :versesCount="closingBarData.versesCount"
+    />
+    <span class="mr-2">{{ closingBarData.inputText }}</span>
+  </div>
 </template>
 
 <script setup>
-import { onMounted } from "vue"
-
+const props = defineProps({
+  closingBarData: Object,
+})
 const emit = defineEmits(["close"])
 </script>
 

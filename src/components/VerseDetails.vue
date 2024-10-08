@@ -1,45 +1,25 @@
 <template>
-  <v-dialog
+  <AppDialog
     :modelValue="modelValue"
-    @update:modelValue="$emit('update:modelValue', $event)"
-    @click:outside="handleClose"
-    transition="slide-y-transition"
-    :fullscreen="currentBreakpoint === 'mobile'"
-    :width="currentBreakpoint === 'mobile' ? '100%' : '70%'"
-    max-width="1200"
-    height="100%"
+    @update:modelValue="handleClose"
+    :closingBarData="closingBarData"
   >
-    <template #default="{ isActive }">
-      <v-sheet>
-        <AppClosingBar @close="handleClose" />
-        <div class="dialog-header">
-          <AppCountChips
-            :wordCount="countVerseWords(verse)"
-            :letterCount="countVerseLetters(verse)"
-            isSura
-          />
-          <span class="mr-2">{{ title }} : {{ selectedVerseIndex }}</span>
-        </div>
-        <v-container class="ml-1 pa-9">
-          <VerseToolTip :verse="verse" />
-        </v-container>
-
-        <SuraFrequency
-          :chartFreqSeries="[{ data: verseLengths }]"
-          :chartOptions="chartOptions"
-          :height="chartWindowHeight"
-        />
-      </v-sheet>
-    </template>
-  </v-dialog>
+    <v-container>
+      <VerseWords :verse="verse" />
+    </v-container>
+    <SuraFrequency
+      :chartFreqSeries="[{ data: verseLengths }]"
+      :chartOptions="chartOptions"
+      :height="chartWindowHeight"
+    />
+  </AppDialog>
 </template>
 
 <script setup>
 import { useCounting } from "@/mixins/counting"
 import chartOptionsConfig from "@/assets/frequecyOptions"
 import { useQuranStore } from "@/stores/app"
-import { useWindow } from "@/mixins/window"
-const { currentBreakpoint } = useWindow()
+import AppDialog from "./AppDialog.vue"
 
 const store = useQuranStore()
 const emit = defineEmits(["update:modelValue"])
@@ -58,6 +38,12 @@ const chartWindowHeight = computed(() => window.innerHeight - 260)
 const verseLengths = computed(() =>
   props.verse.split(" ").map((word) => word.length)
 )
+
+const closingBarData = computed(() => ({
+  wordCount: countVerseWords(props.verse),
+  letterCount: countVerseLetters(props.verse),
+  inputText: `${props.title} : ${selectedVerseIndex.value}`,
+}))
 
 const handleClose = () => {
   emit("update:modelValue", false)
