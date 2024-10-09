@@ -1,7 +1,7 @@
 <template>
   <v-autocomplete
     v-model:search="search"
-    :items="OneQuranFile"
+    :items="oneQuranFile"
     :menu-props="{ maxWidth: '100%', maxHeight: '500px' }"
     item-value="verseNumberToQuran"
     item-title="verseText"
@@ -31,7 +31,9 @@
         <AppCountChips
           :wordCount="computedWordCount"
           :versesCount="versesCount()"
-      /></v-container>
+          :labels="{ word: 'مرة', verse: 'آية' }"
+        />
+      </v-container>
     </template>
 
     <template v-slot:item="{ item, index, props }" class="mt-5">
@@ -58,7 +60,7 @@ const search = ref(null)
 const { countWordMatch } = useCounting()
 const autocompleteRef = ref(null)
 
-const OneQuranFile = computed(() => store.getOneQuranFile)
+const oneQuranFile = computed(() => store.getOneQuranFile)
 const searchResults = computed(() => store.getResearchResults)
 
 const computedWordCount = computed(() =>

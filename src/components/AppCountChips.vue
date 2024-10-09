@@ -6,7 +6,7 @@
     class="ml-1"
     :class="versesCount <= 0 ? 'text-red' : 'verses-count'"
   >
-    {{ versesCount }} آية
+    {{ versesCount }} {{ labels?.verse }}
   </v-chip>
   <v-chip
     v-if="wordCount >= 0"
@@ -15,9 +15,7 @@
     class="ml-1"
     :class="wordCount <= 0 ? 'text-red' : 'word-count'"
   >
-    <span class="ml-1">{{ wordCount }} </span>
-    <span v-if="isSura"> كلمة</span>
-    <span v-else> مرة </span>
+    {{ wordCount }} {{ labels?.word }}
   </v-chip>
   <v-chip
     v-if="letterCount"
@@ -26,7 +24,7 @@
     variant="outlined"
     :class="letterCount <= 0 ? 'text-red' : 'letter-count'"
   >
-    {{ letterCount }} حرف
+    {{ letterCount }} {{ labels?.letter }}
   </v-chip>
 </template>
 
@@ -41,11 +39,8 @@ const props = defineProps({
   versesCount: {
     type: Number,
   },
-  isSura: {
-    type: Boolean,
-  },
-  isVerse: {
-    type: Boolean,
+  labels: {
+    type: Object,
   },
 })
 </script>

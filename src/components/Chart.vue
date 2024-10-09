@@ -1,53 +1,10 @@
 <template>
-  <div>
-    <VueApexCharts
-      :options="options"
-      :height="height"
-      :series="series"
-      ref="myChart"
-      @markerClick="handleClick"
-    />
-    <v-overlay
-      :modelValue="isLoading"
-      :absolute="true"
-      :opacity="0.6"
-      color="white"
-    >
-      <v-progress-circular color="indigo" indeterminate></v-progress-circular>
-    </v-overlay>
-  </div>
+  <VueApexCharts :series="series" :options="options" :height="height" />
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue"
-import { useQuranStore } from "@/stores/app"
 import VueApexCharts from "vue3-apexcharts"
-
-const props = defineProps([
-  "height",
-  "options",
-  "series",
-  "isLoading",
-  "includeTab",
-])
-const store = useQuranStore()
-
-const myChart = ref(null)
-const windowHeight = ref(window.innerHeight)
-
-const handleClick = (event, chartContext, config) => {
-  // store.setTarget({
-  //   fileName: props.fileName, // Make sure to pass fileName as a prop if needed
-  //   verseIndex: config.dataPointIndex + 1,
-  //   verseNumberToQuran: 'AppChart',
-  // })
-}
-
-const targetedVerse = computed(() => store.getTarget.verseIndex)
-
-onMounted(() => {
-  // Any mounted logic can go here
-})
+const props = defineProps(["height", "options", "series"])
 </script>
 
 <style>
@@ -65,20 +22,20 @@ onMounted(() => {
   margin-right: -5px;
 }
 .apexcharts-tooltip {
-  background: none !important;
-  color: rgb(31, 31, 31);
-  font-family: "Tajawal", sans-serif;
+  border: none !important;
   font-size: 19px !important;
   white-space: normal !important;
   max-width: 300px;
-  background: #ffffff !important;
-  border-top: 15px solid #efebe9 !important;
-  box-shadow: -1px 1px 10px 0px #ccc;
+  background: rgba(255, 255, 255, 0) !important;
+  color: rgb(var(--v-theme-on-surface)) !important;
+  box-shadow: none !important;
 }
 .tipInfo2 {
+  background: rgb(var(--v-theme-surface)) !important;
   border-top: 3px solid #4db6ac !important;
 }
 .tipInfo {
+  background: rgb(var(--v-theme-surface)) !important;
   border: 1px solid rgb(218, 218, 218);
   border-top: 3px solid #2195f3;
   border-radius: 3px;
@@ -90,7 +47,8 @@ onMounted(() => {
   font-size: 12px;
 }
 .tipText {
-  border-top: 1px solid rgb(218, 218, 218);
-  border-right: 3px solid #cfcfcf;
+  background: rgb(var(--v-theme-surface)) !important;
+  border-top: 3px solid rgb(218, 218, 218);
+  border-right: 1px solid #cfcfcf;
 }
 </style>

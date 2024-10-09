@@ -39,7 +39,7 @@ const props = defineProps({
 
 <style lang="scss">
 .meaning-cards {
-  height: 100%;
+  height: 93%;
   overflow: scroll;
   background: rgb(var(--v-theme-second-background)) !important;
 }

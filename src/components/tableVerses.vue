@@ -31,7 +31,7 @@ const { scrollToActiveItem, currentBreakpoint } = useWindow()
 
 const store = useQuranStore()
 
-const props = defineProps(["verses", "isLoading", "versesInputText"])
+const props = defineProps(["verses", "versesInputText"])
 const emit = defineEmits(["verseSelected"])
 
 const versesHeaders = ref([

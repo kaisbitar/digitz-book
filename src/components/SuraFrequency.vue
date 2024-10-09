@@ -1,13 +1,6 @@
 <template>
   <ChartRadioButtons :intitalType="chartFreqType" @typeChanged="changeType" />
-  <Chart
-    :isLoading="isLoading"
-    :series="chartFreqSeries"
-    :options="chartOptions"
-    :height="height"
-  />
-  <ChartRadioButtons :intitalType="chartFreqType" @typeChanged="changeType" />
-  {{ chartFreqSeries }}
+  <Chart :series="chartFreqSeries" :options="chartOptions" :height="height" />
 </template>
 
 <script setup>
@@ -15,9 +8,8 @@ import { useQuranStore } from "@/stores/app"
 
 const props = defineProps({
   chartFreqSeries: Array,
-  height: [Number, String],
-  isLoading: Boolean,
   chartOptions: Object,
+  height: [Number, String],
 })
 
 const store = useQuranStore()

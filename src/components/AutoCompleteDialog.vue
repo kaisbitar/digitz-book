@@ -1,8 +1,9 @@
 <template>
-  <AppDialog :modelValue="modelValue" @update:modelValue="handleClose">
+  <AppDialog :modelValue="modelValue" transition="fab">
     <AutoComplete v-click-outside="handleClose" class="auto-complete-dialog" />
   </AppDialog>
 </template>
+
 <script setup>
 const emit = defineEmits(["update:modelValue"])
 const props = defineProps({

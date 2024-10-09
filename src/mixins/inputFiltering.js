@@ -33,7 +33,6 @@ export function useInputFiltering() {
 
   const captureHoveredWord = (word) => {
     highlightedText.value = word
-    console.log(word)
   }
 
   const handleIconEvent = (eventName) => {

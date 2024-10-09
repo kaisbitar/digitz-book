@@ -1,5 +1,3 @@
-// src/utils/suraUtils.js
-
 export const prepareSuraData = ({
   oneQuranFile,
   startIndex,
@@ -20,8 +18,8 @@ export const prepareSuraData = ({
     letters.push(item.verseText.replace(/ /g, "").length)
     words.push(item.verseText.split(" ").length)
   })
-  letterSeries.value = [{ data: letters }]
-  wordsSeries.value = [{ data: words }]
+  letterSeries.value = [{ data: letters.reverse() }]
+  wordsSeries.value = [{ data: words.reverse() }]
 }
 
 export const prepareMushafData = ({
@@ -41,38 +39,38 @@ export const prepareMushafData = ({
 }
 
 export const setSuraToolTip = ({
-  suraTextArray,
+  reversedSuraTextArray,
   tooltipLabel,
   tooltipLabel2,
   chartOptions,
 }) => {
   var x = {
     custom: ({ series, seriesIndex, dataPointIndex, w }) => {
-      return (
-        '<div class="mr-2 ml-2 pt-2">' +
-        '<div class="d-flex"><span class="tipInfo"><span class="tipLabel">' +
-        tooltipLabel2.value +
-        " </span> " +
-        parseInt(dataPointIndex + 1) +
-        "</span>" +
-        '<span class="tipInfo tipInfo2">' +
-        w.globals.series[0][dataPointIndex] +
-        ' <span class="tipLabel">' +
-        tooltipLabel.value +
-        "</span></span></div>" +
-        '<p class="tipInfo tipText pr-1 pl-2">' +
-        suraTextArray.value[dataPointIndex] +
-        "</p>" +
-        "</div>"
-      )
+      const reversedIndex = reversedSuraTextArray.length - 1 - dataPointIndex
+      return `
+        <div class="mr-2 ml-2 pt-2">
+          <div class="d-flex">
+            <span class="tipInfo">
+              <span class="tipLabel">${tooltipLabel2.value} </span> ${parseInt(
+        reversedIndex + 1
+      )}
+            </span>
+            <span class="tipInfo tipInfo2">
+              ${w.globals.series[0][dataPointIndex]} <span class="tipLabel">${
+        tooltipLabel.value
+      }</span>
+            </span>
+          </div>
+          <p class="tipInfo tipText pr-1 pl-2">
+            ${reversedSuraTextArray[dataPointIndex]}
+          </p>
+        </div>`
     },
     shared: true,
     followCursor: true,
   }
-  chartOptions.value = {
-    ...chartOptions.value,
-    ...{ tooltip: x },
-  }
+  Object.assign(chartOptions.value, { tooltip: x })
+  return chartOptions.value
 }
 
 export const setMushafToolTip = ({ tableQuranIndex, setSuraToolTip }) => {

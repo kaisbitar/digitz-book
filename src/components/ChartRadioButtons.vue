@@ -31,10 +31,10 @@ onMounted(() => {
 
 <style>
 .chartTitleWrap {
-  width: 262px;
   position: absolute;
   z-index: 4;
+  /* width: 262px;
   margin-top: 25px !important;
-  background: #f0f8ff00;
+  background: #f0f8ff00; */
 }
 </style>

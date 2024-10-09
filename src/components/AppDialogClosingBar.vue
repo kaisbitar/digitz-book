@@ -9,6 +9,7 @@
     <AppCountChips
       :wordCount="closingBarData.wordCount"
       :versesCount="closingBarData.versesCount"
+      :labels="closingBarData.labels"
     />
     <span class="mr-2">{{ closingBarData.inputText }}</span>
   </div>
