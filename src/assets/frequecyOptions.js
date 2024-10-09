@@ -1,105 +1,116 @@
-const chartOptions = {
-  chart: {
-    type: "area",
-    offsetY: 20,
-    toolbar: {
-      show: true,
-      offsetY: 2,
-    },
-    dir: "rtl",
-  },
-  zoom: {
-    enabled: true,
-  },
-  plotOptions: {
-    bar: {
-      dataLabels: {
-        position: "top",
-      },
-    },
-  },
-  dataLabels: {
-    enabled: true,
-    // style: { colors: ['grey'] }
-  },
-  theme: {
-    monochrome: {
-      enabled: true,
-      color: "#4c4c4c",
-      // A1887F
-    },
-  },
-  stroke: {
-    curve: "smooth",
-    width: 1.2,
-    colors: ["#0000001f"],
-  },
-  markers: {
-    size: [0, 0],
-    color: "#000",
-    hover: {
-      size: 9,
-      sizeOffset: 3,
-      color: "#000",
-    },
-  },
-  xaxis: {
-    labels: {
-      show: true,
-    },
-    axisTicks: {
-      show: true,
-      maxTicksLimit: 40,
-      interval: 30,
-    },
-    tickAmount: undefined,
-    tickPlacement: "between",
-    title: {
-      show: true,
-      text: "تواتر الآيات",
-      offsetY: 10,
-      style: {
-        fontSize: "18px",
-        fontFamily: '"Roboto", sans-serif !important',
-      },
-    },
-    min: 1,
-  },
-  yaxis: {
-    floating: false,
-    showAlways: true,
-    labels: {
-      show: true,
-      style: {
-        fontFamily: '"Roboto", sans-serif !important',
-      },
-    },
-    title: {
-      offsetX: -50,
-      style: {
-        fontSize: "18px",
-        fontFamily: '"Roboto", sans-serif !important',
-      },
-    },
-    // min: 1,
-    // max: undefined,
-    // axisTicks: {
-    //   show: true,
-    //   maxTicksLimit: 2,
-    //   interval: 2,
-    // },
-    // tickAmount: 1,
-    // tickPlacement: "between",
-  },
-  colors: ["#000"],
-  grid: {
-    show: false,
-    padding: {
-      top: 0,
-      right: 30,
-      bottom: 0,
-      left: 30,
-    },
-  },
+// Creating categories for the chart to be reversed
+const generateCategories = (length) => {
+  return Array.from({ length }, (_, i) => i + 1).reverse()
 }
-export default chartOptions
+
+export const getChartOptions = (length) => {
+  const categories = generateCategories(length)
+  return {
+    chart: {
+      type: "area",
+      offsetY: 20,
+      toolbar: {
+        show: false,
+        offsetY: 2,
+      },
+      dir: "rtl",
+    },
+    zoom: {
+      enabled: true,
+    },
+    plotOptions: {
+      bar: {
+        dataLabels: {
+          position: "top",
+        },
+      },
+    },
+    dataLabels: {
+      enabled: true,
+      // style: { colors: ['grey'] }
+    },
+    theme: {
+      // mode: "dark",
+      monochrome: {
+        enabled: true,
+        color: "#4c4c4c",
+        // A1887F
+      },
+    },
+    stroke: {
+      curve: "smooth",
+      width: 1.2,
+      colors: ["#0000001f"],
+    },
+    markers: {
+      size: [10, 10],
+      color: "#000",
+      hover: {
+        size: 9,
+        sizeOffset: 3,
+        color: "#000",
+      },
+    },
+    xaxis: {
+      categories: categories,
+      labels: {
+        show: false,
+      },
+      axisTicks: {
+        show: false,
+        // maxTicksLimit: 200,
+        // interval: 5,
+      },
+      // tickAmount: 20,
+      // tickPlacement: "between",
+      // title: {
+      //   show: true,
+      //   text: "تواتر الآيات",
+      //   offsetY: 5,
+      //   style: {
+      //     fontSize: "18px",
+      //     fontFamily: '"Roboto", sans-serif !important',
+      //     color: "#000",
+      //   },
+      // },
+      min: 1,
+    },
+    yaxis: {
+      floating: true,
+      showAlways: false,
+      labels: {
+        show: false,
+        style: {
+          fontFamily: '"Roboto", sans-serif !important',
+        },
+      },
+      title: {
+        offsetX: -50,
+        style: {
+          fontSize: "18px",
+          fontFamily: '"Roboto", sans-serif !important',
+        },
+      },
+      min: 0,
+      max: undefined,
+      axisTicks: {
+        show: false,
+        maxTicksLimit: 2,
+        interval: 2,
+      },
+      tickAmount: 1,
+      tickPlacement: "between",
+    },
+    colors: ["#000"],
+    grid: {
+      show: false,
+      padding: {
+        top: 0,
+        right: 30,
+        bottom: 0,
+        left: 30,
+      },
+    },
+  }
+}
+export default getChartOptions

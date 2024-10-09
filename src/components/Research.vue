@@ -5,6 +5,7 @@
       <AppCountChips
         :wordCount="chipsData[selectedChipIndex]?.wordCount"
         :versesCount="chipsData[selectedChipIndex]?.versesCount"
+        :labels="{ word: 'مرة', verse: 'آية' }"
       />
     </v-col>
     <v-col>
@@ -32,7 +33,7 @@ const breakpoint = computed(() =>
 
 <style scoped>
 .research-row {
-  max-height: 135px;
+  max-height: 111px;
   overflow: scroll;
   position: relative;
   margin-bottom: 7px;

@@ -2,7 +2,7 @@
   <AppDialog
     :modelValue="modelValue"
     @update:modelValue="handleClose"
-    :closingBarData="searchData"
+    :closingBarData="closingBarData"
   >
     <v-container class="dialog-sura">
       <Sura :suraInputText="searchData.inputText" />
@@ -18,6 +18,13 @@ const props = defineProps({
   modelValue: Boolean,
   searchData: Object,
 })
+
+const closingBarData = computed(() => ({
+  wordCount: props.searchData.wordCount,
+  versesCount: props.searchData.versesCount,
+  inputText: props.searchData.inputText,
+  labels: { word: "مرة", verse: "آية" },
+}))
 
 const handleClose = () => {
   emit("update:modelValue", false)

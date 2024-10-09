@@ -12,7 +12,7 @@
         :wordCount="numberOfWords"
         :versesCount="numberOfVerses"
         :letterCount="numberOfLetters"
-        isSura
+        :labels="{ word: 'كلمة', verse: 'آية', letter: 'حرف' }"
       />
     </div>
     <v-tabs

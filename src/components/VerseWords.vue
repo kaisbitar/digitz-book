@@ -30,10 +30,15 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  wordSelectedOnChart: {
+    type: Number,
+    required: false,
+  },
 })
 const meanings = reactive({})
 const currentWord = ref("")
 const showWordMeaning = ref(false)
+// const selectedWord = ref(props.wordSelectedOnChart || "")
 
 const closingBarData = computed(() => ({
   inputText: currentWord,
@@ -43,6 +48,7 @@ const verseWords = computed(() => props.verse.split(" "))
 
 const findMeaning = async (word) => {
   currentWord.value = word
+  selectedWord.value = word // Update the selected word
   const appApi = import.meta.env.VITE_APP_API_URL
   const wordRootsApi = import.meta.env.VITE_WORD_ROOTS_API_URL
   const wordRoot = await fetchWordRoot(wordRootsApi, word)
@@ -55,4 +61,8 @@ const findMeaning = async (word) => {
   return meanings[word]
 }
 </script>
-<style lang="scss"></style>
+<style lang="scss">
+.selected-word {
+  border: 2px solid red; /* Example style for selected word */
+}
+</style>

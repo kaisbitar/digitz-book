@@ -45,7 +45,7 @@
 <script setup>
 import { ref, computed, watch, onMounted } from "vue"
 import { useQuranStore } from "@/stores/app"
-import chartOptionsConfig from "@/assets/frequecyOptions"
+import getChartOptions from "@/assets/frequecyOptions"
 import { useInputFiltering } from "@/mixins/inputFiltering"
 import {
   prepareSuraData,
@@ -58,7 +58,6 @@ const { updateSearchValue, search } = useInputFiltering()
 const props = defineProps(["suraInputText"])
 const store = useQuranStore()
 
-const chartOptions = ref(chartOptionsConfig)
 const suraWithTashkeel = ref([])
 const numberOfLetters = ref(null)
 const numberOfVerses = ref(null)
@@ -76,9 +75,9 @@ const showVerseDetails = ref(false)
 
 const isMobileView = computed(() => store.getVersesMobileView)
 const tabs = computed(() => [
-  { title: "سياق", name: "suraText", icon: "mdi-text-box-outline" },
+  { title: "نص", name: "suraText", icon: "mdi-text-box-outline" },
   {
-    title: "آية",
+    title: "تفصيل",
     value: numberOfVerses,
     name: "versesTab",
     icon: isMobileView.value ? "mdi-format-list-bulleted" : "mdi-view-list",
@@ -92,15 +91,17 @@ const tableQuranIndex = computed(() => store.getQuranIndex)
 const suraKeyValues = computed(
   () => tableQuranIndex.value[suraNumber.value] || tableQuranIndex.value[1]
 )
+const chartOptions = computed(() => getChartOptions(suraTextArray.value.length))
 const chartFreqType = computed(() => store.getChartFreqType)
 const chartFreqSeries = computed(() =>
   chartFreqType.value === "words" ? wordsSeries.value : letterSeries.value
 )
+
 const oneQuranFile = computed(() => store.getOneQuranFile)
 const allVersesWithTashkeel = computed(() => store.getAllVersesWithTashkeel)
 
 const tooltipLabel = computed(() => {
-  return chartFreqType.value === "words" ? "كلمات" : "حرف"
+  return chartFreqType.value === "words" ? "كلمة" : "حرف"
 })
 
 const tooltipLabel2 = computed(() => {
@@ -167,7 +168,12 @@ const prepareData = () => {
     startIndex.value,
     endIndex.value
   )
-  setSuraToolTip({ suraTextArray, tooltipLabel, tooltipLabel2, chartOptions })
+  setSuraToolTip({
+    reversedSuraTextArray: suraTextArray.value.reverse(),
+    tooltipLabel,
+    tooltipLabel2,
+    chartOptions,
+  })
 }
 
 watch(fileName, prepareData)
