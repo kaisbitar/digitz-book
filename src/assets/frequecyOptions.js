@@ -43,7 +43,7 @@ export const getChartOptions = (length) => {
       colors: ["#0000001f"],
     },
     markers: {
-      size: [10, 10],
+      size: [0, 0],
       color: "#000",
       hover: {
         size: 9,

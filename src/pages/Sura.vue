@@ -39,6 +39,7 @@
     v-model="showVerseDetails"
     :verse="selectedVerseText"
     :title="fileName"
+    :inputText="search"
   />
 </template>
 

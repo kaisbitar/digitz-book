@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar height="40">
+  <v-toolbar height="40" border>
     <v-spacer></v-spacer>
     <v-btn size="small" icon @click="$emit('close')">
       <v-icon>mdi-less-than</v-icon>
@@ -24,7 +24,7 @@ const emit = defineEmits(["close"])
 
 <style lang="scss" scoped>
 .v-toolbar {
-  background: rgb(var(--v-theme-second-background)) !important;
+  background: rgb(var(--v-theme-surface)) !important;
   color: rgb(var(--v-theme-on-second-background)) !important;
 }
 </style>

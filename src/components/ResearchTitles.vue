@@ -40,7 +40,9 @@
 <script setup>
 import { computed } from "vue"
 import { useQuranStore } from "@/stores/app"
+import { useRouter } from "vue-router"
 
+const router = useRouter()
 const store = useQuranStore()
 const props = defineProps({})
 
@@ -63,6 +65,8 @@ const handleRemovedChip = (index) => {
 }
 
 const handleResearchReset = () => {
+  store.setActiveRoute("sura")
+  router.push(`/sura`)
   store.resetResearchResults()
 }
 
