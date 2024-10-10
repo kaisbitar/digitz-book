@@ -12,6 +12,10 @@
         <v-icon @click="goToPage('search')" size="100">mdi-magnify</v-icon>
         <h2 class="text-lg">ترتيل</h2>
       </v-col>
+      <v-col cols="6" class="d-flex flex-column align-center">
+        <v-icon @click="" size="100">mdi-account</v-icon>
+        <h2 class="text-lg">تفسيري</h2>
+      </v-col>
     </div>
   </v-container>
 </template>

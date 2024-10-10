@@ -31,4 +31,15 @@ const handleClose = () => {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.dialog-sura {
+  .sura-title {
+    margin-top: -53px;
+    position: absolute;
+    font-size: 13px;
+    .v-chip {
+      display: none;
+    }
+  }
+}
+</style>

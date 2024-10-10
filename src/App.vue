@@ -41,7 +41,8 @@ html {
 .v-overlay-container,
 .v-tab,
 .text-caption,
-.text-h2 {
+.text-h2,
+.text-h4 {
   // font-family: $body-font-family !important;
   font-family: system-ui !important;
   font-family: unset;
@@ -95,8 +96,9 @@ th {
   color: rgb(var(--v-theme-on-highlight));
 }
 
-.not-selected {
+.selected {
   opacity: 0.4 !important;
+  text-decoration: underline !important;
 }
 .theme-text-color {
   color: rgb(var(--v-theme-on-surface)) !important;
@@ -114,7 +116,7 @@ th {
 }
 .dialog-header {
   display: flex;
-  margin-top: -35px;
+  margin-top: -36px;
   position: relative;
   justify-content: flex-end;
   margin-left: 56px;

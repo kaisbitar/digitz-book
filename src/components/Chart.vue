@@ -31,11 +31,11 @@ const props = defineProps(["height", "options", "series"])
   box-shadow: none !important;
 }
 .tipInfo2 {
-  background: rgb(var(--v-theme-surface)) !important;
+  background: rgb(var(--v-theme-input-background)) !important;
   border-top: 3px solid #4db6ac !important;
 }
 .tipInfo {
-  background: rgb(var(--v-theme-surface)) !important;
+  background: rgb(var(--v-theme-input-background)) !important;
   border: 1px solid rgb(218, 218, 218);
   border-top: 3px solid #2195f3;
   border-radius: 3px;
@@ -47,7 +47,7 @@ const props = defineProps(["height", "options", "series"])
   font-size: 12px;
 }
 .tipText {
-  background: rgb(var(--v-theme-surface)) !important;
+  background: rgb(var(--v-theme-input-background)) !important;
   border-top: 3px solid rgb(218, 218, 218);
   border-right: 1px solid #cfcfcf;
 }

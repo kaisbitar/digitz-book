@@ -66,7 +66,7 @@ export const setSuraToolTip = ({
           </p>
         </div>`
     },
-    shared: true,
+    shared: false,
     followCursor: true,
   }
   Object.assign(chartOptions.value, { tooltip: x })

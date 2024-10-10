@@ -1,5 +1,5 @@
 <template>
-  <div fill-height class="meaning-cards" fluid>
+  <div fill-height class="meaning-cards mt-1" fluid>
     <v-card
       v-for="(meaning, index) in meanings"
       :key="index"
