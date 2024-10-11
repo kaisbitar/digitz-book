@@ -5,7 +5,9 @@
     :closingBarData="closingBarData"
     class="verse-details-dialog"
   >
-    <h2 class="mt-5 mr-5">سورة {{ title }} - الآية {{ selectedVerseIndex }}</h2>
+    <h2 class="mt-5 mr-5">سورة {{ title }}</h2>
+    <h5 class="mr-5">الآية: {{ verseIndex }}</h5>
+    <h5 class="mr-5">مصحف: {{ verseIndexToQuran }}</h5>
     <v-container class="verse-details">
       <VerseWords
         :verse="verse"
@@ -47,11 +49,12 @@ const wordsSeries = computed(() =>
     .map((word) => word.length)
 )
 
-const selectedVerseIndex = computed(() => store.getTarget.verseIndex)
+const verseIndex = computed(() => store.getTarget.verseIndex)
+const verseIndexToQuran = computed(() => store.getTarget.verseNumberToQuran)
 const closingBarData = computed(() => ({
   wordCount: countVerseWords(props.verse),
   letterCount: countVerseLetters(props.verse),
-  labels: { word: "كلمة" },
+  labels: { word: "كلمة", letter: "حرف" },
   inputText: props.inputText,
 }))
 
@@ -76,13 +79,16 @@ watch(
 
 <style lang="scss">
 .verse-details {
-  height: 100vh;
+  height: 74vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
 }
 .verse-details-dialog {
-  .dialog-header .v-chip {
-    margin-right: 18px;
-    margin-left: auto !important;
-    margin-top: 2px;
+  .dialog-header .app-count-chips {
+    margin-top: -4px;
+    margin-left: auto;
+    margin-right: 17px;
   }
 }
 </style>

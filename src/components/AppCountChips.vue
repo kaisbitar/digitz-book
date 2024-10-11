@@ -1,31 +1,33 @@
 <template>
-  <v-chip
-    v-if="versesCount >= 0"
-    size="x-small"
-    variant="outlined"
-    class="ml-1"
-    :class="versesCount <= 0 ? 'text-red' : 'verses-count'"
-  >
-    {{ versesCount }} {{ labels?.verse }}
-  </v-chip>
-  <v-chip
-    v-if="wordCount >= 0"
-    size="x-small"
-    variant="outlined"
-    class="ml-1"
-    :class="wordCount <= 0 ? 'text-red' : 'word-count'"
-  >
-    {{ wordCount }} {{ labels?.word }}
-  </v-chip>
-  <v-chip
-    v-if="letterCount"
-    class="letter-count ml-1"
-    size="x-small"
-    variant="outlined"
-    :class="letterCount <= 0 ? 'text-red' : 'letter-count'"
-  >
-    {{ letterCount }} {{ labels?.letter }}
-  </v-chip>
+  <div class="app-count-chips">
+    <v-chip
+      v-if="versesCount >= 0"
+      size="x-small"
+      variant="outlined"
+      class="ml-1"
+      :class="versesCount <= 0 ? 'text-red' : 'verses-count'"
+    >
+      {{ versesCount }} {{ labels?.verse }}
+    </v-chip>
+    <v-chip
+      v-if="wordCount >= 0"
+      size="x-small"
+      variant="outlined"
+      class="ml-1"
+      :class="wordCount <= 0 ? 'text-red' : 'word-count'"
+    >
+      {{ wordCount }} {{ labels?.word }}
+    </v-chip>
+    <v-chip
+      v-if="letterCount"
+      class="letter-count ml-1"
+      size="x-small"
+      variant="outlined"
+      :class="letterCount <= 0 ? 'text-red' : 'letter-count'"
+    >
+      {{ letterCount }} {{ labels?.letter }}
+    </v-chip>
+  </div>
 </template>
 
 <script setup>
