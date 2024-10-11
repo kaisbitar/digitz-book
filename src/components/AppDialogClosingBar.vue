@@ -9,9 +9,10 @@
     <AppCountChips
       :wordCount="closingBarData.wordCount"
       :versesCount="closingBarData.versesCount"
+      :letterCount="closingBarData.letterCount"
       :labels="closingBarData.labels"
     />
-    <span class="mr-2">{{ closingBarData.inputText }}</span>
+    <span class="mr-2 highlight-match">{{ closingBarData.inputText }}</span>
   </div>
 </template>
 

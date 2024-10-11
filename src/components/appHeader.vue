@@ -1,10 +1,8 @@
 <template>
   <v-app-bar
-    class="position-fixed"
+    class="position-fixed app-top-bar"
     density="compact"
-    border
-    :elevation="2"
-    rounded="lg"
+    :elevation="0"
   >
     <template v-slot:prepend>
       <v-toolbar-title>الكتاب المرقوم</v-toolbar-title>
@@ -73,5 +71,9 @@ watch(researchResults.value, (newValue) => {
 .v-toolbar-title {
   width: 163px;
   /* margin-top: -7px;  */
+}
+.app-top-bar {
+  background: rgb(var(--v-theme-second-background)) !important;
+  border-bottom: 0.1px solid #9e9e9e62;
 }
 </style>

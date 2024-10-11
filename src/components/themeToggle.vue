@@ -3,13 +3,16 @@
     <v-switch
       v-model="isDark"
       @change="toggleTheme"
-      class="theme-switch"
       hide-details
       density="comfortable"
     >
       <template v-slot:thumb>
-        <v-icon v-if="!isDark" color="grey">mdi-white-balance-sunny</v-icon>
-        <v-icon v-if="isDark" color="yellow">mdi-moon-waning-crescent</v-icon>
+        <v-icon v-if="!isDark" size="large" color="grey"
+          >mdi-white-balance-sunny</v-icon
+        >
+        <v-icon v-if="isDark" size="large" color="yellow"
+          >mdi-moon-waning-crescent</v-icon
+        >
       </template>
     </v-switch>
   </div>

@@ -1,41 +1,31 @@
 <template>
-  <div class="text-center justify-content-center">
-    <span
+  <div
+    class="text-center justify-content-center"
+    v-click-outside="onClickOutside"
+  >
+    <div
       v-for="(word, index) in verseWords"
       :key="index"
       class="word"
-      @click="findMeaning(word)"
       :class="{
         'bg-orange-lighten-2':
           index === wordSelectedOnChart[wordSelectedOnChart.length - 1],
-        clicked: clickedWords[word], // Apply 'clicked' class if the word is clicked
       }"
     >
-      <span v-if="word.includes(inputText)">
-        {{ word.split(inputText)[0]
-        }}<span class="highlight">{{ inputText }}</span
-        >{{ word.split(inputText)[1] }}
-      </span>
-      <span v-else>
-        {{ word }}
-      </span>
-    </span>
+      <WordTooltip
+        ref="wordTooltips"
+        :word="word"
+        :wordIndex="index"
+        :inputText="inputText"
+        :wordSelectedOnChart="wordSelectedOnChart"
+        :closeTootip="closeTootip"
+        @update:clickedWordIndex="handleWordClick"
+      />
+    </div>
   </div>
-  <AppDialog
-    :modelValue="showWordMeaning"
-    @update:modelValue="showWordMeaning = false"
-    :closingBarData="closingBarData"
-  >
-    <WordMeaning :word="currentWord" :meanings="meanings[currentWord] || []" />
-  </AppDialog>
 </template>
 
 <script setup>
-import { fetchWordMeaning, fetchWordRoot } from "@/api/api.js"
-import { ref, reactive, computed } from "vue"
-import { extractFromDictionnary } from "@/utils/dictionaryUtils.js"
-import WordMeaning from "./WordMeaning.vue"
-
 const props = defineProps({
   verse: {
     type: String,
@@ -50,37 +40,35 @@ const props = defineProps({
     required: false,
   },
 })
-const meanings = reactive({})
-const currentWord = ref("")
-const showWordMeaning = ref(false)
-const selectedWord = ref(props.wordSelectedOnChart || "")
-
-const closingBarData = computed(() => ({
-  inputText: currentWord,
-}))
-
+const closeTootip = ref(false)
 const verseWords = computed(() => props.verse.split(" "))
+const wordTooltips = ref([])
+const lastClickedWordIndex = ref(null)
 
-const clickedWords = reactive({}) // Track clicked state for each word
+const handleWordClick = (index) => {
+  if (lastClickedWordIndex.value === index) return
+  wordTooltips.value[lastClickedWordIndex.value]?.closeLastTooltips(
+    lastClickedWordIndex.value
+  )
+  lastClickedWordIndex.value = index
+}
 
-const findMeaning = async (word) => {
-  clickedWords[word] = true
-  currentWord.value = word
-  selectedWord.value = word
-  const appApi = import.meta.env.VITE_APP_API_URL
-  const wordRootsApi = import.meta.env.VITE_WORD_ROOTS_API_URL
-  const wordRoot = await fetchWordRoot(wordRootsApi, word)
-
-  if (!meanings[word]) {
-    const response = await fetchWordMeaning(appApi, wordRoot.words[0].root)
-    meanings[word] = extractFromDictionnary(response[0], wordRoot.words[0].root)
-  }
-  showWordMeaning.value = true
-  return meanings[word]
+const onClickOutside = () => {
+  wordTooltips.value.forEach((tooltip) => {
+    if (tooltip) {
+      tooltip.closeAllTooltips()
+    }
+  })
 }
 </script>
 
 <style lang="scss">
+.tooltip-meaning {
+  max-width: 482px;
+  position: relative !important;
+  pointer-events: auto;
+}
+
 .word {
   display: inline-block;
   margin: 0 4px;
@@ -91,17 +79,5 @@ const findMeaning = async (word) => {
 
 .word:hover {
   color: #007bff;
-  text-decoration: overline;
-}
-
-.clicked {
-  // New class for clicked state
-  color: #007bff; // Change color or any other styles you want
-  text-decoration: underline; // Example style
-}
-
-.highlight {
-  background-color: rgb(var(--v-theme-highlight));
-  color: rgb(var(--v-theme-on-highlight));
 }
 </style>
