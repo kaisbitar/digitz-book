@@ -36,6 +36,7 @@ export default createVuetify({
           versesCount: "#049098",
           wordCount: "#639804",
           letterCount: "#5d0498",
+          verseNumberToQuran: "#bb0498",
         },
       },
       dark: {
@@ -54,6 +55,7 @@ export default createVuetify({
           versesCount: "#9eefff",
           wordCount: "#33FF57",
           letterCount: "#ffd576",
+          verseNumberToQuran: "#aad566",
         },
       },
       // testing: {

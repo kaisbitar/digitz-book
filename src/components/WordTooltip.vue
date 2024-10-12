@@ -9,52 +9,41 @@
       <span v-bind="props" @click="handleClickedWord(word)">
         <span
           v-if="word.includes(inputText)"
-          :class="{ 'text-purple-darken-1': clickedWords[wordIndex] }"
+          :class="{
+            'text-purple-darken-3': clickedWords[wordIndex],
+            'text-purple-lighten-3': isInStore,
+          }"
         >
-          {{ word.split(inputText)[0]
-          }}<span class="highlight-match">{{ inputText }}</span
-          >{{ word.split(inputText)[1] }}
+          {{ word.split(inputText)[0] }}
+          <span class="highlight-match">{{ inputText }}</span>
+          {{ word.split(inputText)[1] }}
         </span>
         <span
           v-else
-          :class="{ 'text-purple-darken-1': clickedWords[wordIndex] }"
+          :class="{
+            'text-purple-darken-3': clickedWords[wordIndex],
+            'text-purple-lighten-3': isInStore,
+          }"
         >
           {{ word }}
         </span>
       </span>
     </template>
-
-    <div class="tooltip-meaning" v-if="currentMeaning">
-      <h4>{{ word }}</h4>
-      <p v-for="(meaning, index) in currentMeaning.slice(0, 3)" :key="index">
-        <v-divider class="my-2"></v-divider>
-        <strong>{{ meaning.word }}: </strong>
-        {{ meaning.meaning }}<br />
-        <em>المصدر: {{ meaning.dictionary }}</em>
-      </p>
-      <v-divider class="my-2"></v-divider>
-      <v-btn @click="openDialog">المزيد..</v-btn>
-    </div>
-    <v-progress-circular
-      v-if="loadingWords[wordIndex]"
-      indeterminate
-      color="primary"
-      size="20"
-    ></v-progress-circular>
+    <WordTooltipDialog
+      :word="word"
+      :currentWord="currentWord"
+      :currentMeaning="currentMeaning"
+      :loading="loadingWords[wordIndex]"
+      :meanings="meanings"
+      :closingBarData="closingBarData"
+    />
   </v-tooltip>
-
-  <AppDialog
-    :modelValue="showWordMeaningDialog"
-    @update:modelValue="showWordMeaningDialog = false"
-    :closingBarData="closingBarData"
-  >
-    <WordMeaning :word="currentWord" :meanings="meanings[currentWord] || []" />
-  </AppDialog>
 </template>
 
 <script setup>
 import { fetchWordMeaning, fetchWordRoot } from "@/api/api.js"
 import { extractFromDictionnary } from "@/utils/dictionaryUtils.js"
+import { useQuranStore } from "@/stores/app.js"
 
 const props = defineProps({
   word: {
@@ -86,7 +75,7 @@ const clickedWords = reactive({})
 const loadingWords = reactive({})
 const meanings = reactive({})
 
-const currentMeaning = ref("")
+const currentMeaning = ref([])
 const currentWord = ref("")
 const showWordMeaningDialog = ref(false)
 
@@ -103,14 +92,28 @@ const closeAllTooltips = () => {
 }
 defineExpose({ closeAllTooltips, closeLastTooltips })
 
+const store = useQuranStore()
+
+const storeWordMeanings = computed(() => ({
+  get: (word) => store.getWordMeaning(word),
+  has: (word) => !!store.getWordMeaning(word),
+}))
+
 const handleClickedWord = async (word) => {
   emit("update:clickedWordIndex", props.wordIndex)
   setCurrentWord(word)
-  fetchWordData(word)
+
+  if (storeWordMeanings.value.has(word)) {
+    meanings[word] = storeWordMeanings.value.get(word)
+    updateCurrentMeaning(meanings[word])
+    loadingWords[props.wordIndex] = false
+  } else {
+    await fetchWordData(word)
+  }
 }
 
 const setCurrentWord = (word) => {
-  currentMeaning.value = ""
+  currentMeaning.value = []
   clickedWords[props.wordIndex] = true
   currentWord.value = word
 }
@@ -124,20 +127,27 @@ const fetchWordData = async (word) => {
 
 const fetchWordRootData = async (word) => {
   if (word.startsWith("ال")) return word
-  const wordRootsApi = import.meta.env.VITE_WORD_ROOTS_API_URL
-  const root = await fetchWordRoot(wordRootsApi, word)
-  if (!root.words[0].root) return word
-  return root.words[0].root
+  try {
+    const wordRootsApi = import.meta.env.VITE_WORD_ROOTS_API_URL
+    const root = await fetchWordRoot(wordRootsApi, word)
+    if (!root.words[0].root) return word
+    if (root.words[0].root.includes("/")) {
+      const cleanRoot = root.words[0].root.split("/")[0]
+      return cleanRoot
+    }
+    return root.words[0].root
+  } catch (error) {
+    return word
+  }
 }
 
 const fetchWordMeaningData = async (word, wordRoot) => {
   const appApi = import.meta.env.VITE_APP_API_URL
+  const response = await fetchWordMeaning(appApi, wordRoot)
+  const extractedMeaning = extractFromDictionnary(response[0], wordRoot)
 
-  if (!meanings[word]) {
-    const response = await fetchWordMeaning(appApi, wordRoot)
-    meanings[word] = extractFromDictionnary(response[0], wordRoot)
-  }
-
+  store.setWordMeaning({ word, meaning: extractedMeaning })
+  meanings[word] = extractedMeaning
   updateCurrentMeaning(meanings[word])
 }
 
@@ -164,6 +174,25 @@ const getLimitedMeanings = (meaningsArray, limit) => {
 const openDialog = () => {
   showWordMeaningDialog.value = true
 }
+
+const quranStore = useQuranStore()
+const isInStore = ref(false)
+
+const wordMeanings = computed(() => ({
+  get: (word) => quranStore.getWordMeaning(word),
+  has: (word) => !!quranStore.getWordMeaning(word),
+}))
+
+const checkIfInStore = () => {
+  isInStore.value = wordMeanings.value.has(props.word)
+}
+
+onMounted(() => {
+  checkIfInStore()
+})
+onBeforeUnmount(() => {
+  checkIfInStore()
+})
 </script>
 
 <style scoped>
@@ -182,6 +211,10 @@ const openDialog = () => {
 }
 
 .word:hover {
-  color: #007bff;
+  color: #007bff !important;
+}
+
+.text-green-darken-1 {
+  color: #1b5e20; /* Adjust this color as needed */
 }
 </style>

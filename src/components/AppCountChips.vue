@@ -27,19 +27,31 @@
     >
       {{ letterCount }} {{ labels?.letter }}
     </v-chip>
+    <v-chip
+      v-if="verseNumberToQuran"
+      class="letter-count ml-1"
+      size="x-small"
+      variant="outlined"
+      :class="verseNumberToQuran <= 0 ? 'text-red' : 'verse-number-to-quran'"
+    >
+      {{ verseNumberToQuran }} {{ labels?.verseNumberToQuran }}
+    </v-chip>
   </div>
 </template>
 
 <script setup>
 const props = defineProps({
   letterCount: {
-    type: Number,
+    type: [Number, String],
   },
   wordCount: {
-    type: Number,
+    type: [Number, String],
   },
   versesCount: {
-    type: Number,
+    type: [Number, String],
+  },
+  verseNumberToQuran: {
+    type: [Number, String],
   },
   labels: {
     type: Object,

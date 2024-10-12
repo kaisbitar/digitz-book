@@ -1,4 +1,3 @@
-// stores/store.js
 import { defineStore } from "pinia"
 import {
   fetchSuraDetails,
@@ -28,6 +27,7 @@ export const useQuranStore = defineStore("Quran", {
     allVersesWithTashkeel: [],
     isDialog: false,
     fontSize: "19px",
+    wordMeanings: {},
   }),
   persist: {
     enabled: true,
@@ -39,49 +39,22 @@ export const useQuranStore = defineStore("Quran", {
     ],
   },
   getters: {
-    getVersesMobileView: (state) => {
-      return state.versesMobileView
-    },
-    getFontSize: (state) => {
-      return state.fontSize
-    },
-    getIsDialog: (state) => {
-      return state.isDialog
-    },
-    getTarget: (state) => {
-      return state.target
-    },
-    getResearchResults: (state) => {
-      return state.researchResults
-    },
-    getSelectedSearchIndex: (state) => {
-      return state.selectedSearchIndex
-    },
-    getOneQuranFile: (state) => {
-      return state.oneQuranFile
-    },
-    getQuranIndex: (state) => {
-      return state.QuranIndex
-    },
-    getDrawerState: (state) => {
-      return state.drawerState
-    },
-
-    getActiveSuraTab: (state) => {
-      return state.activeSuraTab
-    },
-    getActiveRoute: (state) => {
-      return state.activeRoute
-    },
-    getChartFreqType: (state) => {
-      return state.chartFreqType
-    },
-    getSelectedSearch: (state) => {
-      return state.researchResults[state.selectedSearchIndex]
-    },
-    getAllVersesWithTashkeel: (state) => {
-      return state.allVersesWithTashkeel
-    },
+    getVersesMobileView: (state) => state.versesMobileView,
+    getFontSize: (state) => state.fontSize,
+    getIsDialog: (state) => state.isDialog,
+    getTarget: (state) => state.target,
+    getResearchResults: (state) => state.researchResults,
+    getSelectedSearchIndex: (state) => state.selectedSearchIndex,
+    getOneQuranFile: (state) => state.oneQuranFile,
+    getQuranIndex: (state) => state.QuranIndex,
+    getDrawerState: (state) => state.drawerState,
+    getActiveSuraTab: (state) => state.activeSuraTab,
+    getActiveRoute: (state) => state.activeRoute,
+    getChartFreqType: (state) => state.chartFreqType,
+    getSelectedSearch: (state) =>
+      state.researchResults[state.selectedSearchIndex],
+    getAllVersesWithTashkeel: (state) => state.allVersesWithTashkeel,
+    getWordMeaning: (state) => (word) => state.wordMeanings[word] || null,
   },
   actions: {
     setVersesMobileView(state) {
@@ -147,8 +120,9 @@ export const useQuranStore = defineStore("Quran", {
       this.suras[this.target.fileName].suraChartData =
         suraChartData.suraChartData
     },
-
-    // API Fetching Actions
+    setWordMeaning({ word, meaning }) {
+      this.wordMeanings[word] = meaning
+    },
     async getQuranData() {
       if (this.oneQuranFile.length > 0) return
 
