@@ -8,7 +8,7 @@
       :key="index"
       class="word"
       :class="{
-        'bg-orange-lighten-2':
+        'text-blue-darken-4':
           index === wordSelectedOnChart[wordSelectedOnChart.length - 1],
       }"
     >

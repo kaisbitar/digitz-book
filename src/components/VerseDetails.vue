@@ -6,8 +6,13 @@
     class="verse-details-dialog"
   >
     <h2 class="mt-5 mr-5">سورة {{ title }}</h2>
-    <h5 class="mr-5">الآية: {{ verseIndex }}</h5>
-    <h5 class="mr-5">مصحف: {{ verseIndexToQuran }}</h5>
+    <h5 class="mr-5 d-flex">
+      الآية <AppCountChips class="mr-2" :versesCount="verseIndex" />
+    </h5>
+    <h5 class="mr-5 d-flex">
+      مصحف
+      <AppCountChips class="mr-2" :verseNumberToQuran="verseIndexToQuran" />
+    </h5>
     <v-container class="verse-details">
       <VerseWords
         :verse="verse"
@@ -17,7 +22,7 @@
       <Chart
         :series="[{ data: wordsSeries }]"
         :options="chartOptions"
-        :height="300"
+        :height="400"
       />
     </v-container>
   </AppDialog>
@@ -28,6 +33,7 @@ import { useCounting } from "@/mixins/counting"
 import { useQuranStore } from "@/stores/app"
 import { setVerseChartTooltips } from "@/utils/verseUtils"
 import getChartOptions from "@/assets/frequecyOptions"
+import AppCountChips from "./AppCountChips.vue"
 
 const store = useQuranStore()
 const { countVerseWords, countVerseLetters } = useCounting()

@@ -11,7 +11,7 @@
     :overlay="false"
   >
     <template #default="{ isActive }">
-      <v-sheet>
+      <v-sheet class="dialog-sheet">
         <AppDialogClosingBar
           @close="handleClose"
           :closingBarData="closingBarData"
@@ -39,4 +39,8 @@ const handleClose = () => {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.dialog-sheet {
+  background: rgb(var(--v-theme-second-background)) !important;
+}
+</style>

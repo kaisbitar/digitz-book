@@ -16,11 +16,11 @@ const getTheData = async () => {
 }
 const dynamicFontSize = computed(() => store.getFontSize)
 
-onMounted(() => {
+onMounted(async () => {
   if (currentBreakpoint.value === "mobile") {
     store.setVersesMobileView(true)
   }
-  getTheData()
+  await getTheData()
   document.documentElement.style.setProperty(
     "--dynamic-font-size",
     dynamicFontSize.value
@@ -114,6 +114,11 @@ th {
 .letter-count {
   color: rgb(var(--v-theme-letterCount)) !important;
 }
+
+.verse-number-to-quran {
+  color: rgb(var(--v-theme-verseNumberToQuran)) !important;
+}
+
 .dialog-header {
   display: flex;
   margin-top: -36px;
