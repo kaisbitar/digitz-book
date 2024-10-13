@@ -34,9 +34,9 @@ const goToPage = (page) => {
 </script>
 
 <style scoped>
-.text-lg {
+/* .text-lg {
   font-size: 2rem;
-}
+} */
 .fill-height {
   height: 100vh;
 }

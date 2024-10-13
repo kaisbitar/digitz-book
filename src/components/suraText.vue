@@ -87,7 +87,7 @@ onMounted(() => {
 }
 .active-verse {
   padding: 4px 0px 8px 5px;
-  background-color: rgb(var(--v-theme-hover-color)) !important;
+  background-color: rgb(var(--v-theme-active-row)) !important;
 }
 // .num-chip {
 //   background: rgb(var(--v-theme-verse-number-chip));

@@ -1,5 +1,5 @@
 <template>
-  <v-autocomplete
+  <!-- <v-autocomplete
     v-model:search="search"
     :items="oneQuranFile"
     :menu-props="{ maxWidth: '100%', maxHeight: '500px' }"
@@ -16,40 +16,41 @@
     autofocus
     menu
     variant="outlined"
-  >
-    <template v-slot:no-data>
-      <p class="pa-1 text-red">لا يوجد معلومات تطابق البحث!</p>
-    </template>
+  > -->
+  <!-- <template v-slot:no-data> -->
 
-    <template v-slot:selection> </template>
+  <p class="pa-1 text-red">لا يوجد معلومات تطابق البحث!</p>
+  <!-- </template> -->
 
-    <template v-slot:prepend-item>
-      <div class="mb-10 mr-5">
-        <v-row class="position-fixed z-10">
-          <v-btn @click="handleNewSearch" variant="tonal">ابحث</v-btn> "{{
-            search
-          }}"
-          <AppCountChips
-            :wordCount="computedWordCount"
-            :versesCount="versesCount()"
-            :labels="{ word: 'مرة', verse: 'آية' }"
-          />
-        </v-row>
-      </div>
-    </template>
+  <!-- <template v-slot:selection> </template> -->
 
-    <template v-slot:item="{ item, index, props }" class="mt-5">
-      <div v-bind="props">
-        <VerseCardItem
-          class="mr-5"
-          @click="handleNewSearch"
-          :index="index"
-          :item="item.raw"
-          :textToHighlight="search"
-        />
-      </div>
-    </template>
-  </v-autocomplete>
+  <!-- <template v-slot:prepend-item> -->
+  <div class="mb-10 mr-5">
+    <v-row class="position-fixed z-10">
+      <v-btn @click="handleNewSearch" variant="tonal">ابحث</v-btn> "{{
+        search
+      }}"
+      <AppCountChips
+        :wordCount="computedWordCount"
+        :versesCount="versesCount()"
+        :labels="{ word: 'مرة', verse: 'آية' }"
+      />
+    </v-row>
+  </div>
+  <!-- </template> -->
+
+  <!-- <template v-slot:item="{ item, index, props }" class="mt-5"> -->
+  <div v-bind="props">
+    <VerseCardItem
+      class="mr-5"
+      @click="handleNewSearch"
+      :index="index"
+      :item="item.raw"
+      :textToHighlight="search"
+    />
+  </div>
+  <!-- </template> -->
+  <!-- </v-autocomplete> -->
 </template>
 
 <script setup>

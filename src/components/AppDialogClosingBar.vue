@@ -25,7 +25,7 @@ const emit = defineEmits(["close"])
 
 <style lang="scss" scoped>
 .v-toolbar {
-  background: rgb(var(--v-theme-surface)) !important;
-  color: rgb(var(--v-theme-on-second-background)) !important;
+  // background: rgb(var(--v-theme-surface)) !important;
+  // color: rgb(var(--v-theme-on-second-background)) !important;
 }
 </style>

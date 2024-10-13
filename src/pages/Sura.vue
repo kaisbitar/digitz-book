@@ -1,6 +1,6 @@
 <template>
   <SuraHeader
-    :title="fileName"
+    :title="`${suraNumber}${suraName} `"
     :tabs="tabs"
     :activeTab="activeTab"
     :numberOfVerses="numberOfVerses"
@@ -8,33 +8,43 @@
     :numberOfLetters="numberOfLetters"
     @tabChanged="changeTab"
   />
-  <div class="d-flex">
-    <AppInputField
-      :fieldInput="search"
-      :fieldPlaceHolder="`سورة ${fileName}`"
-      :prepend-icons="[{ name: 'mdi-star-shooting', event: 'search' }]"
-      @update:fieldInput="updateSearchValue"
-    />
-    <AppFilterActions v-if="showFilterActions" />
-  </div>
-  <SuraText
-    v-if="activeTab === 'suraText'"
-    class="mt-n2"
-    :inputText="search"
-    :suraTextArray="suraWithTashkeel"
-  />
-  <TableVerses
-    v-if="activeTab === 'versesTab'"
-    :verses="versesBasics"
-    :versesInputText="search"
-    @verseSelected="handleVerseSelectedOnTable"
-  />
-  <SuraFrequency
-    v-if="activeTab === 'frequency'"
-    :chartFreqSeries="chartFreqSeries"
-    :chartOptions="chartOptions"
-    :height="chartWindowHeight"
-  />
+
+  <v-card variant="outlined">
+    <v-toolbar>
+      <AppInputFieldToggle
+        :fieldInput="search"
+        :fieldPlaceHolder="`سورة ${suraName}`"
+        :showFilterActions="showFilterActions"
+        @update:fieldInput="updateSearchValue"
+      />
+    </v-toolbar>
+    <v-window v-model="activeTab">
+      <v-window-item value="suraText">
+        <SuraText
+          class="mt-4"
+          :inputText="search"
+          :suraTextArray="suraWithTashkeel"
+        />
+      </v-window-item>
+
+      <v-window-item value="versesTab">
+        <TableVerses
+          :verses="versesBasics"
+          :versesInputText="search"
+          @verseSelected="handleVerseSelectedOnTable"
+        />
+      </v-window-item>
+
+      <v-window-item value="frequency">
+        <SuraFrequency
+          :chartFreqSeries="chartFreqSeries"
+          :chartOptions="chartOptions"
+          :height="chartWindowHeight"
+        />
+      </v-window-item>
+    </v-window>
+  </v-card>
+
   <VerseDetails
     v-model="showVerseDetails"
     :verse="selectedVerseText"
@@ -87,7 +97,8 @@ const tabs = computed(() => [
 ])
 const chartWindowHeight = computed(() => window.innerHeight - 260)
 const fileName = computed(() => store.getTarget?.fileName || "001الفاتحة")
-const suraNumber = computed(() => parseInt(fileName.value.replace(/^\D+/g, "")))
+const suraNumber = computed(() => parseInt(store.getTarget?.suraNumber))
+const suraName = computed(() => store.getTarget?.suraName)
 const tableQuranIndex = computed(() => store.getQuranIndex)
 const suraKeyValues = computed(
   () => tableQuranIndex.value[suraNumber.value] || tableQuranIndex.value[1]
@@ -180,7 +191,7 @@ const prepareData = () => {
 watch(fileName, prepareData)
 
 onMounted(() => {
-  search.value = props.suraInputText
+  search.value = props.suraInputText || ""
   store.setActiveRoute("sura")
   prepareData()
 })

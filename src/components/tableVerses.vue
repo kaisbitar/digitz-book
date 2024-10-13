@@ -5,7 +5,7 @@
     :tableData="verses"
     :tableHeaders="versesHeaders"
     :tableInputText="versesInputText"
-    :activeItemClass="'active-verse-table'"
+    :scrollingItemClass="'active-verse-table'"
     :scrollingContainerClass="'verses-container'"
     :height="210"
     :activeItemKey="targetedIndex"
@@ -17,7 +17,7 @@
     :headerKeys="verses"
     :tableInputText="versesInputText"
     :activeItemKey="targetedIndex"
-    :activeItemClass="'active-verse-table'"
+    :scrollingItemClass="'active-verse-table'"
     :scrollingContainerClass="'verses-container'"
     @activateRowItem="handleVerseSelected"
   />
@@ -41,7 +41,7 @@ const versesHeaders = ref([
   },
   {
     title: "السورة",
-    key: "fileName",
+    key: "suraName",
     width: "20px",
   },
   {
@@ -82,7 +82,7 @@ const fitleredVeses = computed(() => {
 const targetedIndex = computed(() => {
   return (
     store.getTarget?.verseNumberToQuran ??
-    (props.verses.length > 0 ? props.verses[0].verseNumberToQuran : 1)
+    (props.verses.length > 0 ? props.verses[0].verseNumberToQuran : "1")
   )
 })
 const handleVerseSelected = (item) => {
@@ -116,9 +116,6 @@ onMounted(scrollToActive)
 </script>
 
 <style scoped>
-.v-list {
-  height: 401px !important;
-}
 .tableStyle {
   min-height: 66vh;
   max-height: 66vh;

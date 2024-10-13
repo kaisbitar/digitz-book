@@ -5,6 +5,7 @@
       :key="index"
       class="ma-1"
       elevation="2"
+      color="surface-variant"
     >
       <v-card-title>
         <h3>{{ meaning.word }}</h3>
@@ -41,6 +42,6 @@ const props = defineProps({
 .meaning-cards {
   height: 93%;
   overflow: scroll;
-  background: rgb(var(--v-theme-second-background)) !important;
+  // background: rgb(var(--v-theme-second-background)) !important;
 }
 </style>

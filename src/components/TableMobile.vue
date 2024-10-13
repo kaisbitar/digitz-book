@@ -1,30 +1,27 @@
 <template>
   <div class="table-mobile-view" :class="scrollingContainerClass">
-    <v-list
-      ><v-list-item
-        v-model="selectedItem"
-        v-for="(item, index) in data"
-        :key="index"
-        :active="isTargetedRow(item.verseNumberToQuran)"
-        @click="selectItem(item)"
-        :active-class="activeItemClass"
-      >
-        <VerseSummary
-          :item="item"
-          :index="index"
-          :textToHighlight="tableInputText"
-          class="tableItem"
-        />
-      </v-list-item>
-    </v-list>
+    <v-item-group :selected-class="scrollingItemClass">
+      <div v-for="(item, index) in data" :key="item.verseNumberToQuran">
+        <v-item v-slot="{ isSelected, selectedClass, toggle }">
+          <VerseCardItem
+            :item="item"
+            :index="index"
+            :textToHighlight="tableInputText"
+            :active="isTargetedRow(item.verseNumberToQuran)"
+            :class="[selectedClass]"
+            @verse-clicked="selectItem(item), toggle()"
+          />
+        </v-item>
+      </div>
+    </v-item-group>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, watch, onMounted } from "vue"
+import { onMounted } from "vue"
 import { ref } from "vue"
 
-const selectedItem = ref("")
+const selectedItem = ref(null)
 const emit = defineEmits<{
   (e: "activateRowItem", item: String): void
 }>()
@@ -32,7 +29,7 @@ const props = defineProps<{
   data: any
   tableInputText?: string
   activeItemKey: string
-  activeItemClass: string
+  scrollingItemClass: string
   headerKeys: string[]
   scrollingContainerClass: string
 }>()
@@ -55,6 +52,5 @@ onMounted(() => {
   min-height: 70vh;
   max-height: 70vh;
   overflow-y: scroll;
-  margin-top: -16px !important;
 }
 </style>

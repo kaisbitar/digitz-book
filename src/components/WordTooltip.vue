@@ -103,13 +103,13 @@ const handleClickedWord = async (word) => {
   emit("update:clickedWordIndex", props.wordIndex)
   setCurrentWord(word)
 
-  if (storeWordMeanings.value.has(word)) {
-    meanings[word] = storeWordMeanings.value.get(word)
-    updateCurrentMeaning(meanings[word])
-    loadingWords[props.wordIndex] = false
-  } else {
-    await fetchWordData(word)
-  }
+  //   if (storeWordMeanings.value.has(word)) {
+  //     meanings[word] = storeWordMeanings.value.get(word)
+  //     updateCurrentMeaning(meanings[word])
+  //     loadingWords[props.wordIndex] = false
+  //   } else {
+  await fetchWordData(word)
+  //   }
 }
 
 const setCurrentWord = (word) => {
@@ -121,6 +121,7 @@ const setCurrentWord = (word) => {
 const fetchWordData = async (word) => {
   loadingWords[props.wordIndex] = true
   const wordRoot = await fetchWordRootData(word)
+
   await fetchWordMeaningData(word, wordRoot)
   loadingWords[props.wordIndex] = false
 }
@@ -143,7 +144,11 @@ const fetchWordRootData = async (word) => {
 
 const fetchWordMeaningData = async (word, wordRoot) => {
   const appApi = import.meta.env.VITE_APP_API_URL
-  const response = await fetchWordMeaning(appApi, wordRoot)
+  let response = await fetchWordMeaning(appApi, wordRoot)
+  if (response.length === 0) {
+    const modifiedWordRoot = wordRoot.slice(1, -2)
+    response = await fetchWordMeaning(appApi, modifiedWordRoot)
+  }
   const extractedMeaning = extractFromDictionnary(response[0], wordRoot)
 
   store.setWordMeaning({ word, meaning: extractedMeaning })
