@@ -81,6 +81,8 @@ export const setMushafToolTip = ({ tableQuranIndex, setSuraToolTip }) => {
 }
 
 const buildVerseObject = (item) => ({
+  suraName: item.fileName.replace(/[0-9]/g, ""),
+  suraNumber: item.fileName.replace(/[^0-9]/g, ""),
   fileName: item.fileName,
   verseIndex: item.verseIndex.toString(),
   verseText: item.verseText,

@@ -3,10 +3,12 @@
     v-model="searchValue"
     :label="`ابحث في ${fieldPlaceHolder}`"
     append-inner-icon="mdi-magnify"
-    clearable
-    variant="outlined"
     density="compact"
-    class="ml-2"
+    label="Search templates"
+    variant="outlined"
+    hide-details
+    single-line
+    clearable
   >
     <template #prepend-inner>
       <v-icon
@@ -28,6 +30,7 @@ const props = defineProps({
     type: String,
   },
   fieldInput: String,
+  default: "",
   prependIcons: {
     type: Array,
     default: () => [],

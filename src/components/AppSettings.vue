@@ -2,7 +2,7 @@
   <v-menu offset-y :close-on-content-click="false" :nudge-width="200">
     <template v-slot:activator="{ props }">
       <v-btn icon v-bind="props">
-        <v-icon size="small">mdi-dots-vertical</v-icon>
+        <v-icon size="small">mdi-cog</v-icon>
       </v-btn>
     </template>
     <v-list>

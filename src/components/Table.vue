@@ -19,7 +19,7 @@
         :index="index"
         :search="search"
         :activeItemKey="activeItemKey"
-        :activeItemClass="props.activeItemClass"
+        :scrollingItemClass="props.scrollingItemClass"
         :headerKeys="tableHeaders.map((header) => header.key)"
         @activateRowItem="$emit('activateRowItem', item)"
       />
@@ -34,7 +34,6 @@ import { useInputFiltering } from "@/mixins/inputFiltering"
 
 interface TableItem {
   [key: string]: any
-  fileName?: string
   verseNumberToQuran?: string | number
 }
 
@@ -44,7 +43,7 @@ const props = defineProps<{
   height: number
   tableInputText?: string
   activeItemKey: string | number
-  activeItemClass: string
+  scrollingItemClass: string
   scrollingContainerClass: string
 }>()
 

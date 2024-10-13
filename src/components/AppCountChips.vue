@@ -1,62 +1,57 @@
 <template>
-  <div class="app-count-chips">
+  <div class="app-count-chips" v-for="(count, key) in counts" :key="key">
     <v-chip
-      v-if="versesCount >= 0"
+      v-if="shouldShowChip(count)"
       size="x-small"
-      variant="outlined"
-      class="ml-1"
-      :class="versesCount <= 0 ? 'text-red' : 'verses-count'"
+      variant="tonal"
+      class="ml-2"
+      :class="getChipClass(key, count)"
     >
-      {{ versesCount }} {{ labels?.verse }}
-    </v-chip>
-    <v-chip
-      v-if="wordCount >= 0"
-      size="x-small"
-      variant="outlined"
-      class="ml-1"
-      :class="wordCount <= 0 ? 'text-red' : 'word-count'"
-    >
-      {{ wordCount }} {{ labels?.word }}
-    </v-chip>
-    <v-chip
-      v-if="letterCount"
-      class="letter-count ml-1"
-      size="x-small"
-      variant="outlined"
-      :class="letterCount <= 0 ? 'text-red' : 'letter-count'"
-    >
-      {{ letterCount }} {{ labels?.letter }}
-    </v-chip>
-    <v-chip
-      v-if="verseNumberToQuran"
-      class="letter-count ml-1"
-      size="x-small"
-      variant="outlined"
-      :class="verseNumberToQuran <= 0 ? 'text-red' : 'verse-number-to-quran'"
-    >
-      {{ verseNumberToQuran }} {{ labels?.verseNumberToQuran }}
+      {{ count }} {{ labels?.[key] }}
     </v-chip>
   </div>
 </template>
 
 <script setup>
+import { computed } from "vue"
+
 const props = defineProps({
-  letterCount: {
-    type: [Number, String],
-  },
-  wordCount: {
-    type: [Number, String],
-  },
-  versesCount: {
-    type: [Number, String],
-  },
-  verseNumberToQuran: {
-    type: [Number, String],
-  },
+  versesCount: Number,
+  wordCount: Number,
+  letterCount: Number,
+  verseNumberToQuran: Number,
   labels: {
     type: Object,
+    required: true,
   },
 })
+
+const counts = computed(() => ({
+  verse: props.versesCount,
+  word: props.wordCount,
+  letter: props.letterCount,
+  verseNumberToQuran: props.verseNumberToQuran,
+}))
+
+const shouldShowChip = (count) => {
+  return count !== undefined && (count > 0 || count === 0)
+}
+
+const getChipClass = (key, count) => {
+  if (count <= 0) return "text-red"
+  switch (key) {
+    case "verse":
+      return "verses-count"
+    case "word":
+      return "word-count"
+    case "letter":
+      return "letter-count"
+    case "verseNumberToQuran":
+      return "verse-number-to-quran"
+    default:
+      return ""
+  }
+}
 </script>
 
 <style>

@@ -1,5 +1,7 @@
 <template>
-  <v-switch v-model="isMobileView" class="mr-1" label="" />
+  <v-btn @click="toggleView" icon>
+    <v-icon>{{ viewIcon }}</v-icon>
+  </v-btn>
 </template>
 
 <script setup>
@@ -12,6 +14,14 @@ const isMobileView = computed({
   get: () => store.getVersesMobileView,
   set: (value) => store.setVersesMobileView(value),
 })
+
+const viewIcon = computed(() =>
+  isMobileView.value ? "mdi-format-list-bulleted" : "mdi-view-list"
+)
+
+const toggleView = () => {
+  isMobileView.value = !isMobileView.value
+}
 </script>
 
 <style scoped></style>

@@ -9,6 +9,8 @@ import {
 export const useQuranStore = defineStore("Quran", {
   state: () => ({
     target: {
+      suraNumber: "001",
+      suraName: "الفاتحة",
       fileName: "001الفاتحة",
       verseIndex: 1,
       verseNumberToQuran: 1,
@@ -76,7 +78,13 @@ export const useQuranStore = defineStore("Quran", {
       this.activeRoute = activeRoute
     },
     setTarget(target) {
+      const suraNumber = target.fileName
+        .replace(/[ء-٩]/g, "")
+        .replace(/\s/g, "")
+      const suraName = target.fileName.replace(/[0-9]/g, "")
       this.target = {
+        suraNumber,
+        suraName,
         fileName: target.fileName,
         verseIndex: target.verseIndex,
         verseNumberToQuran: target.verseNumberToQuran,

@@ -16,6 +16,8 @@ const inputText = computed(() => selectedSearch.value?.inputText || "")
 
 const searchData = computed(() =>
   selectedSearchData.value.map(({ raw }) => ({
+    suraNumber: raw.fileName.replace(/[ء-٩]/g, "").replace(/\s/g, ""),
+    suraName: raw.fileName.replace(/[0-9]/g, ""),
     fileName: raw.fileName,
     verseIndex: String(raw.verseIndex),
     verseText: raw.verseText,
@@ -30,8 +32,4 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
-.cTable {
-  max-width: 600px;
-}
-</style>
+<style scoped></style>

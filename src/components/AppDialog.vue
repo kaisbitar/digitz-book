@@ -41,6 +41,6 @@ const handleClose = () => {
 
 <style lang="scss">
 .dialog-sheet {
-  background: rgb(var(--v-theme-second-background)) !important;
+  // background: rgb(var(--v-theme-second-background)) !important;
 }
 </style>

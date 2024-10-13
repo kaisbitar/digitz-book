@@ -10,7 +10,7 @@
       :tableInputText="search"
       :tableHeaders="indexHeaders"
       :fieldPlaceHolder="'السور'"
-      :activeItemClass="'active-Quran-index'"
+      :scrollingItemClass="'active-Quran-index'"
       :scrollingContainerClass="'index-container'"
       :height="135"
       :activeItemKey="targetedIndex"
@@ -36,7 +36,7 @@ const props = defineProps(["isShowSuraDetail"])
 const indexData = computed(() => store.getQuranIndex)
 const indexHeaders = ref([
   { title: "رقم", key: "index" }, //Must be called index
-  { title: "السورة", key: "fileName" },
+  { title: "السورة", key: "suraName" },
   { title: "الآيات", key: "numberOfVerses" },
   { title: "كلمات", key: "numberOfWords" },
   { title: "حروف", key: "numberOfLetters" },

@@ -3,13 +3,13 @@
     class="position-fixed app-top-bar"
     density="compact"
     :elevation="0"
+    border="b"
   >
     <template v-slot:prepend>
-      <v-toolbar-title>الكتاب المرقوم</v-toolbar-title>
-      <v-app-bar-nav-icon
-        size="small"
-        @click.stop="toggleDrawer"
-      ></v-app-bar-nav-icon>
+      <v-toolbar-title class="hidden-sm-and-down"
+        >الكتاب المرقوم</v-toolbar-title
+      >
+      <v-app-bar-nav-icon @click.stop="toggleDrawer"></v-app-bar-nav-icon>
       <AppNavigation
         :activeRoute="activeRoute"
         @navigateTo="handleNavigation"
@@ -73,7 +73,7 @@ watch(researchResults.value, (newValue) => {
   /* margin-top: -7px;  */
 }
 .app-top-bar {
-  background: rgb(var(--v-theme-second-background)) !important;
-  border-bottom: 0.1px solid #9e9e9e62;
+  /* background: rgb(var(--v-theme-second-background)) !important; */
+  /* border-bottom: 0.1px solid #9e9e9e62; */
 }
 </style>

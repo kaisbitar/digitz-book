@@ -92,9 +92,9 @@ watch(
 }
 .verse-details-dialog {
   .dialog-header .app-count-chips {
-    margin-top: -4px;
-    margin-left: auto;
-    margin-right: 17px;
+    // margin-top: -4px;
+    // margin-left: auto;
+    // margin-right: 17px;
   }
 }
 </style>

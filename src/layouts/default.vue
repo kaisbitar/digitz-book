@@ -59,8 +59,8 @@ onMounted(() => {
   padding-top: 10px;
 }
 .v-data-table-header__content {
-  display: flex;
-  align-items: center;
-  padding-bottom: 9px;
+  // display: flex;
+  // align-items: center;
+  // padding-bottom: 9px;
 }
 </style>

@@ -1,18 +1,19 @@
 <template>
   <Research :chipsTitle="inputText" :chipsData="research" />
-  <div class="d-flex">
-    <AppInputField
-      :fieldInput="search"
-      :fieldPlaceHolder="inputText"
-      @update:fieldInput="updateSearchValue"
+  <v-card variant="outlined">
+    <v-toolbar>
+      <AppInputFieldToggle
+        :fieldInput="search"
+        :fieldPlaceHolder="`${search}`"
+        @update:fieldInput="updateSearchValue"
+      />
+    </v-toolbar>
+    <TableVerses
+      :verses="searchData"
+      :versesInputText="search"
+      @verseSelected="runSelectedSura"
     />
-    <AppFilterActions />
-  </div>
-  <TableVerses
-    :verses="searchData"
-    :versesInputText="search"
-    @verseSelected="runSelectedSura"
-  />
+  </v-card>
   <SearchSuraDialog v-model="showSura" :searchData="dialogData" />
 </template>
 

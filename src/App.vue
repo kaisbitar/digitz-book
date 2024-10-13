@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <router-view style="background: rgb(var(--v-theme-surface))" />
+    <router-view />
   </v-app>
 </template>
 
@@ -54,7 +54,7 @@ html {
 }
 
 th {
-  height: 5px !important;
+  // height: 5px !important;
 }
 
 .tableItem {
@@ -65,12 +65,8 @@ th {
   border: none !important;
 }
 
-.table-mobile-view .v-list-item {
-  background: rgb(var(--v-theme-second-background));
-}
-
 .tableStyle tr {
-  background: rgb(var(--v-theme-second-background));
+  // background: rgb(var(--v-theme-second-background));
 }
 
 .sura-text-container {
@@ -81,7 +77,7 @@ th {
 .active-verse-table,
 .active-verse,
 .active-Quran-index {
-  color: rgb(var(--v-theme-on-active-row)) !important;
+  // color: rgb(var(--v-theme-on-active-row)) !important;
   background: rgb(var(--v-theme-active-row)) !important;
   // font-weight: 700;
 }
@@ -96,15 +92,11 @@ th {
   color: rgb(var(--v-theme-on-highlight));
 }
 
-.selected {
-  opacity: 0.4 !important;
-  text-decoration: underline !important;
-}
 .theme-text-color {
-  color: rgb(var(--v-theme-on-surface)) !important;
+  // color: rgb(var(--v-theme-on-surface)) !important;
 }
 .verses-count {
-  color: rgb(var(--v-theme-versesCount)) !important;
+  color: rgb(var(--v-theme-verseCount)) !important;
 }
 
 .word-count {

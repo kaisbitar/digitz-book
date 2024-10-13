@@ -1,7 +1,7 @@
 <template>
   <tr
     class="tableItem"
-    :class="{ [activeItemClass]: isTargetedRow(item, index, activeItemKey) }"
+    :class="{ [scrollingItemClass]: isTargetedRow(item, index, activeItemKey) }"
     @click="$emit('activateRowItem', item)"
   >
     <td>{{ computedIndex }}</td>
@@ -25,18 +25,20 @@ const props = defineProps<{
   index: number
   search?: string
   activeItemKey: string | number
-  activeItemClass: string
+  scrollingItemClass: string
   headerKeys: string[] // Add headerKeys prop
 }>()
 const computedIndex = computed(() =>
-  props.activeItemClass == "active-Quran-index" ? props.index : props.index + 1
+  props.scrollingItemClass == "active-Quran-index"
+    ? props.index
+    : props.index + 1
 )
 
 const isTargetedRow = (item: any, index: number, id: string | number) => {
   if (id === undefined && index === 0) {
     return true
   }
-  if (props.activeItemClass === "active-Quran-index") {
+  if (props.scrollingItemClass === "active-Quran-index") {
     return id === item.fileName
   }
   return id === String(item.verseNumberToQuran)
