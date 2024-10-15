@@ -29,9 +29,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, nextTick, onUnmounted } from "vue"
+import { ref, watch, onMounted } from "vue"
 import { useWindow } from "@/mixins/window"
 import { useInputFiltering } from "@/mixins/inputFiltering"
+import { useResizeHandler } from "@/hooks/useResizeObserver"
 
 interface TableItem {
   [key: string]: any
@@ -48,19 +49,18 @@ const props = defineProps<{
 }>()
 
 const { search } = useInputFiltering()
-const { updateTableHeight, dynamicTableHeight } = useWindow()
+const { setContainerHeight, dynamicTableHeight } = useWindow()
 
 const emit = defineEmits<{
   (e: "activateRowItem", item: TableItem): void
 }>()
 
 const tableRef = ref(null)
-let resizeObserver = null
 
-const updateHeight = async () => {
-  await nextTick()
-  updateTableHeight(tableRef)
-}
+const { screen, handleResize } = useResizeHandler({
+  elementRef: tableRef,
+  updateHeight: () => setContainerHeight(tableRef),
+})
 
 watch(
   () => props.tableInputText,
@@ -71,17 +71,6 @@ watch(
 
 onMounted(async () => {
   search.value = props.tableInputText
-  await updateHeight()
-  window.addEventListener("resize", updateHeight)
-  resizeObserver = new ResizeObserver(() => {
-    updateHeight()
-  })
-  resizeObserver.observe(tableRef.value)
-  updateHeight()
-})
-
-onUnmounted(() => {
-  window.removeEventListener("resize", updateHeight)
 })
 </script>
 

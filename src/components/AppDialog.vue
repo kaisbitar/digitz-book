@@ -4,8 +4,8 @@
     @update:modelValue="$emit('update:modelValue', $event)"
     @click:outside="handleClose"
     :transition="transition ? transition : 'slide-x-transition'"
-    :fullscreen="currentBreakpoint === 'mobile'"
-    :width="currentBreakpoint === 'mobile' ? '100%' : '70%'"
+    :fullscreen="screen === 'mobile'"
+    :width="screen === 'mobile' ? '100%' : '70%'"
     max-width="1200"
     height="100%"
     :overlay="false"
@@ -24,7 +24,7 @@
 
 <script setup>
 import { useWindow } from "@/mixins/window"
-const { currentBreakpoint } = useWindow()
+const { screen } = useWindow()
 
 const emit = defineEmits(["update:modelValue"])
 

@@ -7,7 +7,7 @@
 <script setup>
 import { useQuranStore } from "@/stores/app"
 import { useWindow } from "@/mixins/window"
-const { currentBreakpoint } = useWindow()
+const { screen } = useWindow()
 
 const store = useQuranStore()
 
@@ -17,7 +17,7 @@ const getTheData = async () => {
 const dynamicFontSize = computed(() => store.getFontSize)
 
 onMounted(async () => {
-  if (currentBreakpoint.value === "mobile") {
+  if (screen.value === "mobile") {
     store.setVersesMobileView(true)
   }
   await getTheData()

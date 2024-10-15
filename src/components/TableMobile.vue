@@ -24,8 +24,9 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, nextTick } from "vue"
+import { ref, nextTick, onMounted, onUnmounted } from "vue"
 import { useWindow } from "@/mixins/window"
+import { useResizeHandler } from "@/hooks/useResizeObserver"
 
 const selectedItem = ref(null)
 const emit = defineEmits<{
@@ -50,27 +51,18 @@ const selectItem = (item: any) => {
 }
 
 const tableMobileRef = ref(null)
-let resizeObserver = null
 
-const { updateTableHeight, dynamicTableHeight } = useWindow()
+const { setContainerHeight, dynamicTableHeight } = useWindow()
 
-const updateHeight = async () => {
-  await nextTick()
-  updateTableHeight(tableMobileRef)
-}
+const { screen, handleResize } = useResizeHandler({
+  elementRef: tableMobileRef,
+  updateHeight: () => setContainerHeight(tableMobileRef),
+})
 
 onMounted(async () => {
   selectedItem.value = props.activeItemKey
-  window.addEventListener("resize", updateHeight)
-  resizeObserver = new ResizeObserver(() => {
-    updateHeight()
-  })
-  resizeObserver.observe(tableMobileRef.value)
-  updateHeight()
-})
-
-onUnmounted(() => {
-  window.removeEventListener("resize", updateHeight)
+  await nextTick()
+  setContainerHeight(tableMobileRef)
 })
 </script>
 

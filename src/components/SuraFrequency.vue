@@ -17,6 +17,7 @@
 <script setup>
 import { useQuranStore } from "@/stores/app"
 import { useWindow } from "@/mixins/window"
+import { useResizeHandler } from "@/hooks/useResizeObserver"
 
 const props = defineProps({
   chartFreqSeries: Array,
@@ -33,29 +34,17 @@ const changeType = (type) => {
 }
 
 const suraFrequencyRef = ref(null)
-let resizeObserver = null
 
-const { updateTableHeight, dynamicTableHeight } = useWindow()
+const { setContainerHeight, dynamicTableHeight } = useWindow()
 
-const updateHeight = async () => {
-  await nextTick()
-  updateTableHeight(suraFrequencyRef)
-}
-
-onMounted(async () => {
-  window.addEventListener("resize", updateHeight)
-  resizeObserver = new ResizeObserver(() => {
-    updateHeight()
-  })
-  if (suraFrequencyRef.value) {
-    resizeObserver.observe(suraFrequencyRef.value)
-  }
-  updateHeight()
+const { screen, handleResize } = useResizeHandler({
+  elementRef: suraFrequencyRef,
+  updateHeight: () => setContainerHeight(suraFrequencyRef),
 })
 
-onUnmounted(() => {
-  window.removeEventListener("resize", updateHeight)
-})
+onMounted(async () => {})
+
+onUnmounted(() => {})
 </script>
 
 <style></style>
