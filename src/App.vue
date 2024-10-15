@@ -7,7 +7,7 @@
 <script setup>
 import { useQuranStore } from "@/stores/app"
 import { useWindow } from "@/mixins/window"
-const { screen } = useWindow()
+const { windowWidth } = useWindow()
 
 const store = useQuranStore()
 
@@ -17,7 +17,7 @@ const getTheData = async () => {
 const dynamicFontSize = computed(() => store.getFontSize)
 
 onMounted(async () => {
-  if (screen.value === "mobile") {
+  if (windowWidth.value === "small") {
     store.setVersesMobileView(true)
   }
   await getTheData()
@@ -29,7 +29,7 @@ onMounted(async () => {
 </script>
 
 <style lang="scss">
-@import "@/styles/styles.scss";
+@import "@/styles/variables.scss";
 $body-font-family: "Cairo", sans-serif;
 
 .v-application {
@@ -37,8 +37,8 @@ $body-font-family: "Cairo", sans-serif;
 }
 html {
   font-size: var(--font-size);
-  // overflow: hidden;
-  // position: relative;
+  overflow: hidden;
+  position: relative;
 }
 // body {
 // }

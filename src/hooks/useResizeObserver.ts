@@ -2,34 +2,25 @@ import { onMounted, onUnmounted, ref, Ref } from "vue"
 
 interface ResizeHandlerOptions {
   elementRef?: Ref<HTMLElement | null>
-  updateHeight?: () => void
+  elementFunc?: () => void
   breakpointThreshold?: number
 }
 
 export function useResizeHandler(options: ResizeHandlerOptions = {}) {
-  const { elementRef, updateHeight, breakpointThreshold = 900 } = options
+  const { elementRef, elementFunc } = options
 
-  const screen = ref<"mobile" | "desktop">(
-    window.innerWidth < breakpointThreshold ? "mobile" : "desktop"
-  )
   let resizeObserver: ResizeObserver | null = null
 
   const handleResize = () => {
-    screen.value =
-      window.innerWidth < breakpointThreshold ? "mobile" : "desktop"
-    updateHeight?.()
+    elementFunc?.()
   }
 
   onMounted(() => {
     window.addEventListener("resize", handleResize)
-
-    if (elementRef?.value && updateHeight) {
-      resizeObserver = new ResizeObserver(() => {
-        updateHeight()
-      })
-      resizeObserver.observe(elementRef.value)
-    }
-
+    resizeObserver = new ResizeObserver(() => {
+      elementFunc()
+    })
+    resizeObserver.observe(elementRef.value)
     handleResize()
   })
 
@@ -41,7 +32,6 @@ export function useResizeHandler(options: ResizeHandlerOptions = {}) {
   })
 
   return {
-    screen,
     handleResize,
   }
 }

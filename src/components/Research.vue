@@ -26,9 +26,6 @@ const props = defineProps({
 
 const emit = defineEmits(["chipClicked", "chipRemoved", "chipRemoveAll"])
 const selectedChipIndex = computed(() => store.getSelectedSearchIndex)
-const breakpoint = computed(() =>
-  window.innerWidth < 600 ? "mobile" : "desktop"
-)
 </script>
 
 <style scoped>

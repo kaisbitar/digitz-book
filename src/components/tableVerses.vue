@@ -28,7 +28,7 @@
 import { ref, computed } from "vue"
 import { useQuranStore } from "@/stores/app"
 import { useWindow } from "@/mixins/window"
-const { scrollToActiveItem, screen } = useWindow()
+const { scrollToActiveItem, windowWidth } = useWindow()
 
 const store = useQuranStore()
 

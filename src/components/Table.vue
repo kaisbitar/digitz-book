@@ -5,7 +5,7 @@
       :items="tableData"
       :search="search"
       :class="scrollingContainerClass"
-      :height="dynamicTableHeight"
+      :height="dynamicHeight"
       loading-text="جاري تحميل
     البيانات القرآنية ... الرجاء الانتظار"
       fixed-header
@@ -29,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted } from "vue"
+import { ref, watch, onMounted, nextTick } from "vue"
 import { useWindow } from "@/mixins/window"
 import { useInputFiltering } from "@/mixins/inputFiltering"
 import { useResizeHandler } from "@/hooks/useResizeObserver"
@@ -48,19 +48,16 @@ const props = defineProps<{
   scrollingContainerClass: string
 }>()
 
+const tableRef = ref(null)
+
 const { search } = useInputFiltering()
-const { setContainerHeight, dynamicTableHeight } = useWindow()
+const { setContainerHeight, dynamicHeight } = useWindow(tableRef)
 
 const emit = defineEmits<{
   (e: "activateRowItem", item: TableItem): void
 }>()
 
-const tableRef = ref(null)
-
-const { screen, handleResize } = useResizeHandler({
-  elementRef: tableRef,
-  updateHeight: () => setContainerHeight(tableRef),
-})
+useResizeHandler({ elementRef: tableRef, elementFunc: setContainerHeight })
 
 watch(
   () => props.tableInputText,
@@ -71,6 +68,8 @@ watch(
 
 onMounted(async () => {
   search.value = props.tableInputText
+  await nextTick()
+  setContainerHeight()
 })
 </script>
 

@@ -145,19 +145,19 @@ export const useQuranStore = defineStore("Quran", {
       this.setQuranIndex(tableIndex)
     },
 
-    async getSuraDetails() {
-      if (!this.suras[this.target.fileName]) {
-        this.suras[this.target.fileName] = { suraDetails: null }
-      }
+    // async getSuraDetails() {
+    //   if (!this.suras[this.target.fileName]) {
+    //     this.suras[this.target.fileName] = { suraDetails: null }
+    //   }
 
-      if (!this.suras[this.target.fileName].suraDetails) {
-        const appApi = import.meta.env.VITE_APP_API_URL
-        const suraDetails = await fetchSuraDetails(appApi, this.target.fileName)
-        this.setSuraDetails({ suraDetails })
-        return suraDetails
-      }
+    //   if (!this.suras[this.target.fileName].suraDetails) {
+    //     const appApi = import.meta.env.VITE_APP_API_URL
+    //     const suraDetails = await fetchSuraDetails(appApi, this.target.fileName)
+    //     this.setSuraDetails({ suraDetails })
+    //     return suraDetails
+    //   }
 
-      return this.suras[this.target.fileName].suraDetails
-    },
+    //   return this.suras[this.target.fileName].suraDetails
+    // },
   },
 })
