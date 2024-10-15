@@ -34,20 +34,17 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted, onUnmounted } from "vue"
+import { ref, computed, onMounted } from "vue"
 import { useQuranStore } from "@/stores/app"
 import { useInputFiltering } from "@/mixins/inputFiltering"
 import { useWindow } from "@/mixins/window"
+import { useResizeHandler } from "@/hooks/useResizeObserver"
 
-const { updateTableHeight, dynamicTableHeight } = useWindow()
 const { scrollToActiveItem } = useWindow()
 const { search, highlight } = useInputFiltering()
 const store = useQuranStore()
 
 const props = defineProps(["inputText", "suraTextArray"])
-
-const suraTextRef = ref(null)
-let resizeObserver = null
 
 const suraTargetedVerseIndex = computed(() => store.getTarget?.verseIndex)
 const isTargetedVerse = computed(
@@ -65,23 +62,16 @@ const setTargetedVerse = (verse, index) => {
   })
 }
 
-const updateHeight = async () => {
-  await nextTick()
-  updateTableHeight(suraTextRef)
-}
-onMounted(() => {
-  scrollToActiveItem(".active-verse", ".sura-text-container")
-  resizeObserver = new ResizeObserver(() => {
-    updateHeight()
-  })
-  resizeObserver.observe(suraTextRef.value)
-  updateHeight()
+const suraTextRef = ref(null)
+const { setContainerHeight, dynamicTableHeight } = useWindow()
+
+const { screen, handleResize } = useResizeHandler({
+  elementRef: suraTextRef,
+  updateHeight: () => setContainerHeight(suraTextRef),
 })
 
-onUnmounted(() => {
-  if (resizeObserver) {
-    resizeObserver.disconnect()
-  }
+onMounted(() => {
+  scrollToActiveItem(".active-verse", ".sura-text-container")
 })
 </script>
 

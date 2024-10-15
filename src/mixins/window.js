@@ -1,6 +1,7 @@
 import { computed, ref, onBeforeUnmount, nextTick } from "vue"
 import { useQuranStore } from "@/stores/app"
 import { useGoTo } from "vuetify"
+import { useResizeHandler } from "@/hooks/useResizeObserver"
 
 export function useWindow(props) {
   const store = useQuranStore()
@@ -9,7 +10,7 @@ export function useWindow(props) {
   const windowHeight = computed(() => window.innerHeight)
   const dynamicTableHeight = ref(0)
 
-  const updateTableHeight = (containerRef, buffer = 20) => {
+  const setContainerHeight = (containerRef, buffer = 20) => {
     if (
       containerRef &&
       containerRef.value &&
@@ -54,29 +55,17 @@ export function useWindow(props) {
     await scrollToItem(activeItem, container, isDialog)
   }
 
-  const breakpoint = ref(window.innerWidth < 900 ? "mobile" : "desktop")
-  const currentBreakpoint = computed(() => breakpoint.value)
-
-  const updateBreakpoint = () => {
-    breakpoint.value = window.innerWidth < 900 ? "mobile" : "desktop"
-  }
-
-  const handleResize = () => {
-    updateBreakpoint()
-  }
-
-  window.addEventListener("resize", handleResize)
-
-  onBeforeUnmount(() => {
-    window.removeEventListener("resize", handleResize)
+  const { screen, handleResize } = useResizeHandler({
+    updateHeight: () => setContainerHeight(props?.containerRef),
   })
 
   return {
     windowHeight,
-    updateTableHeight,
+    setContainerHeight,
     dynamicTableHeight,
     scrollToActiveItem,
     scrollNoDialog,
-    currentBreakpoint,
+    screen,
+    handleResize,
   }
 }
