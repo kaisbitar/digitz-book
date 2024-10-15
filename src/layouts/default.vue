@@ -1,8 +1,8 @@
 <template>
-  <v-app v-if="isReady">
+  <v-app>
+    <AppHeader v-if="activeRoute !== 'home'" />
     <v-main>
-      <AppHeader v-if="activeRoute !== 'home'" />
-      <v-container>
+      <v-container class="">
         <router-view />
       </v-container>
     </v-main>
@@ -10,13 +10,12 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from "vue"
+import { ref, computed, onMounted } from "vue"
 import { useQuranStore } from "@/stores/app"
 import { useRouter } from "vue-router"
 
 const store = useQuranStore()
 const router = useRouter()
-const isReady = ref(false)
 
 const activeRoute = computed(() => router.currentRoute.value.name)
 
@@ -25,22 +24,21 @@ const drawer = computed({
   set: (value) => store.setDrawerState(value),
 })
 
-const handleLanding = () => {
-  if (activeRoute.value === "sura") {
-    drawer.value = true
-  } else if (activeRoute.value === "search") {
-    drawer.value = false
-  }
-}
+// const handleLanding = () => {
+//   if (activeRoute.value === "sura") {
+//     drawer.value = true
+//     return
+//   }
+//   if (activeRoute.value === "search") {
+//     drawer.value = false
+//   }
+// }
 
-watch(activeRoute, handleLanding)
+// watch(activeRoute, () => {
+//   handleLanding()
+// })
 
-onMounted(() => {
-  // Wait for stylesheets to load before rendering the app
-  window.addEventListener("load", () => {
-    isReady.value = true
-  })
-})
+onMounted(() => {})
 </script>
 
 <style lang="scss">
