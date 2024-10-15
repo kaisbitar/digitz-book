@@ -5,7 +5,6 @@
     append-inner-icon="mdi-magnify"
     density="compact"
     label="Search templates"
-    variant="outlined"
     hide-details
     single-line
     clearable

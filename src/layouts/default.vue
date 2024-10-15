@@ -7,12 +7,11 @@
           v-bind="props"
           v-model="drawer"
           :width="isHovering ? 600 : 310"
-          :scrim="false"
           right
         >
           <TableQuranIndex></TableQuranIndex> </v-navigation-drawer
       ></v-hover>
-      <v-container class="pt-2 pb-2">
+      <v-container class="">
         <router-view />
       </v-container>
     </v-main>
@@ -56,7 +55,7 @@ onMounted(() => {
 <style lang="scss">
 @import "@/styles/styles.scss";
 .main-wrapp {
-  padding-top: 10px;
+  // padding-top: 10px;
 }
 .v-data-table-header__content {
   // display: flex;

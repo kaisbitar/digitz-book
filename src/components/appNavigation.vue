@@ -1,30 +1,29 @@
 <template>
-  <v-btn
-    :class="activeRoute === 'sura' ? 'selected' : 'not-selected'"
-    @click="$emit('navigateTo', 'sura')"
-    icon
+  <v-app-bar-nav-icon
+    v-for="(item, index) in navItems"
+    :key="index"
+    :value="item.route"
+    :active="activeRoute === item.route"
+    @click="$emit('navigateTo', item.route)"
   >
-    <v-icon>mdi-book-open-variant</v-icon>
-  </v-btn>
-
-  <v-btn
-    :class="activeRoute === 'search' ? 'selected' : 'not-selected'"
-    @click="$emit('navigateTo', 'search')"
-    size="small"
-    variant="outlined"
-  >
-    <v-icon>mdi-magnify</v-icon>
-    ابحث في القرآن
-  </v-btn>
+    <v-icon>{{ item.icon }}</v-icon>
+  </v-app-bar-nav-icon>
 </template>
 
 <script setup>
-defineEmits(["navigateTo"])
-defineProps(["activeRoute"])
+import { ref } from "vue"
+
+const props = defineProps(["activeRoute"])
+const emit = defineEmits(["navigateTo"])
+
+const navItems = ref([
+  { icon: "mdi-book-open-outline", route: "sura" },
+  { icon: "mdi-database-search", route: "search" },
+])
 </script>
 
 <style scoped>
-.selected {
-  opacity: 0.4 !important;
+.v-app-bar-nav-icon.v-btn--active .v-icon {
+  color: rgb(var(--v-theme-primary));
 }
 </style>

@@ -1,8 +1,8 @@
 <template>
   <v-menu offset-y :close-on-content-click="false" :nudge-width="200">
     <template v-slot:activator="{ props }">
-      <v-btn icon v-bind="props">
-        <v-icon size="small">mdi-cog</v-icon>
+      <v-btn icon v-bind="props" class="mx-2">
+        <v-icon>mdi-cog-outline</v-icon>
       </v-btn>
     </template>
     <v-list>

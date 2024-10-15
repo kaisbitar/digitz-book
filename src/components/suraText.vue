@@ -1,50 +1,53 @@
 <template>
-  <v-container class="sura-text-container scrolling-container theme-text-color">
-    <span
-      v-for="(verse, index) in suraTextArray"
-      :key="index"
-      @click="setTargetedVerse(verse, index + 1)"
-      :class="{
-        'active-verse': isTargetedVerse(index),
-        'dimmed-verse': !isTargetedVerse(index),
-      }"
-    >
-      <v-chip
-        class="ml-2 mr-"
-        size="x-small"
-        color=""
-        variant="outlined"
-        :class="{ 'active-chip': isTargetedVerse(index) }"
-        @click="hasActiveVerse && setTargetedVerse(verse, index + 1)"
-      >
-        {{ index + 1 }}
-      </v-chip>
+  <div ref="suraTextRef" :style="{ height: `${dynamicTableHeight}px` }">
+    <v-card class="px-4 sura-text-container scrolling-container">
       <span
-        :id="`v${index + 1}`"
-        class="verse-content"
+        v-for="(verse, index) in suraTextArray"
+        :key="index"
         @click="setTargetedVerse(verse, index + 1)"
+        :class="{
+          'active-verse': isTargetedVerse(index),
+          'dimmed-verse': !isTargetedVerse(index),
+        }"
       >
-        <span v-if="inputText" v-html="highlight(verse, inputText)" />
-        <span v-else>{{ verse }}</span>
+        <v-chip
+          class="ml-2 mr-"
+          size="x-small"
+          color=""
+          variant="outlined"
+          :class="{ 'active-chip': isTargetedVerse(index) }"
+          @click="hasActiveVerse && setTargetedVerse(verse, index + 1)"
+        >
+          {{ index + 1 }}
+        </v-chip>
+        <span
+          :id="`v${index + 1}`"
+          class="verse-content"
+          @click="setTargetedVerse(verse, index + 1)"
+        >
+          <span v-if="inputText" v-html="highlight(verse, inputText)" />
+          <span v-else>{{ verse }}</span>
+        </span>
       </span>
-    </span>
-  </v-container>
+    </v-card>
+  </div>
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from "vue"
+import { ref, computed, watch, onMounted, onUnmounted } from "vue"
 import { useQuranStore } from "@/stores/app"
 import { useInputFiltering } from "@/mixins/inputFiltering"
 import { useWindow } from "@/mixins/window"
-import { useGoTo } from "vuetify"
 
+const { updateTableHeight, dynamicTableHeight } = useWindow()
 const { scrollToActiveItem } = useWindow()
+const { search, highlight } = useInputFiltering()
+const store = useQuranStore()
 
 const props = defineProps(["inputText", "suraTextArray"])
 
-const store = useQuranStore()
-const goTo = useGoTo()
-const { search, highlight } = useInputFiltering()
+const suraTextRef = ref(null)
+let resizeObserver = null
 
 const suraTargetedVerseIndex = computed(() => store.getTarget?.verseIndex)
 const isTargetedVerse = computed(
@@ -62,8 +65,23 @@ const setTargetedVerse = (verse, index) => {
   })
 }
 
+const updateHeight = async () => {
+  await nextTick()
+  updateTableHeight(suraTextRef)
+}
 onMounted(() => {
   scrollToActiveItem(".active-verse", ".sura-text-container")
+  resizeObserver = new ResizeObserver(() => {
+    updateHeight()
+  })
+  resizeObserver.observe(suraTextRef.value)
+  updateHeight()
+})
+
+onUnmounted(() => {
+  if (resizeObserver) {
+    resizeObserver.disconnect()
+  }
 })
 </script>
 
@@ -71,10 +89,9 @@ onMounted(() => {
 @import "@/styles/styles.scss";
 
 .sura-text-container {
+  height: 100%;
   display: block;
-  line-height: 1.8;
-  min-height: 72vh;
-  max-height: 72vh;
+  line-height: 2.5;
   overflow-y: auto;
 }
 
@@ -89,27 +106,4 @@ onMounted(() => {
   padding: 4px 0px 8px 5px;
   background-color: rgb(var(--v-theme-active-row)) !important;
 }
-// .num-chip {
-//   background: rgb(var(--v-theme-verse-number-chip));
-//   margin: 0 6px;
-//   padding: 2px 6px;
-//   border-radius: 12px;
-//   font-size: 0.9em;
-//   color: rgb(var(--v-theme-on-verse-number-chip));
-//   font-weight: 600;
-//   border: 1px solid #000;
-// }
-
-// .active-chip {
-//   background: rgb(var(--v-theme-on-active-row));
-//   color: rgb(var(--v-theme-active-row));
-//   border: 3px solid #131313d9;
-// }
-// .active-verse .verse-content {
-//   padding: 8px 4px 9px 8px;
-//   border-radius: 4px;
-//   background: rgb(var(--v-theme-active-row));
-//   border: 1px solid #131313d9;
-//   font-weight: 700;
-// }
 </style>

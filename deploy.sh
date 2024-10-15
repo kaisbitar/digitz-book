@@ -6,7 +6,7 @@ REMOTE_HOST="139.59.133.159"
 REMOTE_PORT="2222"
 REMOTE_PATH="/var/www/q-project/front-end"
 BUILD_FILE="build.tar"
-
+SUDO_PASSWORD="Emadis@dad85"
 # Function to handle errors
 handle_error() {
     echo "Error: $1"
@@ -28,9 +28,9 @@ echo "Attempting to execute commands on remote server..."
 ssh -p $REMOTE_PORT -v -o ConnectTimeout=30 $REMOTE_USER@$REMOTE_HOST << EOF || handle_error "Failed to execute commands on remote server"
     cd $REMOTE_PATH
     tar -zxvf $BUILD_FILE
-    rm -rf app-prev
-    mv app app-prev
-    mv dist app
+    echo "$SUDO_PASSWORD" | sudo -S rm -rf app-prev
+    echo "$SUDO_PASSWORD" | sudo -S mv app app-prev
+    echo "$SUDO_PASSWORD" | sudo -S mv dist app
     rm $BUILD_FILE
 EOF
 

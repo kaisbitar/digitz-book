@@ -14,6 +14,9 @@ import { ar } from "vuetify/locale"
 
 // https://vuetifyjs.com/en/introduction/why-vuetify/#feature-guides
 export default createVuetify({
+  icons: {
+    defaultSet: "mdi",
+  },
   theme: {
     // defaultTheme: "dark",
     // defaultTheme: "light",
@@ -24,8 +27,8 @@ export default createVuetify({
         colors: {
           // background: "#fff",
           // surface: "#ededed",
-          // // "on-background": "4c4c4c",
-          // "on-surface": "4c4c4c",
+          "on-background": "#36454F",
+          "on-surface": "#36454F",
           // // "second-background": "#f5f5f5",
           highlight: "#ffff00",
           "on-highlight": "#000000",
