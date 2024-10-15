@@ -7,7 +7,7 @@ export function useWindow(elementRef) {
   const goTo = useGoTo()
 
   const windowHeight = computed(() => window.innerHeight)
-  const windowWidth = window.innerWidth < 900 ? "small" : "large"
+  const windowWidth = window.innerWidth <= 1300 ? "small" : "large"
   const dynamicHeight = ref(0)
 
   const setContainerHeight = (buffer = 20) => {

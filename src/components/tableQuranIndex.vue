@@ -1,21 +1,32 @@
 <template>
-  <v-container>
-    <AppInputField
-      :fieldInput="search"
-      :fieldPlaceHolder="'السور'"
-      @update:fieldInput="updateSearchValue"
-    />
-    <Table
-      :tableData="indexData"
-      :tableInputText="search"
-      :tableHeaders="indexHeaders"
-      :fieldPlaceHolder="'السور'"
-      :scrollingItemClass="'active-Quran-index'"
-      :scrollingContainerClass="'index-container'"
-      :activeItemKey="targetedIndex"
-      @activateRowItem="handleIndexSelected"
-    />
-  </v-container>
+  <v-hover v-slot="{ isHovering, props }" open-delay="100" close-delay="100">
+    <v-navigation-drawer
+      v-model="drawer"
+      v-bind="props"
+      :width="isHovering ? 600 : 310"
+      :location="$vuetify.display.mobile ? 'top' : 'right'"
+    >
+      <v-container>
+        <v-list>
+          <AppInputField
+            :fieldInput="search"
+            :fieldPlaceHolder="'السور'"
+            @update:fieldInput="updateSearchValue"
+          />
+          <Table
+            :tableData="indexData"
+            :tableInputText="search"
+            :tableHeaders="indexHeaders"
+            :fieldPlaceHolder="'السور'"
+            :scrollingItemClass="'active-Quran-index'"
+            :scrollingContainerClass="'index-container'"
+            :activeItemKey="targetedIndex"
+            @activateRowItem="handleSelectedSura"
+          />
+        </v-list>
+      </v-container>
+    </v-navigation-drawer>
+  </v-hover>
 </template>
 
 <script setup>
@@ -39,27 +50,53 @@ const indexHeaders = ref([
   { title: "الآيات", key: "numberOfVerses" },
   { title: "كلمات", key: "numberOfWords" },
   { title: "حروف", key: "numberOfLetters" },
-  { title: "مصحف", key: "verseNumberToQuran", width: 2000 },
+  { title: "مصحف", key: "verseNumberToQuran" },
 ])
+
+const activeRoute = computed(() => router.currentRoute.value.name)
+
 const targetedIndex = computed(() => {
   return store.getTarget.fileName
 })
 
-const handleIndexSelected = (sura) => {
+const drawer = computed({
+  get: () => store.getDrawerState,
+  set: (value) => store.setDrawerState(value),
+})
+
+const handleSelectedSura = (sura) => {
   store.setTarget({
     fileName: sura.fileName,
     verseIndex: 1,
     verseNumberToQuran: sura.verseNumberToQuran.toString(),
   })
-  if (windowWidth.value === "small") {
+
+  if (windowWidth === "small") {
     store.setDrawerState(false)
   }
-  if (router.currentRoute.value.name !== "sura") {
+
+  if (activeRoute !== "sura") {
     router.push({ name: "sura" })
   }
 
   store.setSearchIndex(-1)
 }
+
+const handleDrawer = () => {
+  if (activeRoute.value === "sura") {
+    drawer.value = true
+    return
+  }
+  drawer.value = false
+}
+
+watch(activeRoute, () => {
+  handleDrawer()
+})
+
+onMounted(() => {
+  handleDrawer()
+})
 
 watch(targetedIndex, () => {
   scrollToActiveItem(

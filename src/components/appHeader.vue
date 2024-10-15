@@ -4,7 +4,6 @@
       <v-toolbar-title class="hidden-sm-and-down mx-3"
         >الكتاب المرقوم</v-toolbar-title
       >
-      <v-app-bar-nav-icon @click.stop="toggleDrawer"></v-app-bar-nav-icon>
       <AppNavigation
         :activeRoute="activeRoute"
         @navigateTo="handleNavigation"
@@ -38,10 +37,6 @@ const handleNavigation = (route) => {
     return
   }
   router.push(route)
-}
-
-const toggleDrawer = () => {
-  store.setDrawerState(!store.getDrawerState)
 }
 
 watch(researchResults.value, (newValue) => {})
