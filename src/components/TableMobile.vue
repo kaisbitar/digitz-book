@@ -2,7 +2,7 @@
   <div
     class="table-mobile-view"
     ref="tableMobileRef"
-    :style="{ height: `${dynamicTableHeight}px` }"
+    :style="{ height: `${dynamicHeight}px` }"
   >
     <v-item-group
       :selected-class="scrollingItemClass"
@@ -24,7 +24,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, onMounted, onUnmounted } from "vue"
+import { ref, nextTick, onMounted } from "vue"
 import { useWindow } from "@/mixins/window"
 import { useResizeHandler } from "@/hooks/useResizeObserver"
 
@@ -52,17 +52,16 @@ const selectItem = (item: any) => {
 
 const tableMobileRef = ref(null)
 
-const { setContainerHeight, dynamicTableHeight } = useWindow()
-
-const { screen, handleResize } = useResizeHandler({
+const { setContainerHeight, dynamicHeight } = useWindow(tableMobileRef)
+useResizeHandler({
   elementRef: tableMobileRef,
-  updateHeight: () => setContainerHeight(tableMobileRef),
+  elementFunc: setContainerHeight,
 })
 
 onMounted(async () => {
   selectedItem.value = props.activeItemKey
   await nextTick()
-  setContainerHeight(tableMobileRef)
+  setContainerHeight()
 })
 </script>
 

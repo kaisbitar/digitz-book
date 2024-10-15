@@ -122,7 +122,7 @@ const setSuraBasics = () => {
 }
 
 const fetchSuraDetails = async () => {
-  suraDetails.value = await store.getSuraDetails()
+  // suraDetails.value = await store.getSuraDetails()
 }
 
 const prepareData = () => {

@@ -1,17 +1,8 @@
 <template>
-  <v-app>
+  <v-app v-if="isReady">
     <v-main>
       <AppHeader v-if="activeRoute !== 'home'" />
-      <v-hover v-slot="{ isHovering, props }" open-delay="200" close-delay="200"
-        ><v-navigation-drawer
-          v-bind="props"
-          v-model="drawer"
-          :width="isHovering ? 600 : 310"
-          right
-        >
-          <TableQuranIndex></TableQuranIndex> </v-navigation-drawer
-      ></v-hover>
-      <v-container class="">
+      <v-container>
         <router-view />
       </v-container>
     </v-main>
@@ -19,12 +10,13 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue"
+import { ref, computed, onMounted, watch } from "vue"
 import { useQuranStore } from "@/stores/app"
 import { useRouter } from "vue-router"
 
 const store = useQuranStore()
 const router = useRouter()
+const isReady = ref(false)
 
 const activeRoute = computed(() => router.currentRoute.value.name)
 
@@ -36,30 +28,29 @@ const drawer = computed({
 const handleLanding = () => {
   if (activeRoute.value === "sura") {
     drawer.value = true
-    return
-  }
-  if (activeRoute.value === "search") {
+  } else if (activeRoute.value === "search") {
     drawer.value = false
   }
 }
 
-watch(activeRoute, () => {
-  handleLanding()
-})
+watch(activeRoute, handleLanding)
 
 onMounted(() => {
-  // handleLanding()
+  // Wait for stylesheets to load before rendering the app
+  window.addEventListener("load", () => {
+    isReady.value = true
+  })
 })
 </script>
 
 <style lang="scss">
-@import "@/styles/styles.scss";
-.main-wrapp {
-  // padding-top: 10px;
-}
-.v-data-table-header__content {
-  // display: flex;
-  // align-items: center;
-  // padding-bottom: 9px;
-}
+// @import "@/styles/variables.scss";
+// .main-wrapp {
+//   // padding-top: 10px;
+// }
+// .v-data-table-header__content {
+//   // display: flex;
+//   // align-items: center;
+//   // padding-bottom: 9px;
+// }
 </style>

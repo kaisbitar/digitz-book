@@ -1,5 +1,5 @@
 <template>
-  <div ref="suraFrequencyRef" :style="{ height: `${dynamicTableHeight}px` }">
+  <div ref="suraFrequencyRef" :style="{ height: `${dynamicHeight}px` }">
     <v-card class="pa-4">
       <ChartRadioButtons
         :intitalType="chartFreqType"
@@ -35,14 +35,17 @@ const changeType = (type) => {
 
 const suraFrequencyRef = ref(null)
 
-const { setContainerHeight, dynamicTableHeight } = useWindow()
+const { setContainerHeight, dynamicHeight } = useWindow(suraFrequencyRef)
 
-const { screen, handleResize } = useResizeHandler({
+useResizeHandler({
   elementRef: suraFrequencyRef,
-  updateHeight: () => setContainerHeight(suraFrequencyRef),
+  elementFunc: setContainerHeight,
 })
 
-onMounted(async () => {})
+onMounted(async () => {
+  await nextTick()
+  setContainerHeight()
+})
 
 onUnmounted(() => {})
 </script>

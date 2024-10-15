@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <SuraHeader
     :title="`${suraNumber} ${suraName} `"
     :tabs="tabs"
@@ -146,7 +146,7 @@ const setSuraBasics = () => {
 }
 
 const fetchSuraDetails = async () => {
-  suraDetails.value = await store.getSuraDetails()
+  // suraDetails.value = await store.getSuraDetails()
 }
 
 const prepareData = () => {
@@ -196,4 +196,4 @@ onMounted(() => {
 })
 </script>
 
-<style lang="scss"></style>
+<style lang="scss"></style> -->

@@ -1,28 +1,28 @@
-import { computed, ref, onBeforeUnmount, nextTick } from "vue"
+import { computed, ref, onMounted, onUnmounted, nextTick } from "vue"
 import { useQuranStore } from "@/stores/app"
 import { useGoTo } from "vuetify"
-import { useResizeHandler } from "@/hooks/useResizeObserver"
 
-export function useWindow(props) {
+export function useWindow(elementRef) {
   const store = useQuranStore()
   const goTo = useGoTo()
 
   const windowHeight = computed(() => window.innerHeight)
-  const dynamicTableHeight = ref(0)
+  const windowWidth = window.innerWidth < 900 ? "small" : "large"
+  const dynamicHeight = ref(0)
 
-  const setContainerHeight = (containerRef, buffer = 20) => {
-    if (
-      containerRef &&
-      containerRef.value &&
-      typeof containerRef.value.getBoundingClientRect === "function"
-    ) {
+  const setContainerHeight = (buffer = 20) => {
+    if (elementRef && elementRef.value) {
       const windowHeight = window.innerHeight
-      const containerRect = containerRef.value.getBoundingClientRect()
+      const containerRect = elementRef.value.getBoundingClientRect()
       const containerTop = containerRect.top
       const newHeight = windowHeight - containerTop - buffer
-      dynamicTableHeight.value = newHeight
-      containerRef.value.style.height = `${newHeight}px`
+      dynamicHeight.value = newHeight
+      elementRef.value.style.height = `${newHeight}px`
     }
+  }
+
+  const handleResize = () => {
+    setContainerHeight()
   }
 
   const scrollToItem = async (activeItem, container, isDialog) => {
@@ -55,17 +55,21 @@ export function useWindow(props) {
     await scrollToItem(activeItem, container, isDialog)
   }
 
-  const { screen, handleResize } = useResizeHandler({
-    updateHeight: () => setContainerHeight(props?.containerRef),
+  onMounted(() => {
+    window.addEventListener("resize", handleResize)
+    setContainerHeight()
+  })
+
+  onUnmounted(() => {
+    window.removeEventListener("resize", handleResize)
   })
 
   return {
     windowHeight,
     setContainerHeight,
-    dynamicTableHeight,
+    dynamicHeight,
     scrollToActiveItem,
     scrollNoDialog,
-    screen,
-    handleResize,
+    windowWidth,
   }
 }

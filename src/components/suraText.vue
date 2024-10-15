@@ -1,6 +1,9 @@
 <template>
-  <div ref="suraTextRef" :style="{ height: `${dynamicTableHeight}px` }">
-    <v-card class="px-4 sura-text-container scrolling-container">
+  <div ref="suraTextRef">
+    <v-card
+      class="px-4 sura-text-container scrolling-container"
+      :height="dynamicHeight"
+    >
       <span
         v-for="(verse, index) in suraTextArray"
         :key="index"
@@ -34,7 +37,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue"
+import { ref, computed, onMounted, nextTick } from "vue"
 import { useQuranStore } from "@/stores/app"
 import { useInputFiltering } from "@/mixins/inputFiltering"
 import { useWindow } from "@/mixins/window"
@@ -63,20 +66,18 @@ const setTargetedVerse = (verse, index) => {
 }
 
 const suraTextRef = ref(null)
-const { setContainerHeight, dynamicTableHeight } = useWindow()
+const { setContainerHeight, dynamicHeight } = useWindow(suraTextRef)
+useResizeHandler({ elementRef: suraTextRef, elementFunc: setContainerHeight })
 
-const { screen, handleResize } = useResizeHandler({
-  elementRef: suraTextRef,
-  updateHeight: () => setContainerHeight(suraTextRef),
-})
-
-onMounted(() => {
+onMounted(async () => {
   scrollToActiveItem(".active-verse", ".sura-text-container")
+  await nextTick()
+  setContainerHeight()
 })
 </script>
 
 <style lang="scss" scoped>
-@import "@/styles/styles.scss";
+@import "@/styles/variables.scss";
 
 .sura-text-container {
   height: 100%;

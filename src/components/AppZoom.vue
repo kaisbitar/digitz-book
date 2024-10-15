@@ -37,7 +37,7 @@ onMounted(() => {})
 </script>
 
 <style lang="scss">
-@import "@/styles/styles.scss";
+@import "@/styles/variables.scss";
 html {
   font-size: var(--dynamic-font-size);
 }
