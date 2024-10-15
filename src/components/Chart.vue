@@ -1,9 +1,14 @@
 <template>
-  <VueApexCharts :series="series" :options="options" :height="height" />
+  <VueApexCharts
+    :series="series"
+    :options="options"
+    :height="chartWindowHeight"
+  />
 </template>
 
 <script setup>
 import VueApexCharts from "vue3-apexcharts"
+const chartWindowHeight = computed(() => window.innerHeight - 260)
 const props = defineProps(["height", "options", "series"])
 </script>
 
@@ -35,7 +40,7 @@ const props = defineProps(["height", "options", "series"])
   border-top: 3px solid #4db6ac !important;
 }
 .tipInfo {
-  background: rgb(var(--v-theme-input-background)) !important;
+  background: rgb(var(--v-theme-background)) !important;
   border: 1px solid rgb(218, 218, 218);
   border-top: 3px solid #2195f3;
   border-radius: 3px;
@@ -47,7 +52,7 @@ const props = defineProps(["height", "options", "series"])
   font-size: 12px;
 }
 .tipText {
-  background: rgb(var(--v-theme-input-background)) !important;
+  background: rgb(var(--v-theme-background)) !important;
   border-top: 3px solid rgb(218, 218, 218);
   border-right: 1px solid #cfcfcf;
 }

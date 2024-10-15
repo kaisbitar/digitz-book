@@ -1,26 +1,35 @@
 <template>
   <v-card
-    class="mr-1 ml-1 mt-1 mb-1"
+    max-width=""
+    class="ma-auto mb-1 mr-1 ml-1"
     :class="{ 'active-verse': active }"
     @click="handleClick"
+    variant="elevated"
   >
-    <v-card-title class="d-flex justify-space-between align-center">
-      <span class="text-blue">{{ suraNumber }} {{ suraName }} </span>
+    <div class="pt-4 pr-4 pl-4 mb-n1 d-flex justify-space-between align-center">
+      <span class="text-secondary text-caption"
+        >{{ suraNumber }} {{ suraName }}
+      </span>
       <v-chip variant="tonal" size="small">{{ index + 1 }} </v-chip>
-    </v-card-title>
-    <v-card-text v-html="highlight(item.verseText, textToHighlight)" />
-    <v-card-actions class="d-flex justify-start">
-      <v-chip
-        v-for="(data, key) in chipData"
-        :key="key"
-        variant="tonal"
-        size="small"
-        :color="data.color"
-        backgound="blue"
-        :ripple="false"
-      >
-        {{ key }}: {{ data.value }}
-      </v-chip>
+    </div>
+    <div
+      class="pr-4 pl-4"
+      v-html="highlight(item.verseText, textToHighlight)"
+    ></div>
+    <v-card-actions>
+      <template v-for="(data, key) in chipData" :key="key" class="d-flex">
+        <span class="text-grey text-caption mr-2"
+          >{{ key }} {{ data.value }}</span
+        >
+        <!-- <v-chip
+          variant="text"
+          size="x-small"
+          :color="data.color"
+          :ripple="false"
+        >
+          {{ data.value }}
+        </v-chip> -->
+      </template>
     </v-card-actions>
   </v-card>
 </template>
@@ -38,9 +47,6 @@ const props = defineProps({
   active: Boolean,
 })
 const emit = defineEmits(["verseClicked"])
-const avatarColor = computed(() => {
-  return theme.global.current.value.dark ? "grey-darken-3" : "grey-lighten-3"
-})
 
 const suraNumber = computed(() => {
   const numberPart = props.item.fileName

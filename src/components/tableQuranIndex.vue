@@ -12,7 +12,6 @@
       :fieldPlaceHolder="'السور'"
       :scrollingItemClass="'active-Quran-index'"
       :scrollingContainerClass="'index-container'"
-      :height="135"
       :activeItemKey="targetedIndex"
       @activateRowItem="handleIndexSelected"
     />

@@ -1,12 +1,7 @@
 <template>
-  <v-app-bar
-    class="position-fixed app-top-bar"
-    density="compact"
-    :elevation="0"
-    border="b"
-  >
+  <v-app-bar class="position-fixed app-top-bar" :elevation="0" border="b">
     <template v-slot:prepend>
-      <v-toolbar-title class="hidden-sm-and-down"
+      <v-toolbar-title class="hidden-sm-and-down mx-3"
         >الكتاب المرقوم</v-toolbar-title
       >
       <v-app-bar-nav-icon @click.stop="toggleDrawer"></v-app-bar-nav-icon>
@@ -14,13 +9,12 @@
         :activeRoute="activeRoute"
         @navigateTo="handleNavigation"
       />
-      <AutoCompleteDialog
-        v-model="showAutoComplete"
-        @update:modelValue="closeSearchDialog"
-      />
+      <AutoCompleteDialog />
     </template>
     <template v-slot:append>
-      <v-icon size="small" @click="handleNavigation('/')">mdi-home</v-icon>
+      <v-icon @click="handleNavigation('/')" class="mx-2"
+        >mdi-home-variant-outline
+      </v-icon>
       <AppSettings :components="[ThemeToggle, AppZoom]"> </AppSettings>
     </template>
   </v-app-bar>
@@ -37,24 +31,12 @@ const router = useRouter()
 
 const activeRoute = computed(() => router.currentRoute.value.name)
 const researchResults = computed(() => store.getResearchResults)
-const showAutoComplete = ref(false)
-
-const openSearchDialog = () => {
-  showAutoComplete.value = true
-  router.push("/search")
-}
-
-const closeSearchDialog = () => {
-  showAutoComplete.value = false
-}
 
 const handleNavigation = (route) => {
   if (route === "search") {
-    showAutoComplete.value = true
-    router.push("/search")
+    router.push(route)
     return
   }
-  showAutoComplete.value = false
   router.push(route)
 }
 
@@ -62,18 +44,7 @@ const toggleDrawer = () => {
   store.setDrawerState(!store.getDrawerState)
 }
 
-watch(researchResults.value, (newValue) => {
-  showAutoComplete.value = false
-})
+watch(researchResults.value, (newValue) => {})
 </script>
 
-<style scoped>
-.v-toolbar-title {
-  width: 163px;
-  /* margin-top: -7px;  */
-}
-.app-top-bar {
-  /* background: rgb(var(--v-theme-second-background)) !important; */
-  /* border-bottom: 0.1px solid #9e9e9e62; */
-}
-</style>
+<style scoped></style>

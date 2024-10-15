@@ -5,10 +5,10 @@
     :tableData="verses"
     :tableHeaders="versesHeaders"
     :tableInputText="versesInputText"
-    :scrollingItemClass="'active-verse-table'"
+    :activeItemClass="'active-verse-table'"
     :scrollingContainerClass="'verses-container'"
-    :height="210"
-    :activeItemKey="targetedIndex"
+    :scrollingItemClass="'active-verse-table'"
+    :activeItemKey="String(targetedIndex)"
     @activateRowItem="handleVerseSelected"
   />
   <TableMobile
@@ -16,9 +16,10 @@
     :data="fitleredVeses"
     :headerKeys="verses"
     :tableInputText="versesInputText"
-    :activeItemKey="targetedIndex"
-    :scrollingItemClass="'active-verse-table'"
+    :activeItemKey="String(targetedIndex)"
+    :activeItemClass="'active-verse-table'"
     :scrollingContainerClass="'verses-container'"
+    :scrollingItemClass="'active-verse-table'"
     @activateRowItem="handleVerseSelected"
   />
 </template>

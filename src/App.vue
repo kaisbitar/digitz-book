@@ -30,6 +30,11 @@ onMounted(async () => {
 
 <style lang="scss">
 @import "@/styles/styles.scss";
+$body-font-family: "Cairo", sans-serif;
+
+.v-application {
+  font-family: $body-font-family !important;
+}
 html {
   font-size: var(--font-size);
   // overflow: hidden;
@@ -42,10 +47,17 @@ html {
 .v-tab,
 .text-caption,
 .text-h2,
-.text-h4 {
-  // font-family: $body-font-family !important;
-  font-family: system-ui !important;
+.text-h4,
+.text-sm-h4,
+.text-sm-h5 {
+  font-family: $body-font-family !important;
+  // font-family: system-ui !important;
   font-family: unset;
+}
+
+.v-tab,
+.v-btn {
+  letter-spacing: 0 !important;
 }
 
 .v-table--density-default {

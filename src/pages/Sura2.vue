@@ -8,18 +8,43 @@
     :numberOfLetters="numberOfLetters"
     @tabChanged="changeTab"
   />
-  <SuraContent
-    :tabs="tabs"
-    v-model:activeTab="activeTab"
-    v-model:search="search"
-    :suraName="suraName"
-    :showFilterActions="showFilterActions"
-    :suraWithTashkeel="suraWithTashkeel"
-    :versesBasics="versesBasics"
-    :chartFreqSeries="chartFreqSeries"
-    :chartOptions="chartOptions"
-    @verseSelected="handleVerseSelectedOnTable"
-  />
+
+  <v-card variant="outlined">
+    <v-toolbar>
+      <AppTabs :tabs="tabs" v-model:activeTab="activeTab" />
+      <AppInputFieldToggle
+        :fieldInput="search"
+        :fieldPlaceHolder="`سورة ${suraName}`"
+        :showFilterActions="showFilterActions"
+        @update:fieldInput="updateSearchValue"
+      />
+    </v-toolbar>
+    <v-window v-model="activeTab">
+      <v-window-item value="suraText">
+        <SuraText
+          class="mt-4"
+          :inputText="search"
+          :suraTextArray="suraWithTashkeel"
+        />
+      </v-window-item>
+
+      <v-window-item value="versesTab">
+        <TableVerses
+          :verses="versesBasics"
+          :versesInputText="search"
+          @verseSelected="handleVerseSelectedOnTable"
+        />
+      </v-window-item>
+
+      <v-window-item value="frequency">
+        <SuraFrequency
+          :chartFreqSeries="chartFreqSeries"
+          :chartOptions="chartOptions"
+        />
+      </v-window-item>
+    </v-window>
+  </v-card>
+
   <VerseDetails
     v-model="showVerseDetails"
     :verse="selectedVerseText"
@@ -39,7 +64,6 @@ import {
   setSuraToolTip,
   setMushafToolTip,
 } from "@/utils/suraUtils"
-import SuraContent from "@/components/SuraContent.vue"
 
 const { updateSearchValue, search } = useInputFiltering()
 const props = defineProps(["suraInputText"])

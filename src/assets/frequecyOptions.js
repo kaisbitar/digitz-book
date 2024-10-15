@@ -63,16 +63,16 @@ export const getChartOptions = (length) => {
       },
       // tickAmount: 20,
       // tickPlacement: "between",
-      // title: {
-      //   show: true,
-      //   text: "تواتر الآيات",
-      //   offsetY: 5,
-      //   style: {
-      //     fontSize: "18px",
-      //     fontFamily: '"Roboto", sans-serif !important',
-      //     color: "#000",
-      //   },
-      // },
+      title: {
+        show: true,
+        text: "التواتر",
+        offsetY: 5,
+        style: {
+          fontSize: "18px",
+          fontFamily: '"Roboto", sans-serif !important',
+          color: "#ccc",
+        },
+      },
       min: 1,
     },
     yaxis: {
