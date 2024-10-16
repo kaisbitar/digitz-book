@@ -86,9 +86,9 @@ th {
 }
 
 .activeSuraItem,
-.active-verse-table,
+.active-table-item,
 .active-verse,
-.active-Quran-index {
+.active-index-item {
   // color: rgb(var(--v-theme-on-active-row)) !important;
   background: rgb(var(--v-theme-active-row)) !important;
   // font-weight: 700;

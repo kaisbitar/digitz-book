@@ -1,8 +1,8 @@
 <template>
   <tr
     class="tableItem"
-    :class="{ [scrollingItemClass]: isTargetedRow(item, index, activeItemKey) }"
-    @click="$emit('activateRowItem', item)"
+    :class="{ [scrollingItemClass]: isTargetedRow }"
+    @click="$emit('rowClicked', item)"
   >
     <td>{{ computedIndex }}</td>
     <template v-for="key in headerKeys" :key="key">
@@ -20,29 +20,35 @@ import { useInputFiltering } from "@/mixins/inputFiltering"
 
 const { highlight } = useInputFiltering()
 
-const props = defineProps<{
-  item: any
-  index: number
-  search?: string
-  activeItemKey: string | number
-  scrollingItemClass: string
-  headerKeys: string[] // Add headerKeys prop
-}>()
-const computedIndex = computed(() =>
-  props.scrollingItemClass == "active-Quran-index"
-    ? props.index
-    : props.index + 1
+const props = withDefaults(
+  defineProps<{
+    item: any
+    index: number
+    search?: string
+    activeItemKey?: string | number
+    scrollingItemClass: string
+    headerKeys: string[]
+    isIndexItem?: boolean
+  }>(),
+  {
+    isIndexItem: false, // or whatever default makes sense for your component
+  }
 )
 
-const isTargetedRow = (item: any, index: number, id: string | number) => {
-  if (id === undefined && index === 0) {
-    return true
+const computedIndex = computed(() =>
+  props.isIndexItem ? props.index : props.index + 1
+)
+
+const isTargetedRow = computed(() => {
+  let targetKey = "verseNumberToQuran"
+  if (props.isIndexItem) {
+    targetKey = "fileName"
   }
-  if (props.scrollingItemClass === "active-Quran-index") {
-    return id === item.fileName
+  if (props.activeItemKey === undefined) {
+    return false
   }
-  return id === String(item.verseNumberToQuran)
-}
+  return props.activeItemKey === String(props.item[targetKey])
+})
 </script>
 
 <style scoped></style>

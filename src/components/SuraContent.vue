@@ -18,8 +18,8 @@
     </v-window-item>
 
     <v-window-item value="versesTab" @before-enter="scrollToActiveVerse">
-      <TableVerses
-        ref="tableVersesRef"
+      <VersesOverview
+        ref="VersesOverviewRef"
         :verses="versesBasics"
         :versesInputText="search"
         @verseSelected="handleVerseSelected"
@@ -67,16 +67,16 @@ const activeTab = computed({
 })
 
 const suraTextRef = ref(null)
-const tableVersesRef = ref(null)
+const VersesOverviewRef = ref(null)
 const { scrollToActiveItem } = useWindow()
 
 const scrollToActiveVerse = () => {
   nextTick(() => {
-    if (activeTab.value === "suraText") {
+    if (activeTab.value === "suraText" && suraTextRef.value) {
       scrollToActiveItem(".active-verse", ".sura-text-container")
       return
     }
-    tableVersesRef.value.tablesScroll()
+    VersesOverviewRef.value.tablesScroll()
   })
 }
 </script>

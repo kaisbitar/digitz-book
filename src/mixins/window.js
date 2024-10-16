@@ -46,7 +46,6 @@ export function useWindow(elementRef) {
       if (!activeVerseItem) return
 
       const baseContainer = isDialog ? `.v-dialog ${container}` : `${container}`
-
       goTo(activeVerseItem, {
         container: baseContainer,
         offset: -100,

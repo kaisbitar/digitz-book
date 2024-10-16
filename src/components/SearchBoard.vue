@@ -8,7 +8,7 @@
         @update:fieldInput="updateSearchValue"
       />
     </v-toolbar>
-    <TableVerses
+    <VersesOverview
       :verses="searchData"
       :versesInputText="search"
       @verseSelected="runSelectedSura"
@@ -40,7 +40,8 @@ const handleShowVersesMobileView = () => {
 }
 
 const runSelectedSura = () => {
-  store.setIsDialog(true)
+  ///////*******************************Change to true */
+  store.setIsDialog(false)
   dialogData.value = prepareDialogData(
     research.value[selectedChipIndex.value].verses
   )
