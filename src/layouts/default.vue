@@ -11,44 +11,13 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue"
-import { useQuranStore } from "@/stores/app"
 import { useRouter } from "vue-router"
 
-const store = useQuranStore()
 const router = useRouter()
 
 const activeRoute = computed(() => router.currentRoute.value.name)
 
-const drawer = computed({
-  get: () => store.getDrawerState,
-  set: (value) => store.setDrawerState(value),
-})
-
-// const handleLanding = () => {
-//   if (activeRoute.value === "sura") {
-//     drawer.value = true
-//     return
-//   }
-//   if (activeRoute.value === "search") {
-//     drawer.value = false
-//   }
-// }
-
-// watch(activeRoute, () => {
-//   handleLanding()
-// })
-
 onMounted(() => {})
 </script>
 
-<style lang="scss">
-// @import "@/styles/variables.scss";
-// .main-wrapp {
-//   // padding-top: 10px;
-// }
-// .v-data-table-header__content {
-//   // display: flex;
-//   // align-items: center;
-//   // padding-bottom: 9px;
-// }
-</style>
+<style lang="scss"></style>

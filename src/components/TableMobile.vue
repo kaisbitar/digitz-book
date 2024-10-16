@@ -1,21 +1,21 @@
 <template>
   <div
     class="table-mobile-view"
-    ref="tableMobileRef"
+    ref="tableRef"
     :style="{ height: `${dynamicHeight}px` }"
+    :class="scrollingContainerClass"
   >
-    <v-item-group
-      :selected-class="scrollingItemClass"
-      v-for="(item, index) in data"
-      :key="item.verseNumberToQuran"
-    >
+    <v-item-group v-for="(item, index) in data" :key="item.verseNumberToQuran">
       <v-item v-slot="{ isSelected, selectedClass, toggle }">
         <VerseCardItem
           :item="item"
           :index="index"
           :textToHighlight="tableInputText"
           :active="isTargetedRow(item.verseNumberToQuran)"
-          :class="[selectedClass]"
+          :class="[
+            selectedClass,
+            { [scrollingItemClass]: activeItemKey === item.verseNumberToQuran },
+          ]"
           @verse-clicked="selectItem(item), toggle()"
         />
       </v-item>
@@ -37,7 +37,6 @@ const props = defineProps<{
   tableInputText?: string
   activeItemKey: string
   scrollingItemClass: string
-  headerKeys: string[]
   scrollingContainerClass: string
 }>()
 
@@ -50,19 +49,20 @@ const selectItem = (item: any) => {
   emit("activateRowItem", item)
 }
 
-const tableMobileRef = ref(null)
+const tableRef = ref(null)
 
-const { setContainerHeight, dynamicHeight } = useWindow(tableMobileRef)
+const { setContainerHeight, dynamicHeight } = useWindow(tableRef)
 useResizeHandler({
-  elementRef: tableMobileRef,
+  elementRef: tableRef,
   elementFunc: setContainerHeight,
 })
 
 onMounted(async () => {
-  selectedItem.value = props.activeItemKey
   await nextTick()
   setContainerHeight()
 })
+
+// defineExpose({ tableRef })
 </script>
 
 <style scoped>

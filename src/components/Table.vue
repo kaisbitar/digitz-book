@@ -14,12 +14,11 @@
     >
       <template v-slot:item="{ item, index }">
         <TableRow
-          class="tableItem"
           :item="item"
           :index="index"
           :search="search"
           :activeItemKey="activeItemKey"
-          :scrollingItemClass="props.scrollingItemClass"
+          :scrollingItemClass="scrollingItemClass"
           :headerKeys="tableHeaders.map((header) => header.key)"
           @activateRowItem="$emit('activateRowItem', item)"
         />
@@ -38,7 +37,6 @@ interface TableItem {
   [key: string]: any
   verseNumberToQuran?: string | number
 }
-
 const props = defineProps<{
   tableData: TableItem[]
   tableHeaders: any[]
@@ -65,6 +63,7 @@ watch(
     search.value = newValue
   }
 )
+// defineExpose({ tableRef })
 
 onMounted(async () => {
   search.value = props.tableInputText

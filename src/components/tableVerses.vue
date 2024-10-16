@@ -1,34 +1,31 @@
 <template>
   <Table
-    :tableType="'verses'"
-    v-if="!showMobileView"
+    v-if="!isMobileView"
     :tableData="verses"
     :tableHeaders="versesHeaders"
     :tableInputText="versesInputText"
-    :activeItemClass="'active-verse-table'"
     :scrollingContainerClass="'verses-container'"
-    :scrollingItemClass="'active-verse-table'"
+    :scrollingItemClass="'active-verse'"
     :activeItemKey="String(targetedIndex)"
     @activateRowItem="handleVerseSelected"
   />
   <TableMobile
-    v-if="showMobileView"
-    :data="fitleredVeses"
-    :headerKeys="verses"
+    v-else
+    :data="filteredVerses"
     :tableInputText="versesInputText"
     :activeItemKey="String(targetedIndex)"
-    :activeItemClass="'active-verse-table'"
     :scrollingContainerClass="'verses-container'"
-    :scrollingItemClass="'active-verse-table'"
+    :scrollingItemClass="'active-verse'"
     @activateRowItem="handleVerseSelected"
   />
 </template>
 
 <script setup>
-import { ref, computed } from "vue"
+import { ref, computed, onMounted } from "vue"
 import { useQuranStore } from "@/stores/app"
 import { useWindow } from "@/mixins/window"
-const { scrollToActiveItem, windowWidth } = useWindow()
+
+const { scrollToActiveItem } = useWindow()
 
 const store = useQuranStore()
 
@@ -68,9 +65,10 @@ const versesHeaders = ref([
   },
 ])
 
-const showMobileView = computed(() => store.getVersesMobileView)
+const isMobileView = computed(() => store.getVersesMobileView)
+const activeSuraTab = computed(() => store.getActiveSuraTab)
 
-const fitleredVeses = computed(() => {
+const filteredVerses = computed(() => {
   if (!props.versesInputText) return props.verses
   return props.verses
     .filter((verse) => verse.verseText.includes(props.versesInputText))
@@ -102,24 +100,24 @@ const setTargetedSuraAndVerse = (item) => {
   })
 }
 
-const tableCssTag = computed(() =>
-  showMobileView.value
+const tableScrollClasses = computed(() =>
+  isMobileView.value
     ? ".verses-container"
     : ".verses-container .v-table__wrapper"
 )
-const scrollToActive = () => {
-  scrollToActiveItem(".active-verse-table", `${tableCssTag.value}`)
+const tablesScroll = () => {
+  console.log(tableScrollClasses.value)
+  scrollToActiveItem(".active-verse", tableScrollClasses.value)
 }
 
-watch(showMobileView, scrollToActive)
+defineExpose({ tablesScroll })
 
-onMounted(scrollToActive)
+watch(isMobileView, tablesScroll)
+watch(activeSuraTab, tablesScroll)
+
+onMounted(() => {
+  tablesScroll()
+})
 </script>
 
-<style scoped>
-.tableStyle {
-  min-height: 66vh;
-  max-height: 66vh;
-  margin-top: -5px !important;
-}
-</style>
+<style scoped></style>

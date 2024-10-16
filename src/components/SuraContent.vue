@@ -9,12 +9,17 @@
     />
   </v-toolbar>
   <v-window v-model="activeTab">
-    <v-window-item value="suraText">
-      <SuraText :inputText="search" :suraTextArray="suraWithTashkeel" />
+    <v-window-item value="suraText" @before-enter="scrollToActiveVerse">
+      <SuraText
+        ref="suraTextRef"
+        :inputText="search"
+        :suraTextArray="suraWithTashkeel"
+      />
     </v-window-item>
 
-    <v-window-item value="versesTab">
+    <v-window-item value="versesTab" @before-enter="scrollToActiveVerse">
       <TableVerses
+        ref="tableVersesRef"
         :verses="versesBasics"
         :versesInputText="search"
         @verseSelected="handleVerseSelected"
@@ -31,6 +36,9 @@
 </template>
 
 <script setup>
+import { ref, nextTick } from "vue"
+import { useWindow } from "@/mixins/window"
+
 const props = defineProps({
   tabs: Array,
   activeTab: String,
@@ -57,4 +65,18 @@ const activeTab = computed({
   get: () => props.activeTab,
   set: (value) => emit("update:activeTab", value),
 })
+
+const suraTextRef = ref(null)
+const tableVersesRef = ref(null)
+const { scrollToActiveItem } = useWindow()
+
+const scrollToActiveVerse = () => {
+  nextTick(() => {
+    if (activeTab.value === "suraText") {
+      scrollToActiveItem(".active-verse", ".sura-text-container")
+      return
+    }
+    tableVersesRef.value.tablesScroll()
+  })
+}
 </script>

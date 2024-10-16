@@ -70,8 +70,8 @@ const { setContainerHeight, dynamicHeight } = useWindow(suraTextRef)
 useResizeHandler({ elementRef: suraTextRef, elementFunc: setContainerHeight })
 
 onMounted(async () => {
-  scrollToActiveItem(".active-verse", ".sura-text-container")
   await nextTick()
+  scrollToActiveItem(".active-verse", ".sura-text-container")
   setContainerHeight()
 })
 </script>

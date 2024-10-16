@@ -7,9 +7,19 @@ export function useWindow(elementRef) {
   const goTo = useGoTo()
 
   const windowHeight = computed(() => window.innerHeight)
-  const windowWidth = window.innerWidth <= 1300 ? "small" : "large"
-  const dynamicHeight = ref(0)
+  const windowWidth = computed(() =>
+    window.innerWidth <= 1300 ? "small" : "large"
+  )
 
+  const storeFontSize = computed(() => store.getFontSize)
+  const drawerWidthDetail = computed(() => {
+    return storeFontSize.value > "23px" ? 820 : 700
+  })
+  const drawerWidthNoDetail = computed(() => {
+    return storeFontSize.value > "23px" ? 500 : 300
+  })
+
+  const dynamicHeight = ref(0)
   const setContainerHeight = (buffer = 20) => {
     if (elementRef && elementRef.value) {
       const windowHeight = window.innerHeight
@@ -46,10 +56,6 @@ export function useWindow(elementRef) {
     }, 100)
   }
 
-  const scrollNoDialog = async (activeItem, container) => {
-    await scrollToItem(activeItem, container, false)
-  }
-
   const scrollToActiveItem = async (activeItem, container) => {
     const isDialog = store.getIsDialog
     await scrollToItem(activeItem, container, isDialog)
@@ -57,7 +63,6 @@ export function useWindow(elementRef) {
 
   onMounted(() => {
     window.addEventListener("resize", handleResize)
-    setContainerHeight()
   })
 
   onUnmounted(() => {
@@ -69,7 +74,8 @@ export function useWindow(elementRef) {
     setContainerHeight,
     dynamicHeight,
     scrollToActiveItem,
-    scrollNoDialog,
     windowWidth,
+    drawerWidthDetail,
+    drawerWidthNoDetail,
   }
 }
