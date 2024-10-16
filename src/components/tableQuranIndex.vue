@@ -4,8 +4,8 @@
       v-model="drawer"
       v-bind="props"
       :width="isHovering ? drawerWidthDetail : drawerWidthNoDetail"
-      expand-on-hover
       :location="$vuetify.display.mobile ? 'top' : 'right'"
+      expand-on-hover
     >
       <v-container>
         <v-list>
@@ -27,14 +27,15 @@
             />
           </v-card>
           <Table
+            :isIndexItem="true"
+            class="index-container"
+            :scrollingItemClass="'active-index-item'"
             :tableData="indexData"
             :tableInputText="search"
             :tableHeaders="indexHeaders"
             :fieldPlaceHolder="'السور'"
-            :scrollingItemClass="'active-Quran-index'"
-            :scrollingContainerClass="'index-container'"
             :activeItemKey="targetedIndex"
-            @activateRowItem="handleSelectedSura"
+            @rowClicked="handleSelectedSura"
           />
         </v-list>
       </v-container>
@@ -123,17 +124,11 @@ onMounted(() => {
 })
 
 watch(targetedIndex, () => {
-  scrollToActiveItem(
-    `.active-Quran-index`,
-    `.index-container .v-table__wrapper`
-  )
+  scrollToActiveItem(`.active-index-item`, `.index-container .v-table__wrapper`)
 })
 
 onMounted(() => {
-  scrollToActiveItem(
-    ".active-Quran-index",
-    ".index-container .v-table__wrapper"
-  )
+  scrollToActiveItem(".active-index-item", ".index-container .v-table__wrapper")
 })
 </script>
 

@@ -1,62 +1,55 @@
 <template>
-  <v-list>
-    <v-list-item @click="$emit('toggleRail')">
-      <template v-slot:prepend>
-        <v-icon>mdi-menu</v-icon>
-      </template>
-      <v-list-item-title>الكتاب المرقوم</v-list-item-title>
-    </v-list-item>
+  <v-navigation-drawer
+    class="app-navigation-drawer"
+    :elevation="0"
+    v-model="drawer"
+    permanent
+    :rail="isRail"
+    location="left"
+    expand-on-hover
+  >
+    <appNavigationItems
+      :activeRoute="activeRoute"
+      @navigateTo="handleNavigation"
+      @toggleRail="isRail = !isRail"
+    />
+  </v-navigation-drawer>
 
-    <v-divider></v-divider>
-
-    <v-list-item
+  <!-- <v-bottom-navigation grow color="primary">
+    <v-btn
       v-for="item in navigationItems"
       :key="item.route"
-      @click="$emit('navigateTo', item.route)"
-      :active="activeRoute === item.route"
+      @click="handleNavigation(item.route)"
     >
-      <template v-slot:prepend>
-        <v-icon>
-          {{ activeRoute === item.route ? item.activeIcon : item.icon }}
-        </v-icon>
-      </template>
-      <v-list-item-title>{{ item.label }}</v-list-item-title>
-    </v-list-item>
-  </v-list>
+      <v-icon>{{ item.icon }}</v-icon>
+      <span>{{ item.label }}</span>
+    </v-btn>
+  </v-bottom-navigation> -->
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from "vue"
+import { ref, computed } from "vue"
+import { useRouter } from "vue-router"
 
-defineProps(["activeRoute"])
-defineEmits(["navigateTo", "toggleRail"])
+const router = useRouter()
 
+const activeRoute = computed(() => router.currentRoute.value.name)
+
+const isRail = ref(true)
+const drawer = ref(true)
+const handleNavigation = (route) => {
+  router.push(route)
+}
 const navigationItems = [
-  {
-    route: "/",
-    icon: "mdi-home-variant-outline",
-    activeIcon: "mdi-home-variant",
-    label: "Home",
-  },
-  {
-    route: "sura",
-    icon: "mdi-book-open-outline",
-    activeIcon: "mdi-book-open",
-    label: "السور",
-  },
-  {
-    route: "search",
-    icon: "mdi-database-search-outline",
-    activeIcon: "mdi-database-search",
-    label: "ترتيل",
-  },
-  {
-    route: "/",
-    icon: "mdi-account-outline",
-    activeIcon: "mdi-account",
-    label: "تفسيري",
-  },
+  { route: "/", icon: "mdi-home-variant-outline", label: "Home" },
+  { route: "sura", icon: "mdi-book-open-outline", label: "Sura" },
+  { route: "search", icon: "mdi-database-search-outline", label: "Search" },
+  { route: "settings", icon: "mdi-cog-outline", label: "Settings" },
 ]
+
+const toggleRail = (newState) => {
+  isRail.value = newState
+}
 </script>
 
 <style scoped></style>

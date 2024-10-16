@@ -4,7 +4,6 @@
       :headers="tableHeaders"
       :items="tableData"
       :search="search"
-      :class="scrollingContainerClass"
       :height="dynamicHeight"
       loading-text="جاري تحميل
     البيانات القرآنية ... الرجاء الانتظار"
@@ -16,11 +15,12 @@
         <TableRow
           :item="item"
           :index="index"
+          :isIndexItem="isIndexItem"
           :search="search"
           :activeItemKey="activeItemKey"
           :scrollingItemClass="scrollingItemClass"
           :headerKeys="tableHeaders.map((header) => header.key)"
-          @activateRowItem="$emit('activateRowItem', item)"
+          @rowClicked="$emit('rowClicked', item)"
         />
       </template>
     </v-data-table>
@@ -36,6 +36,7 @@ import { useResizeHandler } from "@/hooks/useResizeObserver"
 interface TableItem {
   [key: string]: any
   verseNumberToQuran?: string | number
+  isIndexItem?: boolean
 }
 const props = defineProps<{
   tableData: TableItem[]
@@ -43,7 +44,7 @@ const props = defineProps<{
   tableInputText?: string
   activeItemKey: string | number
   scrollingItemClass: string
-  scrollingContainerClass: string
+  isIndexItem?: boolean
 }>()
 
 const tableRef = ref(null)
@@ -52,7 +53,7 @@ const { search } = useInputFiltering()
 const { setContainerHeight, dynamicHeight } = useWindow(tableRef)
 
 const emit = defineEmits<{
-  (e: "activateRowItem", item: TableItem): void
+  (e: "rowClicked", item: TableItem): void
 }>()
 
 useResizeHandler({ elementRef: tableRef, elementFunc: setContainerHeight })
@@ -63,7 +64,6 @@ watch(
     search.value = newValue
   }
 )
-// defineExpose({ tableRef })
 
 onMounted(async () => {
   search.value = props.tableInputText

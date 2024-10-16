@@ -1,22 +1,21 @@
 <template>
   <Table
     v-if="!isMobileView"
+    class="verses-overview"
+    scrollingItemClass="active-table-item"
     :tableData="verses"
     :tableHeaders="versesHeaders"
     :tableInputText="versesInputText"
-    :scrollingContainerClass="'verses-container'"
-    :scrollingItemClass="'active-verse'"
     :activeItemKey="String(targetedIndex)"
-    @activateRowItem="handleVerseSelected"
+    @rowClicked="handleVerseSelected"
   />
   <TableMobile
     v-else
+    class="verses-overview"
     :data="filteredVerses"
     :tableInputText="versesInputText"
     :activeItemKey="String(targetedIndex)"
-    :scrollingContainerClass="'verses-container'"
-    :scrollingItemClass="'active-verse'"
-    @activateRowItem="handleVerseSelected"
+    @rowClicked="handleVerseSelected"
   />
 </template>
 
@@ -100,20 +99,17 @@ const setTargetedSuraAndVerse = (item) => {
   })
 }
 
-const tableScrollClasses = computed(() =>
-  isMobileView.value
-    ? ".verses-container"
-    : ".verses-container .v-table__wrapper"
+const versesContainer = computed(() =>
+  isMobileView.value ? ".verses-overview" : ".verses-overview .v-table__wrapper"
 )
-const tablesScroll = () => {
-  console.log(tableScrollClasses.value)
-  scrollToActiveItem(".active-verse", tableScrollClasses.value)
+const tablesScroll = async () => {
+  await nextTick()
+  scrollToActiveItem(".active-table-item", versesContainer.value)
 }
 
 defineExpose({ tablesScroll })
 
 watch(isMobileView, tablesScroll)
-watch(activeSuraTab, tablesScroll)
 
 onMounted(() => {
   tablesScroll()

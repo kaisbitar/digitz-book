@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <AppHeader v-if="activeRoute !== 'home'" />
+    <appNavigation v-if="activeRoute !== 'home'" />
     <v-main>
       <v-container class="">
         <router-view />

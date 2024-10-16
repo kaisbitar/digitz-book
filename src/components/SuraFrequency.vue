@@ -1,17 +1,8 @@
 <template>
-  <div ref="suraFrequencyRef" :style="{ height: `${dynamicHeight}px` }">
-    <v-card class="pa-4">
-      <ChartRadioButtons
-        :intitalType="chartFreqType"
-        @typeChanged="changeType"
-      />
-      <Chart
-        :series="chartFreqSeries"
-        :options="chartOptions"
-        :height="height"
-      />
-    </v-card>
-  </div>
+  <v-card class="pa-4" :height="dynamicHeight">
+    <ChartRadioButtons :intitalType="chartFreqType" @typeChanged="changeType" />
+    <Chart :series="chartFreqSeries" :options="chartOptions" :height="height" />
+  </v-card>
 </template>
 
 <script setup>

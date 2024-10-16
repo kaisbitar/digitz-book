@@ -1,9 +1,5 @@
 <template>
-  <v-card
-    class="ma-auto mb-1 mr-1 ml-1"
-    @click="handleClick"
-    variant="elevated"
-  >
+  <v-card class="mb-1" @click="handleClick" variant="elevated">
     <div class="pt-4 pr-4 pl-4 mb-n1 d-flex justify-space-between align-center">
       <span class="text-primary text-caption"
         >{{ suraNumber }} {{ suraName }}
