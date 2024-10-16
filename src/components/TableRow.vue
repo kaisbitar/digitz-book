@@ -1,7 +1,7 @@
 <template>
   <tr
     class="tableItem"
-    :class="{ [scrollingItemClass]: isTargetedRow }"
+    :class="{ [activeItemClass]: isTargetedRow }"
     @click="$emit('rowClicked', item)"
   >
     <td>{{ computedIndex }}</td>
@@ -26,7 +26,7 @@ const props = withDefaults(
     index: number
     search?: string
     activeItemKey?: string | number
-    scrollingItemClass: string
+    activeItemClass: string
     headerKeys: string[]
     isIndexItem?: boolean
   }>(),

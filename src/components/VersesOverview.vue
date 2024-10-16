@@ -2,7 +2,7 @@
   <Table
     v-if="!isMobileView"
     class="verses-overview"
-    scrollingItemClass="active-table-item"
+    activeItemClass="active-verse-table"
     :tableData="verses"
     :tableHeaders="versesHeaders"
     :tableInputText="versesInputText"
@@ -65,7 +65,6 @@ const versesHeaders = ref([
 ])
 
 const isMobileView = computed(() => store.getVersesMobileView)
-const activeSuraTab = computed(() => store.getActiveSuraTab)
 
 const filteredVerses = computed(() => {
   if (!props.versesInputText) return props.verses
@@ -104,7 +103,7 @@ const versesContainer = computed(() =>
 )
 const tablesScroll = async () => {
   await nextTick()
-  scrollToActiveItem(".active-table-item", versesContainer.value)
+  scrollToActiveItem(".active-verse-table", versesContainer.value)
 }
 
 defineExpose({ tablesScroll })
