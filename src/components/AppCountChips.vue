@@ -54,8 +54,4 @@ const getChipClass = (key, count) => {
 }
 </script>
 
-<style>
-.v-chip__content {
-  font-size: 14px !important;
-}
-</style>
+<style></style>

@@ -1,7 +1,9 @@
 <template>
   <div class="d-flex align-center mb-4">
     <TableQuranIndex />
-    <v-icon @click.stop="toggleDrawer">mdi-menu-open</v-icon>
+    <v-icon v-if="!isOpen" class="ml-3 mr-n1" @click="toggleDrawer"
+      >mdi-menu-open</v-icon
+    >
     <span class="text-sm-h5 text-xs-h5 font-weight-bold ml-2">{{ title }}</span>
     <AppCountChips
       :wordCount="numberOfWords"
@@ -23,6 +25,7 @@ const props = defineProps({
   numberOfVerses: Number,
   numberOfLetters: Number,
 })
+const isOpen = computed(() => store.getDrawerState)
 
 const toggleDrawer = () => {
   store.setDrawerState(!store.getDrawerState)

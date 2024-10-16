@@ -1,13 +1,11 @@
 <template>
   <v-card
-    max-width=""
     class="ma-auto mb-1 mr-1 ml-1"
-    :class="{ 'active-verse': active }"
     @click="handleClick"
     variant="elevated"
   >
     <div class="pt-4 pr-4 pl-4 mb-n1 d-flex justify-space-between align-center">
-      <span class="text-secondary text-caption"
+      <span class="text-primary text-caption"
         >{{ suraNumber }} {{ suraName }}
       </span>
       <v-chip variant="tonal" size="small">{{ index + 1 }} </v-chip>
@@ -27,7 +25,7 @@
           :color="data.color"
           :ripple="false"
         >
-          {{ data.value }}
+          {{ key }} {{ data.value }}
         </v-chip> -->
       </template>
     </v-card-actions>

@@ -102,14 +102,7 @@ const storeWordMeanings = computed(() => ({
 const handleClickedWord = async (word) => {
   emit("update:clickedWordIndex", props.wordIndex)
   setCurrentWord(word)
-
-  //   if (storeWordMeanings.value.has(word)) {
-  //     meanings[word] = storeWordMeanings.value.get(word)
-  //     updateCurrentMeaning(meanings[word])
-  //     loadingWords[props.wordIndex] = false
-  //   } else {
   await fetchWordData(word)
-  //   }
 }
 
 const setCurrentWord = (word) => {
