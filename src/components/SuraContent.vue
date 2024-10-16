@@ -73,7 +73,7 @@ const { scrollToActiveItem } = useWindow()
 const scrollToActiveVerse = () => {
   nextTick(() => {
     if (activeTab.value === "suraText" && suraTextRef.value) {
-      scrollToActiveItem(".active-verse", ".sura-text-container")
+      scrollToActiveItem(".active-verse-text", ".sura-text-container")
       return
     }
     VersesOverviewRef.value.tablesScroll()

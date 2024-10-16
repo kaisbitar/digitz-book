@@ -9,7 +9,7 @@
         :key="index"
         @click="setTargetedVerse(verse, index + 1)"
         :class="{
-          'active-verse': isTargetedVerse(index),
+          'active-verse-text': isTargetedVerse(index),
           'dimmed-verse': !isTargetedVerse(index),
         }"
       >
@@ -70,7 +70,7 @@ const { setContainerHeight, dynamicHeight } = useWindow(suraTextRef)
 useResizeHandler({ elementRef: suraTextRef, elementFunc: setContainerHeight })
 
 onMounted(async () => {
-  scrollToActiveItem(".active-verse", ".sura-text-container")
+  scrollToActiveItem(".active-verse-text", ".sura-text-container")
   await nextTick()
   setContainerHeight()
 })
@@ -93,7 +93,7 @@ onMounted(async () => {
   opacity: 0.5;
   padding: 4px 0px 8px 5px;
 }
-.active-verse {
+.active-verse-text {
   padding: 4px 0px 8px 5px;
   background-color: rgb(var(--v-theme-active-row)) !important;
 }

@@ -29,7 +29,7 @@
           <Table
             :isIndexItem="true"
             class="index-container"
-            :scrollingItemClass="'active-index-item'"
+            :activeItemClass="'active-index-item'"
             :tableData="indexData"
             :tableInputText="search"
             :tableHeaders="indexHeaders"

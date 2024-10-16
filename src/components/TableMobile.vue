@@ -14,7 +14,7 @@
           :class="[
             selectedClass,
             {
-              ['active-table-item']: activeItemKey === item.verseNumberToQuran,
+              ['active-verse-table']: activeItemKey === item.verseNumberToQuran,
             },
           ]"
           @verse-clicked="selectItem(item), toggle()"

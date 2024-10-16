@@ -18,7 +18,7 @@
           :isIndexItem="isIndexItem"
           :search="search"
           :activeItemKey="activeItemKey"
-          :scrollingItemClass="scrollingItemClass"
+          :activeItemClass="activeItemClass"
           :headerKeys="tableHeaders.map((header) => header.key)"
           @rowClicked="$emit('rowClicked', item)"
         />
@@ -43,7 +43,7 @@ const props = defineProps<{
   tableHeaders: any[]
   tableInputText?: string
   activeItemKey: string | number
-  scrollingItemClass: string
+  activeItemClass: string
   isIndexItem?: boolean
 }>()
 

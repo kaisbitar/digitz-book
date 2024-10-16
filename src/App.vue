@@ -86,8 +86,8 @@ th {
 }
 
 .activeSuraItem,
-.active-table-item,
-.active-verse,
+.active-verse-table,
+.active-verse-text,
 .active-index-item {
   // color: rgb(var(--v-theme-on-active-row)) !important;
   background: rgb(var(--v-theme-active-row)) !important;
