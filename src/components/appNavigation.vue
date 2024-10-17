@@ -1,33 +1,36 @@
 <template>
+  <v-app-bar elevation="0" density="compact" class="border-b">
+    <v-app-bar-nav-icon v-if="!isInputVisible" @click="toggleRail" />
+    <v-app-bar-title v-if="!isMobile && !isInputVisible"
+      >الكتاب المرقوم</v-app-bar-title
+    >
+    <v-spacer v-if="!isMobile"></v-spacer>
+
+    <AutoComplete v-if="isInputVisible" class="mr-2" />
+    <AppToggleBtn
+      :isVisible="isInputVisible"
+      :button-text="`ابحث في المصحف..`"
+      @toggle="isInputVisible = !isInputVisible"
+    />
+    <v-spacer v-if="!isMobile"></v-spacer>
+  </v-app-bar>
+  <v-divider></v-divider>
+
+  <TableQuranIndex />
+
   <v-navigation-drawer
-    v-if="!isMobile"
-    class="app-navigation-drawer"
     v-model="drawer"
-    permanent
-    :rail="isRail"
-    location="left"
-    expand-on-hover
+    :rail="isRail && !isMobile"
+    location="right"
+    :temporary="isMobile"
+    :permanent="!isMobile"
   >
     <appNavigationItems
       :navigationItems="navigationItems"
       :activeRoute="activeRoute"
       @navigateTo="handleNavigation"
-      @toggleRail="isRail = !isRail"
     />
   </v-navigation-drawer>
-
-  <v-bottom-navigation v-if="isMobile" grow color="primary" app fixed>
-    <AppSettings :components="[ThemeToggle, AppZoom]" />
-    <v-btn
-      v-for="item in navigationItems"
-      :key="item.route"
-      @click="handleNavigation(item.route)"
-    >
-      <v-icon>{{ item.icon }}</v-icon>
-      <span>{{ item.label }}</span>
-    </v-btn>
-    <!-- <v-divider></v-divider> -->
-  </v-bottom-navigation>
 </template>
 
 <script setup>
@@ -42,6 +45,7 @@ const display = useDisplay()
 
 const activeRoute = computed(() => router.currentRoute.value.name)
 
+const isInputVisible = ref(false)
 const isRail = ref(true)
 const drawer = ref(true)
 const handleNavigation = (route) => {
@@ -77,6 +81,21 @@ const navigationItems = [
 const isMobile = computed(() => {
   return display.mobile.value
 })
+
+const toggleDrawer = () => {
+  drawer.value = !drawer.value
+  if (!isMobile.value && drawer.value) {
+    isRail.value = false
+  }
+}
+
+const toggleRail = () => {
+  toggleDrawer()
+  if (!isMobile.value) {
+    isRail.value = !isRail.value
+    drawer.value = true
+  }
+}
 </script>
 
 <style scoped></style>

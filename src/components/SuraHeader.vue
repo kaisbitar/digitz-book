@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex align-center mb-4">
-    <TableQuranIndex />
+    <!-- <TableQuranIndex /> -->
     <v-icon v-if="!isOpen" class="ml-3 mr-n1" @click="toggleDrawer"
       >mdi-menu-open</v-icon
     >
@@ -25,10 +25,10 @@ const props = defineProps({
   numberOfVerses: Number,
   numberOfLetters: Number,
 })
-const isOpen = computed(() => store.getDrawerState)
+const isOpen = computed(() => store.getIndexIsOpen)
 
 const toggleDrawer = () => {
-  store.setDrawerState(!store.getDrawerState)
+  store.setIndexIsOpen(!store.getIndexIsOpen)
 }
 </script>
 

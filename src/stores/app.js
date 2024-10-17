@@ -21,7 +21,7 @@ export const useQuranStore = defineStore("Quran", {
     oneQuranFile: [],
     QuranIndex: [],
     suras: {},
-    drawerState: false,
+    indexIsOpen: false,
     versesMobileView: false,
     activeSuraTab: "numberOfVerses",
     activeRoute: "search",
@@ -49,7 +49,7 @@ export const useQuranStore = defineStore("Quran", {
     getSelectedSearchIndex: (state) => state.selectedSearchIndex,
     getOneQuranFile: (state) => state.oneQuranFile,
     getQuranIndex: (state) => state.QuranIndex,
-    getDrawerState: (state) => state.drawerState,
+    getIndexIsOpen: (state) => state.indexIsOpen,
     getActiveSuraTab: (state) => state.activeSuraTab,
     getActiveRoute: (state) => state.activeRoute,
     getChartFreqType: (state) => state.chartFreqType,
@@ -118,8 +118,8 @@ export const useQuranStore = defineStore("Quran", {
     setQuranIndex(items) {
       this.QuranIndex = items
     },
-    setDrawerState(drawerState) {
-      this.drawerState = drawerState
+    setIndexIsOpen(indexIsOpen) {
+      this.indexIsOpen = indexIsOpen
     },
     setSuraDetails(suraDetails) {
       this.suras[this.target.fileName].suraDetails = suraDetails.suraDetails

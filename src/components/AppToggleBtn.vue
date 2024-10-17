@@ -7,7 +7,9 @@
     <span v-if="!isVisible" v-show="$vuetify.display.smAndUp" class="ml-2">
       {{ buttonText }}
     </span>
-    <v-icon class="ml-1">{{ isVisible ? "mdi-close" : "mdi-magnify" }}</v-icon>
+    <v-icon class="ml-1">{{
+      isVisible ? "mdi-arrow-left" : "mdi-magnify"
+    }}</v-icon>
     <!-- <span v-show="isVisible">إغلاق</span> -->
   </v-btn>
 </template>

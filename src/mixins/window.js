@@ -24,7 +24,8 @@ export function useWindow(elementRef) {
   const dynamicHeight = ref(0)
 
   const setContainerHeight = () => {
-    const buffer = mobile.value ? 60 : 5
+    // const buffer = mobile.value ? 60 : 5
+    const buffer = 0
     if (elementRef && elementRef.value) {
       const windowHeight = window.innerHeight
       const containerRect = elementRef.value.getBoundingClientRect()

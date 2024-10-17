@@ -1,4 +1,9 @@
 <template>
+  <!-- <v-autocomplete
+    v-model:search="search"
+    :items="oneQuranFile"
+    density="compact"
+  /> -->
   <v-autocomplete
     v-model:search="search"
     :items="oneQuranFile"
@@ -12,10 +17,8 @@
     @keyup.enter="handleNewSearch"
     @click:option="(item) => handleNewSearch(item)"
     hide-details
-    variant="outlined"
-    density="compact"
     persistentClear
-    rounded
+    autofocus
   >
     <template v-slot:no-data>
       <p class="pa-1 text-red">لا يوجد معلومات تطابق البحث!</p>
@@ -38,16 +41,33 @@
       </div>
     </template>
 
-    <template v-slot:item="{ item, index, props }" class="mt-5">
-      <v-list-item v-bind="props" @click="handleItemClick(item)">
-        <!-- <VerseCardItem
-          class="mr-5"
-          :index="index"
-          :item="item.raw"
-          :textToHighlight="search"
-          @click="handleItemClick(item)"
-        /> -->
-      </v-list-item>
+    <template v-slot:item="{ item, index, props }">
+      <!-- <v-virtual-scroll
+        :items="filteredItems"
+        height="500px"
+        item-height="64"
+      >
+        <template v-slot:default="{ item, index }">
+          <v-lazy
+            v-intersect="{
+              handler: onIntersect,
+              options: {
+                threshold: 0.5,
+              }
+            }"
+            :key="item.verseNumberToQuran"
+            min-height="64"
+          >
+            <VerseCardItem
+              class="mr-5"
+              :index="index"
+              :item="item.raw"
+              :textToHighlight="search"
+              @click="handleItemClick(item)"
+            />
+          </v-lazy>
+        </template>
+      </v-virtual-scroll> -->
     </template>
   </v-autocomplete>
 </template>
@@ -94,6 +114,20 @@ const handleItemClick = (item) => {
   // Close the autocomplete menu if needed
   if (autocompleteRef.value) {
     autocompleteRef.value.closeMenu()
+  }
+}
+
+const visibleItems = ref(20)
+const itemIncrement = 10
+
+const filteredItems = computed(() => {
+  if (!autocompleteRef.value?.filteredItems) return []
+  return autocompleteRef.value.filteredItems.slice(0, visibleItems.value)
+})
+
+const onIntersect = (entries, observer) => {
+  if (entries && entries.length > 0 && entries[0].isIntersecting) {
+    visibleItems.value += itemIncrement
   }
 }
 
