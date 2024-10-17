@@ -1,8 +1,10 @@
 <template>
-  <v-tabs v-model="computedTab" class="sura-tabs">
+  <v-tabs v-model="computedTab">
     <v-tab v-for="(item, index) in tabs" :key="index" :value="item.name">
-      <v-icon v-if="item.icon" start :icon="item.icon" />
-      {{ item.title }}
+      <template v-slot:default>
+        <v-icon v-if="item.icon" :icon="item.icon" class="ml-2"></v-icon>
+        <!-- <span v-show="$vuetify.display.smAndUp">{{ item.title }}</span> -->
+      </template>
     </v-tab>
   </v-tabs>
 </template>
@@ -29,8 +31,4 @@ const computedTab = computed({
 })
 </script>
 
-<style scoped>
-.sura-tabs {
-  max-width: 100%;
-}
-</style>
+<style scoped></style>

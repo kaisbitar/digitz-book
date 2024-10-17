@@ -31,7 +31,7 @@ export default createVuetify({
           "on-surface": "#36454F",
           // // "second-background": "#f5f5f5",
           highlight: "#ffff00",
-          "on-highlight": "#000000",
+          "on-highlight": "#060603",
           // "active-row": "#bbb",
           // "on-active-row": "#000",
           // // "hover-color": "#f7f7f7",
@@ -83,7 +83,7 @@ export default createVuetify({
           "on-success": "#1E1E2E",
           "on-warning": "#1E1E2E",
 
-          highlight: "#F9E2AF",
+          highlight: "#a5e3a1",
           "on-highlight": "#1E1E2E",
           "active-row": "#45475A",
           "on-active-row": "#CDD6F4",

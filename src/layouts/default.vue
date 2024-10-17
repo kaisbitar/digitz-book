@@ -2,7 +2,7 @@
   <v-app>
     <appNavigation v-if="activeRoute !== 'home'" />
     <v-main>
-      <v-container max-width="1200" class="pa-2" fluid>
+      <v-container max-width="1200" class="pa-2 pb-0" fluid>
         <AutoComplete class="mb-4" />
         <router-view />
       </v-container>

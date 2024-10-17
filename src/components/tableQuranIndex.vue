@@ -4,7 +4,7 @@
       v-model="drawer"
       v-bind="props"
       :width="isHovering ? drawerWidthDetail : drawerWidthNoDetail"
-      :location="$vuetify.display.mobile ? 'top' : 'right'"
+      :location="isMobile ? 'top' : 'right'"
       expand-on-hover
     >
       <v-container>
@@ -49,6 +49,8 @@ import { useQuranStore } from "@/stores/app"
 import { useRouter } from "vue-router"
 import { useWindow } from "@/mixins/window"
 import { useInputFiltering } from "@/mixins/inputFiltering"
+import { useDisplay } from "vuetify"
+
 const {
   scrollToActiveItem,
   windowWidth,
@@ -59,6 +61,7 @@ const { updateSearchValue, search } = useInputFiltering()
 
 const router = useRouter()
 const store = useQuranStore()
+const display = useDisplay()
 
 const props = defineProps(["isShowSuraDetail"])
 
@@ -81,6 +84,10 @@ const targetedIndex = computed(() => {
 const drawer = computed({
   get: () => store.getDrawerState,
   set: (value) => store.setDrawerState(value),
+})
+
+const isMobile = computed(() => {
+  return display.mobile.value
 })
 
 const toggleDrawer = () => {
@@ -108,7 +115,7 @@ const handleSelectedSura = (sura) => {
 }
 
 const handleDrawer = () => {
-  if (activeRoute.value === "sura") {
+  if (activeRoute.value === "sura" && !isMobile.value) {
     drawer.value = true
     return
   }

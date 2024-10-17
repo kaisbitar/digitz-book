@@ -9,10 +9,11 @@
     :activeItemKey="String(targetedIndex)"
     @rowClicked="handleVerseSelected"
   />
+
   <TableMobile
     v-else
     class="verses-overview"
-    :data="filteredVerses"
+    :data="verses"
     :tableInputText="versesInputText"
     :activeItemKey="String(targetedIndex)"
     @rowClicked="handleVerseSelected"
@@ -65,16 +66,6 @@ const versesHeaders = ref([
 ])
 
 const isMobileView = computed(() => store.getVersesMobileView)
-
-const filteredVerses = computed(() => {
-  if (!props.versesInputText) return props.verses
-  return props.verses
-    .filter((verse) => verse.verseText.includes(props.versesInputText))
-    .map((verse, index) => ({
-      ...verse,
-      index: index,
-    }))
-})
 
 const targetedIndex = computed(() => {
   return (

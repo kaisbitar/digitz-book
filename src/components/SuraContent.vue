@@ -1,13 +1,29 @@
 <template>
   <v-toolbar class="mb-1">
-    <AppTabs :tabs="tabs" v-model:activeTab="activeTab" />
-    <AppInputFieldToggle
+    <AppTabs
+      v-if="!isInputVisible"
+      :tabs="tabs"
+      v-model:activeTab="activeTab"
+    />
+    <AppInputField
+      v-if="isInputVisible"
       :fieldInput="search"
       :fieldPlaceHolder="`سورة ${suraName}`"
-      :showFilterActions="showFilterActions"
+      :dataToShow="filteredVerses.length"
       @update:fieldInput="updateSearchValue"
     />
+    <v-spacer></v-spacer>
+    <AppToggleBtn
+      :isVisible="isInputVisible"
+      :button-text="`ابحث في ${suraName}`"
+      @toggle="isInputVisible = !isInputVisible"
+    />
+    <AppFilterActions
+      v-if="activeTab === 'versesTab' && !isInputVisible"
+      v-show="$vuetify.display.mdAndUp"
+    />
   </v-toolbar>
+
   <v-window v-model="activeTab">
     <v-window-item value="suraText" @before-enter="scrollToActiveVerse">
       <SuraText
@@ -20,7 +36,7 @@
     <v-window-item value="versesTab" @before-enter="scrollToActiveVerse">
       <VersesOverview
         ref="VersesOverviewRef"
-        :verses="versesBasics"
+        :verses="filteredVerses"
         :versesInputText="search"
         @verseSelected="handleVerseSelected"
       />
@@ -36,22 +52,34 @@
 </template>
 
 <script setup>
-import { ref, nextTick } from "vue"
+import { ref, nextTick, computed } from "vue"
 import { useWindow } from "@/mixins/window"
+import { useQuranStore } from "@/stores/app"
 
+const store = useQuranStore()
 const props = defineProps({
   tabs: Array,
-  activeTab: String,
   search: String,
   suraName: String,
-  showFilterActions: Boolean,
   suraWithTashkeel: Array,
   versesBasics: Array,
   chartFreqSeries: Array,
   chartOptions: Object,
 })
 
-const emit = defineEmits(["update:activeTab", "update:search", "verseSelected"])
+const emit = defineEmits(["update:search", "verseSelected"])
+
+const isInputVisible = ref(false)
+
+const filteredVerses = computed(() => {
+  if (!props.search) return props.versesBasics
+  return props.versesBasics
+    .filter((verse) => verse.verseText.includes(props.search))
+    .map((verse, index) => ({
+      ...verse,
+      index: index,
+    }))
+})
 
 const updateSearchValue = (value) => {
   emit("update:search", value)
@@ -62,8 +90,8 @@ const handleVerseSelected = (verse) => {
 }
 
 const activeTab = computed({
-  get: () => props.activeTab,
-  set: (value) => emit("update:activeTab", value),
+  get: () => store.getActiveSuraTab,
+  set: (value) => store.setActiveSuraTab(value),
 })
 
 const suraTextRef = ref(null)

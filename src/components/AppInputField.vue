@@ -2,50 +2,41 @@
   <v-text-field
     v-model="searchValue"
     :label="`ابحث في ${fieldPlaceHolder}`"
+    :style="{ maxWidth: '500px' }"
     append-inner-icon="mdi-magnify"
     density="compact"
-    label="Search templates"
     hide-details
     single-line
     clearable
+    class="mx-2"
+    autofocus
   >
-    <template #prepend-inner>
-      <v-icon
-        v-for="(icon, index) in prependIcons"
-        :key="index"
-        :icon="icon.name"
-        size="x-small"
-        @click="emitIconEvent(icon.event)"
-      />
-    </template>
+    <template #append> {{ dataToShow }} آية </template>
   </v-text-field>
 </template>
 
 <script setup>
-import { computed, watch, onMounted } from "vue"
+import { ref, computed, watch } from "vue"
 
 const props = defineProps({
+  fieldInput: {
+    type: String,
+    default: "",
+  },
   fieldPlaceHolder: {
     type: String,
+    required: true,
   },
-  fieldInput: String,
-  default: "",
-  prependIcons: {
-    type: Array,
-    default: () => [],
+  dataToShow: {
+    type: Number,
+    default: 0,
   },
 })
 
-const emit = defineEmits(["update:fieldInput", "iconEvent"])
+const emit = defineEmits(["update:fieldInput"])
 
 const searchValue = computed({
   get: () => props.fieldInput,
   set: (value) => emit("update:fieldInput", value),
 })
-
-const emitIconEvent = (eventName) => {
-  emit("iconEvent", eventName)
-}
 </script>
-
-<style scoped></style>

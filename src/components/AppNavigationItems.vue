@@ -24,43 +24,17 @@
     </v-list-item>
 
     <v-divider></v-divider>
-    <AppSettings :components="[ThemeToggle, AppZoom]" />
   </v-list>
+  <AppSettings :components="[ThemeToggle, AppZoom]" />
 </template>
 
 <script setup>
 import { defineProps, defineEmits } from "vue"
 import ThemeToggle from "./themeToggle.vue"
 import AppZoom from "./AppZoom.vue"
-defineProps(["activeRoute"])
-defineEmits(["navigateTo", "toggleRail"])
 
-const navigationItems = [
-  {
-    route: "/",
-    icon: "mdi-home-variant-outline",
-    activeIcon: "mdi-home-variant",
-    label: "Home",
-  },
-  {
-    route: "sura",
-    icon: "mdi-book-open-outline",
-    activeIcon: "mdi-book-open",
-    label: "السور",
-  },
-  {
-    route: "search",
-    icon: "mdi-database-search-outline",
-    activeIcon: "mdi-database-search",
-    label: "ترتيل",
-  },
-  {
-    route: "/",
-    icon: "mdi-account-outline",
-    activeIcon: "mdi-account",
-    label: "تفسيري",
-  },
-]
+defineProps(["activeRoute", "navigationItems"])
+defineEmits(["navigateTo", "toggleRail"])
 </script>
 
 <style scoped></style>
