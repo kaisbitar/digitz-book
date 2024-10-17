@@ -30,7 +30,8 @@ onMounted(async () => {
 
 <style lang="scss">
 @import "@/styles/variables.scss";
-$body-font-family: "Cairo", sans-serif;
+// $body-font-family: "Cairo", sans-serif;
+$body-font-family: "Almarai", sans-serif;
 
 .v-application {
   font-family: $body-font-family !important;
@@ -100,8 +101,12 @@ th {
 }
 
 .highlight-match {
-  background-color: rgb(var(--v-theme-highlight));
   color: rgb(var(--v-theme-on-highlight));
+  background: rgb(var(--v-theme-highlight)) !important;
+
+  text-shadow: 0px 0px 3px rgb(var(--v-theme-on-highlight), 0.3);
+  font-weight: bold;
+  padding: 2px;
 }
 
 .theme-text-color {

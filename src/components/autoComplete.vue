@@ -8,7 +8,7 @@
     label="ابحث  في المصحف.."
     ref="autocompleteRef"
     clearable
-    prepend-icon="mdi-magnify"
+    append-inner-icon="mdi-magnify"
     @keyup.enter="handleNewSearch"
     @click:option="(item) => handleNewSearch(item)"
     hide-details
@@ -100,8 +100,4 @@ const handleItemClick = (item) => {
 onMounted(() => {})
 </script>
 
-<style scoped>
-.v-list.v-theme--dark.v-list--density-default.v-list--one-line {
-  /* background: rgb(var(--v-theme-second-background)); */
-}
-</style>
+<style scoped></style>

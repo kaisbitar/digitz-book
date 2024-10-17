@@ -1,10 +1,12 @@
 import { computed, ref, onMounted, onUnmounted, nextTick } from "vue"
 import { useQuranStore } from "@/stores/app"
 import { useGoTo } from "vuetify"
+import { useDisplay } from "vuetify"
 
 export function useWindow(elementRef) {
   const store = useQuranStore()
   const goTo = useGoTo()
+  const { mobile } = useDisplay()
 
   const windowHeight = computed(() => window.innerHeight)
   const windowWidth = computed(() =>
@@ -20,7 +22,9 @@ export function useWindow(elementRef) {
   })
 
   const dynamicHeight = ref(0)
-  const setContainerHeight = (buffer = 5) => {
+
+  const setContainerHeight = () => {
+    const buffer = mobile.value ? 60 : 5
     if (elementRef && elementRef.value) {
       const windowHeight = window.innerHeight
       const containerRect = elementRef.value.getBoundingClientRect()

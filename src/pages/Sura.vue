@@ -1,19 +1,15 @@
 <template>
+  <!-- {{ suraTextArray }} -->
   <SuraHeader
     :title="`${suraNumber} ${suraName} `"
-    :tabs="tabs"
-    :activeTab="activeTab"
     :numberOfVerses="numberOfVerses"
     :numberOfWords="numberOfWords"
     :numberOfLetters="numberOfLetters"
-    @tabChanged="changeTab"
   />
   <SuraContent
     :tabs="tabs"
-    v-model:activeTab="activeTab"
     v-model:search="search"
     :suraName="suraName"
-    :showFilterActions="showFilterActions"
     :suraWithTashkeel="suraWithTashkeel"
     :versesBasics="versesBasics"
     :chartFreqSeries="chartFreqSeries"
@@ -41,7 +37,7 @@ import {
 } from "@/utils/suraUtils"
 import SuraContent from "@/components/SuraContent.vue"
 
-const { updateSearchValue, search } = useInputFiltering()
+const { search } = useInputFiltering()
 const props = defineProps(["suraInputText"])
 const store = useQuranStore()
 
@@ -95,22 +91,9 @@ const tooltipLabel2 = computed(() => {
   return fileName.value !== "000المصحف" ? "آية" : "سورة"
 })
 
-const activeTab = computed({
-  get: () => store.getActiveSuraTab,
-  set: (value) => store.setActiveSuraTab(value),
-})
-
-const showFilterActions = computed(() => {
-  return activeTab.value === "versesTab"
-})
-
 const handleVerseSelectedOnTable = (verse) => {
   selectedVerseText.value = verse.verseText
   showVerseDetails.value = true
-}
-
-const changeTab = (tab) => {
-  store.setActiveSuraTab(tab)
 }
 
 const setSuraBasics = () => {

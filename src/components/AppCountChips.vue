@@ -6,7 +6,6 @@
   >
     <v-chip
       v-if="shouldShowChip(count)"
-      size="x-small"
       variant="tonal"
       class="ml-2"
       :class="getChipClass(key, count)"

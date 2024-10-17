@@ -2,7 +2,7 @@
   <Research :chipsTitle="inputText" :chipsData="research" />
   <v-card variant="outlined">
     <v-toolbar>
-      <AppInputFieldToggle
+      <AppInputField
         :fieldInput="search"
         :fieldPlaceHolder="`${search}`"
         @update:fieldInput="updateSearchValue"
@@ -22,6 +22,7 @@ import { ref, computed, onMounted } from "vue"
 import { useQuranStore } from "@/stores/app"
 import { useCounting } from "@/mixins/counting"
 import { useInputFiltering } from "@/mixins/inputFiltering"
+import AppInputField from "./AppInputField.vue"
 const { updateSearchValue, search } = useInputFiltering()
 
 const props = defineProps(["searchData", "inputText"])
