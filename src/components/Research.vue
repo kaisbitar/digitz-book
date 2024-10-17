@@ -3,8 +3,8 @@
     <v-col cols="5" class="pb-1">
       <h1 class="mb-n1">{{ chipsTitle }}</h1>
       <AppCountChips
-        :wordCount="String(chipsData[selectedChipIndex]?.wordCount)"
-        :versesCount="String(chipsData[selectedChipIndex]?.versesCount)"
+        :wordCount="chipsData[selectedChipIndex]?.wordCount"
+        :versesCount="chipsData[selectedChipIndex]?.versesCount"
         :labels="{ word: 'مرة', verse: 'آية' }"
       />
     </v-col>

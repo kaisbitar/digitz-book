@@ -1,28 +1,23 @@
 <template>
   <v-card class="mb-1" @click="handleClick" variant="elevated">
-    <div class="pt-4 pr-4 pl-4 mb-n1 d-flex justify-space-between align-center">
-      <span class="text-primary text-caption"
-        >{{ suraNumber }} {{ suraName }}
-      </span>
+    <v-card-subtitle
+      class="pt-4 pr-4 pl-4 mb-n1 d-flex justify-space-between align-center"
+    >
+      {{ suraNumber }} {{ suraName }}
       <v-chip variant="tonal" size="small">{{ index + 1 }} </v-chip>
-    </div>
-    <div
+    </v-card-subtitle>
+
+    <v-card-text
       class="pr-4 pl-4"
       v-html="highlight(item.verseText, textToHighlight)"
-    ></div>
+    >
+    </v-card-text>
+
     <v-card-actions>
       <template v-for="(data, key) in chipData" :key="key" class="d-flex">
         <span class="text-grey text-caption mr-2"
           >{{ key }} {{ data.value }}</span
         >
-        <!-- <v-chip
-          variant="text"
-          size="x-small"
-          :color="data.color"
-          :ripple="false"
-        >
-          {{ key }} {{ data.value }}
-        </v-chip> -->
       </template>
     </v-card-actions>
   </v-card>

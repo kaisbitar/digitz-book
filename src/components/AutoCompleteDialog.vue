@@ -1,11 +1,11 @@
 <template>
-  <v-btn class="mx-3" variant="tonal" @click="openSearch">
+  <!-- <v-btn class="mx-3" variant="tonal" @click="openSearch">
     <v-icon size="x-small">mdi-magnify</v-icon>
     <span class="text-caption mx-3"> ابحث في القرآن </span>
-  </v-btn>
-  <AppDialog :modelValue="isSearchOpen" transition="fap">
-    <AutoComplete v-click-outside="handleClose" class="mt-1" />
-  </AppDialog>
+  </v-btn> -->
+  <!-- <AppDialog :modelValue="isSearchOpen" transition="fap"> -->
+  <AutoComplete v-click-outside="handleClose" class="mt-1" />
+  <!-- </AppDialog> -->
 </template>
 
 <script setup>

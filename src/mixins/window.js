@@ -20,7 +20,7 @@ export function useWindow(elementRef) {
   })
 
   const dynamicHeight = ref(0)
-  const setContainerHeight = (buffer = 20) => {
+  const setContainerHeight = (buffer = 5) => {
     if (elementRef && elementRef.value) {
       const windowHeight = window.innerHeight
       const containerRect = elementRef.value.getBoundingClientRect()

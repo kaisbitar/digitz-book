@@ -4,6 +4,7 @@
     @update:modelValue="handleClose"
     :closingBarData="closingBarData"
     class="verse-details-dialog"
+    fullscreen
   >
     <h2 class="mt-5 mr-5">سورة {{ title }}</h2>
     <h5 class="mr-5 d-flex">
@@ -55,8 +56,10 @@ const wordsSeries = computed(() =>
     .map((word) => word.length)
 )
 
-const verseIndex = computed(() => store.getTarget.verseIndex)
-const verseIndexToQuran = computed(() => store.getTarget.verseNumberToQuran)
+const verseIndex = computed(() => parseInt(store.getTarget.verseIndex))
+const verseIndexToQuran = computed(() =>
+  parseInt(store.getTarget.verseNumberToQuran)
+)
 const closingBarData = computed(() => ({
   wordCount: countVerseWords(props.verse),
   letterCount: countVerseLetters(props.verse),
@@ -90,11 +93,11 @@ watch(
   flex-direction: column;
   justify-content: space-evenly;
 }
-.verse-details-dialog {
-  .dialog-header .app-count-chips {
-    // margin-top: -4px;
-    // margin-left: auto;
-    // margin-right: 17px;
-  }
-}
+// .verse-details-dialog {
+//   .dialog-header .app-count-chips {
+//     margin-top: -4px;
+//     margin-left: auto;
+//     margin-right: 17px;
+//   }
+// }
 </style>
