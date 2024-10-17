@@ -7,33 +7,25 @@
       :location="'left'"
       expand-on-hover
     >
-      <v-container>
-        <div class="d-flex">
-          <div class="position-absolute left-0">
-            <v-icon icon @click="toggleDrawer" class="mt-n4 ml-5">
-              mdi-menu-open
-            </v-icon>
-          </div>
-
-          <AppInputField
-            class="ma-5"
-            :fieldInput="search"
-            :fieldPlaceHolder="'السور'"
-            @update:fieldInput="updateSearchValue"
-          />
-        </div>
-        <Table
-          :isIndexItem="true"
-          class="index-container"
-          :activeItemClass="'active-index-item'"
-          :tableData="indexData"
-          :tableInputText="search"
-          :tableHeaders="indexHeaders"
-          :fieldPlaceHolder="'السور'"
-          :activeItemKey="targetedIndex"
-          @rowClicked="handleSelectedSura"
-        />
-      </v-container>
+      <!-- <v-container> -->
+      <AppInputField
+        class="ma-5"
+        :fieldInput="search"
+        :fieldPlaceHolder="'السور'"
+        @update:fieldInput="updateSearchValue"
+      />
+      <Table
+        :isIndexItem="true"
+        class="index-container"
+        :activeItemClass="'active-index-item'"
+        :tableData="indexData"
+        :tableInputText="search"
+        :tableHeaders="indexHeaders"
+        :fieldPlaceHolder="'السور'"
+        :activeItemKey="targetedIndex"
+        @rowClicked="handleSelectedSura"
+      />
+      <!-- </v-container> -->
     </v-navigation-drawer>
   </v-hover>
 </template>
@@ -84,10 +76,6 @@ const drawer = computed({
 const isMobile = computed(() => {
   return display.mobile.value
 })
-
-const toggleDrawer = () => {
-  store.setIndexIsOpen(!store.getIndexIsOpen)
-}
 
 const handleSelectedSura = (sura) => {
   store.setTarget({

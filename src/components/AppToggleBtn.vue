@@ -1,16 +1,10 @@
 <template>
-  <v-btn
-    class="mx-2"
-    @click="$emit('toggle')"
-    :color="isVisible ? 'secondary' : 'default'"
-  >
+  <v-btn @click="$emit('toggle')" :color="isVisible ? 'secondary' : 'default'">
     <span v-if="!isVisible" v-show="$vuetify.display.smAndUp" class="ml-2">
       {{ buttonText }}
     </span>
-    <v-icon class="ml-1">{{
-      isVisible ? "mdi-arrow-left" : "mdi-magnify"
-    }}</v-icon>
-    <!-- <span v-show="isVisible">إغلاق</span> -->
+    <v-icon class="ml-1" v-if="isVisible"> mdi-arrow-right </v-icon>
+    <v-icon v-else>mdi-magnify </v-icon>
   </v-btn>
 </template>
 
@@ -26,5 +20,5 @@ defineProps({
   },
 })
 
-defineEmits(["toggle"])
+const emit = defineEmits(["toggle"])
 </script>

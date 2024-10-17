@@ -19,6 +19,7 @@
     hide-details
     persistentClear
     autofocus
+    density="compact"
   >
     <template v-slot:no-data>
       <p class="pa-1 text-red">لا يوجد معلومات تطابق البحث!</p>

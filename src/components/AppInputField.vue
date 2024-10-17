@@ -2,14 +2,12 @@
   <v-text-field
     v-model="searchValue"
     :label="`ابحث في ${fieldPlaceHolder}`"
-    :style="{ maxWidth: '500px' }"
     append-inner-icon="mdi-magnify"
     density="compact"
-    hide-details
-    single-line
     clearable
-    class="mx-2"
     autofocus
+    @click:clear="handleClear"
+    :style="{ maxWidth: '500px' }"
   >
     <template #append> {{ dataToShow }} آية </template>
   </v-text-field>
@@ -33,10 +31,14 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(["update:fieldInput"])
+const emit = defineEmits(["update:fieldInput", "clear"])
 
 const searchValue = computed({
   get: () => props.fieldInput,
   set: (value) => emit("update:fieldInput", value),
 })
+
+const handleClear = () => {
+  emit("clear")
+}
 </script>

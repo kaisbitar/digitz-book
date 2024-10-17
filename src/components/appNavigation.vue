@@ -1,48 +1,61 @@
 <template>
-  <v-app-bar elevation="0" density="compact" class="border-b">
-    <v-app-bar-nav-icon v-if="!isInputVisible" @click="toggleRail" />
-    <v-app-bar-title v-if="!isMobile && !isInputVisible"
-      >الكتاب المرقوم</v-app-bar-title
+  <div>
+    <v-app-bar
+      :elevation="0"
+      :density="isInputVisible ? 'default' : 'compact'"
+      class="border-b"
     >
-    <v-spacer v-if="!isMobile"></v-spacer>
+      <v-app-bar-nav-icon
+        v-if="!isInputVisible"
+        @click="toggleRailAppNavDrawer"
+      />
+      <v-app-bar-title v-if="!isInputVisible">الكتاب المرقوم</v-app-bar-title>
 
-    <AutoComplete v-if="isInputVisible" class="mr-2" />
-    <AppToggleBtn
-      :isVisible="isInputVisible"
-      :button-text="`ابحث في المصحف..`"
-      @toggle="isInputVisible = !isInputVisible"
-    />
-    <v-spacer v-if="!isMobile"></v-spacer>
-  </v-app-bar>
-  <v-divider></v-divider>
+      <v-spacer v-if="!isMobile"></v-spacer>
 
-  <TableQuranIndex />
+      <AppToggleBtn
+        :isVisible="isInputVisible"
+        :button-text="`ابحث في المصحف..`"
+        @toggle="isInputVisible = !isInputVisible"
+      />
 
-  <v-navigation-drawer
-    v-model="drawer"
-    :rail="isRail && !isMobile"
-    location="right"
-    :temporary="isMobile"
-    :permanent="!isMobile"
-  >
+      <AutoComplete v-if="isInputVisible" class="mr-1 ml-1" />
+
+      <v-spacer v-if="!isMobile"></v-spacer>
+      <v-icon
+        v-if="!isInputVisible"
+        class="ml-3 mr-n1"
+        @click="toggleIndexDrawer"
+        >mdi-menu-open</v-icon
+      >
+    </v-app-bar>
+    <v-divider></v-divider>
+
+    <TableQuranIndex />
+
     <appNavigationItems
+      v-model="drawer"
+      :rail="isRail && !isMobile"
+      location="right"
+      :isRail="isRail && !isMobile"
+      :isTemporary="isMobile"
+      :isPermanent="!isMobile"
       :navigationItems="navigationItems"
       :activeRoute="activeRoute"
       @navigateTo="handleNavigation"
     />
-  </v-navigation-drawer>
+  </div>
 </template>
 
 <script setup>
 import { ref, computed } from "vue"
 import { useRouter } from "vue-router"
-import ThemeToggle from "./themeToggle.vue"
-import AppZoom from "./AppZoom.vue"
 import { useDisplay } from "vuetify"
+import { useQuranStore } from "@/stores/app"
 
 const router = useRouter()
 const display = useDisplay()
-
+const store = useQuranStore()
 const activeRoute = computed(() => router.currentRoute.value.name)
 
 const isInputVisible = ref(false)
@@ -82,18 +95,34 @@ const isMobile = computed(() => {
   return display.mobile.value
 })
 
-const toggleDrawer = () => {
+const toggleAppNavDrawer = () => {
   drawer.value = !drawer.value
   if (!isMobile.value && drawer.value) {
     isRail.value = false
   }
 }
 
-const toggleRail = () => {
-  toggleDrawer()
+const toggleRailAppNavDrawer = () => {
+  toggleAppNavDrawer()
   if (!isMobile.value) {
     isRail.value = !isRail.value
     drawer.value = true
+  }
+}
+
+const toggleIndexDrawer = () => {
+  store.setIndexIsOpen(!store.getIndexIsOpen)
+}
+
+const autoCompleteRef = ref(null)
+
+const handleClickOutside = (event) => {
+  console.log(event)
+  if (
+    autoCompleteRef.value &&
+    !autoCompleteRef.value.$el.contains(event.target)
+  ) {
+    isInputVisible.value = false
   }
 }
 </script>
