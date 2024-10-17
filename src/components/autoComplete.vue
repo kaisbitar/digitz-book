@@ -5,17 +5,17 @@
     :menu-props="{ maxWidth: '100%', maxHeight: '500px' }"
     item-value="verseNumberToQuran"
     item-title="verseText"
-    label="ابحث  في الكتاب.."
+    label="ابحث  في المصحف.."
     ref="autocompleteRef"
     clearable
-    prepend-inner-icon="mdi-file-search"
+    prepend-icon="mdi-magnify"
     @keyup.enter="handleNewSearch"
     @click:option="(item) => handleNewSearch(item)"
     hide-details
-    persistentClear
-    autofocus
-    menu
     variant="outlined"
+    density="compact"
+    persistentClear
+    rounded
   >
     <template v-slot:no-data>
       <p class="pa-1 text-red">لا يوجد معلومات تطابق البحث!</p>
@@ -39,15 +39,15 @@
     </template>
 
     <template v-slot:item="{ item, index, props }" class="mt-5">
-      <div v-bind="props">
-        <VerseCardItem
+      <v-list-item v-bind="props" @click="handleItemClick(item)">
+        <!-- <VerseCardItem
           class="mr-5"
-          @click="handleNewSearch"
           :index="index"
           :item="item.raw"
           :textToHighlight="search"
-        />
-      </div>
+          @click="handleItemClick(item)"
+        /> -->
+      </v-list-item>
     </template>
   </v-autocomplete>
 </template>
@@ -87,6 +87,14 @@ const handleNewSearch = (value) => {
     verses: autocompleteRef.value.filteredItems,
   })
   search.value = ""
+}
+
+const handleItemClick = (item) => {
+  handleNewSearch(item)
+  // Close the autocomplete menu if needed
+  if (autocompleteRef.value) {
+    autocompleteRef.value.closeMenu()
+  }
 }
 
 onMounted(() => {})

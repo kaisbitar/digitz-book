@@ -11,7 +11,6 @@
 
   <AppInputField
     v-if="isInputVisible"
-    ref="inputField"
     :fieldInput="fieldInput"
     :fieldPlaceHolder="fieldPlaceHolder"
     :prepend-icons="[{ name: 'mdi-star-shooting', event: 'search' }]"

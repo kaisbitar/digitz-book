@@ -1,5 +1,9 @@
 <template>
-  <div class="app-count-chips" v-for="(count, key) in counts" :key="key">
+  <div
+    :class="['app-count-chips', $attrs.class]"
+    v-for="(count, key) in counts"
+    :key="key"
+  >
     <v-chip
       v-if="shouldShowChip(count)"
       size="x-small"
@@ -13,7 +17,7 @@
 </template>
 
 <script setup>
-import { computed } from "vue"
+import { computed, useAttrs } from "vue"
 
 const props = defineProps({
   versesCount: Number,
@@ -22,9 +26,11 @@ const props = defineProps({
   verseNumberToQuran: Number,
   labels: {
     type: Object,
-    required: true,
+    required: false,
   },
 })
+
+const attrs = useAttrs()
 
 const counts = computed(() => ({
   verse: props.versesCount,
@@ -54,4 +60,8 @@ const getChipClass = (key, count) => {
 }
 </script>
 
-<style></style>
+<style scoped>
+.app-count-chips {
+  display: inline-block;
+}
+</style>
