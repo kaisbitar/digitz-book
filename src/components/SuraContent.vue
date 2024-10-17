@@ -1,23 +1,25 @@
 <template>
-  <v-toolbar class="mb-1">
+  <v-toolbar class="mb-1" density="compact">
     <AppTabs
       v-if="!isInputVisible"
       :tabs="tabs"
       v-model:activeTab="activeTab"
     />
-    <AppInputField
+    <v-spacer v-if="!isInputVisible"></v-spacer>
+    <AppToggleBtn
+      :isVisible="isInputVisible"
+      :button-text="`ابحث في ${suraName}`"
+      @clickOutside="isInputVisible = false"
+      @toggle="isInputVisible = !isInputVisible"
+    /><AppInputField
       v-if="isInputVisible"
       :fieldInput="search"
       :fieldPlaceHolder="`سورة ${suraName}`"
       :dataToShow="filteredVerses.length"
       @update:fieldInput="updateSearchValue"
+      @clear="isInputVisible = !isInputVisible"
     />
-    <v-spacer></v-spacer>
-    <AppToggleBtn
-      :isVisible="isInputVisible"
-      :button-text="`ابحث في ${suraName}`"
-      @toggle="isInputVisible = !isInputVisible"
-    />
+
     <AppFilterActions
       v-if="activeTab === 'versesTab' && !isInputVisible"
       v-show="$vuetify.display.mdAndUp"
