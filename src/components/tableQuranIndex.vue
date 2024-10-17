@@ -3,41 +3,36 @@
     <v-navigation-drawer
       v-model="drawer"
       v-bind="props"
-      :width="isHovering ? drawerWidthDetail : drawerWidthNoDetail"
-      :location="isMobile ? 'top' : 'right'"
+      :width="isHovering || isMobile ? drawerWidthDetail : drawerWidthNoDetail"
+      :location="'left'"
       expand-on-hover
     >
       <v-container>
-        <v-list>
-          <v-card class="d-flex">
-            <v-btn
-              class="mt-2"
-              icon
-              @click="toggleDrawer"
-              variant="text"
-              size="small"
-            >
-              <v-icon>mdi-close</v-icon>
-            </v-btn>
-            <AppInputField
-              class="mx-2"
-              :fieldInput="search"
-              :fieldPlaceHolder="'السور'"
-              @update:fieldInput="updateSearchValue"
-            />
-          </v-card>
-          <Table
-            :isIndexItem="true"
-            class="index-container"
-            :activeItemClass="'active-index-item'"
-            :tableData="indexData"
-            :tableInputText="search"
-            :tableHeaders="indexHeaders"
+        <div class="d-flex">
+          <div class="position-absolute left-0">
+            <v-icon icon @click="toggleDrawer" class="mt-n4 ml-5">
+              mdi-menu-open
+            </v-icon>
+          </div>
+
+          <AppInputField
+            class="ma-5"
+            :fieldInput="search"
             :fieldPlaceHolder="'السور'"
-            :activeItemKey="targetedIndex"
-            @rowClicked="handleSelectedSura"
+            @update:fieldInput="updateSearchValue"
           />
-        </v-list>
+        </div>
+        <Table
+          :isIndexItem="true"
+          class="index-container"
+          :activeItemClass="'active-index-item'"
+          :tableData="indexData"
+          :tableInputText="search"
+          :tableHeaders="indexHeaders"
+          :fieldPlaceHolder="'السور'"
+          :activeItemKey="targetedIndex"
+          @rowClicked="handleSelectedSura"
+        />
       </v-container>
     </v-navigation-drawer>
   </v-hover>
@@ -82,8 +77,8 @@ const targetedIndex = computed(() => {
 })
 
 const drawer = computed({
-  get: () => store.getDrawerState,
-  set: (value) => store.setDrawerState(value),
+  get: () => store.getIndexIsOpen,
+  set: (value) => store.setIndexIsOpen(value),
 })
 
 const isMobile = computed(() => {
@@ -91,7 +86,7 @@ const isMobile = computed(() => {
 })
 
 const toggleDrawer = () => {
-  store.setDrawerState(!store.getDrawerState)
+  store.setIndexIsOpen(!store.getIndexIsOpen)
 }
 
 const handleSelectedSura = (sura) => {
@@ -102,9 +97,9 @@ const handleSelectedSura = (sura) => {
   })
 
   if (windowWidth.value === "small") {
-    store.setDrawerState(false)
+    store.setIndexIsOpen(false)
   } else {
-    store.setDrawerState(true)
+    store.setIndexIsOpen(true)
   }
 
   if (activeRoute !== "sura") {

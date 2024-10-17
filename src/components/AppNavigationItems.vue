@@ -1,14 +1,5 @@
 <template>
   <v-list>
-    <v-list-item @click="$emit('toggleRail')">
-      <template v-slot:prepend>
-        <v-icon>mdi-menu</v-icon>
-      </template>
-      <v-list-item-title>الكتاب المرقوم</v-list-item-title>
-    </v-list-item>
-
-    <v-divider></v-divider>
-
     <v-list-item
       v-for="item in navigationItems"
       :key="item.route"
