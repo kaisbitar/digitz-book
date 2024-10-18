@@ -18,9 +18,9 @@ export default createVuetify({
     defaultSet: "mdi",
   },
   theme: {
-    defaultTheme: "dark",
+    // defaultTheme: "dark",
     // defaultTheme: "light",
-    // defaultTheme: "testing",
+    defaultTheme: "testing",
     themes: {
       // Use 'surface' for app background color,
       light: {
@@ -41,6 +41,7 @@ export default createVuetify({
           // wordCount: "#5b5b5b",
           // letterCount: "#5b5b5b",
           // QuranCount: "#5b5b5b",
+          "count-value-item": "#919191",
         },
       },
       dark: {
@@ -60,12 +61,13 @@ export default createVuetify({
           // wordCount: "#33FF57",
           // letterCount: "#ffd576",
           // QuranCount: "#aad566",
+          "count-value-item": "#919191",
         },
       },
       testing: {
         colors: {
           background: "#1E1E2E",
-          surface: "#2A2A3C",
+          surface: "#1E1E2E",
           primary: "#89B4FA",
           secondary: "#F5C2E7",
           error: "#F38BA8",
@@ -91,10 +93,17 @@ export default createVuetify({
           "verse-number-chip": "#6C7086",
           "on-verse-number-chip": "#CDD6F4",
 
-          verseCount: "#94E2D5",
-          wordCount: "#A6E3A1",
-          letterCount: "#FAB387",
-          QuranCount: "#F9E2AF",
+          // verseCount: "#94E2D5",
+          // wordCount: "#A6E3A1",
+          // letterCount: "#FAB387",
+          // QuranCount: "#F9E2AF",
+          "count-value-item": "#919191",
+        },
+        variables: {
+          "border-color": "#89B4FA",
+          "border-opacity": 0.12,
+          "border-width": "1px",
+          "border-style": "solid",
         },
       },
     },

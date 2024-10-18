@@ -21,7 +21,6 @@
   </div>
 </template>
 <script setup>
-import { defineProps } from "vue"
 import { useInputFiltering } from "@/mixins/inputFiltering"
 
 const { highlight } = useInputFiltering()

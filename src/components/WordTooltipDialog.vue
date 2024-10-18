@@ -29,8 +29,6 @@
 </template>
 
 <script setup>
-import { defineProps, ref } from "vue"
-
 const props = defineProps({
   word: {
     type: String,
