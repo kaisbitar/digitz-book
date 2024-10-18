@@ -6,6 +6,7 @@
           <template v-slot:prepend>
             <v-icon>mdi-cog-outline</v-icon>
           </template>
+          <v-list-item-title>إعدادت</v-list-item-title>
         </v-list-item>
       </template>
 
@@ -17,6 +18,8 @@
 </template>
 
 <script setup>
+import ThemeOptions from "./AppTheme.vue"
+
 const props = defineProps({
   components: {
     type: Array,

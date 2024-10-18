@@ -14,26 +14,39 @@
       <v-spacer v-if="!isMobile"></v-spacer>
 
       <AppToggleBtn
-        :isVisible="isInputVisible"
-        :button-text="`ابحث في المصحف..`"
+        class="mx-0 msx-sm-2"
+        :isActive="isInputVisible"
+        btnText="ابحث في المصحف"
+        inactive-icon="mdi-magnify"
+        size="default"
         @toggle="isInputVisible = !isInputVisible"
       />
 
-      <AutoComplete v-if="isInputVisible" class="mr-1 ml-1" />
+      <AutoComplete
+        class="ml-4"
+        v-if="isInputVisible"
+        v-click-outside="onInputClickOutside"
+        :style="{ maxWidth: '500px' }"
+      />
 
       <v-spacer v-if="!isMobile"></v-spacer>
-      <v-icon
+
+      <AppToggleBtn
+        class="mx-0 msx-sm-2"
         v-if="!isInputVisible"
-        class="ml-3 mr-n1"
-        @click="toggleIndexDrawer"
-        >mdi-menu-open</v-icon
-      >
+        :isActive="isInputVisible"
+        btnText="السور"
+        :btnVariant="indexbtnVariant"
+        inactive-icon="mdi-menu-open"
+        size="default"
+        @toggle="toggleIndexDrawer"
+      />
     </v-app-bar>
     <v-divider></v-divider>
 
     <TableQuranIndex />
 
-    <appNavigationItems
+    <AppNavigationItems
       v-model="drawer"
       :rail="isRail && !isMobile"
       :temporary="isMobile"
@@ -43,7 +56,7 @@
       @navigateTo="handleNavigation"
     />
     <!-- THis is a work around for a bug on phones only when location is set to right
-      :location="isMobile && !drawer ? 'left' : 'right'"  -->
+        :location="isMobile && !drawer ? 'left' : 'right'"  -->
   </div>
 </template>
 
@@ -91,6 +104,10 @@ const navigationItems = [
   },
 ]
 
+const indexbtnVariant = computed(() => {
+  return store.getIndexIsOpen ? "tonal" : "text"
+})
+
 const isMobile = computed(() => {
   return display.mobile.value
 })
@@ -112,6 +129,10 @@ const toggleRailAppNavDrawer = () => {
 
 const toggleIndexDrawer = () => {
   store.setIndexIsOpen(!store.getIndexIsOpen)
+}
+
+const onInputClickOutside = () => {
+  isInputVisible.value = false
 }
 </script>
 

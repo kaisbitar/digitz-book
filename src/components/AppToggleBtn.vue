@@ -1,22 +1,54 @@
 <template>
-  <v-btn @click="$emit('toggle')" :color="isVisible ? 'secondary' : 'default'">
-    <span v-if="!isVisible" v-show="$vuetify.display.smAndUp" class="ml-2">
-      {{ buttonText }}
+  <v-btn
+    @click="$emit('toggle')"
+    :variant="btnVariant"
+    :color="isActive ? inactiveColor : activeColor"
+    :size="size"
+  >
+    <v-icon v-if="isActive" class="ml-2">{{ activeIcon }}</v-icon>
+    <v-icon v-else class="ml-2">{{ inactiveIcon }}</v-icon>
+    <span v-if="!isActive && showText" v-show="$vuetify.display.smAndUp">
+      {{ btnText }}
     </span>
-    <v-icon class="ml-1" v-if="isVisible"> mdi-arrow-right </v-icon>
-    <v-icon v-else>mdi-magnify </v-icon>
   </v-btn>
 </template>
 
 <script setup>
 defineProps({
-  isVisible: {
+  btnVariant: {
+    type: String,
+    default: "text",
+  },
+  isActive: {
     type: Boolean,
     required: true,
   },
-  buttonText: {
+  btnText: {
     type: String,
-    required: true,
+    default: "",
+  },
+  showText: {
+    type: Boolean,
+    default: true,
+  },
+  activeColor: {
+    type: String,
+  },
+  inactiveColor: {
+    type: String,
+    default: "default",
+  },
+  activeIcon: {
+    type: String,
+    default: "mdi-arrow-right",
+  },
+  inactiveIcon: {
+    type: String,
+    default: "mdi-magnify",
+  },
+  size: {
+    type: String,
+    default: "small",
   },
 })
 

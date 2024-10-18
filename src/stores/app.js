@@ -28,7 +28,6 @@ export const useQuranStore = defineStore("Quran", {
     chartFreqType: "words",
     allVersesWithTashkeel: [],
     isDialog: false,
-    fontSize: "19px",
     wordMeanings: {},
   }),
   persist: {
@@ -42,7 +41,6 @@ export const useQuranStore = defineStore("Quran", {
   },
   getters: {
     getVersesMobileView: (state) => state.versesMobileView,
-    getFontSize: (state) => state.fontSize,
     getIsDialog: (state) => state.isDialog,
     getTarget: (state) => state.target,
     getResearchResults: (state) => state.researchResults,
@@ -62,9 +60,7 @@ export const useQuranStore = defineStore("Quran", {
     setVersesMobileView(state) {
       this.versesMobileView = state
     },
-    setFontSize(state) {
-      this.fontSize = state
-    },
+
     setIsDialog(isDialog) {
       this.isDialog = isDialog
     },
