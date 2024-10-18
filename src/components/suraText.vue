@@ -3,6 +3,7 @@
     <v-card
       class="px-4 sura-text-container scrolling-container"
       :height="dynamicHeight"
+      variant="plain"
     >
       <span
         v-for="(verse, index) in suraTextArray"

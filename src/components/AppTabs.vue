@@ -1,10 +1,18 @@
 <template>
-  <v-tabs v-model="computedTab">
-    <v-tab v-for="(item, index) in tabs" :key="index" :value="item.name">
-      <template v-slot:default>
-        <v-icon v-if="item.icon" :icon="item.icon" class="ml-2"></v-icon>
-        <!-- <span v-show="$vuetify.display.smAndUp">{{ item.title }}</span> -->
-      </template>
+  <v-tabs v-model="computedTab" show-arrows centered>
+    <v-tab
+      v-for="(item, index) in tabs"
+      :key="index"
+      :value="item.name"
+      class="text-caption"
+    >
+      <v-icon
+        v-if="item.icon"
+        :icon="item.icon"
+        size="small"
+        :class="$vuetify.display.smAndUp ? 'ml-2' : ''"
+      ></v-icon>
+      <span :class="{ 'd-none d-sm-inline': item.icon }">{{ item.title }}</span>
     </v-tab>
   </v-tabs>
 </template>

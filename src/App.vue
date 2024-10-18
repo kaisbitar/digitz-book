@@ -67,7 +67,7 @@ html {
 }
 
 th {
-  // height: 5px !important;
+  // height: 10px !important;
 }
 
 .tableItem {
@@ -87,9 +87,8 @@ th {
 }
 
 .count-key-item,
-// .count-value-item,
 .verse-card-item-title {
-  color: rgb(var(--v-theme-count-value-item));
+  color: rgb(var(--v-theme-count-key-item));
 }
 
 .activeSuraItem,
@@ -97,12 +96,17 @@ th {
 .active-verse-text,
 .active-index-item {
   background: rgb(var(--v-theme-active-row)) !important;
-  // .count-value-item,
-  // .verse-card-item-text {
-  //   text-shadow: 0px 0px 3px rgb(var(--v-theme-on-highlight), 0);
-  //   font-weight: bold;
-  //   color: rgb(var(--v-theme-on-active-row));
-  // }
+  .verse-card-item-text {
+    text-shadow: 0px 0px 3px rgb(var(--v-theme-on-active-row), 0);
+  }
+  .verse-card-item-title {
+    text-shadow: 0px 0px 1px rgb(var(--v-theme-on-highlight), 15%);
+    color: inherit;
+  }
+}
+
+.v-card {
+  border-color: rgba(var(--v-theme-on-surface), 0.1) !important;
 }
 
 .dialog-header {
