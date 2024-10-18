@@ -4,22 +4,24 @@
     @click="handleClick"
     variant="outlined"
   >
-    <v-card-subtitle class="verse-card-item-title">
+    <v-card-subtitle class="verse-card-item-title mb-2">
       <v-chip size="small" class="mr-n3 ml-2">{{ index + 1 }} </v-chip>
       {{ suraNumber }} {{ suraName }}
     </v-card-subtitle>
 
     <v-card-text
-      class="verse-card-item-text pa-1"
+      class="verse-card-item-text pa-1 mb-3"
       v-html="highlight(item.verseText, textToHighlight)"
     >
     </v-card-text>
 
-    <template v-for="(data, key) in chipData" :key="key" class="d-flex">
+    <!-- <template v-for="(data, key) in chipData" :key="key" class="d-flex">
       <span class="text-caption mr-3 ml-1 count-key-item" :class="data.color"
         >{{ key }} </span
       ><span class="text-caption count-value-item">{{ data.value }}</span>
-    </template>
+    </template> -->
+    <AppMetaData :metaData="indexData" class="d-flex mr-3" />
+    <AppMetaData :metaData="countData" class="d-flex mr-3" />
   </v-card>
 </template>
 
@@ -50,14 +52,16 @@ const handleClick = () => {
   emit("verseClicked")
 }
 
-const chipData = computed(() => ({
+const indexData = computed(() => ({
   رقم: { value: props.item.verseIndex, color: "verse-count" },
-  كلمة: { value: props.item.numberOfWords, color: "word-count" },
-  حرف: { value: props.item.numberOfLetters, color: "letter-count" },
   مصحف: {
     value: props.item.verseNumberToQuran,
     color: "verse-number-to-quran",
   },
+}))
+const countData = computed(() => ({
+  كلمة: { value: props.item.numberOfWords, color: "word-count" },
+  حرف: { value: props.item.numberOfLetters, color: "letter-count" },
 }))
 </script>
 

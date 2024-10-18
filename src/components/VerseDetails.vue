@@ -8,12 +8,10 @@
   >
     <h2 class="mt-5 mr-5">سورة {{ title }}</h2>
     <h5 class="mr-5 d-flex">
-      الآية <AppCountChips class="mr-2" :versesCount="verseIndex" />
+      <AppMetaData :metaData="{ آية: { value: verseIndex } }" />
+      <AppMetaData :metaData="{ مصحف: { value: verseIndexToQuran } }" />
     </h5>
-    <h5 class="mr-5 d-flex">
-      مصحف
-      <AppCountChips class="mr-2" :verseNumberToQuran="verseIndexToQuran" />
-    </h5>
+
     <v-container class="verse-details">
       <VerseWords
         :verse="verse"
