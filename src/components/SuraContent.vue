@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar class="mb-1" density="compact">
+  <v-toolbar class="mb-2" density="compact" rounded>
     <AppTabs
       v-if="!isInputVisible"
       :tabs="tabs"

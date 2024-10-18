@@ -7,7 +7,6 @@
       :location="'left'"
       expand-on-hover
     >
-      <!-- <v-container> -->
       <AppInputField
         class="ma-5"
         :fieldInput="search"
@@ -25,7 +24,6 @@
         :activeItemKey="targetedIndex"
         @rowClicked="handleSelectedSura"
       />
-      <!-- </v-container> -->
     </v-navigation-drawer>
   </v-hover>
 </template>

@@ -1,7 +1,11 @@
 <template>
-  <v-card class="pa-3 verse-card-item" @click="handleClick" variant="plain">
+  <v-card
+    class="px-4 pt-4 pb-4 mt-2 mb-2 verse-card-item"
+    @click="handleClick"
+    variant="outlined"
+  >
     <v-card-subtitle class="verse-card-item-title">
-      <v-chip variant="tonal" size="small">{{ index + 1 }} </v-chip>
+      <v-chip size="small" class="mr-n3 ml-2">{{ index + 1 }} </v-chip>
       {{ suraNumber }} {{ suraName }}
     </v-card-subtitle>
 
@@ -11,13 +15,11 @@
     >
     </v-card-text>
 
-    <!-- <v-card-actions> -->
     <template v-for="(data, key) in chipData" :key="key" class="d-flex">
-      <span class="text-caption mr-2 ml-1 count-key-item" :class="data.color"
+      <span class="text-caption mr-3 ml-1 count-key-item" :class="data.color"
         >{{ key }} </span
-      ><span class="count-value-item">{{ data.value }}</span>
+      ><span class="text-caption count-value-item">{{ data.value }}</span>
     </template>
-    <!-- </v-card-actions> -->
   </v-card>
 </template>
 
@@ -60,9 +62,9 @@ const chipData = computed(() => ({
 </script>
 
 <style scoped>
-.verse-card-item {
+/* .verse-card-item {
   border: 1px solid #424242;
   border-radius: 4px;
   margin-top: 5px;
-}
+} */
 </style>

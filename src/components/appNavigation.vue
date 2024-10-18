@@ -113,18 +113,6 @@ const toggleRailAppNavDrawer = () => {
 const toggleIndexDrawer = () => {
   store.setIndexIsOpen(!store.getIndexIsOpen)
 }
-
-const autoCompleteRef = ref(null)
-
-const handleClickOutside = (event) => {
-  console.log(event)
-  if (
-    autoCompleteRef.value &&
-    !autoCompleteRef.value.$el.contains(event.target)
-  ) {
-    isInputVisible.value = false
-  }
-}
 </script>
 
 <style scoped></style>
