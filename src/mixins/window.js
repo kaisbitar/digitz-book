@@ -13,14 +13,11 @@ export function useWindow(elementRef) {
     window.innerWidth <= 1300 ? "small" : "large"
   )
 
-  const storeFontSize = computed(() => store.getFontSize)
   const drawerWidthDetail = computed(() => {
-    // return storeFontSize.value > "23px" ? 100 :
     return 550
   })
   const drawerWidthNoDetail = computed(() => {
-    // return storeFontSize.value > "23px" ? 100 : 20
-    return 290
+    return 250
   })
 
   const dynamicHeight = ref(0)

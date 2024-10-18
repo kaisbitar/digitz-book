@@ -1,30 +1,22 @@
 <template>
-  <v-toolbar class="mb-2" density="compact" rounded>
-    <AppTabs
-      v-if="!isInputVisible"
-      :tabs="tabs"
-      v-model:activeTab="activeTab"
-    />
-    <v-spacer v-if="!isInputVisible"></v-spacer>
-    <AppToggleBtn
-      :isVisible="isInputVisible"
-      :button-text="`ابحث في ${suraName}`"
-      @clickOutside="isInputVisible = false"
-      @toggle="isInputVisible = !isInputVisible"
-    /><AppInputField
-      v-if="isInputVisible"
-      :fieldInput="search"
-      :fieldPlaceHolder="`سورة ${suraName}`"
-      :dataToShow="filteredVerses.length"
-      @update:fieldInput="updateSearchValue"
-      @clear="isInputVisible = !isInputVisible"
-    />
-
-    <AppFilterActions
-      v-if="activeTab === 'versesTab' && !isInputVisible"
-      v-show="$vuetify.display.mdAndUp"
-    />
-  </v-toolbar>
+  <AppToolbar
+    :tabs="tabs"
+    :activeTab="activeTab"
+    :search="search"
+    :searchBtnText="searchBtnText"
+    :placeholderText="`سورة ${suraName}`"
+    :filteredDataLength="filteredVerses.length"
+    @update:activeTab="updateActiveTab"
+    @update:search="updateSearch"
+    @searchToggle="onSearchToggle"
+  >
+    <template #additional-actions>
+      <AppFilterActions
+        v-if="activeTab === 'versesTab' && !isInputVisible"
+        v-show="$vuetify.display.mdAndUp"
+      />
+    </template>
+  </AppToolbar>
 
   <v-window v-model="activeTab">
     <v-window-item value="suraText" @before-enter="scrollToActiveVerse">
@@ -46,6 +38,7 @@
 
     <v-window-item value="frequency">
       <SuraFrequency
+        class="mt-2 mb-n2"
         :chartFreqSeries="chartFreqSeries"
         :chartOptions="chartOptions"
       />
@@ -70,7 +63,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(["update:search", "verseSelected"])
-
+const searchBtnText = ref(`ابحث في ${props.suraName}`)
 const isInputVisible = ref(false)
 
 const filteredVerses = computed(() => {
@@ -91,6 +84,10 @@ const handleVerseSelected = (verse) => {
   emit("verseSelected", verse)
 }
 
+const onSearchToggle = (value) => {
+  isInputVisible.value = value
+}
+
 const activeTab = computed({
   get: () => store.getActiveSuraTab,
   set: (value) => store.setActiveSuraTab(value),
@@ -108,5 +105,17 @@ const scrollToActiveVerse = () => {
     }
     VersesOverviewRef.value.tablesScroll()
   })
+}
+
+const updateActiveTab = (value) => {
+  store.setActiveSuraTab(value)
+}
+
+const updateSearch = (value) => {
+  emit("update:search", value)
+  searchBtnText.value = props.search
+  if (value === "" || value === null) {
+    searchBtnText.value = `ابحث في ${props.suraName}`
+  }
 }
 </script>

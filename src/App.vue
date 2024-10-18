@@ -14,17 +14,12 @@ const store = useQuranStore()
 const getTheData = async () => {
   await store.getQuranData()
 }
-const dynamicFontSize = computed(() => store.getFontSize)
 
 onMounted(async () => {
   if (windowWidth.value === "small") {
     store.setVersesMobileView(true)
   }
   await getTheData()
-  document.documentElement.style.setProperty(
-    "--dynamic-font-size",
-    dynamicFontSize.value
-  )
 })
 </script>
 
@@ -37,7 +32,6 @@ $body-font-family: "Almarai", sans-serif;
   font-family: $body-font-family !important;
 }
 html {
-  font-size: var(--font-size);
   overflow: hidden;
   position: relative;
 }
@@ -49,6 +43,7 @@ html {
 .text-caption,
 .text-h2,
 .text-h4,
+.text-h6,
 .text-sm-h4,
 .text-sm-h5 {
   font-family: $body-font-family !important;
@@ -56,8 +51,10 @@ html {
   font-family: unset;
 }
 
+.v-application,
 .v-tab,
-.v-btn {
+.v-btn,
+.v-card-subtitle {
   letter-spacing: 0 !important;
 }
 

@@ -1,9 +1,9 @@
 <template>
   <div ref="suraTextRef">
     <v-card
-      class="px-4 sura-text-container scrolling-container"
+      class="sura-text-container scrolling-container"
       :height="dynamicHeight"
-      variant="plain"
+      variant="text"
     >
       <span
         v-for="(verse, index) in suraTextArray"

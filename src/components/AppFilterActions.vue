@@ -1,5 +1,5 @@
 <template>
-  <v-btn @click="toggleView" icon>
+  <v-btn @click="toggleView" icon size="small">
     <v-icon>{{ viewIcon }}</v-icon>
   </v-btn>
 </template>

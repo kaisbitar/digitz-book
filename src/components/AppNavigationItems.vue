@@ -17,13 +17,12 @@
 
       <v-divider></v-divider>
     </v-list>
-    <AppSettings :components="[ThemeToggle, AppZoom]" />
+    <AppNavDropDown :components="[ThemeOptions]" />
   </v-navigation-drawer>
 </template>
 
 <script setup>
-import ThemeToggle from "./themeToggle.vue"
-import AppZoom from "./AppZoom.vue"
+import ThemeOptions from "./AppTheme.vue"
 
 defineProps([
   "activeRoute",

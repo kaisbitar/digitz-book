@@ -9,7 +9,9 @@
     @click:clear="handleClear"
     :style="{ maxWidth: '500px' }"
   >
-    <template #append> {{ dataToShow }} آية </template>
+    <template #prepend-inner>
+      <span class="text-caption">{{ dataToShow }}</span>
+    </template>
   </v-text-field>
 </template>
 
