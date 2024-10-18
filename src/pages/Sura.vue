@@ -1,5 +1,4 @@
 <template>
-  <!-- {{ suraTextArray }} -->
   <SuraHeader
     :title="`${suraNumber} ${suraName} `"
     :numberOfVerses="numberOfVerses"

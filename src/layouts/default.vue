@@ -2,7 +2,7 @@
   <v-app>
     <appNavigation v-if="activeRoute !== 'home'" />
     <v-main>
-      <v-container max-width="1200" class="px-10 pb-0" fluid>
+      <v-container max-width="1200" class="px-2 px-sm-10 pb-0" fluid>
         <router-view />
       </v-container>
     </v-main>
