@@ -36,14 +36,14 @@
     <appNavigationItems
       v-model="drawer"
       :rail="isRail && !isMobile"
-      location="right"
-      :isRail="isRail && !isMobile"
-      :isTemporary="isMobile"
-      :isPermanent="!isMobile"
+      :temporary="isMobile"
+      :permanent="!isMobile"
       :navigationItems="navigationItems"
       :activeRoute="activeRoute"
       @navigateTo="handleNavigation"
     />
+    <!-- THis is a work around for a bug on phones only when location is set to right
+      :location="isMobile && !drawer ? 'left' : 'right'"  -->
   </div>
 </template>
 

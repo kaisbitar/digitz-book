@@ -1,25 +1,23 @@
 <template>
-  <v-card class="mb-1" @click="handleClick" variant="elevated">
-    <v-card-subtitle
-      class="pt-4 pr-4 pl-4 mb-n1 d-flex justify-space-between align-center"
-    >
-      {{ suraNumber }} {{ suraName }}
+  <v-card class="pa-3 verse-card-item" @click="handleClick" variant="plain">
+    <v-card-subtitle class="verse-card-item-title">
       <v-chip variant="tonal" size="small">{{ index + 1 }} </v-chip>
+      {{ suraNumber }} {{ suraName }}
     </v-card-subtitle>
 
     <v-card-text
-      class="pr-4 pl-4"
+      class="verse-card-item-text pa-1"
       v-html="highlight(item.verseText, textToHighlight)"
     >
     </v-card-text>
 
-    <v-card-actions>
-      <template v-for="(data, key) in chipData" :key="key" class="d-flex">
-        <span class="text-grey text-caption mr-2"
-          >{{ key }} {{ data.value }}</span
-        >
-      </template>
-    </v-card-actions>
+    <!-- <v-card-actions> -->
+    <template v-for="(data, key) in chipData" :key="key" class="d-flex">
+      <span class="text-caption mr-2 ml-1 count-key-item" :class="data.color"
+        >{{ key }} </span
+      ><span class="count-value-item">{{ data.value }}</span>
+    </template>
+    <!-- </v-card-actions> -->
   </v-card>
 </template>
 
@@ -51,11 +49,20 @@ const handleClick = () => {
 }
 
 const chipData = computed(() => ({
-  رقم: { value: props.item.verseIndex, color: "verseCount" },
-  كلمة: { value: props.item.numberOfWords, color: "wordCount" },
-  حرف: { value: props.item.numberOfLetters, color: "letterCount" },
-  مصحف: { value: props.item.verseNumberToQuran, color: "QuranCount" },
+  رقم: { value: props.item.verseIndex, color: "verse-count" },
+  كلمة: { value: props.item.numberOfWords, color: "word-count" },
+  حرف: { value: props.item.numberOfLetters, color: "letter-count" },
+  مصحف: {
+    value: props.item.verseNumberToQuran,
+    color: "verse-number-to-quran",
+  },
 }))
 </script>
 
-<style scoped></style>
+<style scoped>
+.verse-card-item {
+  border: 1px solid #424242;
+  border-radius: 4px;
+  margin-top: 5px;
+}
+</style>

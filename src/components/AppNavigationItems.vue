@@ -1,12 +1,5 @@
 <template>
-  <v-navigation-drawer
-    :model-value="drawer"
-    @update:model-value="$emit('update:drawer', $event)"
-    :rail="isRail"
-    location="right"
-    :temporary="isPermanent"
-    :permanent="!isTemporary"
-  >
+  <v-navigation-drawer @update:model-value="$emit('update:drawer', $event)">
     <v-list>
       <v-list-item
         v-for="item in navigationItems"
@@ -29,7 +22,6 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from "vue"
 import ThemeToggle from "./themeToggle.vue"
 import AppZoom from "./AppZoom.vue"
 
@@ -44,5 +36,4 @@ defineProps([
 defineEmits(["navigateTo", "toggleRail", "update:drawer"])
 </script>
 
-isRail isTemporary isPermanent
 <style scoped></style>

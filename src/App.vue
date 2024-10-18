@@ -78,54 +78,31 @@ th {
   border: none !important;
 }
 
-.tableStyle tr {
-  // background: rgb(var(--v-theme-second-background));
+.highlight-match {
+  color: rgb(var(--v-theme-on-highlight));
+  background: rgb(var(--v-theme-highlight)) !important;
+  text-shadow: 0px 0px 3px rgb(var(--v-theme-on-highlight), 0.3);
+  font-weight: bold;
+  padding: 2px;
 }
 
-.sura-text-container {
-  background: rgb(var(--v-theme-second-background));
+.count-key-item,
+// .count-value-item,
+.verse-card-item-title {
+  color: rgb(var(--v-theme-count-value-item));
 }
 
 .activeSuraItem,
 .active-verse-table,
 .active-verse-text,
 .active-index-item {
-  // color: rgb(var(--v-theme-on-active-row)) !important;
   background: rgb(var(--v-theme-active-row)) !important;
-  // font-weight: 700;
-}
-
-.v-field {
-  color: rgb(var(--v-theme-on-active-row)) !important;
-  background: rgb(var(--v-theme-input-background)) !important;
-}
-
-.highlight-match {
-  color: rgb(var(--v-theme-on-highlight));
-  background: rgb(var(--v-theme-highlight)) !important;
-
-  text-shadow: 0px 0px 3px rgb(var(--v-theme-on-highlight), 0.3);
-  font-weight: bold;
-  padding: 2px;
-}
-
-.theme-text-color {
-  // color: rgb(var(--v-theme-on-surface)) !important;
-}
-.verses-count {
-  color: rgb(var(--v-theme-verseCount)) !important;
-}
-
-.word-count {
-  color: rgb(var(--v-theme-wordCount)) !important;
-}
-
-.letter-count {
-  color: rgb(var(--v-theme-letterCount)) !important;
-}
-
-.verse-number-to-quran {
-  color: rgb(var(--v-theme-verseNumberToQuran)) !important;
+  // .count-value-item,
+  // .verse-card-item-text {
+  //   text-shadow: 0px 0px 3px rgb(var(--v-theme-on-highlight), 0);
+  //   font-weight: bold;
+  //   color: rgb(var(--v-theme-on-active-row));
+  // }
 }
 
 .dialog-header {
