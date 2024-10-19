@@ -14,16 +14,15 @@
       <v-spacer v-if="!isMobile"></v-spacer>
 
       <AppToggleBtn
-        class="mx-0 msx-sm-2"
+        class="mx-0"
         :isActive="isInputVisible"
         btnText="ابحث في المصحف"
-        inactive-icon="mdi-magnify"
         size="default"
         @toggle="isInputVisible = !isInputVisible"
       />
 
       <AutoComplete
-        class="ml-4"
+        class="ml-0 mr-0"
         v-if="isInputVisible"
         v-click-outside="onInputClickOutside"
         :style="{ maxWidth: '500px' }"
@@ -32,7 +31,7 @@
       <v-spacer v-if="!isMobile"></v-spacer>
 
       <AppToggleBtn
-        class="mx-0 msx-sm-2"
+        class="mx-0 mx-sm-4"
         v-if="!isInputVisible"
         :isActive="isInputVisible"
         btnText="السور"

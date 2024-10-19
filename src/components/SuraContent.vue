@@ -6,9 +6,11 @@
     :searchBtnText="searchBtnText"
     :placeholderText="`سورة ${suraName}`"
     :filteredDataLength="filteredVerses.length"
+    :isInputVisible="isInputVisible"
     @update:activeTab="updateActiveTab"
     @update:search="updateSearch"
     @searchToggle="onSearchToggle"
+    @enter="handleEnterPress"
   >
     <template #additional-actions>
       <AppFilterActions
@@ -88,6 +90,14 @@ const onSearchToggle = (value) => {
   isInputVisible.value = value
 }
 
+const handleEnterPress = (value) => {
+  store.setTarget({
+    fileName: store.getTarget.fileName,
+    verseIndex: filteredVerses.value[0].index,
+    verseNumberToQuran: filteredVerses.value[0].verseNumberToQuran,
+  })
+}
+
 const activeTab = computed({
   get: () => store.getActiveSuraTab,
   set: (value) => store.setActiveSuraTab(value),
@@ -112,8 +122,8 @@ const updateActiveTab = (value) => {
 }
 
 const updateSearch = (value) => {
-  emit("update:search", value)
   searchBtnText.value = props.search
+  emit("update:search", value)
   if (value === "" || value === null) {
     searchBtnText.value = `ابحث في ${props.suraName}`
   }

@@ -5,8 +5,8 @@
       :key="key"
       class="d-flex align-end ml-3 mb-1"
     >
-      <span class="text-caption ml-1 count-key-item">{{ key }}</span>
-      <span class="text-caption count-value-item">{{ data.value }}</span>
+      <div class="text-caption count-key-item">{{ key }}</div>
+      <div class="text-caption mr-1 count-value-item">{{ data.value }}</div>
     </div>
   </div>
 </template>
@@ -21,7 +21,7 @@ defineProps({
 </script>
 
 <style scoped>
-.count-key-item {
+/* .count-key-item {
   font-weight: bold;
-}
+} */
 </style>
