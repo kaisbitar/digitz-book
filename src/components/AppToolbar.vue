@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar density="compact" rounded>
+  <v-toolbar :density="isInputVisible ? 'default' : 'compact'" rounded>
     <AppTabs
       v-if="!isInputVisible"
       :tabs="tabs"
@@ -8,6 +8,7 @@
     />
     <v-spacer v-if="!isInputVisible"></v-spacer>
     <AppToggleBtn
+      :class="isInputVisible ? 'ml-0' : 'ml-4'"
       :isActive="isInputVisible"
       :btnText="searchBtnText"
       @toggle="onSearchToggle"
@@ -15,19 +16,19 @@
     <AppInputField
       v-if="isInputVisible"
       v-click-outside="onClickOutside"
+      class="mt-5 ml-4"
       :fieldInput="search"
       :fieldPlaceHolder="placeholderText"
       :dataToShow="filteredDataLength"
       @update:fieldInput="updateSearchValue"
       @clear="onClear"
+      @keyup.enter="onEnter"
     />
     <slot name="additional-actions"></slot>
   </v-toolbar>
 </template>
 
 <script setup>
-import { ref, computed } from "vue"
-
 const props = defineProps({
   tabs: Array,
   activeTab: String,
@@ -35,19 +36,22 @@ const props = defineProps({
   searchBtnText: String,
   placeholderText: String,
   filteredDataLength: Number,
+  isInputVisible: Boolean,
 })
 
-const emit = defineEmits(["update:activeTab", "update:search", "searchToggle"])
-
-const isInputVisible = ref(false)
+const emit = defineEmits([
+  "update:activeTab",
+  "update:search",
+  "searchToggle",
+  "enter",
+])
 
 const onClickOutside = () => {
-  isInputVisible.value = false
+  emit("searchToggle", false)
 }
 
 const onSearchToggle = () => {
-  isInputVisible.value = !isInputVisible.value
-  emit("searchToggle", isInputVisible.value)
+  emit("searchToggle", !props.isInputVisible)
 }
 
 const updateSearchValue = (value) => {
@@ -55,11 +59,15 @@ const updateSearchValue = (value) => {
 }
 
 const onClear = () => {
-  isInputVisible.value = false
+  emit("searchToggle", false)
   emit("update:search", "")
 }
 
 const updateActiveTab = (value) => {
   emit("update:activeTab", value)
+}
+
+const onEnter = (value) => {
+  emit("enter", props.search)
 }
 </script>

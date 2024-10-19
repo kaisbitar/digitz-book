@@ -51,13 +51,6 @@ html {
   font-family: unset;
 }
 
-.v-application,
-.v-tab,
-.v-btn,
-.v-card-subtitle {
-  letter-spacing: 0 !important;
-}
-
 .v-table--density-default {
   --v-table-header-height: 56px !important;
   --v-table-row-height: 31px !important;
@@ -85,6 +78,7 @@ th {
 
 .count-key-item,
 .verse-card-item-title {
+  letter-spacing: 0 !important;
   color: rgb(var(--v-theme-count-key-item));
 }
 
@@ -113,5 +107,13 @@ th {
   justify-content: flex-end;
   margin-left: 56px;
   align-items: center;
+}
+.v-application,
+.v-tab,
+.v-btn,
+.v-card-subtitle,
+.v-card-text,
+.text-caption {
+  letter-spacing: 0 !important;
 }
 </style>
