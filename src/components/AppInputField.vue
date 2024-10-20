@@ -19,7 +19,7 @@
       prepend-inner-icon="mdi-magnify"
       hide-details
       class="flex-grow-1"
-      @input="handleInput"
+      @update:model-value="handleInput"
       @focus="$emit('focus')"
     >
     </v-text-field>
@@ -58,7 +58,7 @@ const handleClear = () => {
   emit("update:modelValue", "")
 }
 
-const handleInput = (event) => {
-  emit("update:modelValue", event.target.value)
+const handleInput = (value) => {
+  emit("update:modelValue", value)
 }
 </script>

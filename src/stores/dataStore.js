@@ -13,7 +13,7 @@ export const useDataStore = defineStore("data", {
     QuranIndex: [],
     allVersesWithTashkeel: [],
     versesForCounting: [],
-    letterCounts: {},
+    QuranLetterCounts: {},
   }),
   persist: {
     enabled: true,
@@ -29,7 +29,7 @@ export const useDataStore = defineStore("data", {
     getQuranIndex: (state) => state.QuranIndex,
     getAllVersesWithTashkeel: (state) => state.allVersesWithTashkeel,
     getVersesForCounting: (state) => state.versesForCounting,
-    getLetterCounts: (state) => state.letterCounts,
+    getQuranLetterCounts: (state) => state.QuranLetterCounts,
   },
   actions: {
     setOneQuranFile(items) {
@@ -43,6 +43,9 @@ export const useDataStore = defineStore("data", {
     },
     setVersesForCounting(items) {
       this.versesForCounting = items
+    },
+    setQuranLetterCounts(items) {
+      this.QuranLetterCounts = items
     },
     async getQuranData() {
       if (this.oneQuranFile.length > 0) return
@@ -73,9 +76,8 @@ export const useDataStore = defineStore("data", {
       )
       this.setVersesForCounting(versesForCounting)
 
-      this.letterCounts = countLettersInQuran(versesForCounting.join(" "))
+      this.QuranLetterCounts = countLettersInQuran(versesForCounting.join(" "))
       this.totalWordsCount = countDistinctWords(versesForCounting)
-      console.log(this.letterCounts)
     },
 
     async fetchQuranFileAndIndex(appApi) {

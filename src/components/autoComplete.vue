@@ -6,30 +6,44 @@
     :type="'verseCount'"
     @update:modelValue="onInput"
     @clear="clearInput"
-    @focus="menu = true"
+    @focus="onFocus"
   >
     <v-menu
       v-model="menu"
       :close-on-content-click="false"
-      transition="scale-transition"
-      :max-height="300"
+      :nudge-width="200"
+      offset-y
+      transition="fade-transition"
+      :max-height="'auto'"
       :max-width="1000"
       location="bottom"
-      :activator="'parent'"
     >
+      <template v-slot:activator="{ props }">
+        <div v-bind="props"></div>
+      </template>
       <v-list>
         <v-list-item>
           <v-list-item-title>ترتيل {{ tarteel }}..</v-list-item-title>
         </v-list-item>
         <v-divider></v-divider>
-        <AutoFilteredList
-          v-if="tarteeledWords.length > 0"
-          ref="autoFilteredList"
-          :items="tarteeledWords"
-          :total-count="totalWordsCount"
-          @update:items="updateEditableItems"
-          @save="saveChanges"
-        />
+        <v-list-item>
+          <AutoFilteredWords
+            v-if="tarteeledWords.length > 2"
+            ref="FilteredWordsList"
+            :items="tarteeledWords"
+            :total-count="totalWordsCount"
+            @update:items="updateEditableItems"
+          />
+          <v-lazy
+            v-else
+            transition="fade-transition"
+            :options="{
+              threshold: 0.5,
+            }"
+          >
+            <AutoFilteredLetters />
+          </v-lazy>
+        </v-list-item>
       </v-list>
     </v-menu>
   </AppInputField>
@@ -43,6 +57,7 @@ import { useTarteelStore } from "@/stores/tarteelStore"
 import { filterWords } from "@/utils/autoWordFilter"
 import { useWindow } from "@/mixins/window"
 import AppInputField from "./AppInputField.vue"
+import AutoFilteredLetters from "./AutoFilteredLetters.vue"
 
 const store = useStore()
 const dataStore = useDataStore()
@@ -56,7 +71,10 @@ const filteredItems = computed(() => {
   if (!tarteel.value) {
     return { results: [], totalCount: 0 }
   }
-  return filterWords(tarteel.value, dataStore.getVersesForCounting)
+  if (tarteel.value.length > 1) {
+    return filterWords(tarteel.value, dataStore.getVersesForCounting)
+  }
+  return { results: [], totalCount: 0 }
 })
 
 const tarteeledWords = ref([])
@@ -75,18 +93,21 @@ watch(
 )
 
 const { scrollToActiveItem } = useWindow()
-const autoFilteredList = ref(null)
+const FilteredWordsList = ref(null)
 
-const onInput = async (value) => {
+const updateEditableItems = (newItems) => {
+  tarteeledWords.value = newItems
+}
+
+const onInput = (value) => {
+  tarteel.value = value
   if (value && value.length > 0) {
     menu.value = true
-    await nextTick()
-    // scrollToTop()
-  } else {
-    menu.value = false
-    tarteeledWords.value = []
-    totalWordsCount.value = 0
   }
+}
+
+const onFocus = () => {
+  menu.value = true
 }
 
 const clearInput = () => {
@@ -96,41 +117,9 @@ const clearInput = () => {
   totalWordsCount.value = 0
 }
 
-const onClickOutside = () => {
-  if (menu.value) {
-    menu.value = false
-  }
-}
-
-const scrollToTop = () => {
-  nextTick(() => {
-    if (autoFilteredList.value) {
-      const listElement = autoFilteredList.value.$el.querySelector(".v-list")
-      if (listElement) {
-        listElement.scrollTop = 0
-      }
-    }
-    scrollToActiveItem(".active-verse-text", ".sura-text-container")
-  })
-}
-
 const wordsVariantsCount = computed(() => {
   return totalWordsCount.value
 })
-
-const updateEditableItems = (newItems) => {
-  tarteeledWords.value = newItems
-}
-
-const saveChanges = () => {
-  tarteelStore.setTarteelResults({
-    wordsVariantsCount: totalWordsCount.value,
-    inputText: tarteel.value,
-    verses: autoFilteredList.value.results,
-  })
-  tarteelStore.addToTarteelHistory(tarteel.value)
-  menu.value = false
-}
 
 onMounted(() => {})
 </script>
@@ -143,3 +132,26 @@ onMounted(() => {})
   background-color: rgb(var(--v-theme-background));
 }
 </style>
+
+<!-- const scrollToTop = () => {
+  nextTick(() => {
+    if (FilteredWordsList.value) {
+      const listElement = FilteredWordsList.value.$el.querySelector(".v-list")
+      if (listElement) {
+        listElement.scrollTop = 0
+      }
+    }
+    scrollToActiveItem(".active-verse-text", ".sura-text-container")
+  })
+} -->
+<!-- 
+
+const saveChanges = () => {
+  tarteelStore.setTarteelResults({
+    wordsVariantsCount: totalWordsCount.value,
+    inputText: tarteel.value,
+    verses: FilteredWordsList.value.results,
+  })
+  tarteelStore.addToTarteelHistory(tarteel.value)
+  menu.value = false
+} -->

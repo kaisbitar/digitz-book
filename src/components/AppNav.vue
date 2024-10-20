@@ -129,7 +129,7 @@ const toggleIndexDrawer = () => {
 }
 
 const onInputClickOutside = () => {
-  isInputVisible.value = false
+  // isInputVisible.value = false
 }
 </script>
 
