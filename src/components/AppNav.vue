@@ -14,9 +14,10 @@
         :isActive="isInputVisible"
         btnText="ترتيل"
         size="default"
-        @toggle="isInputVisible = isInputVisible"
+        @toggle="isInputVisible = !isInputVisible"
       />
-      <AutoComplete2
+      <AutoComplete
+        v-if="isInputVisible"
         class="ml-2 1"
         v-click-outside="onInputClickOutside"
         style="max-width: 600px"

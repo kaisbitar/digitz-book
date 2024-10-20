@@ -31,18 +31,6 @@ const scoreWord = (word, search) => {
   return 0
 }
 
-// const processWord = (word, searchTerm, searchRegex, results) => {
-//   if (searchRegex.test(word)) {
-//     const score = scoreWord(word, searchTerm)
-//     if (results[word]) {
-//       results[word].count++
-//       results[word].score = Math.max(results[word].score, score)
-//     } else {
-//       results[word] = { count: 1, score }
-//     }
-//   }
-// }
-
 const processVerse = (verse, searchTerm, searchRegex, results) => {
   const words = verse.split(/\s+/)
   words.forEach((word) => {
@@ -69,12 +57,15 @@ const sortResults = (results) => {
     })
 }
 
-const formatResults = (sortedResults) => {
-  return sortedResults.slice(0, 400).map(({ word, count, verses }) => ({
-    word,
-    count,
-    verses: Object.keys(verses || []),
-  }))
+const formatResults = (sortedResults, searchTerm) => {
+  return {
+    results: sortedResults.map(({ word, count, verses }) => ({
+      word,
+      count,
+      verses: Object.keys(verses || []),
+    })),
+    totalCount: sortedResults.length,
+  }
 }
 
 export function filterItems(searchTerm, quranArray) {
@@ -86,5 +77,5 @@ export function filterItems(searchTerm, quranArray) {
   )
 
   const sortedResults = sortResults(results)
-  return formatResults(sortedResults)
+  return formatResults(sortedResults, searchTerm)
 }

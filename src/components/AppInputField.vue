@@ -1,25 +1,36 @@
 <template>
-  <v-text-field
-    v-model="searchValue"
-    :label="`ترتيل ${fieldPlaceHolder}`"
-    append-inner-icon="mdi-magnify"
-    density="compact"
-    clearable
-    autofocus
-    @click:clear="handleClear"
-    :style="{ maxWidth: '300px' }"
-  >
-    <template #prepend-inner>
-      <span class="text-caption">{{ dataToShow }}</span>
-    </template>
-  </v-text-field>
+  <div>
+    <v-badge
+      :content="dataToShow"
+      :color="type"
+      floating
+      offset-x="5"
+      offset-y="10"
+    ></v-badge>
+    <v-text-field
+      :model-value="modelValue"
+      v-bind="$attrs"
+      :label="`ترتيل ${fieldPlaceHolder}`"
+      append-inner-icon="mdi-magnify"
+      density="compact"
+      clearable
+      autofocus
+      @click:clear="handleClear"
+      prepend-inner-icon="mdi-magnify"
+      hide-details
+      class="flex-grow-1"
+      @input="$emit('update:modelValue', $event.target.value)"
+    >
+    </v-text-field>
+    <slot></slot>
+  </div>
 </template>
 
 <script setup>
-import { ref, computed, watch } from "vue"
+import { useTheme } from "vuetify"
 
 const props = defineProps({
-  fieldInput: {
+  modelValue: {
     type: String,
     default: "",
   },
@@ -31,16 +42,17 @@ const props = defineProps({
     type: [Number, String],
     default: "",
   },
+  type: {
+    type: String,
+    default: "primary",
+  },
 })
 
-const emit = defineEmits(["update:fieldInput", "clear"])
-
-const searchValue = computed({
-  get: () => props.fieldInput,
-  set: (value) => emit("update:fieldInput", value),
-})
+const emit = defineEmits(["update:modelValue", "clear"])
+const theme = useTheme()
 
 const handleClear = () => {
   emit("clear")
+  emit("update:modelValue", "")
 }
 </script>

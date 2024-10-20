@@ -17,7 +17,7 @@ export function useWindow(elementRef) {
     return 550
   })
   const drawerWidthNoDetail = computed(() => {
-    return 250
+    return 270
   })
 
   const dynamicHeight = ref(0)

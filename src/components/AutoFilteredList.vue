@@ -1,34 +1,48 @@
 <template>
-  <v-sheet class="d-flex flex-column" height="100%">
-    <v-list class="flex-grow-1 overflow-y-auto">
-      <!-- <v-list-subheader class="sticky-top"> Tarteel Results </v-list-subheader> -->
-      <v-list-item v-for="(item, index) in items" :key="index">
-        <v-list-item-title
-          >{{ item.word }} ({{ item.count }})</v-list-item-title
-        >
-        <template v-slot:append>
-          <v-btn
-            @click="emitAddItem(item)"
-            color="success"
-            class="ml-2"
-            size="small"
-            variant="text"
-          >
-            <v-icon>mdi-plus</v-icon>
-          </v-btn>
-          <v-btn
-            @click="removeItem(index)"
-            color="error"
-            size="small"
-            variant="text"
-          >
-            <v-icon>mdi-delete</v-icon>
-          </v-btn>
+  <v-sheet class="d-flex flex-column" height="100%"
+    ><v-list class="flex-grow-1 overflow-y-auto">
+      <v-virtual-scroll :items="items" height="300" item-height="50">
+        <template v-slot:default="{ item, index }">
+          <v-list-item>
+            <v-list-item-title>
+              {{ item.word }}
+              <v-badge
+                :content="`${item.count} مرة`"
+                floating
+                offset-x="-20"
+                offset-y="-1"
+                color="wordCount"
+              ></v-badge>
+            </v-list-item-title>
+            <template v-slot:append>
+              <v-btn
+                @click="emitAddItem(item)"
+                icon="mdi-magnify"
+                size="small"
+                class="ml-2"
+                variant="text"
+              ></v-btn>
+              <v-btn
+                @click="emitAddItem(item)"
+                icon="mdi-plus"
+                size="small"
+                class="ml-2"
+                variant="text"
+              ></v-btn>
+
+              <v-btn
+                @click="removeItem(item)"
+                icon="mdi-minus"
+                size="small"
+                variant="text"
+              ></v-btn>
+            </template>
+          </v-list-item>
         </template>
-      </v-list-item>
+      </v-virtual-scroll>
     </v-list>
     <v-sheet class="pa-4">
-      <v-btn @click="saveChanges" color="primary" variant="text">
+      <v-btn @click="saveChanges" color="primary" variant="tonal">
         رتل الجميع
       </v-btn>
     </v-sheet>
@@ -39,34 +53,29 @@
 import { ref, watch } from "vue"
 
 const props = defineProps({
-  initialItems: {
-    type: Array,
-    required: true,
+  items: {
+    type: Object,
+    required: false,
+  },
+  totalCount: {
+    type: Number,
+    required: false,
   },
 })
 
 const emit = defineEmits(["update:items", "save", "add-item"])
-
-const items = ref([...props.initialItems])
-
-watch(
-  () => props.initialItems,
-  (newItems) => {
-    items.value = [...newItems]
-  }
-)
 
 const emitAddItem = (item) => {
   emit("add-item", item)
 }
 
 const removeItem = (index) => {
-  items.value.splice(index, 1)
-  emit("update:items", items.value)
+  props.items.value.splice(index, 1)
+  emit("update:items", props.items.value)
 }
 
 const saveChanges = () => {
-  emit("save", items.value)
+  emit("save", props.items.value)
 }
 </script>
 

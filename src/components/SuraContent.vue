@@ -5,7 +5,7 @@
     :search="search"
     :searchBtnText="searchBtnText"
     :placeholderText="`سورة ${suraName}`"
-    :filteredDataLength="filteredVerses.length"
+    :countBadgeText="`${filteredVerses.length} آية`"
     :isInputVisible="isInputVisible"
     @update:activeTab="updateActiveTab"
     @update:search="updateSearch"
