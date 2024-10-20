@@ -15,11 +15,6 @@
     >
     </v-card-text>
 
-    <!-- <template v-for="(data, key) in chipData" :key="key" class="d-flex">
-      <span class="text-caption mr-3 ml-1 count-key-item" :class="data.color"
-        >{{ key }} </span
-      ><span class="text-caption count-value-item">{{ data.value }}</span>
-    </template> -->
     <AppMetaData :metaData="indexData" class="d-flex mr-3" />
     <AppMetaData :metaData="countData" class="d-flex mr-3" />
   </v-card>
@@ -65,10 +60,4 @@ const countData = computed(() => ({
 }))
 </script>
 
-<style scoped>
-/* .verse-card-item {
-  border: 1px solid #424242;
-  border-radius: 4px;
-  margin-top: 5px;
-} */
-</style>
+<style scoped></style>

@@ -65,7 +65,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(["update:search", "verseSelected"])
-const searchBtnText = ref(`ابحث في ${props.suraName}`)
+const searchBtnText = ref(`ترتيل ${props.suraName}`)
 const isInputVisible = ref(false)
 
 const filteredVerses = computed(() => {
@@ -125,7 +125,7 @@ const updateSearch = (value) => {
   searchBtnText.value = props.search
   emit("update:search", value)
   if (value === "" || value === null) {
-    searchBtnText.value = `ابحث في ${props.suraName}`
+    searchBtnText.value = `ترتيل ${props.suraName}`
   }
 }
 </script>

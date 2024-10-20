@@ -33,6 +33,10 @@ defineProps([
   "drawer",
 ])
 defineEmits(["navigateTo", "toggleRail", "update:drawer"])
+
+const handleDropdownClick = () => {
+  console.log("clicked")
+}
 </script>
 
 <style scoped></style>

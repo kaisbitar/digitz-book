@@ -1,10 +1,6 @@
 <template>
   <div>
-    <v-app-bar
-      :elevation="0"
-      :density="isInputVisible ? 'default' : 'compact'"
-      class="border-b"
-    >
+    <v-app-bar :elevation="0" desity="compact" class="border-b">
       <v-app-bar-nav-icon
         v-if="!isInputVisible"
         @click="toggleRailAppNavDrawer"
@@ -14,18 +10,16 @@
       <v-spacer v-if="!isMobile"></v-spacer>
 
       <AppToggleBtn
-        class="mx-0"
+        class="mr-0"
         :isActive="isInputVisible"
-        btnText="ابحث في المصحف"
+        btnText="ترتيل"
         size="default"
-        @toggle="isInputVisible = !isInputVisible"
+        @toggle="isInputVisible = isInputVisible"
       />
-
-      <AutoComplete
-        class="ml-0 mr-0"
-        v-if="isInputVisible"
+      <AutoComplete2
+        class="ml-2 1"
         v-click-outside="onInputClickOutside"
-        :style="{ maxWidth: '500px' }"
+        style="max-width: 600px"
       />
 
       <v-spacer v-if="!isMobile"></v-spacer>
@@ -48,11 +42,13 @@
     <AppNavigationItems
       v-model="drawer"
       :rail="isRail && !isMobile"
+      :location="isMobile ? 'left' : 'right'"
       :temporary="isMobile"
       :permanent="!isMobile"
       :navigationItems="navigationItems"
       :activeRoute="activeRoute"
       @navigateTo="handleNavigation"
+      @update:drawer="drawer = true"
     />
     <!-- THis is a work around for a bug on phones only when location is set to right
         :location="isMobile && !drawer ? 'left' : 'right'"  -->
@@ -70,7 +66,7 @@ const display = useDisplay()
 const store = useQuranStore()
 const activeRoute = computed(() => router.currentRoute.value.name)
 
-const isInputVisible = ref(false)
+const isInputVisible = ref(true)
 const isRail = ref(true)
 const drawer = ref(true)
 const handleNavigation = (route) => {
@@ -81,7 +77,7 @@ const navigationItems = [
     route: "/",
     icon: "mdi-home-variant-outline",
     activeIcon: "mdi-home-variant",
-    label: "Home",
+    label: "هوم",
   },
   {
     route: "sura",

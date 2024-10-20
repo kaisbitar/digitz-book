@@ -1,100 +1,107 @@
 <template>
-  <!-- <v-autocomplete
-    v-model:search="search"
-    :items="oneQuranFile"
-    :menu-props="{ maxWidth: '100%', maxHeight: '500px' }"
-    item-value="verseNumberToQuran"
-    item-title="verseText"
-    label="ابحث  في الكتاب.."
-    ref="autocompleteRef"
-    clearable
-    prepend-inner-icon="mdi-file-search"
-    @keyup.enter="handleNewSearch"
-    @click:option="(item) => handleNewSearch(item)"
-    hide-details
-    persistentClear
-    autofocus
-    menu
-    variant="outlined"
-  > -->
-  <!-- <template v-slot:no-data> -->
-
-  <p class="pa-1 text-red">لا يوجد معلومات تطابق البحث!</p>
-  <!-- </template> -->
-
-  <!-- <template v-slot:selection> </template> -->
-
-  <!-- <template v-slot:prepend-item> -->
-  <div class="mb-10 mr-5">
-    <v-row class="position-fixed z-10">
-      <v-btn @click="handleNewSearch" variant="tonal">ابحث</v-btn> "{{
-        search
-      }}"
-      <AppCountChips
-        :wordCount="computedWordCount"
-        :versesCount="versesCount()"
-        :labels="{ word: 'مرة', verse: 'آية' }"
+  <v-row>
+    <v-menu
+      v-model="menu"
+      :close-on-content-click="false"
+      transition="scale-transition"
+      :max-height="300"
+      :max-width="1000"
+      location="bottom"
+    >
+      <template v-slot:activator="{ props }">
+        <v-text-field
+          v-model="tarteel"
+          v-bind="props"
+          label="ترتيل القرآن"
+          density="compact"
+          prepend-inner-icon="mdi-magnify"
+          hide-details
+          autofocus
+          clearable
+          :loading="isLoading"
+          class="flex-grow-1"
+        >
+          <template #prepend-inner>
+            <span class="text-caption mx-2">{{ wordsVariantsCount }}</span>
+          </template>
+        </v-text-field>
+      </template>
+      <AutoFilteredList
+        :initial-items="filteredItems"
+        @update:items="updateEditableItems"
+        @save="saveChanges"
       />
-    </v-row>
-  </div>
-  <!-- </template> -->
-
-  <!-- <template v-slot:item="{ item, index, props }" class="mt-5"> -->
-  <div v-bind="props">
-    <VerseCardItem
-      class="mr-5"
-      @click="handleNewSearch"
-      :index="index"
-      :item="item.raw"
-      :textToHighlight="search"
-    />
-  </div>
-  <!-- </template> -->
-  <!-- </v-autocomplete> -->
+    </v-menu>
+  </v-row>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue"
+import { ref, computed, watch } from "vue"
 import { useQuranStore } from "@/stores/app"
-import { useCounting } from "@/mixins/counting"
+import { useTarteelStore } from "@/stores/TarteelStore"
+import { filterItems } from "@/utils/autoWordFilter"
 
 const store = useQuranStore()
-const search = ref(null)
-const { countWordMatch } = useCounting()
-const autocompleteRef = ref(null)
+const tarteelStore = useTarteelStore()
 
-const oneQuranFile = computed(() => store.getOneQuranFile)
-const searchResults = computed(() => store.getResearchResults)
+const tarteel = ref("")
+const menu = ref(false)
+const isLoading = ref(false)
+
+const filteredItems = computed(() => {
+  return filterItems(tarteel.value, store.getAllVersesNoTashkeel)
+})
+
+const editableFilteredItems = ref([])
+
+watch(filteredItems, (newItems) => {
+  editableFilteredItems.value = [...newItems]
+})
+
+watch(tarteel, (newValue) => {
+  if (newValue && newValue.length > 0) {
+    menu.value = true
+  } else {
+    menu.value = false
+  }
+})
 
 const computedWordCount = computed(() =>
-  countWordMatch(search.value, extractVersesFromFilter(autocompleteRef.value))
+  countWordMatch(tarteel.value, editableFilteredItems.value)
 )
-const extractVersesFromFilter = (data) => {
-  if (!data?.filteredItems) return []
-  return data.filteredItems.map((item) => item.raw)
-}
-const versesCount = () => {
-  if (!autocompleteRef.value) return
-  return autocompleteRef.value.filteredItems.length
+
+const wordsVariantsCount = computed(() => {
+  return editableFilteredItems.value.length
+})
+
+const updateEditableItems = (newItems) => {
+  editableFilteredItems.value = newItems
 }
 
-const handleNewSearch = (value) => {
-  if (!search.value) return
-  store.setSearchIndex(searchResults.value.length)
-  store.setResearchResults({
-    wordCount: computedWordCount.value,
-    versesCount: versesCount(),
-    inputText: search.value,
-    verses: autocompleteRef.value.filteredItems,
+const saveChanges = (items) => {
+  tarteelStore.setTarteelResults({
+    // wordCount: computedWordCount.value,
+    wordsVariantsCount: wordsVariantsCount.value,
+    inputText: tarteel.value,
+    verses: items,
   })
-  search.value = ""
+  tarteelStore.addToTarteelHistory(tarteel.value)
+  menu.value = false
 }
 
-onMounted(() => {})
+const handleNewTarteel = (value) => {
+  if (!tarteel.value) return
+  tarteelStore.setSelectedTarteelIndex(tarteelStore.getTarteelResults.length)
+  saveChanges(editableFilteredItems.value)
+  tarteel.value = ""
+}
 </script>
 
 <style scoped>
-.v-list.v-theme--dark.v-list--density-default.v-list--one-line {
-  /* background: rgb(var(--v-theme-second-background)); */
+.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: rgb(var(--v-theme-background));
 }
 </style>

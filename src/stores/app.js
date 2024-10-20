@@ -27,6 +27,7 @@ export const useQuranStore = defineStore("Quran", {
     activeRoute: "search",
     chartFreqType: "words",
     allVersesWithTashkeel: [],
+    allVersesNoTashkeel: [], // New state property
     isDialog: false,
     wordMeanings: {},
   }),
@@ -54,6 +55,7 @@ export const useQuranStore = defineStore("Quran", {
     getSelectedSearch: (state) =>
       state.researchResults[state.selectedSearchIndex],
     getAllVersesWithTashkeel: (state) => state.allVersesWithTashkeel,
+    getAllVersesNoTashkeel: (state) => state.allVersesNoTashkeel,
     getWordMeaning: (state) => (word) => state.wordMeanings[word] || null,
   },
   actions: {
@@ -111,6 +113,9 @@ export const useQuranStore = defineStore("Quran", {
     setAllVersesWithTashkeel(items) {
       this.allVersesWithTashkeel = items
     },
+    setAllVersesNoTashkeel(items) {
+      this.allVersesNoTashkeel = items
+    },
     setQuranIndex(items) {
       this.QuranIndex = items
     },
@@ -133,6 +138,13 @@ export const useQuranStore = defineStore("Quran", {
       const appApi = import.meta.env.VITE_APP_API_URL
       const versesWithTashkeel = await fetchAllVersesWithTashkeel(appApi)
       this.setAllVersesWithTashkeel(versesWithTashkeel)
+
+      // Remove tashkeel and set allVersesNoTashkeel
+      console.log("versesWithTashkeel.length", versesWithTashkeel)
+      const versesNoTashkeel = versesWithTashkeel.map((verse) =>
+        verse.replace(/[\u064B-\u0652]/g, "")
+      )
+      this.setAllVersesNoTashkeel(versesNoTashkeel)
 
       const QuranFile = await fetchOneQuranFile(appApi)
       this.setOneQuranFile(QuranFile)
