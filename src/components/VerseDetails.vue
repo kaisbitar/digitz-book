@@ -29,12 +29,12 @@
 
 <script setup>
 import { useCounting } from "@/mixins/counting"
-import { useQuranStore } from "@/stores/app"
+import { useStore } from "@/stores/appStore"
 import { setVerseChartTooltips } from "@/utils/verseUtils"
 import getChartOptions from "@/assets/frequecyOptions"
 import AppCountChips from "./AppCountChips.vue"
 
-const store = useQuranStore()
+const store = useStore()
 const { countVerseWords, countVerseLetters } = useCounting()
 const emit = defineEmits(["update:modelValue"])
 

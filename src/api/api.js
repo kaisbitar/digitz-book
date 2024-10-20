@@ -1,7 +1,6 @@
 import axios from "axios"
 
 export function fetchOneQuranFile(appApi) {
-  console.log(appApi)
   return getData(appApi + "api/quran-model")
 }
 export function fetchtableQuranIndex(appApi) {

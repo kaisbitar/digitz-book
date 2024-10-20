@@ -22,12 +22,12 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue"
-import { useQuranStore } from "@/stores/app"
+import { useStore } from "@/stores/appStore"
 import { useWindow } from "@/mixins/window"
 
 const { scrollToActiveItem } = useWindow()
 
-const store = useQuranStore()
+const store = useStore()
 
 const props = defineProps(["verses", "versesInputText"])
 const emit = defineEmits(["verseSelected"])

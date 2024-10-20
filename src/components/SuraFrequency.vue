@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import { useQuranStore } from "@/stores/app"
+import { useStore } from "@/stores/appStore"
 import { useWindow } from "@/mixins/window"
 import { useResizeHandler } from "@/hooks/useResizeObserver"
 
@@ -25,7 +25,7 @@ const props = defineProps({
   height: [Number, String],
 })
 
-const store = useQuranStore()
+const store = useStore()
 
 const chartFreqType = computed(() => store.getChartFreqType)
 

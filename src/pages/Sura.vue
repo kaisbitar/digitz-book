@@ -25,7 +25,8 @@
 
 <script setup>
 import { ref, computed, watch, onMounted } from "vue"
-import { useQuranStore } from "@/stores/app"
+import { useStore } from "@/stores/appStore"
+import { useDataStore } from "@/stores/dataStore"
 import getChartOptions from "@/assets/frequecyOptions"
 import { useInputFiltering } from "@/mixins/inputFiltering"
 import {
@@ -38,8 +39,8 @@ import SuraContent from "@/components/SuraContent.vue"
 
 const { search } = useInputFiltering()
 const props = defineProps(["suraInputText"])
-const store = useQuranStore()
-
+const store = useStore()
+const dataStore = useDataStore()
 const suraWithTashkeel = ref([])
 const numberOfLetters = ref(null)
 const numberOfVerses = ref(null)
@@ -69,7 +70,7 @@ const tabs = computed(() => [
 const fileName = computed(() => store.getTarget?.fileName || "001الفاتحة")
 const suraNumber = computed(() => parseInt(store.getTarget?.suraNumber))
 const suraName = computed(() => store.getTarget?.suraName)
-const tableQuranIndex = computed(() => store.getQuranIndex)
+const tableQuranIndex = computed(() => dataStore.getQuranIndex)
 const suraKeyValues = computed(
   () => tableQuranIndex.value[suraNumber.value] || tableQuranIndex.value[1]
 )
@@ -79,8 +80,8 @@ const chartFreqSeries = computed(() =>
   chartFreqType.value === "words" ? wordsSeries.value : letterSeries.value
 )
 
-const oneQuranFile = computed(() => store.getOneQuranFile)
-const allVersesWithTashkeel = computed(() => store.getAllVersesWithTashkeel)
+const oneQuranFile = computed(() => dataStore.getOneQuranFile)
+const allVersesWithTashkeel = computed(() => dataStore.getAllVersesWithTashkeel)
 
 const tooltipLabel = computed(() => {
   return chartFreqType.value === "words" ? "كلمة" : "حرف"

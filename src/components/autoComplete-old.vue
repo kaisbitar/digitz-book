@@ -72,10 +72,10 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue"
-import { useQuranStore } from "@/stores/app"
+import { useDataStore } from "@/stores/dataStore"
 import { useCounting } from "@/mixins/counting"
 
-const store = useQuranStore()
+const store = useDataStore()
 const search = ref(null)
 const { countWordMatch } = useCounting()
 const autocompleteRef = ref(null)

@@ -51,9 +51,9 @@
 <script setup>
 import { ref, nextTick, computed } from "vue"
 import { useWindow } from "@/mixins/window"
-import { useQuranStore } from "@/stores/app"
+import { useStore } from "@/stores/appStore"
 
-const store = useQuranStore()
+const store = useStore()
 const props = defineProps({
   tabs: Array,
   search: String,

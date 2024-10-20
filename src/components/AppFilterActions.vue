@@ -5,10 +5,10 @@
 </template>
 
 <script setup>
-import { useQuranStore } from "@/stores/app"
+import { useStore } from "@/stores/appStore"
 import { computed } from "vue"
 
-const store = useQuranStore()
+const store = useStore()
 
 const isMobileView = computed({
   get: () => store.getVersesMobileView,

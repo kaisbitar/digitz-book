@@ -1,7 +1,7 @@
-import { useQuranStore } from "../stores/app"
+import { useStore } from "../stores/appStore"
 
 export function useCounting() {
-  const store = useQuranStore()
+  const store = useStore()
   const suraNumber = computed(() =>
     parseInt(store.getTarget.fileName.replace(/^\D+/g, ""))
   )
@@ -32,12 +32,12 @@ export function useCounting() {
   const setSuraFromArrow = (direction) => {
     if (direction === "up") {
       store.setTarget({
-        fileName: store.getQuranIndex[suraNumber.value - 1].fileName,
+        fileName: dataStore.getQuranIndex[suraNumber.value - 1].fileName,
       })
       return
     }
     store.setTarget({
-      fileName: store.getQuranIndex[suraNumber.value + 1].fileName,
+      fileName: dataStore.getQuranIndex[suraNumber.value + 1].fileName,
     })
   }
 

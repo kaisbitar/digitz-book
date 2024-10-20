@@ -1,5 +1,5 @@
 import { ref, computed, onMounted } from "vue"
-import { useQuranStore } from "@/stores/app"
+import { useStore } from "@/stores/appStore"
 
 export function useInputFiltering() {
   const search = ref("")

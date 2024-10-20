@@ -39,11 +39,11 @@
 
 <script setup>
 import { computed } from "vue"
-import { useQuranStore } from "@/stores/app"
+import { useStore } from "@/stores/appStore"
 import { useRouter } from "vue-router"
 
 const router = useRouter()
-const store = useQuranStore()
+const store = useStore()
 const props = defineProps({})
 
 const emit = defineEmits([])
