@@ -8,7 +8,7 @@
 
 <script setup>
 import VueApexCharts from "vue3-apexcharts"
-const chartWindowHeight = computed(() => window.innerHeight - 260)
+const chartWindowHeight = computed(() => window.innerHeight - 200)
 const props = defineProps(["height", "options", "series"])
 </script>
 
