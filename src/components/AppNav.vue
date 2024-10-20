@@ -9,20 +9,21 @@
 
       <v-spacer v-if="!isMobile"></v-spacer>
 
-      <AppToggleBtn
-        class="mr-0"
-        :isActive="isInputVisible"
-        btnText="ترتيل"
-        size="default"
-        @toggle="isInputVisible = !isInputVisible"
-      />
-      <AutoComplete
-        v-if="isInputVisible"
-        class="ml-2 1"
-        v-click-outside="onInputClickOutside"
-        style="max-width: 600px"
-      />
-
+      <div class="w-100 d-flex">
+        <AppToggleBtn
+          :class="isInputVisible ? 'ml-0 mt-6' : ''"
+          :isActive="isInputVisible"
+          btnText="ترتيل"
+          size="default"
+          @toggle="isInputVisible = !isInputVisible"
+        />
+        <AutoComplete
+          v-if="isInputVisible"
+          class="flex-grow-1"
+          v-click-outside="onInputClickOutside"
+          style="max-width: 600px"
+        />
+      </div>
       <v-spacer v-if="!isMobile"></v-spacer>
 
       <AppToggleBtn

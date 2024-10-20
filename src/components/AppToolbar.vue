@@ -7,24 +7,27 @@
       @update:activeTab="updateActiveTab"
     />
     <v-spacer v-if="!isInputVisible"></v-spacer>
-    <AppToggleBtn
-      :class="isInputVisible ? 'ml-0' : 'ml-4'"
-      :isActive="isInputVisible"
-      :btnText="searchBtnText"
-      @toggle="onSearchToggle"
-    />
-    <AppInputField
-      v-if="isInputVisible"
-      v-click-outside="onClickOutside"
-      class="mt-5 ml-4"
-      :fieldInput="search"
-      :fieldPlaceHolder="placeholderText"
-      :dataToShow="countBadgeText"
-      :type="'verseCount'"
-      @update:fieldInput="updateSearchValue"
-      @clear="onClear"
-      @keyup.enter="onEnter"
-    />
+
+    <div class="w-100 d-flex">
+      <AppToggleBtn
+        :class="isInputVisible ? 'ml-0 mt-6' : ''"
+        :isActive="isInputVisible"
+        :btnText="searchBtnText"
+        @toggle="onSearchToggle"
+      />
+      <AppInputField
+        class="flex-grow-1"
+        v-if="isInputVisible"
+        v-click-outside="onClickOutside"
+        :modelValue="search"
+        @update:modelValue="updateSearchValue"
+        :fieldPlaceHolder="placeholderText"
+        :dataToShow="countBadgeText"
+        :type="'verseCount'"
+        @clear="onClear"
+        @keyup:enter="onEnter"
+      />
+    </div>
     <slot name="additional-actions"></slot>
   </v-toolbar>
 </template>
@@ -68,7 +71,7 @@ const updateActiveTab = (value) => {
   emit("update:activeTab", value)
 }
 
-const onEnter = (value) => {
+const onEnter = () => {
   emit("enter", props.search)
 }
 </script>
