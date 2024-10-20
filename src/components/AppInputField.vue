@@ -1,13 +1,13 @@
 <template>
   <v-text-field
     v-model="searchValue"
-    :label="`ابحث في ${fieldPlaceHolder}`"
+    :label="`ترتيل ${fieldPlaceHolder}`"
     append-inner-icon="mdi-magnify"
     density="compact"
     clearable
     autofocus
     @click:clear="handleClear"
-    :style="{ maxWidth: '500px' }"
+    :style="{ maxWidth: '300px' }"
   >
     <template #prepend-inner>
       <span class="text-caption">{{ dataToShow }}</span>
@@ -28,8 +28,8 @@ const props = defineProps({
     required: true,
   },
   dataToShow: {
-    type: Number,
-    default: 0,
+    type: [Number, String],
+    default: "",
   },
 })
 

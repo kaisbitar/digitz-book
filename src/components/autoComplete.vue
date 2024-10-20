@@ -43,30 +43,27 @@
     </template>
 
     <template v-slot:item="{ item, index, props }">
-      <!-- <v-virtual-scroll
-        :items="filteredItems"
-        height="500px"
-        item-height="64"
-      >
+      <!-- <v-virtual-scroll :items="filteredItems" height="500px" item-height="64">
         <template v-slot:default="{ item, index }">
           <v-lazy
             v-intersect="{
               handler: onIntersect,
               options: {
                 threshold: 0.5,
-              }
+              },
             }"
             :key="item.verseNumberToQuran"
             min-height="64"
-          >
-            <VerseCardItem
-              class="mr-5"
-              :index="index"
-              :item="item.raw"
-              :textToHighlight="search"
-              @click="handleItemClick(item)"
-            />
-          </v-lazy>
+          > -->
+      {{ item.raw.verseText }}
+      <!-- <VerseCardItem
+        class="mr-5"
+        :index="index"
+        :item="item.raw"
+        :textToHighlight="search"
+        @click="handleItemClick(item)"
+      /> -->
+      <!-- </v-lazy>
         </template>
       </v-virtual-scroll> -->
     </template>

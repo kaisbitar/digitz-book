@@ -82,6 +82,18 @@ th {
   color: rgb(var(--v-theme-count-key-item));
 }
 
+.v-card-text.verse-card-item-text {
+  font-size: 19px;
+}
+
+.text-caption {
+  font-size: 14px !important;
+}
+
+.v-card-subtitle {
+  font-size: 16px !important;
+}
+
 .activeSuraItem,
 .active-verse-table,
 .active-verse-text,

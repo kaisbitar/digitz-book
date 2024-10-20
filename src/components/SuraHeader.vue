@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex mb-4">
-    <span class="text-h6 text-sm-h5 ml-4">{{ title }}</span>
+    <span class="text-h4 ml-4">{{ title }}</span>
     <AppMetaData :metaData="suraMetaData" />
   </div>
 </template>

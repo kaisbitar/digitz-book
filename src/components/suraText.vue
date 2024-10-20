@@ -1,4 +1,5 @@
 <template>
+  {{ suraTextArray }}
   <div ref="suraTextRef">
     <v-card
       class="sura-text-container scrolling-container"

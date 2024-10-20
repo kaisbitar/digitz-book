@@ -7,23 +7,24 @@
       :location="'left'"
       expand-on-hover
     >
-      <AppInputField
-        class="ma-5"
-        :fieldInput="search"
-        :fieldPlaceHolder="'السور'"
-        @update:fieldInput="updateSearchValue"
-      />
-      <Table
-        :isIndexItem="true"
-        class="index-container"
-        :activeItemClass="'active-index-item'"
-        :tableData="indexData"
-        :tableInputText="search"
-        :tableHeaders="indexHeaders"
-        :fieldPlaceHolder="'السور'"
-        :activeItemKey="targetedIndex"
-        @rowClicked="handleSelectedSura"
-      />
+      <v-container>
+        <AppInputField
+          :fieldInput="search"
+          :fieldPlaceHolder="'السور'"
+          @update:fieldInput="updateSearchValue"
+        />
+        <Table
+          :isIndexItem="true"
+          class="index-container"
+          :activeItemClass="'active-index-item'"
+          :tableData="indexData"
+          :tableInputText="search"
+          :tableHeaders="indexHeaders"
+          :fieldPlaceHolder="'السور'"
+          :activeItemKey="targetedIndex"
+          @rowClicked="handleSelectedSura"
+        />
+      </v-container>
     </v-navigation-drawer>
   </v-hover>
 </template>

@@ -38,20 +38,20 @@ const selectedTheme = ref("light")
 const themeOptions = [
   {
     value: "light",
-    label: "ضوء",
+    label: "نهار",
     icon: "mdi-white-balance-sunny",
     color: "yellow",
   },
   {
     value: "dark",
-    label: "داكن",
+    label: "ليل",
     icon: "mdi-moon-waning-crescent",
     color: "grey-darken",
   },
   { value: "system", label: "نظام", icon: "mdi-monitor", color: "grey-darken" },
   {
     value: "testing",
-    label: "اختبار",
+    label: "لون",
     icon: "mdi-palette",
     color: "grey-darken",
   },

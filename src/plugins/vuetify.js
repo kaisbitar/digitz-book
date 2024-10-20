@@ -20,7 +20,7 @@ export default createVuetify({
   theme: {
     // defaultTheme: "dark",
     // defaultTheme: "light",
-    defaultTheme: "testing",
+    // defaultTheme: "testing",
     themes: {
       // Use 'surface' for app background color,
       light: {
