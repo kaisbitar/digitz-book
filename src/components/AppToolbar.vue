@@ -19,7 +19,8 @@
       class="mt-5 ml-4"
       :fieldInput="search"
       :fieldPlaceHolder="placeholderText"
-      :dataToShow="filteredDataLength"
+      :dataToShow="countBadgeText"
+      :type="'verseCount'"
       @update:fieldInput="updateSearchValue"
       @clear="onClear"
       @keyup.enter="onEnter"
@@ -35,7 +36,7 @@ const props = defineProps({
   search: String,
   searchBtnText: String,
   placeholderText: String,
-  filteredDataLength: Number,
+  countBadgeText: String,
   isInputVisible: Boolean,
 })
 

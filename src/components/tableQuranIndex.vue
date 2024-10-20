@@ -7,10 +7,13 @@
       :location="'left'"
       expand-on-hover
     >
+      {{ search }}
       <v-container>
         <AppInputField
           :fieldInput="search"
           :fieldPlaceHolder="'السور'"
+          :dataToShow="indexData.length - 1"
+          :type="'QuranCount'"
           @update:fieldInput="updateSearchValue"
         />
         <Table

@@ -51,7 +51,13 @@ const themeOptions = [
   { value: "system", label: "نظام", icon: "mdi-monitor", color: "grey-darken" },
   {
     value: "testing",
-    label: "لون",
+    label: "لون ليلي",
+    icon: "mdi-palette",
+    color: "grey-darken",
+  },
+  {
+    value: "testing2",
+    label: "لون نهاري",
     icon: "mdi-palette",
     color: "grey-darken",
   },
