@@ -40,14 +40,14 @@
 
 <script setup>
 import { ref, computed, onMounted, nextTick } from "vue"
-import { useQuranStore } from "@/stores/app"
+import { useStore } from "@/stores/appStore"
 import { useInputFiltering } from "@/mixins/inputFiltering"
 import { useWindow } from "@/mixins/window"
 import { useResizeHandler } from "@/hooks/useResizeObserver"
 
 const { scrollToActiveItem } = useWindow()
 const { search, highlight } = useInputFiltering()
-const store = useQuranStore()
+const store = useStore()
 
 const props = defineProps(["inputText", "suraTextArray"])
 

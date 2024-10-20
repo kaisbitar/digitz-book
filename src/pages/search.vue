@@ -3,9 +3,9 @@
 </template>
 <script setup>
 import { ref, computed, watch, onMounted } from "vue"
-import { useQuranStore } from "@/stores/app"
+import { useStore } from "@/stores/appStore"
 
-const store = useQuranStore()
+const store = useStore()
 
 const selectedSearch = computed(() =>
   store.getResearchResults ? store.getSelectedSearch : {}

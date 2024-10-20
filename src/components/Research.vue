@@ -16,9 +16,9 @@
 
 <script setup>
 import { computed, onMounted } from "vue"
-import { useQuranStore } from "@/stores/app"
+import { useStore } from "@/stores/appStore"
 
-const store = useQuranStore()
+const store = useStore()
 const props = defineProps({
   chipsTitle: String,
   chipsData: Object,

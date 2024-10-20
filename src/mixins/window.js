@@ -1,10 +1,10 @@
 import { computed, ref, onMounted, onUnmounted, nextTick } from "vue"
-import { useQuranStore } from "@/stores/app"
+import { useStore } from "@/stores/appStore"
 import { useGoTo } from "vuetify"
 import { useDisplay } from "vuetify"
 
 export function useWindow(elementRef) {
-  const store = useQuranStore()
+  const store = useStore()
   const goTo = useGoTo()
   const { mobile } = useDisplay()
 

@@ -43,7 +43,7 @@
 <script setup>
 import { fetchWordMeaning, fetchWordRoot } from "@/api/api.js"
 import { extractFromDictionnary } from "@/utils/dictionaryUtils.js"
-import { useQuranStore } from "@/stores/app.js"
+import { useStore } from "@/stores/appStore.js"
 
 const props = defineProps({
   word: {
@@ -92,7 +92,7 @@ const closeAllTooltips = () => {
 }
 defineExpose({ closeAllTooltips, closeLastTooltips })
 
-const store = useQuranStore()
+const store = useStore()
 
 const storeWordMeanings = computed(() => ({
   get: (word) => store.getWordMeaning(word),
@@ -173,7 +173,7 @@ const openDialog = () => {
   showWordMeaningDialog.value = true
 }
 
-const quranStore = useQuranStore()
+const quranStore = useStore()
 const isInStore = ref(false)
 
 const wordMeanings = computed(() => ({
@@ -186,10 +186,10 @@ const checkIfInStore = () => {
 }
 
 onMounted(() => {
-  checkIfInStore()
+  checkIfInuseStore()
 })
 onBeforeUnmount(() => {
-  checkIfInStore()
+  checkIfInuseStore()
 })
 </script>
 

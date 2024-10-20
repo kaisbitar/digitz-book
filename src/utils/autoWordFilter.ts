@@ -1,6 +1,39 @@
+// Interfaces
+interface CharVariations {
+  [key: string]: string[]
+}
+
+interface ResultItem {
+  count: number
+  score: number
+  verses: { [verse: string]: number }
+}
+
+interface Results {
+  [word: string]: ResultItem
+}
+
+interface SortedResultItem {
+  word: string
+  count: number
+  score: number
+  verses: { [verse: string]: number }
+}
+
+interface FormattedResult {
+  word: string
+  count: number
+  verses: string[]
+}
+
+interface FilterResult {
+  results: FormattedResult[]
+  totalCount: number
+}
+
 // Helper function to generate Arabic character variations
-const getCharVariations = (char) => {
-  const variations = {
+const getCharVariations = (char: string): string[] => {
+  const variations: CharVariations = {
     ا: ["ا", "أ", "إ", "آ", "ٱ"],
     آ: ["آ", "ء", "ا"],
     ه: ["ه", "ة"],
@@ -13,7 +46,7 @@ const getCharVariations = (char) => {
 }
 
 // Generate regex pattern with possible variations
-const generateSearchRegex = (search) => {
+const generateSearchRegex = (search: string): RegExp => {
   const searchRegex = search
     .split("")
     .map((char) => {
@@ -25,13 +58,18 @@ const generateSearchRegex = (search) => {
 }
 
 // Helper function to score a word based on its similarity to the search term
-const scoreWord = (word, search) => {
+const scoreWord = (word: string, search: string): number => {
   if (word.startsWith(search)) return 2
   if (word.includes(search)) return 1
   return 0
 }
 
-const processVerse = (verse, searchTerm, searchRegex, results) => {
+const processVerse = (
+  verse: string,
+  searchTerm: string,
+  searchRegex: RegExp,
+  results: Results
+): void => {
   const words = verse.split(/\s+/)
   words.forEach((word) => {
     if (searchRegex.test(word)) {
@@ -47,7 +85,7 @@ const processVerse = (verse, searchTerm, searchRegex, results) => {
   })
 }
 
-const sortResults = (results) => {
+const sortResults = (results: Results): SortedResultItem[] => {
   return Object.entries(results)
     .map(([word, { count, score, verses }]) => ({ word, count, score, verses }))
     .sort((a, b) => {
@@ -57,7 +95,10 @@ const sortResults = (results) => {
     })
 }
 
-const formatResults = (sortedResults, searchTerm) => {
+const formatResults = (
+  sortedResults: SortedResultItem[],
+  searchTerm: string
+): FilterResult => {
   return {
     results: sortedResults.map(({ word, count, verses }) => ({
       word,
@@ -68,14 +109,31 @@ const formatResults = (sortedResults, searchTerm) => {
   }
 }
 
-export function filterItems(searchTerm, quranArray) {
+export function filterWords(
+  searchTerm: string,
+  quranArray: string[]
+): FilterResult {
   const searchRegex = generateSearchRegex(searchTerm)
-  const results = {}
+  const results: Results = {}
 
-  quranArray.forEach((verse) =>
+  quranArray.forEach((verse) => {
     processVerse(verse, searchTerm, searchRegex, results)
-  )
+  })
 
   const sortedResults = sortResults(results)
   return formatResults(sortedResults, searchTerm)
+}
+
+// New function to count distinct words in the Quran
+export function countDistinctWords(quranArray: string[]): number {
+  const distinctWords = new Set<string>()
+
+  quranArray.forEach((verse) => {
+    const words = verse.split(/\s+/)
+    words.forEach((word) => {
+      distinctWords.add(word)
+    })
+  })
+
+  return distinctWords.size
 }

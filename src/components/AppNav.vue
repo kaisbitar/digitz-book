@@ -61,11 +61,11 @@
 import { ref, computed } from "vue"
 import { useRouter } from "vue-router"
 import { useDisplay } from "vuetify"
-import { useQuranStore } from "@/stores/app"
+import { useStore } from "@/stores/appStore"
 
 const router = useRouter()
 const display = useDisplay()
-const store = useQuranStore()
+const store = useStore()
 const activeRoute = computed(() => router.currentRoute.value.name)
 
 const isInputVisible = ref(true)

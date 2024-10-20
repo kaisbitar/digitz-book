@@ -5,14 +5,16 @@
 </template>
 
 <script setup>
-import { useQuranStore } from "@/stores/app"
+import { useStore } from "@/stores/appStore"
+import { useDataStore } from "@/stores/dataStore"
 import { useWindow } from "@/mixins/window"
 const { windowWidth } = useWindow()
 
-const store = useQuranStore()
+const store = useStore()
+const dataStore = useDataStore()
 
 const getTheData = async () => {
-  await store.getQuranData()
+  await dataStore.getQuranData()
 }
 
 onMounted(async () => {

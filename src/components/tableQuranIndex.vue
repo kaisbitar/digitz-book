@@ -34,7 +34,8 @@
 
 <script setup>
 import { ref, computed, watch } from "vue"
-import { useQuranStore } from "@/stores/app"
+import { useStore } from "@/stores/appStore"
+import { useDataStore } from "@/stores/dataStore"
 import { useRouter } from "vue-router"
 import { useWindow } from "@/mixins/window"
 import { useInputFiltering } from "@/mixins/inputFiltering"
@@ -49,12 +50,13 @@ const {
 const { updateSearchValue, search } = useInputFiltering()
 
 const router = useRouter()
-const store = useQuranStore()
+const store = useStore()
+const dataStore = useDataStore()
 const display = useDisplay()
 
 const props = defineProps(["isShowSuraDetail"])
 
-const indexData = computed(() => store.getQuranIndex)
+const indexData = computed(() => dataStore.getQuranIndex)
 const indexHeaders = ref([
   { title: "رقم", key: "index" }, //Must be called index
   { title: "السورة", key: "suraName" },

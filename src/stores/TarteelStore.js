@@ -1,14 +1,12 @@
 import { defineStore } from "pinia"
-import { filterItems } from "@/utils/autoWordFilter" // Assuming this utility exists
-import { useQuranStore } from "@/stores/app"
+import { useStore } from "@/stores/appStore"
 
-const store = useQuranStore()
+const store = useStore()
 export const useTarteelStore = defineStore("tarteel", {
   state: () => ({
     tarteelResults: [],
     selectedTarteelIndex: null,
     tarteelHistory: [],
-    // Add any other tarteel-related state here
   }),
 
   persist: {
@@ -27,9 +25,6 @@ export const useTarteelStore = defineStore("tarteel", {
     getSelectedTarteel: (state) =>
       state.tarteelResults[state.selectedTarteelIndex],
     getTarteelHistory: (state) => state.tarteelHistory,
-    // getSuggestedWords: (state) => (tarteelTerm) => {
-    //   return filterItems(tarteelTerm, store.getAllVersesNoTashkeel)
-    // },
   },
 
   actions: {
@@ -42,7 +37,6 @@ export const useTarteelStore = defineStore("tarteel", {
     addToTarteelHistory(tarteelTerm) {
       if (!this.tarteelHistory.includes(tarteelTerm)) {
         this.tarteelHistory.unshift(tarteelTerm)
-        // Limit history to last 10 tarteel queries
         this.tarteelHistory = this.tarteelHistory.slice(0, 10)
       }
     },
@@ -52,6 +46,5 @@ export const useTarteelStore = defineStore("tarteel", {
     removeTarteelItem(index) {
       this.tarteelResults.splice(index, 1)
     },
-    // Add any other tarteel-related actions here
   },
 })

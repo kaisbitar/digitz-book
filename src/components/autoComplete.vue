@@ -1,5 +1,4 @@
 <template>
-  <!-- <v-row fluid class=""> -->
   <AppInputField
     v-model="tarteel"
     :fieldPlaceHolder="'القرآن'"
@@ -34,18 +33,19 @@
       </v-list>
     </v-menu>
   </AppInputField>
-  <!-- </v-row> -->
 </template>
 
 <script setup>
 import { ref, computed, watch, nextTick } from "vue"
-import { useQuranStore } from "@/stores/app"
-import { useTarteelStore } from "@/stores/TarteelStore"
-import { filterItems } from "@/utils/autoWordFilter"
+import { useStore } from "@/stores/appStore"
+import { useDataStore } from "@/stores/dataStore"
+import { useTarteelStore } from "@/stores/tarteelStore"
+import { filterWords } from "@/utils/autoWordFilter"
 import { useWindow } from "@/mixins/window"
 import AppInputField from "./AppInputField.vue"
 
-const store = useQuranStore()
+const store = useStore()
+const dataStore = useDataStore()
 const tarteelStore = useTarteelStore()
 
 const tarteel = ref("")
@@ -56,7 +56,7 @@ const filteredItems = computed(() => {
   if (!tarteel.value) {
     return { results: [], totalCount: 0 }
   }
-  return filterItems(tarteel.value, store.getAllVersesNoTashkeel)
+  return filterWords(tarteel.value, dataStore.getVersesForCounting)
 })
 
 const tarteeledWords = ref([])
@@ -131,6 +131,8 @@ const saveChanges = () => {
   tarteelStore.addToTarteelHistory(tarteel.value)
   menu.value = false
 }
+
+onMounted(() => {})
 </script>
 
 <style scoped>

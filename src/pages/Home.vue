@@ -24,10 +24,10 @@
 
 <script setup>
 import { useRouter } from "vue-router"
-import { useQuranStore } from "@/stores/app"
+import { useStore } from "@/stores/appStore"
 
 const router = useRouter()
-const store = useQuranStore()
+const store = useStore()
 
 const goToPage = (page) => {
   store.setActiveRoute(page)

@@ -6,7 +6,7 @@ import {
   fetchAllVersesWithTashkeel,
 } from "../api/api.js"
 
-export const useQuranStore = defineStore("Quran", {
+export const useStore = defineStore("Quran", {
   state: () => ({
     target: {
       suraNumber: "001",
@@ -18,16 +18,12 @@ export const useQuranStore = defineStore("Quran", {
     researchResults: [],
     selectedSearch: [],
     selectedSearchIndex: null,
-    oneQuranFile: [],
-    QuranIndex: [],
     suras: {},
     indexIsOpen: false,
     versesMobileView: false,
     activeSuraTab: "numberOfVerses",
     activeRoute: "search",
     chartFreqType: "words",
-    allVersesWithTashkeel: [],
-    allVersesNoTashkeel: [], // New state property
     isDialog: false,
     wordMeanings: {},
   }),
@@ -35,7 +31,7 @@ export const useQuranStore = defineStore("Quran", {
     enabled: true,
     strategies: [
       {
-        key: "Quran-store",
+        key: "AppStore",
         storage: localStorage,
       },
     ],
@@ -46,7 +42,6 @@ export const useQuranStore = defineStore("Quran", {
     getTarget: (state) => state.target,
     getResearchResults: (state) => state.researchResults,
     getSelectedSearchIndex: (state) => state.selectedSearchIndex,
-    getOneQuranFile: (state) => state.oneQuranFile,
     getQuranIndex: (state) => state.QuranIndex,
     getIndexIsOpen: (state) => state.indexIsOpen,
     getActiveSuraTab: (state) => state.activeSuraTab,
@@ -54,8 +49,6 @@ export const useQuranStore = defineStore("Quran", {
     getChartFreqType: (state) => state.chartFreqType,
     getSelectedSearch: (state) =>
       state.researchResults[state.selectedSearchIndex],
-    getAllVersesWithTashkeel: (state) => state.allVersesWithTashkeel,
-    getAllVersesNoTashkeel: (state) => state.allVersesNoTashkeel,
     getWordMeaning: (state) => (word) => state.wordMeanings[word] || null,
   },
   actions: {
@@ -107,15 +100,6 @@ export const useQuranStore = defineStore("Quran", {
     setRemoveSearchItem(index) {
       this.researchResults.splice(index, 1)
     },
-    setOneQuranFile(items) {
-      this.oneQuranFile = items
-    },
-    setAllVersesWithTashkeel(items) {
-      this.allVersesWithTashkeel = items
-    },
-    setAllVersesNoTashkeel(items) {
-      this.allVersesNoTashkeel = items
-    },
     setQuranIndex(items) {
       this.QuranIndex = items
     },
@@ -132,40 +116,5 @@ export const useQuranStore = defineStore("Quran", {
     setWordMeaning({ word, meaning }) {
       this.wordMeanings[word] = meaning
     },
-    async getQuranData() {
-      if (this.oneQuranFile.length > 0) return
-
-      const appApi = import.meta.env.VITE_APP_API_URL
-      const versesWithTashkeel = await fetchAllVersesWithTashkeel(appApi)
-      this.setAllVersesWithTashkeel(versesWithTashkeel)
-
-      // Remove tashkeel and set allVersesNoTashkeel
-      console.log("versesWithTashkeel.length", versesWithTashkeel)
-      const versesNoTashkeel = versesWithTashkeel.map((verse) =>
-        verse.replace(/[\u064B-\u0652]/g, "")
-      )
-      this.setAllVersesNoTashkeel(versesNoTashkeel)
-
-      const QuranFile = await fetchOneQuranFile(appApi)
-      this.setOneQuranFile(QuranFile)
-
-      const tableIndex = await fetchtableQuranIndex(appApi)
-      this.setQuranIndex(tableIndex)
-    },
-
-    // async getSuraDetails() {
-    //   if (!this.suras[this.target.fileName]) {
-    //     this.suras[this.target.fileName] = { suraDetails: null }
-    //   }
-
-    //   if (!this.suras[this.target.fileName].suraDetails) {
-    //     const appApi = import.meta.env.VITE_APP_API_URL
-    //     const suraDetails = await fetchSuraDetails(appApi, this.target.fileName)
-    //     this.setSuraDetails({ suraDetails })
-    //     return suraDetails
-    //   }
-
-    //   return this.suras[this.target.fileName].suraDetails
-    // },
   },
 })
