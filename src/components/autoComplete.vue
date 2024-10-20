@@ -1,42 +1,40 @@
 <template>
-  <v-container fluid class="">
-    <!-- <div v-click-outside="onClickOutside"> -->
-    <AppInputField
-      v-model="tarteel"
-      :fieldPlaceHolder="'القرآن'"
-      :dataToShow="`${wordsVariantsCount} كلمة`"
-      :type="'verseCount'"
-      @update:modelValue="onInput"
-      @clear="clearInput"
-      @focus="menu = true"
+  <!-- <v-row fluid class=""> -->
+  <AppInputField
+    v-model="tarteel"
+    :fieldPlaceHolder="'القرآن'"
+    :dataToShow="`${wordsVariantsCount} كلمة`"
+    :type="'verseCount'"
+    @update:modelValue="onInput"
+    @clear="clearInput"
+    @focus="menu = true"
+  >
+    <v-menu
+      v-model="menu"
+      :close-on-content-click="false"
+      transition="scale-transition"
+      :max-height="300"
+      :max-width="1000"
+      location="bottom"
+      :activator="'parent'"
     >
-      <v-menu
-        v-model="menu"
-        :close-on-content-click="false"
-        transition="scale-transition"
-        :max-height="300"
-        :max-width="1000"
-        location="bottom"
-        :activator="'parent'"
-      >
-        <v-list>
-          <v-list-item>
-            <v-list-item-title>ترتيل {{ tarteel }}..</v-list-item-title>
-          </v-list-item>
-          <v-divider></v-divider>
-          <AutoFilteredList
-            v-if="tarteeledWords.length > 0"
-            ref="autoFilteredList"
-            :items="tarteeledWords"
-            :total-count="totalWordsCount"
-            @update:items="updateEditableItems"
-            @save="saveChanges"
-          />
-        </v-list>
-      </v-menu>
-    </AppInputField>
-    <!-- </div> -->
-  </v-container>
+      <v-list>
+        <v-list-item>
+          <v-list-item-title>ترتيل {{ tarteel }}..</v-list-item-title>
+        </v-list-item>
+        <v-divider></v-divider>
+        <AutoFilteredList
+          v-if="tarteeledWords.length > 0"
+          ref="autoFilteredList"
+          :items="tarteeledWords"
+          :total-count="totalWordsCount"
+          @update:items="updateEditableItems"
+          @save="saveChanges"
+        />
+      </v-list>
+    </v-menu>
+  </AppInputField>
+  <!-- </v-row> -->
 </template>
 
 <script setup>
@@ -80,7 +78,6 @@ const { scrollToActiveItem } = useWindow()
 const autoFilteredList = ref(null)
 
 const onInput = async (value) => {
-  tarteel.value = value
   if (value && value.length > 0) {
     menu.value = true
     await nextTick()

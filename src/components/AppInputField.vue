@@ -19,7 +19,8 @@
       prepend-inner-icon="mdi-magnify"
       hide-details
       class="flex-grow-1"
-      @input="$emit('update:modelValue', $event.target.value)"
+      @input="handleInput"
+      @focus="$emit('focus')"
     >
     </v-text-field>
     <slot></slot>
@@ -48,11 +49,16 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(["update:modelValue", "clear"])
+const emit = defineEmits(["update:modelValue", "clear", "focus"])
+
 const theme = useTheme()
 
 const handleClear = () => {
   emit("clear")
   emit("update:modelValue", "")
+}
+
+const handleInput = (event) => {
+  emit("update:modelValue", event.target.value)
 }
 </script>
