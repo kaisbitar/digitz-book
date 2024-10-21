@@ -18,13 +18,13 @@
         class="ml-2"
         variant="text"
       ></v-btn>
-      <v-btn
+      <!-- <v-btn
         @click="$emit('add-item', item)"
         icon="mdi-plus"
         size="small"
         class="ml-2"
         variant="text"
-      ></v-btn>
+      ></v-btn> -->
       <v-btn
         @click="$emit('remove-item', item)"
         icon="mdi-minus"

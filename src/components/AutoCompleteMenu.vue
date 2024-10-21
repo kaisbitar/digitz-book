@@ -18,7 +18,7 @@
           <span class="ml-2">ترتيل {{ tarteel }}..</span>
           <v-divider vertical></v-divider>
           <v-badge
-            :content="`${selectedTarteels.length} مشتق`"
+            :content="`${currentTarteelResults.length} مشتق`"
             floating
             offset-x="-10"
             offset-y="0"
@@ -31,9 +31,9 @@
         <AutoFilteredWords
           v-if="tarteel.length >= 2"
           ref="FilteredWordsList"
-          :items="selectedTarteels"
+          :items="currentTarteelResults"
           :total-count="totalWordsCount"
-          @update:items="updateSelectedTarteels"
+          @update:items="updatecurrentTarteelResults"
           @tarteelAll="$emit('tarteelAll', $event)"
           @remove-item="removeFromTarteels"
         />
@@ -59,7 +59,7 @@ import LettersChart from "./LettersChart.vue"
 const props = defineProps({
   menu: Boolean,
   tarteel: String,
-  selectedTarteels: Array,
+  currentTarteelResults: Array,
   totalWordsCount: Number,
   currentLetter: String,
 })
@@ -68,12 +68,13 @@ const emit = defineEmits(["update:menu", "update:items", "tarteelAll"])
 
 const FilteredWordsList = ref(null)
 
-const updateSelectedTarteels = (newItems) => {
+const updatecurrentTarteelResults = (newItems) => {
+  console.log(newItems)
   emit("update:items", newItems)
 }
 
 const removeFromTarteels = (removedItem) => {
-  const updatedTarteels = props.selectedTarteels.filter(
+  const updatedTarteels = props.currentTarteelResults.filter(
     (item) => item !== removedItem
   )
   emit("update:items", updatedTarteels)
