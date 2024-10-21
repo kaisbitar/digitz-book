@@ -2,36 +2,33 @@
   <AppInputField
     v-model="tarteel"
     :fieldPlaceHolder="'القرآن'"
-    :dataToShow="`${wordsVariantsCount} كلمة`"
+    :dataToShow="`${totalWordsCount} كلمة`"
     :type="'verseCount'"
     @update:modelValue="handleInput"
-    @clear="clearInput"
+    @clear="handleClear"
     @focus="onFocus"
   >
     <AutoCompleteMenu
       :menu="menu"
       :tarteel="tarteel"
-      :currentTarteelResults="currentTarteelResults"
+      :currentFilteredWords="currentFilteredWords"
       :totalWordsCount="totalWordsCount"
       :currentLetter="currentLetter"
       @update:menu="menu = $event"
-      @update:items="currentTarteelResults = $event"
+      @update:items="updateEditableItems"
       @tarteelAll="handleTarteelAll"
     />
   </AppInputField>
 </template>
 
 <script setup>
-import { useStore } from "@/stores/appStore"
 import { useDataStore } from "@/stores/dataStore"
 import { useTarteelStore } from "@/stores/tarteelStore"
 import { useAutoComplete } from "@/hooks/useAutoComplete"
-import { watch } from "vue"
 
 import AppInputField from "./AppInputField.vue"
 import AutoCompleteMenu from "./AutoCompleteMenu.vue"
 
-const store = useStore()
 const dataStore = useDataStore()
 const tarteelStore = useTarteelStore()
 
@@ -39,9 +36,8 @@ const {
   tarteel,
   menu,
   currentLetter,
-  currentTarteelResults,
+  currentFilteredWords,
   totalWordsCount,
-  wordsVariantsCount,
   onInput,
   onFocus,
   clearInput,
@@ -53,42 +49,14 @@ const handleTarteelAll = (items) => {
   setTarteelAllResults(items)
 }
 
-watch(tarteel, (newValue) => {
-  if (newValue.length > 0) {
-    tarteelStore.setTarteelResults([
-      {
-        word: newValue,
-        count: totalWordsCount.value,
-      },
-    ])
-  } else {
-    tarteelStore.setTarteelResults([])
-  }
-})
-
-// New watcher to keep tarteelResults in sync with currentTarteelResults
-watch(
-  currentTarteelResults,
-  (newValue) => {
-    if (newValue.length > 0) {
-      tarteelStore.setTarteelResults(newValue)
-    }
-  },
-  { deep: true }
-)
-
 const handleInput = (value) => {
   onInput(value)
-  if (value.length > 0) {
-    tarteelStore.setTarteelResults([
-      {
-        word: value,
-        count: totalWordsCount.value,
-      },
-    ])
-  } else {
-    tarteelStore.setTarteelResults([])
-  }
+  menu.value = true
+}
+
+const handleClear = () => {
+  clearInput()
+  menu.value = true
 }
 </script>
 
@@ -97,6 +65,5 @@ const handleInput = (value) => {
   position: sticky;
   top: 0;
   z-index: 1;
-  /* background-color: rgb(var(--v-theme-surface)) !important; */
 }
 </style>

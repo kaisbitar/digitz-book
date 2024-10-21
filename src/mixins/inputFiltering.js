@@ -35,27 +35,10 @@ export function useInputFiltering() {
     highlightedText.value = word
   }
 
-  const handleIconEvent = (eventName) => {
-    switch (eventName) {
-      case "filter":
-        changeMatchingStatus()
-        break
-      case "search":
-        break
-      default:
-        console.warn(`Unhandled icon event: ${eventName}`)
-    }
-  }
-
-  const changeMatchingStatus = (newMatchingStatus) => {
-    console.log("changeMatchingStatus", newMatchingStatus)
-  }
-
   return {
     search,
     matchingStatus,
     updateSearchValue,
-    changeMatchingStatus,
     highlight,
     captureHoveredWord,
   }

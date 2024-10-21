@@ -27,10 +27,6 @@ const props = defineProps({
     type: Array,
     required: true,
   },
-  totalCount: {
-    type: Number,
-    required: false,
-  },
 })
 
 const emit = defineEmits([

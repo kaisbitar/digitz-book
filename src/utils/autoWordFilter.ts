@@ -28,7 +28,6 @@ interface FormattedResult {
 
 interface FilterResult {
   results: FormattedResult[]
-  totalCount: number
 }
 
 // Helper function to generate Arabic character variations
@@ -125,7 +124,6 @@ const formatResults = (
       count,
       verses: Object.keys(verses || []),
     })),
-    totalCount: sortedResults.length,
   }
 }
 
