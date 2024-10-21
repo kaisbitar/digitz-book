@@ -2,34 +2,39 @@ import { defineStore } from "pinia"
 import { useStore } from "@/stores/appStore"
 
 const store = useStore()
+
 export const useTarteelStore = defineStore("tarteel", {
   state: () => ({
-    tarteelResults: [],
+    storedTarteels: [],
     selectedTarteelIndex: null,
     tarteelHistory: [],
+    storedTarteels: [],
   }),
 
   persist: {
     enabled: true,
     strategies: [
       {
-        key: "tarteel-store",
+        key: "tarteel",
         storage: localStorage,
       },
     ],
   },
 
   getters: {
-    getTarteelResults: (state) => state.tarteelResults,
     getSelectedTarteelIndex: (state) => state.selectedTarteelIndex,
     getSelectedTarteel: (state) =>
-      state.tarteelResults[state.selectedTarteelIndex],
+      state.storedTarteels[state.selectedTarteelIndex],
     getTarteelHistory: (state) => state.tarteelHistory,
+    getStoredTarteels: (state) => state.storedTarteels,
   },
 
   actions: {
-    setTarteelResults(results) {
-      this.tarteelResults = results
+    setStoredTarteels(results) {
+      this.storedTarteels.unshift(results)
+    },
+    setStoredTarteels(results) {
+      this.storedTarteels.push(results)
     },
     setSelectedTarteelIndex(index) {
       this.selectedTarteelIndex = index
@@ -44,7 +49,7 @@ export const useTarteelStore = defineStore("tarteel", {
       this.tarteelHistory = []
     },
     removeTarteelItem(index) {
-      this.tarteelResults.splice(index, 1)
+      this.storedTarteels.splice(index, 1)
     },
   },
 })

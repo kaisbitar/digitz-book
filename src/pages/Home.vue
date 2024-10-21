@@ -1,25 +1,23 @@
 <!-- src/components/home.vue -->
 <template>
-  <v-container class="justify-center fill-height">
-    <div class="text-center d-flex">
-      <v-col cols="6" class="d-flex flex-column align-center">
-        <v-icon @click="goToPage('sura')" size="100"
-          >mdi-book-open-variant-outline</v-icon
-        >
-        <h2 class="text-lg theme-text-color">سور</h2>
-      </v-col>
-      <v-col cols="6" class="d-flex flex-column align-center">
-        <v-icon @click="goToPage('search')" size="100"
-          >mdi-database-search-outline</v-icon
-        >
-        <h2 class="text-lg">ترتيل</h2>
-      </v-col>
-      <v-col cols="6" class="d-flex flex-column align-center">
-        <v-icon @click="" size="100">mdi-account-outline</v-icon>
-        <h2 class="text-lg">تفسيري</h2>
-      </v-col>
-    </div>
-  </v-container>
+  <v-row class="justify-center fill-height">
+    <v-col cols="6" class="d-flex flex-column align-center">
+      <v-icon @click="goToPage('sura')" size="100"
+        >mdi-book-open-variant-outline</v-icon
+      >
+      <h2 class="text-lg theme-text-color">سور</h2>
+    </v-col>
+    <v-col cols="6" class="d-flex flex-column align-center">
+      <v-icon @click="goToPage('search')" size="100"
+        >mdi-database-search-outline</v-icon
+      >
+      <h2 class="text-lg">ترتيل</h2>
+    </v-col>
+    <v-col cols="6" class="d-flex flex-column align-center">
+      <v-icon @click="" size="100">mdi-account-outline</v-icon>
+      <h2 class="text-lg">تفسيري</h2>
+    </v-col>
+  </v-row>
 </template>
 
 <script setup>
