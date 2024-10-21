@@ -1,5 +1,6 @@
 <template>
   <VueApexCharts
+    ref="chartRef"
     :series="series"
     :options="options"
     :height="chartWindowHeight"
@@ -8,8 +9,19 @@
 
 <script setup>
 import VueApexCharts from "vue3-apexcharts"
+import { ref, computed, onMounted, nextTick } from "vue"
+
 const chartWindowHeight = computed(() => window.innerHeight - 200)
 const props = defineProps(["height", "options", "series"])
+
+const chartRef = ref(null)
+
+const dataPointSelection = (seriesIndex, dataPointIndex) => {
+  chartRef.value.chart.toggleDataPointSelection(seriesIndex, dataPointIndex)
+  // chartRef.value.chart.dataPointMouseEnter(seriesIndex, dataPointIndex)
+}
+
+defineExpose({ dataPointSelection })
 </script>
 
 <style>

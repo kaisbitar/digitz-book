@@ -1,48 +1,18 @@
 <template>
-  <v-sheet class="d-flex flex-column" height="100%"
-    ><v-list class="flex-grow-1 overflow-y-auto">
+  <v-sheet class="d-flex flex-column" height="100%">
+    <v-list class="flex-grow-1 overflow-y-auto">
       <v-virtual-scroll :items="items" height="300" item-height="50">
-        <template v-slot:default="{ item, index }">
-          <v-list-item>
-            <v-list-item-title>
-              {{ item.word }}
-              <v-badge
-                :content="`${item.count} مرة`"
-                floating
-                offset-x="-20"
-                offset-y="-1"
-                color="wordCount"
-              ></v-badge>
-            </v-list-item-title>
-            <template v-slot:append>
-              <v-btn
-                @click="emitAddItem(item)"
-                icon="mdi-magnify"
-                size="small"
-                class="ml-2"
-                variant="text"
-              ></v-btn>
-              <v-btn
-                @click="emitAddItem(item)"
-                icon="mdi-plus"
-                size="small"
-                class="ml-2"
-                variant="text"
-              ></v-btn>
-
-              <v-btn
-                @click="removeItem(item)"
-                icon="mdi-minus"
-                size="small"
-                variant="text"
-              ></v-btn>
-            </template>
-          </v-list-item>
+        <template v-slot:default="{ item }">
+          <AutoFilteredWordItem
+            :item="item"
+            @add-item="emitAddItem"
+            @remove-item="removeItem"
+          />
         </template>
       </v-virtual-scroll>
     </v-list>
     <v-sheet class="pa-4">
-      <v-btn @click="saveChanges" color="primary" variant="tonal">
+      <v-btn @click="searchAllFilteredWords" color="primary" variant="tonal">
         رتل الجميع
       </v-btn>
     </v-sheet>
@@ -50,12 +20,12 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue"
+import { defineProps, defineEmits } from "vue"
 
 const props = defineProps({
   items: {
-    type: Object,
-    required: false,
+    type: Array,
+    required: true,
   },
   totalCount: {
     type: Number,
@@ -63,19 +33,26 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(["update:items", "save", "add-item"])
+const emit = defineEmits([
+  "update:items",
+  "tarteelAll",
+  "add-item",
+  "remove-item",
+])
 
 const emitAddItem = (item) => {
   emit("add-item", item)
 }
 
 const removeItem = (index) => {
-  props.items.value.splice(index, 1)
-  emit("update:items", props.items.value)
+  const updatedItems = [...props.items]
+  const removedItem = updatedItems.splice(index, 1)[0]
+  emit("update:items", updatedItems)
+  emit("remove-item", removedItem) // Emit the removed item
 }
 
-const saveChanges = () => {
-  emit("save", props.items.value)
+const searchAllFilteredWords = () => {
+  emit("tarteelAll", props.items)
 }
 </script>
 

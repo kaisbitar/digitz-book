@@ -7,6 +7,7 @@
       @update:activeTab="updateActiveTab"
     />
     <v-spacer v-if="!isInputVisible"></v-spacer>
+    <v-spacer></v-spacer>
 
     <div class="w-100 d-flex">
       <AppToggleBtn

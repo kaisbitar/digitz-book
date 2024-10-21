@@ -20,7 +20,7 @@ export default createVuetify({
   theme: {
     // defaultTheme: "dark",
     // defaultTheme: "light",
-    // defaultTheme: "testing",
+    defaultTheme: "testing2",
     themes: {
       light: {
         colors: {
