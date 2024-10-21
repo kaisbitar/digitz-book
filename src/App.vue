@@ -47,7 +47,9 @@ html {
 .text-h4,
 .text-h6,
 .text-sm-h4,
-.text-sm-h5 {
+.text-sm-h5,
+.text-sm-h3,
+.text-h4 {
   font-family: $body-font-family !important;
   // font-family: system-ui !important;
   font-family: unset;
@@ -127,7 +129,9 @@ th {
 .v-btn,
 .v-card-subtitle,
 .v-card-text,
-.text-caption {
+.text-caption,
+.text-sm-h3,
+.text-h4 {
   letter-spacing: 0 !important;
 }
 </style>

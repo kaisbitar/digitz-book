@@ -21,7 +21,7 @@
           v-if="isInputVisible"
           class="flex-grow-1"
           v-click-outside="onInputClickOutside"
-          style="max-width: 600px"
+          style="max-width: 1000px"
         />
       </div>
       <v-spacer v-if="!isMobile"></v-spacer>

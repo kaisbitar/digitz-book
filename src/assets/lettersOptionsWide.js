@@ -1,42 +1,40 @@
-// Creating categories for the chart to be reversed
-const generateCategories = (length) => {
-  return Array.from({ length }, (_, i) => i + 1).reverse()
-}
+import { useTheme } from "vuetify"
 
-export const getLettersChartOptions = (length) => {
-  // const categories = generateCategories(length)
-  return {
+export const getLettersChartOptions = (
+  letters = { categories: [], series: [] },
+  customOptions = {}
+) => {
+  const theme = useTheme()
+
+  // Access theme colors
+  const primaryColor = theme.current.value.colors.letterCount
+  const secondaryColor = "#ccc"
+
+  const defaultOptions = {
     chart: {
       type: "bar",
-      height: 1000,
-      offsetY: 20,
+      offsetY: 0,
       toolbar: {
-        show: false,
-        offsetY: 2,
+        show: true,
+        offsetY: 200,
       },
-      dir: "rtl",
     },
+
     fill: {
       type: "gradient",
       gradient: {
         shade: "light",
         type: "horizontal",
+        // gradientToColors: undefined,
+        // gradientToColors: ["fff"],
+        shade: "dark",
+        // type: "vertical",
         shadeIntensity: 0.25,
-        gradientToColors: undefined,
+        gradientToColors: [secondaryColor],
         inverseColors: true,
         opacityFrom: 0.85,
         opacityTo: 0.85,
-        stops: [50, 0, 100],
-      },
-    },
-    zoom: {
-      enabled: false,
-    },
-    plotOptions: {
-      bar: {
-        dataLabels: {
-          position: "top",
-        },
+        stops: [1, 0, 10],
       },
     },
     zoom: {
@@ -44,31 +42,116 @@ export const getLettersChartOptions = (length) => {
     },
     plotOptions: {
       bar: {
+        borderRadius: 0,
         horizontal: true,
+        distributed: false,
+        barHeight: "80%",
+        isFunnel: true,
         dataLabels: {
           position: "top",
         },
+        horizontal: true,
       },
     },
+
+    // fillSeriesColor: primaryColor,
+    // annotations: {
+    //   xaxis: [
+    //     {
+    //       x: "ص",
+    //       x2: "ح",
+    //       borderColor: "#000",
+    //       fillColor: "#FEB019",
+    //     },
+    //   ],
+    //   yaxis: [
+    //     {
+    //       y: "ص",
+    //       y2: 2000,
+    //       borderColor: "#000",
+    //       fillColor: "#FEB019",
+    //       label: {
+    //         text: "Y-axis range",
+    //       },
+    //     },
+    //   ],
+    // },
     dataLabels: {
       enabled: true,
-      // style: { colors: ['grey'] }
+      offsetX: 30,
+      offsetY: 0,
+      background: {
+        enabled: true,
+        foreColor: "#616161",
+        color: "#000",
+        padding: 4,
+        borderRadius: 2,
+        borderWidth: 1,
+        borderColor: "#616161",
+      },
+      style: {
+        fontSize: "16px",
+        fontFamily: "unset",
+        letterSpacing: "0 !important",
+      },
     },
     theme: {
-      // mode: "dark",
       monochrome: {
         enabled: true,
-        color: "#4c4c4c",
-        // A1887F
+        color: primaryColor,
       },
     },
     stroke: {
-      show: true,
-      width: 2,
-      colors: ["#000"],
+      curve: "smooth",
+      width: 10,
+      colors: ["#000"], // Use secondary color for stroke
+    },
+    xaxis: {
+      labels: {
+        show: false,
+        style: {
+          fontSize: "16px",
+          fontFamily: "unset",
+        },
+      },
+      axisTicks: {
+        show: false,
+      },
+      tickAmount: undefined,
+      tickPlacement: "between",
+      title: {
+        show: true,
+        text: " تكرار الحروف في الكتاب",
+        offsetY: 10,
+        style: {
+          fontSize: "18px",
+          fontFamily: "unset",
+          letterSpacing: "0 !important",
+        },
+      },
+      min: 1,
+    },
+    // categories: letters.categories,
+    yaxis: {
+      labels: {
+        show: true,
+        style: {
+          fontFamily: "unset",
+        },
+      },
+      title: {
+        offsetX: 10,
+        style: {
+          fontSize: "18px",
+          fontFamily: "unset",
+        },
+      },
+    },
+    grid: {
+      show: false,
     },
     markers: {
-      size: [0, 0],
+      size: [10, 10],
       color: "#000",
       hover: {
         size: 9,
@@ -76,179 +159,59 @@ export const getLettersChartOptions = (length) => {
         color: "#000",
       },
     },
-    xaxis: {
-      // categories: categories,
-      labels: {
-        show: false,
+    tooltip: {
+      enabled: true,
+      // shared: true,
+      intersect: false,
+      followCursor: true,
+      shared: true,
+      fixed: {
+        enabled: true,
+        position: "bottomRight", // Try 'topRight', 'bottomLeft', or 'bottomRight'
+        offsetX: -100,
+        offsetY: -200,
       },
-      axisTicks: {
-        show: false,
-        // maxTicksLimit: 200,
-        // interval: 5,
+      custom: ({ series, seriesIndex, dataPointIndex, w }) => {
+        const value = series[seriesIndex][dataPointIndex]
+        const category = w.globals.labels[dataPointIndex]
+        return `
+          <div class="custom-tooltip d-flex">
+            <div class="tipInfo tipInfo2 text-sm-h3 text-h4 pa-5">${category} ${value}</div>
+          </div>
+        `
       },
-      // tickAmount: 20,
-      // tickPlacement: "between",
-      title: {
-        show: true,
-        text: "التواتر",
-        offsetY: 5,
-        style: {
-          fontSize: "18px",
-          fontFamily: '"Roboto", sans-serif !important',
-          color: "#ccc",
-        },
-      },
-      min: 1,
-    },
-    yaxis: {
-      floating: true,
-      showAlways: false,
-      labels: {
-        show: false,
-        style: {
-          fontFamily: '"Roboto", sans-serif !important',
-        },
-      },
-      title: {
-        offsetX: -50,
-        style: {
-          fontSize: "18px",
-          fontFamily: '"Roboto", sans-serif !important',
-        },
-      },
-      min: 0,
-      max: undefined,
-      axisTicks: {
-        show: false,
-        maxTicksLimit: 2,
-        interval: 2,
-      },
-      tickAmount: 1,
-      tickPlacement: "between",
-    },
-    colors: ["#000"],
-    grid: {
-      show: false,
-      padding: {
-        top: 0,
-        right: 30,
-        bottom: 0,
-        left: 30,
-      },
+      // onDatasetHover: {
+      //   highlightDataSeries: true,
+      // },
     },
   }
+
+  // Update themeColors object
+  const themeColors = {
+    theme: {
+      monochrome: {
+        enabled: true,
+        color: primaryColor,
+      },
+    },
+    stroke: {
+      colors: [secondaryColor],
+    },
+  }
+
+  // // Merge default options, theme colors, and custom options
+  const mergedOptions = {
+    ...defaultOptions,
+    ...themeColors,
+    ...customOptions,
+    xaxis: {
+      ...defaultOptions.xaxis,
+      categories: letters.categories,
+    },
+    series: letters.series,
+  }
+
+  return mergedOptions
 }
+
 export default getLettersChartOptions
-
-// const chartOptions = {
-//   chart: {
-//     type: 'bar',
-//     offsetY: 20,
-//     toolbar: {
-//       show: true,
-//       offsetY: 2
-//     }
-//   },
-//   fill: {
-//     type: 'gradient',
-//     gradient: {
-//       shade: 'light',
-//       type: 'horizontal',
-//       shadeIntensity: 0.25,
-//       gradientToColors: undefined,
-//       inverseColors: true,
-//       opacityFrom: 0.85,
-//       opacityTo: 0.85,
-//       stops: [50, 0, 100]
-//     }
-//   },
-//   zoom: {
-//     enabled: false
-//   },
-//   plotOptions: {
-//     bar: {
-//       dataLabels: {
-//         position: 'top'
-//       }
-//     }
-//   },
-//   dataLabels: {
-//     enabled: true,
-//     offsetY: -30,
-//     background: {
-//       enabled: true,
-//       foreColor: '#616161',
-//       color: '#000',
-//       padding: 4,
-//       borderRadius: 2,
-//       borderWidth: 1,
-//       borderColor: '#616161'
-//     },
-//     style: {
-//       fontSize: '16px',
-//       fontFamily: '"Tajawal", sans-serif !important'
-//     }
-//   },
-//   theme: {
-//     monochrome: {
-//       enabled: true,
-//       color: '#cccccc'
-//     }
-//   },
-//   stroke: {
-//     curve: 'smooth',
-//     width: 1.2,
-//     colors: ['#7c7c7c']
-//   },
-//   xaxis: {
-//     labels: {
-//       show: true,
-//       style: {
-//         fontSize: '16px',
-//         fontFamily: '"Tajawal", sans-serif !important'
-//       }
-//     },
-//     axisTicks: {
-//       show: true,
-//       maxTicksLimit: 40,
-//       interval: 30
-//     },
-//     tickAmount: undefined,
-//     tickPlacement: 'between',
-//     title: {
-//       show: true,
-//       text: ' تكرار الحروف',
-//       offsetY: 10,
-//       style: {
-//         fontSize: '18px', fontFamily: '"Tajawal", sans-serif !important'
-//       }
-//     },
-//     min: 1
-//   },
-//   yaxis: {
-//     labels: {
-//       show: true,
-//       style: {
-//         fontFamily: '"Tajawal", sans-serif !important'
-//       }
-//     },
-//     title: {
-//       offsetX: 10,
-//       style: {
-//         fontSize: '18px',
-//         fontFamily: '"Tajawal", sans-serif !important'
-//       }
-//     }
-//   },
-//   grid: {
-//     show: false,
-//     padding: {
-//       top: 0,
-//       right: 30,
-//       bottom: 0,
-//       left: 30
-//     }
-//   }
-
-// }
-// export default chartOptions
