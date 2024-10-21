@@ -4,29 +4,29 @@
     :fieldPlaceHolder="'القرآن'"
     :dataToShow="`${wordsVariantsCount} كلمة`"
     :type="'verseCount'"
-    @update:modelValue="onInput"
+    @update:modelValue="handleInput"
     @clear="clearInput"
     @focus="onFocus"
   >
     <AutoCompleteMenu
       :menu="menu"
       :tarteel="tarteel"
-      :selectedTarteels="selectedTarteels"
+      :currentTarteelResults="currentTarteelResults"
       :totalWordsCount="totalWordsCount"
       :currentLetter="currentLetter"
       @update:menu="menu = $event"
-      @update:items="selectedTarteels = $event"
+      @update:items="currentTarteelResults = $event"
       @tarteelAll="handleTarteelAll"
     />
   </AppInputField>
 </template>
 
 <script setup>
-import { ref, computed, watch } from "vue"
 import { useStore } from "@/stores/appStore"
 import { useDataStore } from "@/stores/dataStore"
 import { useTarteelStore } from "@/stores/tarteelStore"
 import { useAutoComplete } from "@/hooks/useAutoComplete"
+import { watch } from "vue"
 
 import AppInputField from "./AppInputField.vue"
 import AutoCompleteMenu from "./AutoCompleteMenu.vue"
@@ -39,7 +39,7 @@ const {
   tarteel,
   menu,
   currentLetter,
-  selectedTarteels,
+  currentTarteelResults,
   totalWordsCount,
   wordsVariantsCount,
   onInput,
@@ -49,13 +49,47 @@ const {
   setTarteelAllResults,
 } = useAutoComplete(dataStore, tarteelStore)
 
-// Add the handleTarteelAll method
 const handleTarteelAll = (items) => {
   setTarteelAllResults(items)
-  // Add any additional logic you need for handling "tarteelAll" action
 }
 
-// ... existing code ...
+watch(tarteel, (newValue) => {
+  if (newValue.length > 0) {
+    tarteelStore.setTarteelResults([
+      {
+        word: newValue,
+        count: totalWordsCount.value,
+      },
+    ])
+  } else {
+    tarteelStore.setTarteelResults([])
+  }
+})
+
+// New watcher to keep tarteelResults in sync with currentTarteelResults
+watch(
+  currentTarteelResults,
+  (newValue) => {
+    if (newValue.length > 0) {
+      tarteelStore.setTarteelResults(newValue)
+    }
+  },
+  { deep: true }
+)
+
+const handleInput = (value) => {
+  onInput(value)
+  if (value.length > 0) {
+    tarteelStore.setTarteelResults([
+      {
+        word: value,
+        count: totalWordsCount.value,
+      },
+    ])
+  } else {
+    tarteelStore.setTarteelResults([])
+  }
+}
 </script>
 
 <style scoped>
@@ -63,21 +97,6 @@ const handleTarteelAll = (items) => {
   position: sticky;
   top: 0;
   z-index: 1;
-  background-color: rgb(var(--v-theme-background));
+  /* background-color: rgb(var(--v-theme-surface)) !important; */
 }
 </style>
-
-<!-- const scrollToTop = () => {
-  nextTick(() => {
-    if (FilteredWordsList.value) {
-      const listElement = FilteredWordsList.value.$el.querySelector(".v-list")
-      if (listElement) {
-        listElement.scrollTop = 0
-      }
-    }
-    scrollToActiveItem(".active-verse-text", ".sura-text-container")
-  })
-} -->
-<!-- 
-
- -->
