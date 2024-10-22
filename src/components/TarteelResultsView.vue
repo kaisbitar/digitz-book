@@ -15,28 +15,32 @@
       v-for="(tarteelItem, index) in selectedTarteel.results"
       :key="index"
     >
-      {{ tarteelItem.word }}
       <v-divider></v-divider>
-      <!-- <v-expansion-panel-title>
+      <v-expansion-panel-title>
+        {{ tarteelItem.word }}
         <template v-slot:actions>
           <v-badge :content="tarteelItem.count" color="word-count"></v-badge>
         </template>
-      </v-expansion-panel-title> -->
-      <!-- <v-expansion-panel-text>
-        <v-list>
-          <v-list-item v-for="verse in wordList.verses" :key="verse.verseId">
+      </v-expansion-panel-title>
+      <v-expansion-panel-text>
+        <v-list v-for="verse in tarteelItem.verses" :key="verse.verseId">
+          {{ tarteelItem }}
+          <VerseCardItem :item="verse" />
+          <!-- <v-list-item v-for="verse in wordList.verses" :key="verse.verseId">
             <v-list-item-title>{{ verse.verse }}</v-list-item-title>
             <v-list-item-subtitle
               >Verse ID: {{ verse.verseId }}</v-list-item-subtitle
             >
-          </v-list-item>
+          </v-list-item> -->
         </v-list>
-      </v-expansion-panel-text> -->
+      </v-expansion-panel-text>
     </v-expansion-panel>
   </v-expansion-panels>
 </template>
 
 <script setup>
+import VerseCardItem from "./VerseCardItem.vue"
+
 const props = defineProps({
   selectedTarteel: {
     type: Object,

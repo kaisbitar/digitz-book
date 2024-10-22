@@ -13,7 +13,7 @@ export function useAutoComplete(dataStore, tarteelStore) {
       return { results: [] }
     }
     if (tarteel.value.length >= 0) {
-      return filterWords(tarteel.value, dataStore.getVersesForCounting)
+      return filterWords(tarteel.value, dataStore.getOneQuranFile)
     }
     return { results: [] }
   })
