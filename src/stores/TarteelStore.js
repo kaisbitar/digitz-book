@@ -7,6 +7,7 @@ export const useTarteelStore = defineStore("tarteel", {
   state: () => ({
     storedTarteels: [],
     selectedTarteelIndex: null,
+    selectedTarteel: null,
     tarteelHistory: [],
     storedTarteels: [],
   }),

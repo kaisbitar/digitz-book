@@ -109,7 +109,6 @@ const isMobile = computed(() => {
 })
 
 const handleSelectedSura = (sura) => {
-  console.log(sura)
   store.setTarget({
     fileName: sura.fileName,
     verseIndex: 1,

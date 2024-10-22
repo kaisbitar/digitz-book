@@ -7,7 +7,7 @@ export const getLettersChartOptions = (
   const theme = useTheme()
 
   // Access theme colors
-  const primaryColor = theme.current.value.colors.letterCount
+  const primaryColor = theme.current.value.colors["letter-count"]
   const secondaryColor = "#ccc"
 
   const defaultOptions = {

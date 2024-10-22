@@ -24,7 +24,7 @@
         @update:modelValue="updateSearchValue"
         :fieldPlaceHolder="placeholderText"
         :dataToShow="countBadgeText"
-        :type="'verseCount'"
+        :type="'verse-count'"
         @clear="onClear"
         @keyup:enter="onEnter"
       />

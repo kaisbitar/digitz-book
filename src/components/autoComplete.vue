@@ -3,7 +3,7 @@
     v-model="tarteel"
     :fieldPlaceHolder="'القرآن'"
     :dataToShow="`${totalWordsCount} كلمة`"
-    :type="'verseCount'"
+    :type="'verse-count'"
     @update:modelValue="handleInput"
     @clear="handleClear"
     @focus="onFocus"

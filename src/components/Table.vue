@@ -56,6 +56,13 @@ const emit = defineEmits<{
   (e: "rowClicked", item: TableItem): void
 }>()
 
+// const numberOfWords = computed(() =>
+//   props.item.verseText.split(" ").length.toString()
+// )
+// const numberOfLetters = computed(() =>
+//   props.item.verseText.replace(/ /g, "").length.toString()
+// )
+
 useResizeHandler({ elementRef: tableRef, elementFunc: setContainerHeight })
 
 watch(
