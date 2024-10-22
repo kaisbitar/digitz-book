@@ -17,7 +17,7 @@
 
       <v-divider></v-divider>
     </v-list>
-    <AppNavDropDown :components="[ThemeOptions]" />
+    <AppNavDropDown @click="emit('toggleTheme')" :components="[ThemeOptions]" />
   </v-navigation-drawer>
 </template>
 

@@ -6,7 +6,7 @@ interface CharVariations {
 interface ResultItem {
   count: number
   score: number
-  verses: { [verse: string]: number }
+  verses: { [verse: string]: { count: number; verseId: number } }
 }
 
 interface Results {
@@ -17,13 +17,13 @@ interface SortedResultItem {
   word: string
   count: number
   score: number
-  verses: { [verse: string]: number }
+  verses: { [verse: string]: { count: number; verseId: number } }
 }
 
 interface FormattedResult {
   word: string
   count: number
-  verses: string[]
+  verses: { verse: string; verseId: number }[]
 }
 
 interface FilterResult {
@@ -67,7 +67,8 @@ const processVerse = (
   verse: string,
   searchTerm: string,
   searchRegex: RegExp,
-  results: Results
+  results: Results,
+  verseId: number
 ): void => {
   const words = verse.split(/\s+/)
   words.forEach((word) => {
@@ -76,9 +77,17 @@ const processVerse = (
       if (results[word]) {
         results[word].count++
         results[word].score = Math.max(results[word].score, score)
-        results[word].verses[verse] = (results[word].verses[verse] || 0) + 1
+        if (results[word].verses[verse]) {
+          results[word].verses[verse].count++
+        } else {
+          results[word].verses[verse] = { count: 1, verseId }
+        }
       } else {
-        results[word] = { count: 1, score, verses: { [verse]: 1 } }
+        results[word] = {
+          count: 1,
+          score,
+          verses: { [verse]: { count: 1, verseId } },
+        }
       }
     }
   })
@@ -122,7 +131,10 @@ const formatResults = (
     results: sortedResults.map(({ word, count, verses }) => ({
       word,
       count,
-      verses: Object.keys(verses || []),
+      verses: Object.entries(verses || []).map(([verse, { verseId }]) => ({
+        verse,
+        verseId: verseId + 1,
+      })),
     })),
   }
 }
@@ -134,8 +146,8 @@ export function filterWords(
   const searchRegex = generateSearchRegex(searchTerm)
   const results: Results = {}
 
-  quranArray.forEach((verse) => {
-    processVerse(verse, searchTerm, searchRegex, results)
+  quranArray.forEach((verse, index) => {
+    processVerse(verse, searchTerm, searchRegex, results, index)
   })
 
   const sortedResults = sortResults(results, searchTerm)

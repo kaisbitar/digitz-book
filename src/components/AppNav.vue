@@ -5,22 +5,24 @@
         v-if="!isInputVisible"
         @click="toggleRailAppNavDrawer"
       />
-      <v-app-bar-title v-if="!isInputVisible">الكتاب المرقوم</v-app-bar-title>
-
-      <v-spacer v-if="!isMobile"></v-spacer>
 
       <div class="w-100 d-flex">
+        <v-app-bar-title v-show="!isInputVisible && $vuetify.display.smAndUp"
+          >الكتاب المرقوم</v-app-bar-title
+        >
+        <!-- <v-spacer v-if="!isMobile"></v-spacer> -->
         <AppToggleBtn
           :class="isInputVisible ? 'ml-0 mt-6' : ''"
+          btnText="ترتيل القرآن"
           :isActive="isInputVisible"
-          btnText="ترتيل"
+          inActiveIcon="mdi-magnify"
+          activeIcon="mdi-arrow-right"
           size="default"
           @toggle="isInputVisible = !isInputVisible"
         />
         <AutoComplete
           v-if="isInputVisible"
           class="flex-grow-1"
-          v-click-outside="onInputClickOutside"
           style="max-width: 1000px"
         />
       </div>
@@ -28,18 +30,28 @@
 
       <AppToggleBtn
         class="mx-0 mx-sm-4"
-        v-if="!isInputVisible"
-        :isActive="isInputVisible"
         btnText="السور"
-        :btnVariant="indexbtnVariant"
-        inactive-icon="mdi-menu-open"
+        :btnVariant="getButtonVariant('index')"
+        :isActive="openDrawers.index"
+        inActiveIcon="mdi-menu-open"
+        activeIcon="mdi-menu-open"
         size="default"
-        @toggle="toggleIndexDrawer"
+        @toggle="toggleDrawer('index')"
+      />
+      <AppToggleBtn
+        class="mx-0 mx-sm-4"
+        btnText="تراتيل"
+        :btnVariant="getButtonVariant('tarteel')"
+        :isActive="openDrawers.tarteel"
+        inActiveIcon="mdi-magnify"
+        activeIcon="mdi-magnify"
+        size="default"
+        @toggle="toggleDrawer('tarteel')"
       />
     </v-app-bar>
     <v-divider></v-divider>
 
-    <TableQuranIndex />
+    <TableQuranIndex v-model:drawer="indexDrawer" />
 
     <AppNavigationItems
       v-model="drawer"
@@ -54,6 +66,7 @@
     />
     <!-- THis is a work around for a bug on phones only when location is set to right
         :location="isMobile && !drawer ? 'left' : 'right'"  -->
+    <TarteelDrawer v-model:drawer="tarteelDrawer" />
   </div>
 </template>
 
@@ -61,16 +74,18 @@
 import { ref, computed } from "vue"
 import { useRouter } from "vue-router"
 import { useDisplay } from "vuetify"
-import { useStore } from "@/stores/appStore"
+import TarteelDrawer from "./TarteelDrawer.vue"
 
 const router = useRouter()
 const display = useDisplay()
-const store = useStore()
 const activeRoute = computed(() => router.currentRoute.value.name)
 
 const isInputVisible = ref(true)
 const isRail = ref(true)
 const drawer = ref(true)
+const tarteelDrawer = ref(false)
+const indexDrawer = ref(false)
+
 const handleNavigation = (route) => {
   router.push(route)
 }
@@ -101,8 +116,30 @@ const navigationItems = [
   },
 ]
 
-const indexbtnVariant = computed(() => {
-  return store.getIndexIsOpen ? "tonal" : "text"
+const openDrawers = ref({
+  index: false,
+  tarteel: false,
+})
+
+const getButtonVariant = (drawerName) => {
+  return openDrawers.value[drawerName] ? "tonal" : "text"
+}
+
+const toggleDrawer = (drawerName) => {
+  openDrawers.value[drawerName] = !openDrawers.value[drawerName]
+  if (drawerName === "tarteel") {
+    tarteelDrawer.value = openDrawers.value.tarteel
+  } else if (drawerName === "index") {
+    indexDrawer.value = openDrawers.value.index
+  }
+}
+
+watch(indexDrawer, (newValue) => {
+  openDrawers.value.index = newValue
+})
+
+watch(tarteelDrawer, (newValue) => {
+  openDrawers.value.tarteel = newValue
 })
 
 const isMobile = computed(() => {
@@ -122,14 +159,6 @@ const toggleRailAppNavDrawer = () => {
     isRail.value = !isRail.value
     drawer.value = true
   }
-}
-
-const toggleIndexDrawer = () => {
-  store.setIndexIsOpen(!store.getIndexIsOpen)
-}
-
-const onInputClickOutside = () => {
-  // isInputVisible.value = false
 }
 </script>
 

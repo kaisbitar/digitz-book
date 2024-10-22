@@ -38,6 +38,7 @@ export function useAutoComplete(dataStore, tarteelStore) {
   }
 
   const setTarteelAllResults = () => {
+    console.log(filteredWords.value)
     console.log(currentFilteredWords.value)
     tarteelStore.setStoredTarteels({
       inputText: tarteel.value,
