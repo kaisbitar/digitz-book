@@ -3,15 +3,13 @@
     <v-badge
       :content="dataToShow"
       :color="type"
-      floating
       offset-x="5"
-      offset-y="10"
+      offset-y="4"
     ></v-badge>
     <v-text-field
       :model-value="modelValue"
       v-bind="$attrs"
       :label="`ترتيل ${fieldPlaceHolder}`"
-      append-inner-icon="mdi-magnify"
       density="compact"
       clearable
       autofocus

@@ -6,7 +6,7 @@
     :size="size"
   >
     <v-icon v-if="isActive" class="ml-2">{{ activeIcon }}</v-icon>
-    <v-icon v-else class="ml-2">{{ inactiveIcon }}</v-icon>
+    <v-icon v-else class="ml-2">{{ inActiveIcon }}</v-icon>
     <span v-if="!isActive && showText" v-show="$vuetify.display.smAndUp">
       {{ btnText }}
     </span>
@@ -42,7 +42,7 @@ defineProps({
     type: String,
     default: "mdi-arrow-right",
   },
-  inactiveIcon: {
+  inActiveIcon: {
     type: String,
     default: "mdi-magnify",
   },

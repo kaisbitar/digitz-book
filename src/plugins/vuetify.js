@@ -20,7 +20,7 @@ export default createVuetify({
   theme: {
     // defaultTheme: "dark",
     // defaultTheme: "light",
-    // defaultTheme: "testing",
+    defaultTheme: "testing2",
     themes: {
       light: {
         colors: {
@@ -75,23 +75,23 @@ export default createVuetify({
       },
       testing2: {
         colors: {
-          primary: "#3B82F6", // A clear, vibrant blue
-          secondary: "#10B981", // A fresh green
-          success: "#22C55E", // A distinct green for success messages
-          error: "#EF4444", // A clear red for error states
-          background: "#F3F4F6", // A light gray for the background
-          surface: "#FAFAFA", // Off-white for surface elements
-          "surface-light": "#e9f1f0", // A very light gray for alternative surfaces
-          "on-background": "#1F2937", // A dark gray, almost black, for text on background
-          "on-surface": "#111827", // A very dark gray for text on surface
-          highlight: "#FDE68A", // A soft yellow for highlights
-          "active-row": "#E9EDF1", // A slightly lighter gray for active rows
-          "count-key-item": "#6B7280", // A medium gray for less important text
-          "on-highlight": "#1F2937", // Dark text on the highlight color
-          verseCount: "#ccc",
-          wordCount: "#fff",
-          letterCount: "#FAB387",
-          QuranCount: "#F9E2AF",
+          primary: "#3D5AFE", // Vivid indigo
+          secondary: "#00BFA5", // Teal green
+          success: "#00E676", // Bright green
+          error: "#FF3D00", // Vivid orange-red
+          background: "#FAFAFA", // Very light gray
+          surface: "#FFFFFF", // Pure white
+          "surface-light": "#F5F5F5", // Light gray
+          "on-background": "#212121", // Very dark gray
+          "on-surface": "#424242", // Dark gray
+          highlight: "#FFC400", // Amber
+          "active-row": "#E8EAF6", // Very light indigo
+          "count-key-item": "#78909C", // Blue-gray
+          "on-highlight": "#212121", // Very dark gray
+          verseCount: "#651FFF", // Deep purple
+          wordCount: "#2979FF", // Blue
+          letterCount: "#00B0FF", // Light blue
+          QuranCount: "#1DE9B6", // Teal
         },
       },
     },
