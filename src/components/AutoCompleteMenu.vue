@@ -22,7 +22,7 @@
             floating
             offset-x="-10"
             offset-y="0"
-            color="wordCount mr-2"
+            color="word-count mr-2"
           />
         </v-list-item-title>
       </v-list-item>

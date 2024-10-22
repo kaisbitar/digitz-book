@@ -9,7 +9,6 @@
     :activeItemKey="String(targetedIndex)"
     @rowClicked="handleVerseSelected"
   />
-
   <TableMobile
     v-else
     class="verses-overview"

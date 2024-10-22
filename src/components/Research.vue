@@ -1,31 +1,21 @@
 <template>
-  <v-row class="research-row">
-    <v-col cols="5" class="pb-1">
-      <h1 class="mb-n1">{{ chipsTitle }}</h1>
-      <AppCountChips
-        :wordCount="chipsData[selectedChipIndex]?.wordCount"
-        :versesCount="chipsData[selectedChipIndex]?.versesCount"
-        :labels="{ word: 'مرة', verse: 'آية' }"
-      />
-    </v-col>
-    <v-col>
-      <ResearchTitles class="" />
-    </v-col>
-  </v-row>
+  <!-- {{ storedTarteels }} -->
 </template>
 
 <script setup>
-import { computed, onMounted } from "vue"
+import { ref, computed, onMounted } from "vue"
 import { useStore } from "@/stores/appStore"
+import { useTarteelStore } from "@/stores/tarteelStore"
 
-const store = useStore()
+const tarteelStore = useTarteelStore()
 const props = defineProps({
   chipsTitle: String,
   chipsData: Object,
 })
 
-const emit = defineEmits(["chipClicked", "chipRemoved", "chipRemoveAll"])
-const selectedChipIndex = computed(() => store.getSelectedSearchIndex)
+const storedTarteels = computed(() => {
+  return tarteelStore.getStoredTarteels
+})
 </script>
 
 <style scoped>

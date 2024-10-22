@@ -7,7 +7,7 @@
         floating
         offset-x="-20"
         offset-y="-1"
-        color="wordCount"
+        color="word-count"
       ></v-badge>
     </v-list-item-title>
     <template v-slot:append>

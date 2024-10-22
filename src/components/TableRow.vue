@@ -6,6 +6,9 @@
   >
     <td>{{ computedIndex }}</td>
     <template v-for="key in headerKeys" :key="key">
+      {{ item }}
+      <!-- <td v-if="String(key) === 'numberOfWords'">{{ numberOfWords }}</td> -->
+      <!-- <td v-if="String(key) === 'numberOfLetters'">{{ numberOfLetters }}</td> -->
       <td
         v-if="String(key) !== 'index'"
         v-html="highlight(item[key], search)"
