@@ -8,22 +8,43 @@
       </v-btn>
     </v-toolbar>
 
-    <v-expansion-panels>
-      <TarteelDrawerItem
+    <v-list>
+      <v-list-item
         v-for="(item, index) in storedTarteels"
         :key="index"
-        :item="item"
-        :index="index"
-        @update:selection="handleSelectedTarteel"
-      />
-    </v-expansion-panels>
+        :value="index"
+        color="primary"
+        :active="selectedTarteel === index"
+        @click="handleSelectedTarteel(index)"
+      >
+        <template v-slot:prepend>
+          <v-list-item-title>
+            {{ item.inputText }}
+          </v-list-item-title>
+        </template>
+        <template v-slot:append>
+          <v-badge
+            :content="item.results.length"
+            color="word-count"
+            offset-x="5"
+            offset-y="0"
+            inline
+          ></v-badge>
+          <v-btn
+            icon="mdi-close"
+            variant="text"
+            size="small"
+            @click.stop="deleteTarteel(index)"
+          ></v-btn>
+        </template>
+      </v-list-item>
+    </v-list>
   </v-navigation-drawer>
 </template>
 
 <script setup>
 import { ref, computed, watch } from "vue"
 import { useTarteelStore } from "@/stores/tarteelStore"
-import TarteelDrawerItem from "./TarteelDrawerItem.vue"
 import { useRouter } from "vue-router"
 
 const router = useRouter()
@@ -40,7 +61,7 @@ const emit = defineEmits(["update:drawer"])
 const tarteelStore = useTarteelStore()
 
 const localDrawer = ref(true)
-const selectedTarteel = ref(null)
+const selectedTarteel = computed(() => tarteelStore.getSelectedTarteelIndex)
 
 watch(
   () => props.drawer,
@@ -58,9 +79,13 @@ const storedTarteels = computed(() => {
 })
 
 const handleSelectedTarteel = (index) => {
-  tarteelStore.setSelectedTarteelIndex(index)
+  tarteelStore.setThisTarteel(index)
   if (router.currentRoute.value.name !== "tarteel") {
     router.push({ name: "tarteel" })
   }
+}
+
+const deleteTarteel = (index) => {
+  tarteelStore.removeTarteelItem(index)
 }
 </script>

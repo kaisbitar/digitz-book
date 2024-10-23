@@ -6,7 +6,7 @@
         <v-badge :content="item.results.length" color="word-count"></v-badge>
       </template>
     </v-expansion-panel-title>
-    <v-expansion-panel-text>
+    <!-- <v-expansion-panel-text>
       <v-virtual-scroll :items="item.results" height="200" item-height="40">
         <template v-slot:default="{ item }">
           <v-list lines="one">
@@ -28,7 +28,7 @@
           </v-list>
         </template>
       </v-virtual-scroll>
-    </v-expansion-panel-text>
+    </v-expansion-panel-text> -->
   </v-expansion-panel>
 </template>
 

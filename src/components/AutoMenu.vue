@@ -16,8 +16,6 @@
       <v-list-item>
         <v-list-item-title>
           <span class="ml-2">ترتيل {{ tarteel }}..</span>
-          <v-divider vertical></v-divider>
-          <!-- <span class="ml-6">كلمات</span> -->
           <v-badge
             :content="`${currentWordsList.length} مشتق`"
             floating
@@ -28,52 +26,18 @@
       <v-divider></v-divider>
       <v-list-item>
         <v-expand-transition>
-          <v-list v-if="showAutoWordsList" class="d-flex flex-column">
-            <v-list-item>
-              <AutoWordList
-                :items="currentWordsList"
-                :checked-items="localCheckedItems"
-                @update:currentWordsList="updateWordsList"
-                @update:checked-items="updateLocalCheckedItems"
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-btn
-                @click="onTarteelSubmit"
-                color="primary"
-                variant="tonal"
-                block
-                size="large"
-              >
-                <span v-show="localCheckedItems.length === 0">
-                  رتل جميع الكلمات</span
-                >
-
-                <span
-                  v-show="localCheckedItems.length > 0"
-                  class="font-weight-bold"
-                >
-                  <v-scale-transition>
-                    <v-badge
-                      :key="localCheckedItems.length"
-                      :content="localCheckedItems.length.toString()"
-                      offset-y="-9"
-                      offset-x="20"
-                      color="word-count"
-                    >
-                      <template v-slot:badge>
-                        <div class="custom-badge">
-                          {{ localCheckedItems.length }}
-                        </div>
-                      </template>
-                    </v-badge>
-                  </v-scale-transition>
-                  رتل
-                  <!-- كلمات -->
-                </span>
-              </v-btn>
-            </v-list-item>
-          </v-list>
+          <div v-if="showAutoWordsList">
+            <AutoWordList
+              :items="currentWordsList"
+              :checked-items="localCheckedItems"
+              @update:currentWordsList="updateWordsList"
+              @update:checked-items="updateLocalCheckedItems"
+            />
+            <TarteelBtn
+              :checked-items="localCheckedItems"
+              @submit="onTarteelSubmit"
+            />
+          </div>
           <v-lazy
             v-else
             :options="{
@@ -90,6 +54,7 @@
 
 <script setup>
 import { ref, watch } from "vue"
+import TarteelBtn from "./TarteelBtn.vue"
 
 const props = defineProps({
   menu: Boolean,

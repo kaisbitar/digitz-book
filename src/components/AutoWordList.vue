@@ -4,6 +4,7 @@
       <template v-slot:default="{ item }">
         <v-hover v-slot="{ isHovering, props }">
           <v-list-item
+            color="primary"
             v-bind="props"
             :active="isItemChecked(item)"
             @click="toggleItemCheck(item)"
