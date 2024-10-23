@@ -88,6 +88,7 @@ th {
 
 .v-card-text.verse-card-item-text {
   font-size: 19px;
+  max-width: 1083px;
 }
 
 .text-caption {

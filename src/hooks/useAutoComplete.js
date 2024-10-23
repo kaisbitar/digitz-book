@@ -33,6 +33,7 @@ export function useAutoComplete(dataStore, tarteelStore) {
   )
 
   const onInput = (value) => {
+    if (!value) return
     tarteel.value = value
     menu.value = true
     currentLetter.value = value[value.length - 1]
@@ -44,17 +45,16 @@ export function useAutoComplete(dataStore, tarteelStore) {
       results: items,
     })
     tarteelStore.addToTarteelHistory(tarteel.value)
-    menu.value = false
   }
 
-  const onFocus = () => {
+  const onFocus = (value) => {
     menu.value = true
   }
 
   const clearInput = () => {
     tarteel.value = ""
     currentLetter.value = ""
-    menu.value = false
+    menu.value = true
     currentFilteredWords.value = []
     totalWordsCount.value = 0
   }

@@ -11,7 +11,6 @@
       size="small"
       :content="badgeContent"
       color="red"
-      bg-color="white"
       offset-x="-3"
       offset-y="-13"
       bordered
