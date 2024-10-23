@@ -18,32 +18,50 @@
           <span class="ml-2">ترتيل {{ tarteel }}..</span>
           <v-divider vertical></v-divider>
           <v-badge
-            :content="`${currentFilteredWords.length} مشتق`"
+            :text="currentFilteredWords.length"
+            :content="`${currentFilteredWords.length}`"
             floating
-            offset-x="-10"
-            offset-y="0"
+            offset-x="10"
+            offset-y="-1"
             color="word-count mr-2"
           />
+          <!-- <span class="mr-2 text-caption">مرة في القرآن</span> -->
         </v-list-item-title>
       </v-list-item>
       <v-divider></v-divider>
       <v-list-item>
         <v-expand-transition>
-          <AutoWordsList
+          <v-sheet
             v-if="showAutoWordsList"
-            :key="'filtered'"
-            ref="FilteredWordsList"
-            :items="currentFilteredWords"
-            :total-count="totalWordsCount"
-            :checkedItems="checkedItems"
-            @update:items="updateCurrentList"
-            @update:checkedItems="updateCheckedItems"
-            @tarteelAll="$emit('tarteelAll', $event)"
-            @remove-item="removeFromTarteels"
-          />
+            class="d-flex flex-column"
+            height="100%"
+          >
+            <v-list class="flex-grow-1 overflow-y-auto">
+              <v-virtual-scroll
+                :items="currentFilteredWords"
+                height="300"
+                item-height="50"
+              >
+                <template v-slot:default="{ item }">
+                  <AutoWordItem
+                    :item="item"
+                    :checked="isItemChecked(item)"
+                    @add-item="emitAddItem"
+                    @remove-item="removeFromTarteels"
+                    @update:checked="toggleItemCheck(item)"
+                  />
+                </template>
+              </v-virtual-scroll>
+            </v-list>
+            <v-sheet class="pa-4">
+              {{ checkedItems.length }}
+              <v-btn @click="tarteelSubmit" color="primary" variant="tonal">
+                رتل الجميع
+              </v-btn>
+            </v-sheet>
+          </v-sheet>
           <v-lazy
             v-else
-            :key="'chart'"
             :options="{
               threshold: 0.5,
             }"
@@ -72,27 +90,40 @@ const emit = defineEmits([
   "update:menu",
   "update:items",
   "update:checkedItems",
-  "tarteelAll",
+  "submitTarteel",
 ])
 
-const FilteredWordsList = ref(null)
 const showAutoWordsList = ref(false)
 const debounceTimer = ref(null)
 
-const updateCurrentList = (newItems) => {
-  emit("update:items", newItems)
-}
+const isItemChecked = (item) =>
+  props.checkedItems.some((checkedItem) => checkedItem.word === item.word)
 
-const updateCheckedItems = (newCheckedItems) => {
+const emitAddItem = (item) => {
+  const newCheckedItems = [...props.checkedItems, item]
   emit("update:checkedItems", newCheckedItems)
 }
 
 const removeFromTarteels = (removedItem) => {
-  console.log(removedItem)
   const updatedTarteels = props.currentFilteredWords.filter(
     (item) => item !== removedItem
   )
   emit("update:items", updatedTarteels)
+  const updatedCheckedItems = props.checkedItems.filter(
+    (item) => item !== removedItem
+  )
+  emit("update:checkedItems", updatedCheckedItems)
+}
+
+const tarteelSubmit = () => {
+  emit("submitTarteel")
+}
+
+const toggleItemCheck = (item) => {
+  const newCheckedItems = props.checkedItems.includes(item)
+    ? props.checkedItems.filter((checkedItem) => checkedItem !== item)
+    : [...props.checkedItems, item]
+  emit("update:checkedItems", newCheckedItems)
 }
 
 const checkTarteelLength = () => {

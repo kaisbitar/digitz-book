@@ -1,5 +1,4 @@
 <template>
-  {{ selectedTarteel.inputText }}
   <v-toolbar>
     <AppInputField
       :fieldInput="search"
@@ -82,7 +81,6 @@ watch(showSura, (value) => {
   if (!value) store.setIsDialog(false)
 })
 onMounted(() => {
-  console.log(selectedTarteel.value)
   search.value = props.inputText
   if (selectedChipIndex.value === -1) {
     store.setSearchIndex(0)

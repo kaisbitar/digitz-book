@@ -38,7 +38,7 @@ export function useAutoComplete(dataStore, tarteelStore) {
     currentLetter.value = value[value.length - 1]
   }
 
-  const storeAllTarteels = (items) => {
+  const storeTarteels = (items) => {
     tarteelStore.setStoredTarteels({
       inputText: tarteel.value,
       results: items,
@@ -63,6 +63,10 @@ export function useAutoComplete(dataStore, tarteelStore) {
     currentFilteredWords.value = newItems
   }
 
+  const updateCheckedItems = (newItems) => {
+    checkedItems.value = newItems
+  }
+
   return {
     tarteel,
     menu,
@@ -74,6 +78,7 @@ export function useAutoComplete(dataStore, tarteelStore) {
     onFocus,
     clearInput,
     updateEditableItems,
-    storeAllTarteels,
+    storeTarteels,
+    updateCheckedItems,
   }
 }

@@ -1,9 +1,9 @@
 <template>
-  <v-list-item :active="isActive" @click="handleClick">
+  <v-list-item :active="checked" @click="handleClick">
     <template v-slot:prepend>
       <v-checkbox
         :model-value="checked"
-        @update:model-value="$emit('update:checked', $event)"
+        @update:model-value="$emit('update:checked')"
         hide-details
         @click.stop
       ></v-checkbox>
@@ -24,8 +24,6 @@
 </template>
 
 <script setup>
-import { ref } from "vue"
-
 const props = defineProps({
   item: {
     type: Object,
@@ -39,14 +37,7 @@ const props = defineProps({
 
 const emit = defineEmits(["add-item", "remove-item", "update:checked"])
 
-const isActive = ref(false)
-
-const toggleActive = () => {
-  isActive.value = !isActive.value
-}
-
 const handleClick = () => {
-  toggleActive()
-  emit("update:checked", !props.checked)
+  emit("update:checked")
 }
 </script>

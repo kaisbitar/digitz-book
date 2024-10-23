@@ -52,7 +52,6 @@ const activeRoute = computed(() => router.currentRoute.value.name)
 const isMobile = computed(() => display.mobile.value)
 
 const handleSelectedVerse = (verse) => {
-  console.log(verse)
   store.setTarget({
     fileName: verse.fileName,
     verseIndex: verse.verseIndex,

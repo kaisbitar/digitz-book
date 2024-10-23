@@ -12,6 +12,7 @@
     <div :class="isInputVisible ? 'w-100 d-flex' : ''">
       <AppToggleBtn
         :class="isInputVisible ? 'ml-0 mt-6' : ''"
+        :showText="!isInputVisible"
         :isActive="isInputVisible"
         :btnText="searchBtnText"
         @toggle="onSearchToggle"
