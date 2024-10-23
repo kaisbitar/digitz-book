@@ -4,9 +4,12 @@
     :fieldPlaceHolder="'القرآن'"
     :dataToShow="`${totalWordsCount} كلمة`"
     :type="'verse-count'"
+    :hasError="inputHasError"
+    :errorMessage="errorMessage"
     @update:modelValue="handleInput"
     @clear="handleClear"
     @focus="onFocus"
+    @keydown.enter="handleTarteel"
   >
     <AutoMenu
       :menu="menu"
@@ -48,7 +51,11 @@ const {
   updateCheckedItems,
 } = useAutoComplete(dataStore, tarteelStore)
 
+const inputHasError = ref(false)
+const errorMessage = ref("")
+
 const handleTarteel = () => {
+  if (tarteel.value === "" || currentWordsList.value.length === 0) return
   if (checkedItems.value.length > 0) {
     storeTarteels(checkedItems.value)
   } else {
@@ -63,6 +70,14 @@ const handleTarteel = () => {
 const handleInput = (value) => {
   onInput(value)
   menu.value = true
+
+  if (currentWordsList.value.length > 0) {
+    inputHasError.value = false
+    errorMessage.value = ""
+    return
+  }
+  inputHasError.value = true
+  errorMessage.value = "Input is too long"
 }
 
 const handleClear = () => {

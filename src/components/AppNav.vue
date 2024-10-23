@@ -24,7 +24,7 @@
         <AutoBoard
           v-if="isInputVisible"
           class="flex-grow-1"
-          style="max-width: 1000px"
+          style="max-width: 929px"
         />
       </div>
       <v-spacer v-if="!isMobile"></v-spacer>

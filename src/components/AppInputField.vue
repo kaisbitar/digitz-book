@@ -16,6 +16,8 @@
       @click:clear="handleClear"
       prepend-inner-icon="mdi-magnify"
       hide-details
+      :error="hasError"
+      :error-messages="errorMessage"
       class="flex-grow-1"
       @update:model-value="handleInput"
       @focus="$emit('focus')"
@@ -45,9 +47,22 @@ const props = defineProps({
     type: String,
     default: "primary",
   },
+  hasError: {
+    type: Boolean,
+    default: false,
+  },
+  errorMessage: {
+    type: String,
+    default: "",
+  },
 })
 
-const emit = defineEmits(["update:modelValue", "clear", "focus"])
+const emit = defineEmits([
+  "update:modelValue",
+  "clear",
+  "focus",
+  "keydown:enter",
+])
 
 const theme = useTheme()
 
