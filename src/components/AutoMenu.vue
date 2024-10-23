@@ -36,26 +36,16 @@
             class="d-flex flex-column"
             height="100%"
           >
-            <v-list class="flex-grow-1 overflow-y-auto">
-              <v-virtual-scroll
-                :items="currentFilteredWords"
-                height="300"
-                item-height="50"
-              >
-                <template v-slot:default="{ item }">
-                  <AutoWordItem
-                    :item="item"
-                    :checked="isItemChecked(item)"
-                    @add-item="emitAddItem"
-                    @remove-item="removeFromTarteels"
-                    @update:checked="toggleItemCheck(item)"
-                  />
-                </template>
-              </v-virtual-scroll>
-            </v-list>
+            <AutoWordList
+              :items="currentFilteredWords"
+              :checked-items="localCheckedItems"
+              @update:checked-items="updateLocalCheckedItems"
+              @add-item="emitAddItem"
+              @remove-item="removeFromTarteels"
+            />
             <v-sheet class="pa-4">
-              {{ checkedItems.length }}
-              <v-btn @click="tarteelSubmit" color="primary" variant="tonal">
+              {{ localCheckedItems.length }}
+              <v-btn @click="onTarteelSubmit" color="primary" variant="tonal">
                 رتل الجميع
               </v-btn>
             </v-sheet>
@@ -91,45 +81,55 @@ const emit = defineEmits([
   "update:items",
   "update:checkedItems",
   "submitTarteel",
+  "add-item",
+  "remove-item",
 ])
 
 const showAutoWordsList = ref(false)
+const localCheckedItems = ref(props.checkedItems || [])
 const debounceTimer = ref(null)
 
-const isItemChecked = (item) =>
-  props.checkedItems.some((checkedItem) => checkedItem.word === item.word)
+watch(
+  () => props.checkedItems,
+  (newCheckedItems) => {
+    localCheckedItems.value = newCheckedItems
+  }
+)
+
+// watch(
+//   () => props.menu,
+//   (newMenuState) => {
+//     showAutoWordsList.value = newMenuState
+//   }
+// )
+
+const updateLocalCheckedItems = (newItems) => {
+  localCheckedItems.value = newItems
+  emit("update:checkedItems", newItems)
+}
 
 const emitAddItem = (item) => {
-  const newCheckedItems = [...props.checkedItems, item]
-  emit("update:checkedItems", newCheckedItems)
+  emit("add-item", item)
 }
 
-const removeFromTarteels = (removedItem) => {
-  const updatedTarteels = props.currentFilteredWords.filter(
-    (item) => item !== removedItem
+const removeFromTarteels = (item) => {
+  emit("remove-item", item)
+}
+
+const onTarteelSubmit = () => {
+  emit(
+    "submitTarteel",
+    localCheckedItems.value.length > 0
+      ? localCheckedItems.value
+      : props.currentFilteredWords
   )
-  emit("update:items", updatedTarteels)
-  const updatedCheckedItems = props.checkedItems.filter(
-    (item) => item !== removedItem
-  )
-  emit("update:checkedItems", updatedCheckedItems)
-}
-
-const tarteelSubmit = () => {
-  emit("submitTarteel")
-}
-
-const toggleItemCheck = (item) => {
-  const newCheckedItems = props.checkedItems.includes(item)
-    ? props.checkedItems.filter((checkedItem) => checkedItem !== item)
-    : [...props.checkedItems, item]
-  emit("update:checkedItems", newCheckedItems)
 }
 
 const checkTarteelLength = () => {
   if (debounceTimer.value) clearTimeout(debounceTimer.value)
   debounceTimer.value = setTimeout(() => {
     showAutoWordsList.value = props.tarteel.length >= 2
+    emit("update:menu", showAutoWordsList.value)
   }, 1500)
 }
 
@@ -144,4 +144,6 @@ watch(
     }
   }
 )
+
+onMounted(() => {})
 </script>

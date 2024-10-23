@@ -30,7 +30,7 @@
       <v-spacer v-if="!isMobile"></v-spacer>
 
       <AppToggleBtn
-        class="mx-0 mx-sm-4"
+        class="mx-2 mx-sm-4"
         btnText="السور"
         :btnVariant="getButtonVariant('index')"
         :isActive="openDrawers.index"
@@ -40,7 +40,7 @@
         @toggle="toggleDrawer('index')"
       />
       <AppToggleBtn
-        class="mx-0 mx-sm-4 tarteel-btn"
+        class="mx-2 mx-sm-4 tarteel-btn"
         :badgeContent="tarteelBadgeContent"
         btnText="تراتيل"
         :btnVariant="getButtonVariant('tarteel')"

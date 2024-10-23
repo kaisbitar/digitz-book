@@ -1,6 +1,6 @@
 <template>
   <AppInputField
-    v-model="tarteel"
+    :modelValue="tarteel"
     :fieldPlaceHolder="'القرآن'"
     :dataToShow="`${totalWordsCount} كلمة`"
     :type="'verse-count'"
@@ -19,6 +19,8 @@
       @update:items="updateEditableItems"
       @update:checkedItems="updateCheckedItems"
       @submitTarteel="handleTarteel"
+      @add-item="addItem"
+      @remove-item="removeItem"
     />
   </AppInputField>
 </template>
@@ -56,6 +58,8 @@ const handleTarteel = () => {
   }
   updateCheckedItems([])
   updateEditableItems([])
+  tarteel.value = ""
+  menu.value = false
 }
 
 const handleInput = (value) => {
@@ -66,6 +70,18 @@ const handleInput = (value) => {
 const handleClear = () => {
   clearInput()
   menu.value = true
+}
+
+// const updateCheckedItems = (newItems) => {
+//   checkedItems.value = newItems
+// }
+
+const addItem = (item) => {
+  // Handle adding item
+}
+
+const removeItem = (item) => {
+  // Handle removing item
 }
 </script>
 
