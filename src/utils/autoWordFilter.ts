@@ -67,7 +67,7 @@ const getCharVariations = (char: string): string[] => {
     ت: ["ت", "ة"],
     ى: ["ى", "ي"],
     و: ["و", "ؤ"],
-    ي: ["ي", "ئ", "ى"],
+    ي: ["ي", "ئ", "ى", "ء"],
   }
   return variations[char] || [char]
 }

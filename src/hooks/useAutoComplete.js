@@ -5,7 +5,7 @@ export function useAutoComplete(dataStore, tarteelStore) {
   const tarteel = ref("")
   const menu = ref(false)
   const currentLetter = ref("")
-  const currentFilteredWords = ref([])
+  const currentWordsList = ref([])
   const totalWordsCount = ref(0)
   const checkedItems = ref([])
 
@@ -22,7 +22,7 @@ export function useAutoComplete(dataStore, tarteelStore) {
   watch(
     () => filteredWords.value,
     (newFilteredItems) => {
-      currentFilteredWords.value = newFilteredItems.results.map((item) => ({
+      currentWordsList.value = newFilteredItems.results.map((item) => ({
         word: item.word,
         count: item.count,
         verses: item.verses,
@@ -55,12 +55,12 @@ export function useAutoComplete(dataStore, tarteelStore) {
     tarteel.value = ""
     currentLetter.value = ""
     menu.value = true
-    currentFilteredWords.value = []
+    currentWordsList.value = []
     totalWordsCount.value = 0
   }
 
-  const updateEditableItems = (newItems) => {
-    currentFilteredWords.value = newItems
+  const updateWordsList = (newItems) => {
+    currentWordsList.value = newItems
   }
 
   const updateCheckedItems = (newItems) => {
@@ -71,13 +71,13 @@ export function useAutoComplete(dataStore, tarteelStore) {
     tarteel,
     menu,
     currentLetter,
-    currentFilteredWords,
+    currentWordsList,
     totalWordsCount,
     checkedItems,
     onInput,
     onFocus,
     clearInput,
-    updateEditableItems,
+    updateWordsList,
     storeTarteels,
     updateCheckedItems,
   }

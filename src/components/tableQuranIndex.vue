@@ -134,14 +134,6 @@ const toggleDetailView = () => {
   isDetailView.value = !isDetailView.value
 }
 
-// watch(activeRoute, () => {
-//   handleDrawer()
-// })
-
-// onMounted(() => {
-//   handleDrawer()
-// })
-
 watch(targetedIndex, () => {
   scrollToActiveItem(`.active-index-item`, `.index-container .v-table__wrapper`)
 })
