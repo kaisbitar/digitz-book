@@ -11,16 +11,14 @@
     <AutoMenu
       :menu="menu"
       :tarteel="tarteel"
-      :currentFilteredWords="currentFilteredWords"
+      :currentWordsList="currentWordsList"
       :totalWordsCount="totalWordsCount"
       :currentLetter="currentLetter"
       :checkedItems="checkedItems"
       @update:menu="menu = $event"
-      @update:items="updateEditableItems"
+      @update:items="updateWordsList"
       @update:checkedItems="updateCheckedItems"
       @submitTarteel="handleTarteel"
-      @add-item="addItem"
-      @remove-item="removeItem"
     />
   </AppInputField>
 </template>
@@ -39,13 +37,13 @@ const {
   tarteel,
   menu,
   currentLetter,
-  currentFilteredWords,
+  currentWordsList,
   totalWordsCount,
   checkedItems,
   onInput,
   onFocus,
   clearInput,
-  updateEditableItems,
+  updateWordsList,
   storeTarteels,
   updateCheckedItems,
 } = useAutoComplete(dataStore, tarteelStore)
@@ -54,10 +52,10 @@ const handleTarteel = () => {
   if (checkedItems.value.length > 0) {
     storeTarteels(checkedItems.value)
   } else {
-    storeTarteels(currentFilteredWords.value)
+    storeTarteels(currentWordsList.value)
   }
   updateCheckedItems([])
-  updateEditableItems([])
+  updateWordsList([])
   tarteel.value = ""
   menu.value = false
 }
@@ -70,18 +68,6 @@ const handleInput = (value) => {
 const handleClear = () => {
   clearInput()
   menu.value = true
-}
-
-// const updateCheckedItems = (newItems) => {
-//   checkedItems.value = newItems
-// }
-
-const addItem = (item) => {
-  // Handle adding item
-}
-
-const removeItem = (item) => {
-  // Handle removing item
 }
 </script>
 

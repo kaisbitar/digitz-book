@@ -77,6 +77,12 @@ const filteredVerses = computed(() => {
       index: index,
     }))
 })
+const tagetedVerseIndex = computed(() => {
+  return store.getTarget.verseIndex
+})
+watch(tagetedVerseIndex, () => {
+  scrollToActiveVerse()
+})
 
 const updateSearchValue = (value) => {
   emit("update:search", value)
@@ -128,4 +134,8 @@ const updateSearch = (value) => {
     searchBtnText.value = `ترتيل ${props.suraName}`
   }
 }
+
+onMounted(() => {
+  scrollToActiveVerse()
+})
 </script>

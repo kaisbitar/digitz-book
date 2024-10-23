@@ -17,39 +17,63 @@
         <v-list-item-title>
           <span class="ml-2">ترتيل {{ tarteel }}..</span>
           <v-divider vertical></v-divider>
+          <!-- <span class="ml-6">كلمات</span> -->
           <v-badge
-            :text="currentFilteredWords.length"
-            :content="`${currentFilteredWords.length}`"
+            :content="`${currentWordsList.length} مشتق`"
             floating
-            offset-x="10"
-            offset-y="-1"
-            color="word-count mr-2"
+            color="word-count"
           />
-          <!-- <span class="mr-2 text-caption">مرة في القرآن</span> -->
         </v-list-item-title>
       </v-list-item>
       <v-divider></v-divider>
       <v-list-item>
         <v-expand-transition>
-          <v-sheet
-            v-if="showAutoWordsList"
-            class="d-flex flex-column"
-            height="100%"
-          >
-            <AutoWordList
-              :items="currentFilteredWords"
-              :checked-items="localCheckedItems"
-              @update:checked-items="updateLocalCheckedItems"
-              @add-item="emitAddItem"
-              @remove-item="removeFromTarteels"
-            />
-            <v-sheet class="pa-4">
-              {{ localCheckedItems.length }}
-              <v-btn @click="onTarteelSubmit" color="primary" variant="tonal">
-                رتل الجميع
+          <v-list v-if="showAutoWordsList" class="d-flex flex-column">
+            <v-list-item>
+              <AutoWordList
+                :items="currentWordsList"
+                :checked-items="localCheckedItems"
+                @update:currentWordsList="updateWordsList"
+                @update:checked-items="updateLocalCheckedItems"
+              />
+            </v-list-item>
+            <v-list-item>
+              <v-btn
+                @click="onTarteelSubmit"
+                color="primary"
+                variant="tonal"
+                block
+                size="large"
+              >
+                <span v-show="localCheckedItems.length === 0">
+                  رتل جميع الكلمات</span
+                >
+
+                <span
+                  v-show="localCheckedItems.length > 0"
+                  class="font-weight-bold"
+                >
+                  <v-scale-transition>
+                    <v-badge
+                      :key="localCheckedItems.length"
+                      :content="localCheckedItems.length.toString()"
+                      offset-y="-9"
+                      offset-x="20"
+                      color="word-count"
+                    >
+                      <template v-slot:badge>
+                        <div class="custom-badge">
+                          {{ localCheckedItems.length }}
+                        </div>
+                      </template>
+                    </v-badge>
+                  </v-scale-transition>
+                  رتل
+                  <!-- كلمات -->
+                </span>
               </v-btn>
-            </v-sheet>
-          </v-sheet>
+            </v-list-item>
+          </v-list>
           <v-lazy
             v-else
             :options="{
@@ -70,7 +94,7 @@ import { ref, watch } from "vue"
 const props = defineProps({
   menu: Boolean,
   tarteel: String,
-  currentFilteredWords: Array,
+  currentWordsList: Array,
   totalWordsCount: Number,
   currentLetter: String,
   checkedItems: Array,
@@ -81,7 +105,6 @@ const emit = defineEmits([
   "update:items",
   "update:checkedItems",
   "submitTarteel",
-  "add-item",
   "remove-item",
 ])
 
@@ -96,24 +119,13 @@ watch(
   }
 )
 
-// watch(
-//   () => props.menu,
-//   (newMenuState) => {
-//     showAutoWordsList.value = newMenuState
-//   }
-// )
+const updateWordsList = (newItems) => {
+  emit("update:items", newItems)
+}
 
 const updateLocalCheckedItems = (newItems) => {
   localCheckedItems.value = newItems
   emit("update:checkedItems", newItems)
-}
-
-const emitAddItem = (item) => {
-  emit("add-item", item)
-}
-
-const removeFromTarteels = (item) => {
-  emit("remove-item", item)
 }
 
 const onTarteelSubmit = () => {
@@ -121,7 +133,7 @@ const onTarteelSubmit = () => {
     "submitTarteel",
     localCheckedItems.value.length > 0
       ? localCheckedItems.value
-      : props.currentFilteredWords
+      : props.currentWordsList
   )
 }
 
