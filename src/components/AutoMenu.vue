@@ -29,13 +29,15 @@
       <v-divider></v-divider>
       <v-list-item>
         <v-expand-transition>
-          <AutoFilteredWords
-            v-if="showAutoFilteredWords"
+          <AutoWordsList
+            v-if="showAutoWordsList"
             :key="'filtered'"
             ref="FilteredWordsList"
             :items="currentFilteredWords"
             :total-count="totalWordsCount"
-            @update:items="updateCurrentFilteredWords"
+            :checkedItems="checkedItems"
+            @update:items="updateCurrentList"
+            @update:checkedItems="updateCheckedItems"
             @tarteelAll="$emit('tarteelAll', $event)"
             @remove-item="removeFromTarteels"
           />
@@ -56,8 +58,6 @@
 
 <script setup>
 import { ref, watch } from "vue"
-import AutoFilteredWords from "./AutoFilteredWords.vue"
-import LettersChart from "./LettersChart.vue"
 
 const props = defineProps({
   menu: Boolean,
@@ -65,19 +65,30 @@ const props = defineProps({
   currentFilteredWords: Array,
   totalWordsCount: Number,
   currentLetter: String,
+  checkedItems: Array,
 })
 
-const emit = defineEmits(["update:menu", "update:items", "tarteelAll"])
+const emit = defineEmits([
+  "update:menu",
+  "update:items",
+  "update:checkedItems",
+  "tarteelAll",
+])
 
 const FilteredWordsList = ref(null)
-const showAutoFilteredWords = ref(false)
+const showAutoWordsList = ref(false)
 const debounceTimer = ref(null)
 
-const updateCurrentFilteredWords = (newItems) => {
+const updateCurrentList = (newItems) => {
   emit("update:items", newItems)
 }
 
+const updateCheckedItems = (newCheckedItems) => {
+  emit("update:checkedItems", newCheckedItems)
+}
+
 const removeFromTarteels = (removedItem) => {
+  console.log(removedItem)
   const updatedTarteels = props.currentFilteredWords.filter(
     (item) => item !== removedItem
   )
@@ -87,7 +98,7 @@ const removeFromTarteels = (removedItem) => {
 const checkTarteelLength = () => {
   if (debounceTimer.value) clearTimeout(debounceTimer.value)
   debounceTimer.value = setTimeout(() => {
-    showAutoFilteredWords.value = props.tarteel.length >= 2
+    showAutoWordsList.value = props.tarteel.length >= 2
   }, 1500)
 }
 
@@ -95,7 +106,7 @@ watch(
   () => props.tarteel,
   (newValue) => {
     if (newValue.length < 2) {
-      showAutoFilteredWords.value = false
+      showAutoWordsList.value = false
       if (debounceTimer.value) clearTimeout(debounceTimer.value)
     } else {
       checkTarteelLength()

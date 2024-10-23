@@ -8,13 +8,14 @@
     />
   </v-toolbar>
   <!-- <Research :chipsTitle="inputText" :chipsData="research" /> -->
+
   <TarteelResultsView :selected-tarteel="selectedTarteel" />
-  <VersesOverview
+  <!-- <VersesOverview
     :verses="searchData"
     :versesInputText="search"
     @verseSelected="runSelectedSura"
   />
-  <SearchSuraDialog v-model="showSura" :searchData="dialogData" />
+  <SearchSuraDialog v-model="showSura" :searchData="dialogData" /> -->
 </template>
 
 <script setup>
@@ -37,8 +38,14 @@ const dialogData = ref({})
 const research = computed(() => store.getResearchResults)
 const selectedChipIndex = computed(() => store.getSelectedSearchIndex)
 const tagetedSura = computed(() => store.getTarget)
-const selectedTarteel = computed(() => tarteelStore.getSelectedTarteel)
+
 const storedTarteels = computed(() => tarteelStore.getStoredTarteels)
+const selectedTarteelIndex = computed(
+  () => tarteelStore.getSelectedTarteelIndex
+)
+const selectedTarteel = computed(
+  () => storedTarteels.value[selectedTarteelIndex.value]
+)
 
 const handleShowVersesMobileView = () => {
   store.setVersesMobileView(!store.getVersesMobileView)
@@ -75,7 +82,7 @@ watch(showSura, (value) => {
   if (!value) store.setIsDialog(false)
 })
 onMounted(() => {
-  console.log("selectedTarteel", selectedTarteel.value)
+  console.log(selectedTarteel.value)
   search.value = props.inputText
   if (selectedChipIndex.value === -1) {
     store.setSearchIndex(0)

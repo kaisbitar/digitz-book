@@ -40,11 +40,10 @@ interface FormattedResult {
   word: string
   count: number
   verses: {
-    verse: string
-    verseId: number
     fileName: string
     verseIndex: number
     verseNumberToQuran: number
+    verseText: string
   }[]
 }
 
@@ -173,12 +172,11 @@ const formatResults = (sortedResults: SortedResultItem[]): FilterResult => {
       word,
       count,
       verses: Object.entries(verses || []).map(
-        ([verse, { verseId, fileName, verseIndex, verseNumberToQuran }]) => ({
-          verse,
-          verseId,
+        ([verseText, { fileName, verseIndex, verseNumberToQuran }]) => ({
           fileName,
           verseIndex,
           verseNumberToQuran,
+          verseText,
         })
       ),
     })),
@@ -187,12 +185,12 @@ const formatResults = (sortedResults: SortedResultItem[]): FilterResult => {
 
 export function filterWords(
   searchTerm: string,
-  quranArray: VerseObject[]
+  oneQuranFile: VerseObject[]
 ): FilterResult {
   const searchRegex = generateSearchRegex(searchTerm)
   const results: Results = {}
 
-  quranArray.forEach((verseObj) => {
+  oneQuranFile.forEach((verseObj) => {
     processVerse(verseObj, searchTerm, searchRegex, results)
   })
 
@@ -200,12 +198,15 @@ export function filterWords(
   return formatResults(sortedResults)
 }
 
-// New function to count distinct words in the Quran
-export function countDistinctWords(quranArray: VerseObject[]): number {
+// Update the countDistinctWords function
+export function countDistinctWords(
+  oneQuranFile: VerseObject[] | string[]
+): number {
   const distinctWords = new Set<string>()
 
-  quranArray.forEach((verseObj) => {
-    const words = verseObj.verseText.split(/\s+/)
+  oneQuranFile.forEach((item) => {
+    const text = typeof item === "string" ? item : item.verseText
+    const words = text.split(/\s+/)
     words.forEach((word) => {
       distinctWords.add(word)
     })

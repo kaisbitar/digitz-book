@@ -6,7 +6,7 @@
   >
     <v-card-subtitle class="verse-card-item-title mb-2">
       <v-chip size="small" class="mr-n3 ml-2">{{ index + 1 }} </v-chip>
-      {{ item.suraNumber }} {{ item.suraName }}
+      {{ suraNumber }} {{ suraName }}
     </v-card-subtitle>
 
     <v-card-text
@@ -33,6 +33,15 @@ const props = defineProps({
   active: Boolean,
 })
 const emit = defineEmits(["verseClicked"])
+
+const suraNumber = computed(() => {
+  const numberPart = props.item.fileName
+    .replace(/[ء-٩]/g, "")
+    .replace(/\s/g, "")
+  return parseInt(numberPart, 10).toString()
+})
+
+const suraName = computed(() => props.item.fileName.replace(/[0-9]/g, ""))
 
 const handleClick = () => {
   emit("verseClicked")

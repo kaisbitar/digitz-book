@@ -5,7 +5,7 @@
     :numberOfWords="numberOfWords"
     :numberOfLetters="numberOfLetters"
   />
-  <SuraContent
+  <SuraBoard
     :tabs="tabs"
     v-model:search="search"
     :suraName="suraName"
@@ -35,7 +35,6 @@ import {
   setSuraToolTip,
   setMushafToolTip,
 } from "@/utils/suraUtils"
-import SuraContent from "@/components/SuraContent.vue"
 
 const { search } = useInputFiltering()
 const props = defineProps(["suraInputText"])

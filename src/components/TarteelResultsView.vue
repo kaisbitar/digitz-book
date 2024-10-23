@@ -23,15 +23,11 @@
         </template>
       </v-expansion-panel-title>
       <v-expansion-panel-text>
-        <v-list v-for="verse in tarteelItem.verses" :key="verse.verseId">
-          {{ tarteelItem }}
-          <VerseCardItem :item="verse" />
-          <!-- <v-list-item v-for="verse in wordList.verses" :key="verse.verseId">
-            <v-list-item-title>{{ verse.verse }}</v-list-item-title>
-            <v-list-item-subtitle
-              >Verse ID: {{ verse.verseId }}</v-list-item-subtitle
-            >
-          </v-list-item> -->
+        <v-list
+          v-for="verse in tarteelItem.verses"
+          :key="verse.verseNumberToQuran"
+        >
+          <VerseCardItem :item="verse" @click="handleSelectedVerse(verse)" />
         </v-list>
       </v-expansion-panel-text>
     </v-expansion-panel>
@@ -39,7 +35,11 @@
 </template>
 
 <script setup>
-import VerseCardItem from "./VerseCardItem.vue"
+import { useStore } from "@/stores/appStore"
+import { useRouter } from "vue-router"
+
+const store = useStore()
+const router = useRouter()
 
 const props = defineProps({
   selectedTarteel: {
@@ -47,7 +47,24 @@ const props = defineProps({
     default: null,
   },
 })
-onMounted(() => {
-  console.log("selectedTarteel", props.selectedTarteel)
-})
+
+const activeRoute = computed(() => router.currentRoute.value.name)
+const isMobile = computed(() => display.mobile.value)
+
+const handleSelectedVerse = (verse) => {
+  console.log(verse)
+  store.setTarget({
+    fileName: verse.fileName,
+    verseIndex: verse.verseIndex,
+    verseNumberToQuran: verse.verseNumberToQuran.toString(),
+  })
+
+  if (activeRoute !== "sura") {
+    router.push({ name: "sura" })
+  }
+
+  store.setSearchIndex(-1)
+}
+
+onMounted(() => {})
 </script>
