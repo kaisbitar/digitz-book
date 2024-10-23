@@ -17,8 +17,8 @@
       :checkedItems="checkedItems"
       @update:menu="menu = $event"
       @update:items="updateEditableItems"
-      @update:checkedItems="checkedItems = $event"
-      @tarteelAll="handleTarteelAll"
+      @update:checkedItems="updateCheckedItems"
+      @submitTarteel="handleTarteel"
     />
   </AppInputField>
 </template>
@@ -29,7 +29,6 @@ import { useTarteelStore } from "@/stores/tarteelStore"
 import { useAutoComplete } from "@/hooks/useAutoComplete"
 
 import AppInputField from "./AppInputField.vue"
-import AutoCompleteMenu from "./AutoMenu.vue"
 
 const dataStore = useDataStore()
 const tarteelStore = useTarteelStore()
@@ -45,11 +44,18 @@ const {
   onFocus,
   clearInput,
   updateEditableItems,
-  storeAllTarteels,
+  storeTarteels,
+  updateCheckedItems,
 } = useAutoComplete(dataStore, tarteelStore)
 
-const handleTarteelAll = (items) => {
-  storeAllTarteels(items)
+const handleTarteel = () => {
+  if (checkedItems.value.length > 0) {
+    storeTarteels(checkedItems.value)
+  } else {
+    storeTarteels(currentFilteredWords.value)
+  }
+  updateCheckedItems([])
+  updateEditableItems([])
 }
 
 const handleInput = (value) => {

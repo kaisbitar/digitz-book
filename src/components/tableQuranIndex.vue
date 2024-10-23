@@ -1,51 +1,54 @@
 <template>
-  <v-hover v-slot="{ isHovering, props }" open-delay="100" close-delay="100">
-    <v-navigation-drawer
-      v-model="localDrawer"
-      v-bind="props"
-      :width="isHovering || isMobile ? drawerWidthDetail : drawerWidthNoDetail"
-      :location="'left'"
-      expand-on-hover
-    >
-      <!-- <v-container> -->
-      <v-toolbar dark>
-        <v-toolbar-title v-if="!isInputVisible">السور</v-toolbar-title>
-        <v-spacer></v-spacer
-        ><AppToggleBtn
-          :isActive="isInputVisible"
-          inActiveIcon="mdi-magnify"
-          activeIcon="mdi-arrow-right"
-          size="default"
-          @toggle="isInputVisible = !isInputVisible"
-        />
-        <AppInputField
-          class="flex-grow-1 mt-n3 pr-2"
-          v-if="isInputVisible"
-          :fieldInput="search"
-          :fieldPlaceHolder="'السور'"
-          :dataToShow="indexData.length - 1"
-          :type="'QuranCount'"
-          @update:fieldInput="updateSearchValue"
-        />
-        <v-btn icon @click="localDrawer = false">
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-      </v-toolbar>
+  <v-navigation-drawer
+    v-model="localDrawer"
+    :width="isDetailView ? drawerWidthDetail : drawerWidthNoDetail"
+    :location="'left'"
+  >
+    <v-toolbar dark>
+      <!-- <v-toolbar-title v-if="!isInputVisible">السور</v-toolbar-title> -->
 
-      <Table
-        :isIndexItem="true"
-        class="index-container"
-        :activeItemClass="'active-index-item'"
-        :tableData="indexData"
-        :tableInputText="search"
-        :tableHeaders="indexHeaders"
-        :fieldPlaceHolder="'السور'"
-        :activeItemKey="targetedIndex"
-        @rowClicked="handleSelectedSura"
+      <AppToggleBtn
+        :isActive="isInputVisible"
+        btnText="ترتيل السور"
+        inActiveIcon="mdi-magnify"
+        activeIcon="mdi-arrow-right"
+        size="default"
+        @toggle="isInputVisible = !isInputVisible"
       />
-      <!-- </v-container> -->
-    </v-navigation-drawer>
-  </v-hover>
+      <AppInputField
+        class="flex-grow-1 mt-n3 pr-2"
+        v-if="isInputVisible"
+        :fieldInput="search"
+        :fieldPlaceHolder="'السور'"
+        :dataToShow="indexData.length - 1"
+        :type="'QuranCount'"
+        @update:fieldInput="updateSearchValue"
+      />
+      <v-spacer></v-spacer>
+      <AppToggleBtn
+        :isActive="isDetailView"
+        inActiveIcon="mdi-chevron-right"
+        activeIcon="mdi-chevron-left"
+        size="default"
+        @toggle="toggleDetailView"
+      />
+      <v-btn icon @click="localDrawer = false">
+        <v-icon>mdi-close</v-icon>
+      </v-btn>
+    </v-toolbar>
+
+    <Table
+      :isIndexItem="true"
+      class="index-container"
+      :activeItemClass="'active-index-item'"
+      :tableData="indexData"
+      :tableInputText="search"
+      :tableHeaders="indexHeaders"
+      :fieldPlaceHolder="'السور'"
+      :activeItemKey="targetedIndex"
+      @rowClicked="handleSelectedSura"
+    />
+  </v-navigation-drawer>
 </template>
 
 <script setup>
@@ -77,6 +80,8 @@ const emit = defineEmits(["update:drawer"])
 
 const localDrawer = ref(props.drawer)
 const isInputVisible = ref(false)
+const isDetailView = ref(false)
+
 watch(
   () => props.drawer,
   (newValue) => {
@@ -125,21 +130,17 @@ const handleSelectedSura = (sura) => {
   store.setSearchIndex(-1)
 }
 
-const handleDrawer = () => {
-  if (activeRoute.value === "sura" && !isMobile.value) {
-    localDrawer.value = true
-  } else {
-    localDrawer.value = false
-  }
+const toggleDetailView = () => {
+  isDetailView.value = !isDetailView.value
 }
 
-watch(activeRoute, () => {
-  handleDrawer()
-})
+// watch(activeRoute, () => {
+//   handleDrawer()
+// })
 
-onMounted(() => {
-  handleDrawer()
-})
+// onMounted(() => {
+//   handleDrawer()
+// })
 
 watch(targetedIndex, () => {
   scrollToActiveItem(`.active-index-item`, `.index-container .v-table__wrapper`)

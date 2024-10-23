@@ -14,6 +14,7 @@
         <AppToggleBtn
           :class="isInputVisible ? 'ml-0 mt-6' : ''"
           btnText="ترتيل القرآن"
+          :showText="!isInputVisible"
           :isActive="isInputVisible"
           inActiveIcon="mdi-magnify"
           activeIcon="mdi-arrow-right"
@@ -54,7 +55,7 @@
 
     <TableQuranIndex v-model:drawer="indexDrawer" />
 
-    <AppNavItems
+    <AppNavDrawer
       v-model="drawer"
       :rail="isRail && !isMobile"
       :location="isMobile ? 'left' : 'right'"
@@ -62,8 +63,9 @@
       :permanent="!isMobile"
       :navigationItems="navigationItems"
       :activeRoute="activeRoute"
+      :expand-on-hover="!isMobile"
       @navigateTo="handleNavigation"
-      @update:drawer="drawer = true"
+      @update:modelValue="updateDrawer"
     />
     <!-- THis is a work around for a bug on phones only when location is set to right
         :location="isMobile && !drawer ? 'left' : 'right'"  -->
@@ -164,6 +166,10 @@ const toggleRailAppNavDrawer = () => {
     isRail.value = !isRail.value
     drawer.value = true
   }
+}
+
+const updateDrawer = (value) => {
+  drawer.value = value
 }
 </script>
 
