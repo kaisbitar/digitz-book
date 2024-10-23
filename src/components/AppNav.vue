@@ -20,7 +20,7 @@
           size="default"
           @toggle="isInputVisible = !isInputVisible"
         />
-        <AutoComplete
+        <AutoBoard
           v-if="isInputVisible"
           class="flex-grow-1"
           style="max-width: 1000px"
@@ -33,18 +33,19 @@
         btnText="السور"
         :btnVariant="getButtonVariant('index')"
         :isActive="openDrawers.index"
-        inActiveIcon="mdi-menu-open"
-        activeIcon="mdi-menu-open"
+        inActiveIcon="mdi-book-open-outline"
+        activeIcon="mdi-book-open"
         size="default"
         @toggle="toggleDrawer('index')"
       />
       <AppToggleBtn
-        class="mx-0 mx-sm-4"
+        class="mx-0 mx-sm-4 tarteel-btn"
+        :badgeContent="tarteelBadgeContent"
         btnText="تراتيل"
         :btnVariant="getButtonVariant('tarteel')"
         :isActive="openDrawers.tarteel"
-        inActiveIcon="mdi-magnify"
-        activeIcon="mdi-magnify"
+        inActiveIcon="mdi-database-search-outline"
+        activeIcon="mdi-database-search"
         size="default"
         @toggle="toggleDrawer('tarteel')"
       />
@@ -53,7 +54,7 @@
 
     <TableQuranIndex v-model:drawer="indexDrawer" />
 
-    <AppNavigationItems
+    <AppNavItems
       v-model="drawer"
       :rail="isRail && !isMobile"
       :location="isMobile ? 'left' : 'right'"
@@ -74,8 +75,9 @@
 import { ref, computed } from "vue"
 import { useRouter } from "vue-router"
 import { useDisplay } from "vuetify"
-import TarteelDrawer from "./TarteelDrawer.vue"
+import { useTarteelStore } from "@/stores/tarteelStore"
 
+const tarteelStore = useTarteelStore()
 const router = useRouter()
 const display = useDisplay()
 const activeRoute = computed(() => router.currentRoute.value.name)
@@ -85,6 +87,9 @@ const isRail = ref(true)
 const drawer = ref(true)
 const tarteelDrawer = ref(false)
 const indexDrawer = ref(false)
+const tarteelBadgeContent = computed(() => {
+  return tarteelStore.storedTarteels.length
+})
 
 const handleNavigation = (route) => {
   router.push(route)
@@ -103,7 +108,7 @@ const navigationItems = [
     label: "السور",
   },
   {
-    route: "search",
+    route: "tarteel",
     icon: "mdi-database-search-outline",
     activeIcon: "mdi-database-search",
     label: "ترتيل",
@@ -162,4 +167,8 @@ const toggleRailAppNavDrawer = () => {
 }
 </script>
 
-<style scoped></style>
+<style>
+.tarteel-btn .v-badge__badge {
+  z-index: 2;
+}
+</style>

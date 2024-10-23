@@ -1,5 +1,4 @@
 <template>
-  {{ searchData }}
   <TarteelBoard :inputText="inputText" :searchData="searchData" />
 </template>
 <script setup>

@@ -8,7 +8,7 @@
       <h2 class="text-lg theme-text-color">سور</h2>
     </v-col>
     <v-col cols="6" class="d-flex flex-column align-center">
-      <v-icon @click="goToPage('search')" size="100"
+      <v-icon @click="goToPage('tarteel')" size="100"
         >mdi-database-search-outline</v-icon
       >
       <h2 class="text-lg">ترتيل</h2>

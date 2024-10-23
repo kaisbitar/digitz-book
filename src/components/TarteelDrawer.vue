@@ -14,7 +14,7 @@
         :key="index"
         :item="item"
         :index="index"
-        @update:selection="updateSelectedTarteel"
+        @update:selection="handleSelectedTarteel"
       />
     </v-expansion-panels>
   </v-navigation-drawer>
@@ -24,6 +24,9 @@
 import { ref, computed, watch } from "vue"
 import { useTarteelStore } from "@/stores/tarteelStore"
 import TarteelDrawerItem from "./TarteelDrawerItem.vue"
+import { useRouter } from "vue-router"
+
+const router = useRouter()
 
 const props = defineProps({
   drawer: {
@@ -54,7 +57,10 @@ const storedTarteels = computed(() => {
   return tarteelStore.getStoredTarteels
 })
 
-const updateSelectedTarteel = (index) => {
+const handleSelectedTarteel = (index) => {
   tarteelStore.setSelectedTarteelIndex(index)
+  if (router.currentRoute.value.name !== "tarteel") {
+    router.push({ name: "tarteel" })
+  }
 }
 </script>

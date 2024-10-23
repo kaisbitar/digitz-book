@@ -21,9 +21,9 @@ const routes = [
     component: () => import("@/pages/Sura"),
   },
   {
-    path: "/search",
-    name: "search",
-    component: () => import("@/pages/Search"),
+    path: "/tarteel",
+    name: "tarteel",
+    component: () => import("@/pages/Tarteel"),
   },
 ]
 

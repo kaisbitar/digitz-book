@@ -8,14 +8,16 @@
     @clear="handleClear"
     @focus="onFocus"
   >
-    <AutoCompleteMenu
+    <AutoMenu
       :menu="menu"
       :tarteel="tarteel"
       :currentFilteredWords="currentFilteredWords"
       :totalWordsCount="totalWordsCount"
       :currentLetter="currentLetter"
+      :checkedItems="checkedItems"
       @update:menu="menu = $event"
       @update:items="updateEditableItems"
+      @update:checkedItems="checkedItems = $event"
       @tarteelAll="handleTarteelAll"
     />
   </AppInputField>
@@ -27,7 +29,7 @@ import { useTarteelStore } from "@/stores/tarteelStore"
 import { useAutoComplete } from "@/hooks/useAutoComplete"
 
 import AppInputField from "./AppInputField.vue"
-import AutoCompleteMenu from "./AutoCompleteMenu.vue"
+import AutoCompleteMenu from "./AutoMenu.vue"
 
 const dataStore = useDataStore()
 const tarteelStore = useTarteelStore()
@@ -38,15 +40,16 @@ const {
   currentLetter,
   currentFilteredWords,
   totalWordsCount,
+  checkedItems,
   onInput,
   onFocus,
   clearInput,
   updateEditableItems,
-  setTarteelAllResults,
+  storeAllTarteels,
 } = useAutoComplete(dataStore, tarteelStore)
 
 const handleTarteelAll = (items) => {
-  setTarteelAllResults(items)
+  storeAllTarteels(items)
 }
 
 const handleInput = (value) => {

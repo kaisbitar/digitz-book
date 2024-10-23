@@ -9,7 +9,7 @@
     <v-spacer v-if="!isInputVisible"></v-spacer>
     <v-spacer></v-spacer>
 
-    <div class="w-100 d-flex">
+    <div :class="isInputVisible ? 'w-100 d-flex' : ''">
       <AppToggleBtn
         :class="isInputVisible ? 'ml-0 mt-6' : ''"
         :isActive="isInputVisible"
@@ -29,6 +29,8 @@
         @keyup:enter="onEnter"
       />
     </div>
+    <v-spacer></v-spacer>
+
     <slot name="additional-actions"></slot>
   </v-toolbar>
 </template>

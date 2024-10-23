@@ -14,6 +14,7 @@ export const useDataStore = defineStore("data", {
     allVersesWithTashkeel: [],
     versesForCounting: [],
     QuranLetterCounts: {},
+    totalWordsCount: 0,
   }),
   persist: {
     enabled: true,
@@ -71,9 +72,11 @@ export const useDataStore = defineStore("data", {
       }
 
       this.setAllVersesWithTashkeel(versesWithTashkeel)
-      const versesForCounting = this.oneQuranFile.map(
-        (verse) => verse.verseText
-      )
+      const versesForCounting =
+        this.oneQuranFile.length > 0
+          ? this.oneQuranFile.map((verse) => verse.verseText)
+          : versesWithTashkeel
+
       this.setVersesForCounting(versesForCounting)
 
       this.QuranLetterCounts = countLettersInQuran(versesForCounting.join(" "))
