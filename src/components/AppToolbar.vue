@@ -8,9 +8,9 @@
     />
     <v-spacer v-if="!isInputVisible"></v-spacer>
     <v-spacer></v-spacer>
-
     <div :class="isInputVisible ? 'w-100 d-flex' : ''">
       <AppToggleBtn
+        :badgeContent="!isInputVisible && badgeIsActive ? badgeContent : ''"
         :class="isInputVisible ? 'ml-0 mt-6' : ''"
         :showText="!isInputVisible"
         :isActive="isInputVisible"
@@ -45,6 +45,8 @@ const props = defineProps({
   placeholderText: String,
   countBadgeText: String,
   isInputVisible: Boolean,
+  badgeContent: String,
+  badgeIsActive: Boolean,
 })
 
 const emit = defineEmits([

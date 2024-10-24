@@ -7,6 +7,8 @@
     :placeholderText="`سورة ${suraName}`"
     :countBadgeText="`${filteredVerses.length} آية`"
     :isInputVisible="isInputVisible"
+    :badgeIsActive="search ? true : false"
+    :badgeContent="`${filteredVerses.length}`"
     @update:activeTab="updateActiveTab"
     @update:search="updateSearch"
     @searchToggle="onSearchToggle"
@@ -32,7 +34,7 @@
     <v-window-item value="versesTab" @before-enter="scrollToActiveVerse">
       <VersesOverview
         ref="VersesOverviewRef"
-        :verses="filteredVerses"
+        :verses="versesBasics"
         :versesInputText="search"
         @verseSelected="handleVerseSelected"
       />
@@ -77,16 +79,14 @@ const filteredVerses = computed(() => {
       index: index,
     }))
 })
+
+const targetTarteel = computed(() => store.getTarget?.tarteel)
 const tagetedVerseIndex = computed(() => {
   return store.getTarget.verseIndex
 })
 watch(tagetedVerseIndex, () => {
   scrollToActiveVerse()
 })
-
-const updateSearchValue = (value) => {
-  emit("update:search", value)
-}
 
 const handleVerseSelected = (verse) => {
   emit("verseSelected", verse)
@@ -133,9 +133,13 @@ const updateSearch = (value) => {
   if (value === "" || value === null) {
     searchBtnText.value = `ترتيل ${props.suraName}`
   }
+  scrollToActiveVerse()
 }
 
 onMounted(() => {
+  if (targetTarteel.value) {
+    isInputVisible.value = true
+  }
   scrollToActiveVerse()
 })
 </script>

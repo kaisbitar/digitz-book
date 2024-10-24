@@ -8,7 +8,6 @@ interface ResizeHandlerOptions {
 
 export function useResizeHandler(options: ResizeHandlerOptions = {}) {
   const { elementRef, elementFunc } = options
-
   let resizeObserver: ResizeObserver | null = null
 
   const handleResize = () => {

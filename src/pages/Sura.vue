@@ -66,10 +66,14 @@ const tabs = computed(() => [
   },
   { title: "تواتر", name: "frequency", icon: "mdi-chart-bar" },
 ])
+
 const fileName = computed(() => store.getTarget?.fileName || "001الفاتحة")
 const suraNumber = computed(() => parseInt(store.getTarget?.suraNumber))
 const suraName = computed(() => store.getTarget?.suraName)
+const targetTarteel = computed(() => store.getTarget?.tarteel)
+
 const tableQuranIndex = computed(() => dataStore.getQuranIndex)
+
 const suraKeyValues = computed(
   () => tableQuranIndex.value[suraNumber.value] || tableQuranIndex.value[1]
 )
@@ -148,7 +152,7 @@ const prepareData = () => {
 watch(fileName, prepareData)
 
 onMounted(() => {
-  search.value = props.suraInputText || ""
+  search.value = props.suraInputText || targetTarteel.value || ""
   store.setActiveRoute("sura")
   prepareData()
 })

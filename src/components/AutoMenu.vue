@@ -16,10 +16,11 @@
       <v-list-item>
         <v-list-item-title>
           <span class="ml-2">ترتيل {{ tarteel }}..</span>
+
           <v-badge
             :content="`${currentWordsList.length} مشتق`"
             floating
-            color="word-count"
+            :color="currentWordsList.length > 0 ? 'word-count' : 'red'"
           />
         </v-list-item-title>
       </v-list-item>
@@ -35,6 +36,7 @@
             />
             <TarteelBtn
               :checked-items="localCheckedItems"
+              :is-disabled="currentWordsList.length === 0"
               @submit="onTarteelSubmit"
             />
           </div>

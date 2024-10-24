@@ -30,16 +30,6 @@
       <v-spacer v-if="!isMobile"></v-spacer>
 
       <AppToggleBtn
-        class="mx-2 mx-sm-4"
-        btnText="السور"
-        :btnVariant="getButtonVariant('index')"
-        :isActive="openDrawers.index"
-        inActiveIcon="mdi-book-open-outline"
-        activeIcon="mdi-book-open"
-        size="default"
-        @toggle="toggleDrawer('index')"
-      />
-      <AppToggleBtn
         class="mx-2 mx-sm-4 tarteel-btn"
         :badgeContent="tarteelBadgeContent"
         btnText="تراتيل"
@@ -49,6 +39,16 @@
         activeIcon="mdi-database-search"
         size="default"
         @toggle="toggleDrawer('tarteel')"
+      />
+      <AppToggleBtn
+        class="mx-2 mx-sm-4"
+        btnText="السور"
+        :btnVariant="getButtonVariant('index')"
+        :isActive="openDrawers.index"
+        inActiveIcon="mdi-book-open-outline"
+        activeIcon="mdi-book-open"
+        size="default"
+        @toggle="toggleDrawer('index')"
       />
     </v-app-bar>
     <v-divider></v-divider>
@@ -90,7 +90,7 @@ const drawer = ref(true)
 const tarteelDrawer = ref(false)
 const indexDrawer = ref(false)
 const tarteelBadgeContent = computed(() => {
-  return tarteelStore.storedTarteels.length
+  return String(tarteelStore.storedTarteels.length)
 })
 
 const handleNavigation = (route) => {

@@ -14,10 +14,8 @@ export const useStore = defineStore("Quran", {
       fileName: "001الفاتحة",
       verseIndex: 1,
       verseNumberToQuran: 1,
+      tarteel: null,
     },
-    researchResults: [],
-    selectedSearch: [],
-    selectedSearchIndex: null,
     suras: {},
     versesMobileView: false,
     activeSuraTab: "numberOfVerses",
@@ -39,14 +37,10 @@ export const useStore = defineStore("Quran", {
     getVersesMobileView: (state) => state.versesMobileView,
     getIsDialog: (state) => state.isDialog,
     getTarget: (state) => state.target,
-    getResearchResults: (state) => state.researchResults,
-    getSelectedSearchIndex: (state) => state.selectedSearchIndex,
     getQuranIndex: (state) => state.QuranIndex,
     getActiveSuraTab: (state) => state.activeSuraTab,
     getActiveRoute: (state) => state.activeRoute,
     getChartFreqType: (state) => state.chartFreqType,
-    getSelectedSearch: (state) =>
-      state.researchResults[state.selectedSearchIndex],
     getWordMeaning: (state) => (word) => state.wordMeanings[word] || null,
   },
   actions: {
@@ -77,27 +71,18 @@ export const useStore = defineStore("Quran", {
         fileName: target.fileName,
         verseIndex: target.verseIndex,
         verseNumberToQuran: target.verseNumberToQuran,
+        tarteel: target.tarteel,
       }
     },
     resetTarget() {
       this.target = { fileName: "001الفاتحة", verseIndex: null }
     },
-    setSearchIndex(index) {
-      this.selectedSearchIndex = index
-      this.selectedSearch = this.researchResults[index]
-    },
+    setSearchIndex(index) {},
     resetSuras() {
       this.suras = {}
     },
-    setResearchResults(result) {
-      this.researchResults.push(result)
-    },
-    resetResearchResults() {
-      this.researchResults = []
-    },
-    setRemoveSearchItem(index) {
-      this.researchResults.splice(index, 1)
-    },
+
+    setRemoveSearchItem(index) {},
     setQuranIndex(items) {
       this.QuranIndex = items
     },

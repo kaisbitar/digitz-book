@@ -3,7 +3,7 @@
     :modelValue="tarteel"
     :fieldPlaceHolder="'القرآن'"
     :dataToShow="`${totalWordsCount} كلمة`"
-    :type="'verse-count'"
+    :type="'word-count'"
     :hasError="inputHasError"
     :errorMessage="errorMessage"
     @update:modelValue="handleInput"
@@ -30,12 +30,12 @@
 import { useDataStore } from "@/stores/dataStore"
 import { useTarteelStore } from "@/stores/tarteelStore"
 import { useAutoComplete } from "@/hooks/useAutoComplete"
-
+import { useRouter } from "vue-router"
 import AppInputField from "./AppInputField.vue"
 
 const dataStore = useDataStore()
 const tarteelStore = useTarteelStore()
-
+const router = useRouter()
 const {
   tarteel,
   menu,
@@ -65,6 +65,7 @@ const handleTarteel = () => {
   updateWordsList([])
   tarteel.value = ""
   menu.value = false
+  router.push({ name: "tarteel" })
 }
 
 const handleInput = (value) => {

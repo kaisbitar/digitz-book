@@ -1,4 +1,10 @@
 <template>
+  <SuraHeader
+    :title="`${selectedTarteel.inputText}`"
+    :numberOfVerses="selectedTarteel.results.length"
+    :numberOfWords="selectedTarteel.results.length"
+    :numberOfLetters="selectedTarteel.results.length"
+  />
   <v-toolbar>
     <AppInputField
       :fieldInput="search"
@@ -81,6 +87,7 @@ watch(showSura, (value) => {
   if (!value) store.setIsDialog(false)
 })
 onMounted(() => {
+  console.log(selectedTarteel.value)
   search.value = props.inputText
   if (selectedChipIndex.value === -1) {
     store.setSearchIndex(0)

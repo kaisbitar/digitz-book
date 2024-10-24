@@ -1,42 +1,60 @@
-import { ref, computed, watch } from "vue"
+import { ref, computed } from "vue"
 import { filterWords } from "@/utils/autoWordFilter"
 
 export function useAutoComplete(dataStore, tarteelStore) {
   const tarteel = ref("")
   const menu = ref(false)
   const currentLetter = ref("")
-  const currentWordsList = ref([])
-  const totalWordsCount = ref(0)
+  const filteredWordsList = ref([])
   const checkedItems = ref([])
 
-  const filteredWords = computed(() => {
-    if (!tarteel.value) {
-      return { results: [] }
-    }
-    if (tarteel.value.length >= 0) {
-      return filterWords(tarteel.value, dataStore.getOneQuranFile)
-    }
-    return { results: [] }
-  })
+  const currentWordsList = computed(() => filteredWordsList.value)
+  const totalWordsCount = computed(() => currentWordsList.value.length)
 
-  watch(
-    () => filteredWords.value,
-    (newFilteredItems) => {
-      currentWordsList.value = newFilteredItems.results.map((item) => ({
-        word: item.word,
-        count: item.count,
-        verses: item.verses,
-      }))
-      totalWordsCount.value = newFilteredItems.results.length
-    },
-    { immediate: true }
-  )
+  const updateFilteredWords = () => {
+    if (!tarteel.value) {
+      filteredWordsList.value = []
+      return
+    }
+
+    if (tarteel.value.length === 0) {
+      filteredWordsList.value = []
+      return
+    }
+
+    const filteredResults = filterWords(
+      tarteel.value,
+      dataStore.getOneQuranFile
+    )
+    filteredWordsList.value = filteredResults.results.map((item) => ({
+      word: item.word,
+      count: item.count,
+      verses: item.verses,
+    }))
+  }
 
   const onInput = (value) => {
     if (!value) return
+
     tarteel.value = value
     menu.value = true
     currentLetter.value = value[value.length - 1]
+    updateFilteredWords()
+  }
+
+  const onFocus = () => {
+    menu.value = true
+  }
+
+  const clearInput = () => {
+    tarteel.value = ""
+    currentLetter.value = ""
+    menu.value = true
+    filteredWordsList.value = []
+  }
+
+  const updateWordsList = (newItems) => {
+    filteredWordsList.value = newItems
   }
 
   const storeTarteels = (items) => {
@@ -45,22 +63,6 @@ export function useAutoComplete(dataStore, tarteelStore) {
       results: items,
     })
     tarteelStore.addToTarteelHistory(tarteel.value)
-  }
-
-  const onFocus = (value) => {
-    menu.value = true
-  }
-
-  const clearInput = () => {
-    tarteel.value = ""
-    currentLetter.value = ""
-    menu.value = true
-    currentWordsList.value = []
-    totalWordsCount.value = 0
-  }
-
-  const updateWordsList = (newItems) => {
-    currentWordsList.value = newItems
   }
 
   const updateCheckedItems = (newItems) => {
