@@ -13,7 +13,7 @@
         v-for="(item, index) in storedTarteels"
         :key="index"
         :value="index"
-        color="primary"
+        color="grey"
         :active="selectedTarteel === index"
         @click="handleSelectedTarteel(index)"
       >
@@ -24,7 +24,7 @@
         </template>
         <template v-slot:append>
           <v-badge
-            :content="item.results.length"
+            :content="`${item.results.length} مشتق`"
             color="word-count"
             offset-x="5"
             offset-y="0"

@@ -1,5 +1,5 @@
 <template>
-  <TarteelBoard :inputText="inputText" :searchData="searchData" />
+  <TarteelBoard2 :inputText="inputText" :searchData="searchData" />
 </template>
 <script setup>
 import { ref, computed, watch, onMounted } from "vue"

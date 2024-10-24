@@ -34,7 +34,7 @@ $body-font-family: "Almarai", sans-serif;
   font-family: $body-font-family !important;
 }
 html {
-  // overflow: hidden;
+  overflow: hidden;
   position: relative;
 }
 // body {

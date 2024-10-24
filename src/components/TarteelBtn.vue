@@ -1,5 +1,11 @@
 <template>
-  <v-btn @click="onSubmit" variant="tonal" block size="large">
+  <v-btn
+    @click="onSubmit"
+    variant="tonal"
+    block
+    size="large"
+    :disabled="isDisabled"
+  >
     <span v-show="checkedItemsCount === 0"> رتل جميع الكلمات </span>
 
     <span v-show="checkedItemsCount > 0" class="font-weight-bold">
@@ -9,7 +15,7 @@
           :content="checkedItemsCount.toString()"
           offset-y="-9"
           offset-x="20"
-          color="word-count"
+          color="red"
         >
           <template v-slot:badge>
             <div class="custom-badge">
@@ -30,6 +36,10 @@ const props = defineProps({
   checkedItems: {
     type: Array,
     default: () => [],
+  },
+  isDisabled: {
+    type: Boolean,
+    default: false,
   },
 })
 

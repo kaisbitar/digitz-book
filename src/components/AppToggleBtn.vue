@@ -6,7 +6,7 @@
     :size="size"
   >
     <v-badge
-      v-if="badgeContent > 0"
+      v-if="badgeContent"
       class="custom-badge"
       size="small"
       :content="badgeContent"
@@ -27,8 +27,8 @@
 <script setup>
 defineProps({
   badgeContent: {
-    type: Number,
-    default: 0,
+    type: String,
+    default: "",
   },
   btnVariant: {
     type: String,

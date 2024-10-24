@@ -1,15 +1,4 @@
 <template>
-  <!-- <div v-if="selectedData">
-    <h2>{{ selectedData.inputText }}</h2>
-    <div v-for="word in selectedData.selectedWords" :key="word.word">
-      <h3>{{ word.word }} ({{ word.count }})</h3>
-      <ul>
-        <li v-for="verse in word.verses" :key="verse.verseId">
-          {{ verse.verse }}
-        </li>
-      </ul>
-    </div>
-  </div> -->
   <v-expansion-panels v-if="selectedTarteel">
     <v-expansion-panel
       v-for="(tarteelItem, index) in selectedTarteel.results"
@@ -27,7 +16,10 @@
           v-for="verse in tarteelItem.verses"
           :key="verse.verseNumberToQuran"
         >
-          <VerseCardItem :item="verse" @click="handleSelectedVerse(verse)" />
+          <VerseCardItem
+            :item="verse"
+            @click="handleSelectedVerse(verse, tarteelItem.word)"
+          />
         </v-list>
       </v-expansion-panel-text>
     </v-expansion-panel>
@@ -51,11 +43,13 @@ const props = defineProps({
 const activeRoute = computed(() => router.currentRoute.value.name)
 const isMobile = computed(() => display.mobile.value)
 
-const handleSelectedVerse = (verse) => {
+const handleSelectedVerse = (verse, tarteel) => {
+  console.log(tarteel)
   store.setTarget({
     fileName: verse.fileName,
     verseIndex: verse.verseIndex,
     verseNumberToQuran: verse.verseNumberToQuran.toString(),
+    tarteel,
   })
 
   if (activeRoute !== "sura") {

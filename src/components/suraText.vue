@@ -1,10 +1,10 @@
 <template>
-  {{ suraTextArray }}
+  <!-- {{ suraTextArray }} -->
   <div ref="suraTextRef">
     <v-card
-      class="sura-text-container scrolling-container"
+      class="sura-text-container scrolling-container px-5"
       :height="dynamicHeight"
-      variant="text"
+      variant="outlined"
     >
       <span
         v-for="(verse, index) in suraTextArray"
@@ -14,8 +14,16 @@
           'active-verse-text': isTargetedVerse(index),
           'dimmed-verse': !isTargetedVerse(index),
         }"
+        class="justify-center"
       >
-        <v-chip
+        <v-badge
+          :content="`${index + 1}`"
+          color="verse-count"
+          offset-x="5"
+          offset-y="0"
+          inline
+        ></v-badge>
+        <!-- <v-chip
           class="ml-2 mr-"
           size="x-small"
           color=""
@@ -24,7 +32,7 @@
           @click="hasActiveVerse && setTargetedVerse(verse, index + 1)"
         >
           {{ index + 1 }}
-        </v-chip>
+        </v-chip> -->
         <span
           :id="`v${index + 1}`"
           class="verse-content"
@@ -84,7 +92,7 @@ onMounted(async () => {
 .sura-text-container {
   height: 100%;
   display: block;
-  line-height: 2.5;
+  line-height: 2;
   overflow-y: auto;
 }
 
