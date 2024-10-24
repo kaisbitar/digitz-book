@@ -10,9 +10,9 @@
       class="custom-badge"
       size="small"
       :content="badgeContent"
-      color="red"
+      :color="badgeColor"
       offset-x="-3"
-      offset-y="-13"
+      offset-y="-15"
       bordered
       :z-index="2"
     />
@@ -26,6 +26,10 @@
 
 <script setup>
 defineProps({
+  badgeColor: {
+    type: String,
+    default: "red",
+  },
   badgeContent: {
     type: String,
     default: "",

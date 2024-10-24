@@ -1,18 +1,25 @@
 <template>
   <div class="d-flex">
-    <div>
-      <v-btn icon="mdi-arrow-right" @click="goBack"></v-btn>
-      <span class="highlight-match mx-2">{{ targetTarteel }}</span>
+    <div v-if="targetTarteel" class="d-block" :style="{ width: '55px' }">
+      <!-- <v-btn icon="mdi-arrow-right" @click="goBack"></v-btn>
+      <span class="highlight-match mx-2">{{ targetTarteel }}</span> -->
+      <AppToggleBtn
+        :badgeContent="targetTarteel"
+        :isActive="true"
+        activeIcon="mdi-arrow-right"
+        badgeColor="highlight"
+        @click="goBack"
+      />
     </div>
     <SuraHeader
-      class="mr-4"
+      class="mr-4 flex-wrap"
       :title="`${suraNumber} ${suraName} `"
       :numberOfVerses="numberOfVerses"
       :numberOfWords="numberOfWords"
       :numberOfLetters="numberOfLetters"
     />
+    <!-- :isHidden="targetTarteel && $vuetify.display.smAndDown ? true : false" -->
   </div>
-  <!-- Back Button -->
   <SuraBoard
     :tabs="tabs"
     v-model:search="search"
@@ -39,6 +46,8 @@ import { useTarteelStore } from "@/stores/tarteelStore" // Import the tarteelSto
 import getChartOptions from "@/assets/frequecyOptions"
 import { useInputFiltering } from "@/mixins/inputFiltering"
 import { useRouter } from "vue-router"
+import { useDisplay } from "vuetify"
+
 import {
   prepareSuraData,
   prepareMushafData,
@@ -52,6 +61,7 @@ const props = defineProps(["suraInputText"])
 const store = useStore()
 const dataStore = useDataStore()
 const tarteelStore = useTarteelStore() // Use the tarteelStore
+
 const suraWithTashkeel = ref([])
 const numberOfLetters = ref(null)
 const numberOfVerses = ref(null)
@@ -68,6 +78,7 @@ const selectedVerseText = ref("")
 const showVerseDetails = ref(false)
 
 const isMobileView = computed(() => store.getVersesMobileView)
+
 const tabs = computed(() => [
   { title: "نص", name: "suraText", icon: "mdi-text-box-outline" },
   {
