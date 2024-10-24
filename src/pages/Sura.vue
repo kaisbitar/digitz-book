@@ -1,10 +1,18 @@
 <template>
-  <SuraHeader
-    :title="`${suraNumber} ${suraName} `"
-    :numberOfVerses="numberOfVerses"
-    :numberOfWords="numberOfWords"
-    :numberOfLetters="numberOfLetters"
-  />
+  <div class="d-flex">
+    <div>
+      <v-btn icon="mdi-arrow-right" @click="goBack"></v-btn>
+      <span class="highlight-match mx-2">{{ targetTarteel }}</span>
+    </div>
+    <SuraHeader
+      class="mr-4"
+      :title="`${suraNumber} ${suraName} `"
+      :numberOfVerses="numberOfVerses"
+      :numberOfWords="numberOfWords"
+      :numberOfLetters="numberOfLetters"
+    />
+  </div>
+  <!-- Back Button -->
   <SuraBoard
     :tabs="tabs"
     v-model:search="search"
@@ -27,8 +35,10 @@
 import { ref, computed, watch, onMounted } from "vue"
 import { useStore } from "@/stores/appStore"
 import { useDataStore } from "@/stores/dataStore"
+import { useTarteelStore } from "@/stores/tarteelStore" // Import the tarteelStore
 import getChartOptions from "@/assets/frequecyOptions"
 import { useInputFiltering } from "@/mixins/inputFiltering"
+import { useRouter } from "vue-router"
 import {
   prepareSuraData,
   prepareMushafData,
@@ -36,10 +46,12 @@ import {
   setMushafToolTip,
 } from "@/utils/suraUtils"
 
+const router = useRouter()
 const { search } = useInputFiltering()
 const props = defineProps(["suraInputText"])
 const store = useStore()
 const dataStore = useDataStore()
+const tarteelStore = useTarteelStore() // Use the tarteelStore
 const suraWithTashkeel = ref([])
 const numberOfLetters = ref(null)
 const numberOfVerses = ref(null)
@@ -147,6 +159,10 @@ const prepareData = () => {
     tooltipLabel2,
     chartOptions,
   })
+}
+
+const goBack = () => {
+  router.back()
 }
 
 watch(fileName, prepareData)

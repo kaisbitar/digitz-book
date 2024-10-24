@@ -1,11 +1,11 @@
 <template>
   <div>
-    <v-badge
+    <!-- <v-badge
       :content="dataToShow"
       :color="type"
       offset-x="5"
       offset-y="4"
-    ></v-badge>
+    ></v-badge> -->
     <v-text-field
       :model-value="modelValue"
       v-bind="$attrs"

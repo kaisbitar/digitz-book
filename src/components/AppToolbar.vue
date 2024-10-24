@@ -1,39 +1,34 @@
 <template>
-  <v-toolbar :density="isInputVisible ? 'default' : 'compact'" rounded>
+  <v-toolbar density="compact" rounded>
     <AppTabs
-      v-if="!isInputVisible"
       :tabs="tabs"
       :activeTab="activeTab"
       @update:activeTab="updateActiveTab"
     />
-    <v-spacer v-if="!isInputVisible"></v-spacer>
     <v-spacer></v-spacer>
-    <div :class="isInputVisible ? 'w-100 d-flex' : ''">
-      <AppToggleBtn
-        :badgeContent="!isInputVisible && badgeIsActive ? badgeContent : ''"
-        :class="isInputVisible ? 'ml-0 mt-6' : ''"
-        :showText="!isInputVisible"
-        :isActive="isInputVisible"
-        :btnText="searchBtnText"
-        @toggle="onSearchToggle"
-      />
-      <AppInputField
-        class="flex-grow-1"
-        v-if="isInputVisible"
-        v-click-outside="onClickOutside"
-        :modelValue="search"
-        @update:modelValue="updateSearchValue"
-        :fieldPlaceHolder="placeholderText"
-        :dataToShow="countBadgeText"
-        :type="'verse-count'"
-        @clear="onClear"
-        @keyup:enter="onEnter"
-      />
-    </div>
+    <AppToggleBtn
+      :badgeContent="badgeIsActive ? badgeContent : ''"
+      class=""
+      activeIcon="mdi-close"
+      :isActive="isInputVisible"
+      :btnText="searchBtnText"
+      @toggle="onSearchToggle"
+    />
     <v-spacer></v-spacer>
-
     <slot name="additional-actions"></slot>
   </v-toolbar>
+
+  <AppInputField
+    class="flex-grow-1 mt-1"
+    v-if="isInputVisible"
+    :modelValue="search"
+    @update:modelValue="updateSearchValue"
+    :fieldPlaceHolder="placeholderText"
+    :dataToShow="countBadgeText"
+    :type="'verse-count'"
+    @clear="onClear"
+    @keyup:enter="onEnter"
+  />
 </template>
 
 <script setup>
@@ -56,9 +51,9 @@ const emit = defineEmits([
   "enter",
 ])
 
-const onClickOutside = () => {
-  emit("searchToggle", false)
-}
+// const onClickOutside = () => {
+//   emit("searchToggle", false)
+// }
 
 const onSearchToggle = () => {
   emit("searchToggle", !props.isInputVisible)

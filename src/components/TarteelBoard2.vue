@@ -1,9 +1,9 @@
 <template>
   <div class="mb-4">
-    <span class="text-h4 ml-4"
-      >{{ selectedTarteel.inputText }}
+    <span class="text-h4 ml-4">
+      {{ selectedTarteel?.inputText }}
       <v-badge
-        :content="`${selectedTarteel.results.length} مشتق`"
+        :content="`${selectedTarteel?.results?.length} مشتق`"
         color="word-count"
         offset-x="5"
         offset-y="0"
