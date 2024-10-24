@@ -18,17 +18,31 @@
     <slot name="additional-actions"></slot>
   </v-toolbar>
 
-  <AppInputField
-    class="flex-grow-1 mt-1"
-    v-if="isInputVisible"
-    :modelValue="search"
-    @update:modelValue="updateSearchValue"
-    :fieldPlaceHolder="placeholderText"
-    :dataToShow="countBadgeText"
-    :type="'verse-count'"
-    @clear="onClear"
-    @keyup:enter="onEnter"
-  />
+  <div class="d-flex align-center">
+    <AppInputField
+      class="flex-grow-1 mt-1"
+      v-if="isInputVisible"
+      :modelValue="search"
+      @update:modelValue="updateSearchValue"
+      :fieldPlaceHolder="placeholderText"
+      :dataToShow="countBadgeText"
+      :type="'verse-count'"
+      @clear="onClear"
+      @keyup:enter="onEnter"
+    />
+    <AppToggleBtn
+      v-if="isInputVisible"
+      class="mx-2 mt-3"
+      :isActive="true"
+      activeIcon="mdi-arrow-up"
+    />
+    <AppToggleBtn
+      v-if="isInputVisible"
+      class="mx-2 mt-3"
+      :isActive="true"
+      activeIcon="mdi-arrow-down"
+    />
+  </div>
 </template>
 
 <script setup>
@@ -50,10 +64,6 @@ const emit = defineEmits([
   "searchToggle",
   "enter",
 ])
-
-// const onClickOutside = () => {
-//   emit("searchToggle", false)
-// }
 
 const onSearchToggle = () => {
   emit("searchToggle", !props.isInputVisible)

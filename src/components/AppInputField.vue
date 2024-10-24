@@ -12,10 +12,12 @@
       :label="`ترتيل ${fieldPlaceHolder}`"
       density="compact"
       clearable
+      persistent-clear
       autofocus
       @click:clear="handleClear"
       prepend-inner-icon="mdi-magnify"
       hide-details
+      color="primary"
       :error="hasError"
       :error-messages="errorMessage"
       class="flex-grow-1"

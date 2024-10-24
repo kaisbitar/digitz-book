@@ -3,7 +3,7 @@
     :modelValue="menu"
     @update:modelValue="$emit('update:menu', $event)"
     :close-on-content-click="false"
-    :nudge-width="200"
+    offset="2"
     offset-y
     transition="fade-transition"
     :max-height="'auto'"
