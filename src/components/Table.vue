@@ -1,12 +1,12 @@
 <template>
   <div ref="tableRef">
     <v-data-table
+      :disable-filter="true"
       :headers="tableHeaders"
       :items="tableData"
       :search="search"
       :height="dynamicHeight"
-      loading-text="جاري تحميل
-    البيانات القرآنية ... الرجاء الانتظار"
+      loading-text="تنزيل الكتاب.."
       fixed-header
       items-per-page="-1"
       hide-default-footer

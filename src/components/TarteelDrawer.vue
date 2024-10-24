@@ -24,7 +24,7 @@
         </template>
         <template v-slot:append>
           <v-badge
-            :content="`${item.results.length} مشتق`"
+            :content="`${item?.results?.length} مشتق`"
             color="word-count"
             offset-x="5"
             offset-y="0"
@@ -38,6 +38,7 @@
           ></v-btn>
         </template>
       </v-list-item>
+      <v-divider horizontal></v-divider>
     </v-list>
   </v-navigation-drawer>
 </template>

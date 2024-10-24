@@ -18,6 +18,7 @@
         >
           <VerseCardItem
             :item="verse"
+            :textToHighlight="tarteelItem.word"
             @click="handleSelectedVerse(verse, tarteelItem.word)"
           />
         </v-list>
@@ -44,7 +45,6 @@ const activeRoute = computed(() => router.currentRoute.value.name)
 const isMobile = computed(() => display.mobile.value)
 
 const handleSelectedVerse = (verse, tarteel) => {
-  console.log(tarteel)
   store.setTarget({
     fileName: verse.fileName,
     verseIndex: verse.verseIndex,

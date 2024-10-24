@@ -16,7 +16,7 @@
   >
     <template #additional-actions>
       <AppFilterActions
-        v-if="activeTab === 'versesTab' && !isInputVisible"
+        v-if="activeTab === 'versesTab'"
         v-show="$vuetify.display.mdAndUp"
       />
     </template>
