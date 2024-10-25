@@ -1,13 +1,10 @@
 <template>
   <div class="d-flex">
     <div v-if="targetTarteel" class="d-block" :style="{ width: '55px' }">
-      <!-- <v-btn icon="mdi-arrow-right" @click="goBack"></v-btn>
-      <span class="highlight-match mx-2">{{ targetTarteel }}</span> -->
       <AppToggleBtn
         :badgeContent="targetTarteel"
         :isActive="true"
         activeIcon="mdi-arrow-right"
-        badgeColor="highlight"
         @click="goBack"
       />
     </div>
@@ -18,11 +15,9 @@
       :numberOfWords="numberOfWords"
       :numberOfLetters="numberOfLetters"
     />
-    <!-- :isHidden="targetTarteel && $vuetify.display.smAndDown ? true : false" -->
   </div>
   <SuraBoard
     :tabs="tabs"
-    v-model:search="search"
     :suraName="suraName"
     :suraWithTashkeel="suraWithTashkeel"
     :versesBasics="versesBasics"
@@ -34,7 +29,7 @@
     v-model="showVerseDetails"
     :verse="selectedVerseText"
     :title="fileName"
-    :inputText="search"
+    :inputText="targetTarteel"
   />
 </template>
 
@@ -42,11 +37,9 @@
 import { ref, computed, watch, onMounted } from "vue"
 import { useStore } from "@/stores/appStore"
 import { useDataStore } from "@/stores/dataStore"
-import { useTarteelStore } from "@/stores/tarteelStore" // Import the tarteelStore
-import getChartOptions from "@/assets/frequecyOptions"
 import { useInputFiltering } from "@/mixins/inputFiltering"
 import { useRouter } from "vue-router"
-import { useDisplay } from "vuetify"
+import getChartOptions from "@/assets/frequecyOptions"
 
 import {
   prepareSuraData,
@@ -56,11 +49,9 @@ import {
 } from "@/utils/suraUtils"
 
 const router = useRouter()
-const { search } = useInputFiltering()
 const props = defineProps(["suraInputText"])
 const store = useStore()
 const dataStore = useDataStore()
-const tarteelStore = useTarteelStore() // Use the tarteelStore
 
 const suraWithTashkeel = ref([])
 const numberOfLetters = ref(null)
@@ -179,7 +170,6 @@ const goBack = () => {
 watch(fileName, prepareData)
 
 onMounted(() => {
-  search.value = props.suraInputText || targetTarteel.value || ""
   store.setActiveRoute("sura")
   prepareData()
 })

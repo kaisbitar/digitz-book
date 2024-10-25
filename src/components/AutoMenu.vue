@@ -18,7 +18,7 @@
           <span class="ml-2">ترتيل {{ tarteel }}..</span>
 
           <v-badge
-            :content="`${currentWordsList.length} مشتق`"
+            :content="`${currentWordsList.length} رتل`"
             floating
             :color="currentWordsList.length > 0 ? 'word-count' : 'red'"
           />
@@ -34,7 +34,7 @@
               @update:currentWordsList="updateWordsList"
               @update:checked-items="updateLocalCheckedItems"
             />
-            <TarteelBtn
+            <AppTarteelBtn
               :checked-items="localCheckedItems"
               :is-disabled="currentWordsList.length === 0"
               @submit="onTarteelSubmit"
@@ -56,7 +56,6 @@
 
 <script setup>
 import { ref, watch } from "vue"
-import TarteelBtn from "./TarteelBtn.vue"
 
 const props = defineProps({
   menu: Boolean,

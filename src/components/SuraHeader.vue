@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex mb-4">
     <span class="text-h4 ml-4">{{ title }}</span>
-    <AppMetaData :metaData="suraMetaData" v-if="!isHidden" />
+    <AppMetaData :metaData="suraMetaData" />
   </div>
 </template>
 
@@ -13,7 +13,7 @@ const props = defineProps({
   numberOfWords: Number,
   numberOfVerses: Number,
   numberOfLetters: Number,
-  isHidden: Boolean,
+  showMetaData: Boolean,
 })
 
 const suraMetaData = computed(() => ({

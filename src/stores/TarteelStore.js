@@ -5,6 +5,8 @@ export const useTarteelStore = defineStore("tarteel", {
     storedTarteels: [],
     selectedTarteelIndex: null,
     tarteelHistory: [],
+    selectedRatl: null,
+    selectedRatlIndex: null,
   }),
 
   persist: {
@@ -30,6 +32,8 @@ export const useTarteelStore = defineStore("tarteel", {
     },
     getTarteelHistory: (state) => state.tarteelHistory,
     getStoredTarteels: (state) => state.storedTarteels,
+    getSelectedRatl: (state) => state.selectedRatl,
+    getSelectedRatlIndex: (state) => state.selectedRatlIndex,
   },
 
   actions: {
@@ -74,6 +78,16 @@ export const useTarteelStore = defineStore("tarteel", {
         return
       }
       this.setThisTarteel(0)
+    },
+    setSelectedRatl(ratl) {
+      this.selectedRatl = ratl
+    },
+    setSelectedRatlIndex(index) {
+      this.selectedRatlIndex = index
+    },
+    removeRatl(index) {
+      const results = this.storedTarteels[this.selectedTarteelIndex].results
+      results.splice(index, 1)
     },
   },
 })

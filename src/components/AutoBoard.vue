@@ -6,6 +6,7 @@
     :type="'word-count'"
     :hasError="inputHasError"
     :errorMessage="errorMessage"
+    :hasSuccess="inputHasSuccess"
     @update:modelValue="handleInput"
     @clear="handleClear"
     @focus="onFocus"
@@ -53,6 +54,7 @@ const {
 
 const inputHasError = ref(false)
 const errorMessage = ref("")
+const inputHasSuccess = ref(false)
 
 const handleTarteel = () => {
   if (tarteel.value === "" || currentWordsList.value.length === 0) return
@@ -71,12 +73,13 @@ const handleTarteel = () => {
 const handleInput = (value) => {
   onInput(value)
   menu.value = true
-
   if (currentWordsList.value.length > 0) {
+    inputHasSuccess.value = true
     inputHasError.value = false
     errorMessage.value = ""
     return
   }
+  inputHasSuccess.value = false
   inputHasError.value = true
   errorMessage.value = "Input is too long"
 }
