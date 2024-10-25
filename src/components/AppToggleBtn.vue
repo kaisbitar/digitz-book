@@ -5,17 +5,21 @@
     :color="isActive ? inactiveColor : activeColor"
     :size="size"
   >
-    <v-badge
-      v-if="badgeContent"
-      class="custom-badge"
-      size="small"
-      :content="badgeContent"
-      :color="badgeColor"
-      offset-x="-3"
-      offset-y="-15"
-      bordered
-      :z-index="2"
-    />
+    <v-scale-transition>
+      <v-badge
+        v-if="badgeContent"
+        :key="badgeContent"
+        class="custom-badge"
+        size="small"
+        :content="badgeContent"
+        :color="badgeColor"
+        offset-x="-3"
+        offset-y="-15"
+        bordered
+        :z-index="2"
+      />
+    </v-scale-transition>
+
     <v-icon v-if="isActive" class="ml-2">{{ activeIcon }}</v-icon>
     <v-icon v-else class="ml-2">{{ inActiveIcon }}</v-icon>
     <span v-show="$vuetify.display.smAndUp && showText">

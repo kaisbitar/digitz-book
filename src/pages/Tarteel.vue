@@ -1,35 +1,74 @@
 <template>
-  <TarteelBoard2 :inputText="inputText" :searchData="searchData" />
+  <div class="d-flex mb-4">
+    <div class="text-h4">{{ ratl.word }}</div>
+    <v-badge
+      color="count"
+      :content="`${ratl.count} مرة`"
+      offset-x="-50"
+      offset-y="20"
+    ></v-badge>
+    <v-badge
+      color="verse-count"
+      :content="`${ratl.verses.length} آية`"
+      offset-x="-105"
+      offset-y="20"
+    ></v-badge>
+  </div>
+
+  <v-toolbar title="المعنى" class="" rounded density="compact"> </v-toolbar>
+  <div
+    ref="tarteelContainer"
+    :style="{ height: `${dynamicHeight}px`, overflowY: 'auto' }"
+  >
+    <template
+      v-for="verse in ratl.verses"
+      :key="verse.index"
+      style="height: 1px"
+    >
+      <VerseCardItem
+        :item="verse"
+        :textToHighlight="ratl.word"
+        @click="handleSelectedVerse(verse, ratl.word)"
+      />
+    </template>
+  </div>
 </template>
+
 <script setup>
-import { ref, computed, watch, onMounted } from "vue"
+import { ref, computed, onMounted } from "vue"
 import { useStore } from "@/stores/appStore"
+import { useRouter } from "vue-router"
+import { useTarteelStore } from "@/stores/tarteelStore"
+import { useWindow } from "@/mixins/window"
+import { useResizeHandler } from "@/hooks/useResizeObserver"
 
+const tarteelContainer = ref(null)
+const { setContainerHeight, dynamicHeight } = useWindow(tarteelContainer)
+
+const tarteelStore = useTarteelStore()
+const router = useRouter()
 const store = useStore()
+const ratl = computed(() => tarteelStore.getSelectedRatl)
 
-const selectedSearch = computed(() =>
-  store.getResearchResults ? store.getSelectedSearch : {}
-)
-const selectedSearchData = computed(() => selectedSearch.value?.verses || [])
+const handleSelectedVerse = (verse, tarteel) => {
+  store.setTarget({
+    fileName: verse.fileName,
+    verseIndex: verse.verseIndex,
+    verseNumberToQuran: verse.verseNumberToQuran.toString(),
+    tarteel,
+  })
+  router.push("sura")
+}
 
-const inputText = computed(() => selectedSearch.value?.inputText || "")
+useResizeHandler({
+  elementRef: tarteelContainer,
+  elementFunc: setContainerHeight,
+})
 
-const searchData = computed(() =>
-  selectedSearchData.value.map(({ raw }) => ({
-    suraNumber: raw.fileName.replace(/[ء-٩]/g, "").replace(/\s/g, ""),
-    suraName: raw.fileName.replace(/[0-9]/g, ""),
-    fileName: raw.fileName,
-    verseIndex: String(raw.verseIndex),
-    verseText: raw.verseText,
-    numberOfWords: String(raw.verseText.split(" ").length),
-    numberOfLetters: String(raw.verseText.replace(/ /g, "").length),
-    verseNumberToQuran: String(raw.verseNumberToQuran),
-  }))
-)
-
-onMounted(() => {
-  store.setActiveRoute("search")
+onMounted(async () => {
+  await nextTick()
+  setContainerHeight()
 })
 </script>
 
-<style scoped></style>
+<style></style>

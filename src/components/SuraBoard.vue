@@ -1,18 +1,17 @@
 <template>
-  <AppToolbar
+  <SuraToolbar
     :tabs="tabs"
     :activeTab="activeTab"
-    :search="search"
+    :search="inputText"
     :searchBtnText="searchBtnText"
     :placeholderText="`سورة ${suraName}`"
-    :countBadgeText="`${filteredVerses.length} آية`"
     :isInputVisible="isInputVisible"
-    :badgeIsActive="search ? true : false"
-    :badgeContent="`${filteredVerses.length}`"
+    :badgeIsActive="!!inputText"
+    :badgeContent="badgeContent"
     @update:activeTab="updateActiveTab"
-    @update:search="updateSearch"
+    @update:search="onInput"
     @searchToggle="onSearchToggle"
-    @enter="handleEnterPress"
+    @enter="onEnter"
   >
     <template #additional-actions>
       <AppFilterActions
@@ -20,13 +19,13 @@
         v-show="$vuetify.display.mdAndUp"
       />
     </template>
-  </AppToolbar>
+  </SuraToolbar>
 
   <v-window v-model="activeTab">
     <v-window-item value="suraText" @before-enter="scrollToActiveVerse">
       <SuraText
         ref="suraTextRef"
-        :inputText="search"
+        :inputText="inputText"
         :suraTextArray="suraWithTashkeel"
       />
     </v-window-item>
@@ -35,8 +34,8 @@
       <VersesOverview
         ref="VersesOverviewRef"
         :verses="versesBasics"
-        :versesInputText="search"
-        @verseSelected="handleVerseSelected"
+        :versesInputText="inputText"
+        @verseSelected="onVerseSelected"
       />
     </v-window-item>
 
@@ -58,7 +57,6 @@ import { useStore } from "@/stores/appStore"
 const store = useStore()
 const props = defineProps({
   tabs: Array,
-  search: String,
   suraName: String,
   suraWithTashkeel: Array,
   versesBasics: Array,
@@ -66,18 +64,24 @@ const props = defineProps({
   chartOptions: Object,
 })
 
-const emit = defineEmits(["update:search", "verseSelected"])
+const emit = defineEmits([, "verseSelected"])
 const searchBtnText = ref(`ترتيل ${props.suraName}`)
 const isInputVisible = ref(false)
+const filterIndex = ref(0)
+const inputText = ref("")
 
 const filteredVerses = computed(() => {
-  if (!props.search) return props.versesBasics
+  if (!inputText.value) return []
   return props.versesBasics
-    .filter((verse) => verse.verseText.includes(props.search))
+    .filter((verse) => verse.verseText.includes(inputText.value))
     .map((verse, index) => ({
       ...verse,
       index: index,
     }))
+})
+
+const badgeContent = computed(() => {
+  return filteredVerses.value.length ? `${filteredVerses.value.length}` : ""
 })
 
 const targetTarteel = computed(() => store.getTarget?.tarteel)
@@ -88,7 +92,7 @@ watch(tagetedVerseIndex, () => {
   scrollToActiveVerse()
 })
 
-const handleVerseSelected = (verse) => {
+const onVerseSelected = (verse) => {
   emit("verseSelected", verse)
 }
 
@@ -96,12 +100,20 @@ const onSearchToggle = (value) => {
   isInputVisible.value = value
 }
 
-const handleEnterPress = (value) => {
-  store.setTarget({
-    fileName: store.getTarget.fileName,
-    verseIndex: filteredVerses.value[0].index,
-    verseNumberToQuran: filteredVerses.value[0].verseNumberToQuran,
-  })
+const onEnter = (value) => {
+  if (value === "") {
+    store.setTarget({
+      fileName: props.versesBasics[0].fileName,
+      verseIndex: props.versesBasics[0].verseIndex || 0,
+      verseNumberToQuran: props.versesBasics[0].verseNumberToQuran,
+    })
+    return
+  }
+}
+
+const onInput = (value) => {
+  inputText.value = value
+  searchBtnText.value = value || `ترتيل ${props.suraName}`
 }
 
 const activeTab = computed({
@@ -127,17 +139,9 @@ const updateActiveTab = (value) => {
   store.setActiveSuraTab(value)
 }
 
-const updateSearch = (value) => {
-  searchBtnText.value = props.search
-  emit("update:search", value)
-  if (value === "" || value === null) {
-    searchBtnText.value = `ترتيل ${props.suraName}`
-  }
-  scrollToActiveVerse()
-}
-
 onMounted(() => {
   if (targetTarteel.value) {
+    inputText.value = targetTarteel.value
     isInputVisible.value = true
   }
   scrollToActiveVerse()

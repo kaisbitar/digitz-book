@@ -1,4 +1,31 @@
 <template>
+  <v-scale-transition>
+    <v-card
+      v-if="isInputVisible"
+      :key="isInputVisible"
+      class="d-flex mr-auto mb-1 position-sticky mt-md-n11 mt-n3 z-1"
+      width="300"
+      variant="text"
+    >
+      <AppInputField
+        class="flex-grow-1"
+        v-model="localSearch"
+        @update:modelValue="onInput"
+        :fieldPlaceHolder="placeholderText"
+        :type="'verse-count'"
+        @clear="onClear"
+        @keydown.enter="onEnter"
+        :style="{ maxWidth: '190px' }"
+      />
+      <AppToggleBtn
+        class="mt-3 mr-1"
+        :isActive="true"
+        activeIcon="mdi-arrow-up"
+      />
+      <AppToggleBtn class="mt-3" :isActive="true" activeIcon="mdi-arrow-down" />
+    </v-card>
+  </v-scale-transition>
+
   <v-toolbar density="compact" rounded>
     <AppTabs
       :tabs="tabs"
@@ -9,7 +36,7 @@
     <AppToggleBtn
       :badgeContent="badgeIsActive ? badgeContent : ''"
       class=""
-      activeIcon="mdi-close"
+      activeIcon="mdi-file-search-outline"
       :isActive="isInputVisible"
       :btnText="searchBtnText"
       @toggle="onSearchToggle"
@@ -17,42 +44,17 @@
     <v-spacer></v-spacer>
     <slot name="additional-actions"></slot>
   </v-toolbar>
-
-  <div class="d-flex align-center">
-    <AppInputField
-      class="flex-grow-1 mt-1"
-      v-if="isInputVisible"
-      :modelValue="search"
-      @update:modelValue="updateSearchValue"
-      :fieldPlaceHolder="placeholderText"
-      :dataToShow="countBadgeText"
-      :type="'verse-count'"
-      @clear="onClear"
-      @keyup:enter="onEnter"
-    />
-    <AppToggleBtn
-      v-if="isInputVisible"
-      class="mx-2 mt-3"
-      :isActive="true"
-      activeIcon="mdi-arrow-up"
-    />
-    <AppToggleBtn
-      v-if="isInputVisible"
-      class="mx-2 mt-3"
-      :isActive="true"
-      activeIcon="mdi-arrow-down"
-    />
-  </div>
 </template>
 
 <script setup>
+import { ref, watch } from "vue"
+
 const props = defineProps({
   tabs: Array,
   activeTab: String,
   search: String,
   searchBtnText: String,
   placeholderText: String,
-  countBadgeText: String,
   isInputVisible: Boolean,
   badgeContent: String,
   badgeIsActive: Boolean,
@@ -65,15 +67,26 @@ const emit = defineEmits([
   "enter",
 ])
 
+const localSearch = ref(props.search || "")
+
+watch(
+  () => props.search,
+  (newValue) => {
+    localSearch.value = newValue
+  }
+)
+
 const onSearchToggle = () => {
   emit("searchToggle", !props.isInputVisible)
 }
 
-const updateSearchValue = (value) => {
+const onInput = (value) => {
+  localSearch.value = value
   emit("update:search", value)
 }
 
 const onClear = () => {
+  localSearch.value = ""
   emit("searchToggle", false)
   emit("update:search", "")
 }
@@ -83,6 +96,8 @@ const updateActiveTab = (value) => {
 }
 
 const onEnter = () => {
-  emit("enter", props.search)
+  emit("enter", localSearch.value)
 }
 </script>
+
+<style scoped></style>

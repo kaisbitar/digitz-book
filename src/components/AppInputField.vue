@@ -17,8 +17,8 @@
       @click:clear="handleClear"
       prepend-inner-icon="mdi-magnify"
       hide-details
-      color="primary"
-      :error="hasError"
+      :color="hasSuccess ? 'success' : 'primary'"
+      :error="!!errorMessage"
       :error-messages="errorMessage"
       class="flex-grow-1"
       @update:model-value="handleInput"
@@ -49,13 +49,13 @@ const props = defineProps({
     type: String,
     default: "primary",
   },
-  hasError: {
-    type: Boolean,
-    default: false,
-  },
   errorMessage: {
     type: String,
     default: "",
+  },
+  hasSuccess: {
+    type: Boolean,
+    default: false,
   },
 })
 

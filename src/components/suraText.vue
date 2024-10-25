@@ -18,7 +18,7 @@
       >
         <v-badge
           :content="`${index + 1}`"
-          color="verse-count"
+          color="count"
           offset-x="5"
           offset-y="0"
           inline
@@ -90,8 +90,7 @@ onMounted(async () => {
 @import "@/styles/variables.scss";
 
 .sura-text-container {
-  height: 100%;
-  display: block;
+  font-size: 19px;
   line-height: 2;
   overflow-y: auto;
 }

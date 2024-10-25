@@ -21,11 +21,18 @@
             <v-list-item-title>
               {{ item.word }}
               <v-badge
-                :content="item.count.toString()"
+                :content="`${item.count} مرة`"
+                floating
+                offset-x="-80"
+                offset-y="0"
+                color="default-count"
+              ></v-badge>
+              <v-badge
+                :content="`${item.verses.length} آية`"
                 floating
                 offset-x="-19"
                 offset-y="0"
-                color="word-count"
+                color="verse-count"
               ></v-badge>
             </v-list-item-title>
 
