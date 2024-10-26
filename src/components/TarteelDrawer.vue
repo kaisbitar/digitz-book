@@ -41,7 +41,9 @@ import { useTarteelStore } from "@/stores/tarteelStore"
 import { useRouter } from "vue-router"
 import { useWindow } from "@/mixins/window"
 import { useResizeHandler } from "@/hooks/useResizeObserver"
+import { useDisplay } from "vuetify"
 
+const { mobile } = useDisplay()
 const router = useRouter()
 
 const props = defineProps({
@@ -74,10 +76,10 @@ const selectedSearch = computed(
 )
 
 const selectedRatls = computed(() => {
-  return selectedSearch.value?.results.map((mushtk) => {
+  return selectedSearch.value?.results.map((rtl) => {
     return {
-      word: mushtk.word,
-      count: mushtk.verses.length,
+      word: rtl.word,
+      count: rtl.verses.length,
       coutingType: "verse-count",
     }
   })
@@ -94,6 +96,7 @@ const handleSelectedSearch = (index) => {
 
   tarteelStore.setSelectedRatlIndex(0)
   tarteelStore.setSelectedRatl(selectedSearch.value.results[0])
+  // if (mobile.value) localDrawer.value = false
 }
 
 const handleSelectedRatl = (index) => {
@@ -102,6 +105,7 @@ const handleSelectedRatl = (index) => {
   }
   tarteelStore.setSelectedRatlIndex(index)
   tarteelStore.setSelectedRatl(selectedSearch.value.results[index])
+  if (mobile.value) localDrawer.value = false
 }
 
 const deleteTarteel = (index) => {

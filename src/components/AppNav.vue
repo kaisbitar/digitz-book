@@ -101,7 +101,7 @@ const navigationItems = [
     route: "/",
     icon: "mdi-home-variant-outline",
     activeIcon: "mdi-home-variant",
-    label: "هوم",
+    label: "المنزل",
   },
   {
     route: "sura",
