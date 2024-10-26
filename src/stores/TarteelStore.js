@@ -71,6 +71,8 @@ export const useTarteelStore = defineStore("tarteel", {
       this.storedTarteels.splice(index, 1)
       if (this.storedTarteels.length === 0) {
         this.selectedTarteelIndex = null
+        this.selectedRatlIndex = null
+        this.selectedRatl = null
         return
       }
       if (index > 0) {
@@ -88,6 +90,10 @@ export const useTarteelStore = defineStore("tarteel", {
     removeRatl(index) {
       const results = this.storedTarteels[this.selectedTarteelIndex].results
       results.splice(index, 1)
+      if (results.length === 0) {
+        this.selectedRatlIndex = null
+        this.selectedRatl = null
+      }
     },
   },
 })

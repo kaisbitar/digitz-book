@@ -7,6 +7,7 @@
         <v-icon>mdi-close</v-icon>
       </v-btn>
     </v-toolbar>
+
     <v-list>
       <TarteelList
         :items="storedSearches"
@@ -18,12 +19,19 @@
     <v-toolbar dark>
       <v-toolbar-title>رتل</v-toolbar-title>
     </v-toolbar>
-    <TarteelList
-      :items="selectedRatls"
-      :selectedItem="selectedRatlIndex"
-      @selecteItem="handleSelectedRatl"
-      @deleteItem="deleteRatl"
-    />
+    <div
+      class="overflow-y-auto tarteel-drawer-container"
+      ref="tarteelDrawerRef"
+      :style="{ height: `${dynamicHeight}px` }"
+    >
+      <TarteelList
+        class="tarteel-drawer-container"
+        :items="selectedRatls"
+        :selectedItem="selectedRatlIndex"
+        @selecteItem="handleSelectedRatl"
+        @deleteItem="deleteRatl"
+      />
+    </div>
   </v-navigation-drawer>
 </template>
 
@@ -31,6 +39,8 @@
 import { ref, computed, watch } from "vue"
 import { useTarteelStore } from "@/stores/tarteelStore"
 import { useRouter } from "vue-router"
+import { useWindow } from "@/mixins/window"
+import { useResizeHandler } from "@/hooks/useResizeObserver"
 
 const router = useRouter()
 
@@ -76,24 +86,35 @@ const selectedRatls = computed(() => {
 const selectedRatlIndex = computed(() => tarteelStore?.getSelectedRatlIndex)
 
 const handleSelectedSearch = (index) => {
-  tarteelStore.setThisTarteel(index)
   if (router.currentRoute.value.name !== "tarteel") {
     router.push({ name: "tarteel" })
   }
+  if (selectedTarteelIndex.value === index) return
+  tarteelStore.setThisTarteel(index)
+
   tarteelStore.setSelectedRatlIndex(0)
+  tarteelStore.setSelectedRatl(selectedSearch.value.results[0])
 }
 
 const handleSelectedRatl = (index) => {
+  if (router.currentRoute.value.name !== "tarteel") {
+    router.push({ name: "tarteel" })
+  }
   tarteelStore.setSelectedRatlIndex(index)
   tarteelStore.setSelectedRatl(selectedSearch.value.results[index])
 }
 
 const deleteTarteel = (index) => {
   tarteelStore.removeTarteelItem(index)
+  tarteelStore.setThisTarteel(index)
+  tarteelStore.setSelectedRatlIndex(0)
+  tarteelStore.setSelectedRatl(selectedSearch.value?.results[index])
 }
 
 const deleteRatl = (index) => {
   tarteelStore.removeRatl(index)
+  tarteelStore.setSelectedRatlIndex(index)
+  tarteelStore.setSelectedRatl(selectedSearch.value.results[index])
 }
 
 const localDrawer = ref(true)
@@ -107,5 +128,19 @@ watch(
 
 watch(localDrawer, (newValue) => {
   emit("update:drawer", newValue)
+})
+
+const tarteelDrawerRef = ref(null)
+const { setContainerHeight, dynamicHeight, scrollToActiveItem } =
+  useWindow(tarteelDrawerRef)
+useResizeHandler({
+  elementRef: tarteelDrawerRef,
+  elementFunc: setContainerHeight,
+})
+
+onMounted(async () => {
+  scrollToActiveItem(".active-tarteel-item", ".tarteel-drawer-container")
+  await nextTick()
+  setContainerHeight()
 })
 </script>

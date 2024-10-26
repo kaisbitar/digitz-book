@@ -15,6 +15,7 @@
           v-if="isInputVisible"
           class="flex-grow-1 mt-1"
           :style="{ maxWidth: '850px' }"
+          @update:isInputVisible="isInputVisible = $event"
         />
       </div>
       <v-spacer v-if="!isMobile"></v-spacer>
@@ -83,7 +84,7 @@ const router = useRouter()
 const display = useDisplay()
 const activeRoute = computed(() => router.currentRoute.value.name)
 
-const isInputVisible = ref(true)
+const isInputVisible = ref(false)
 const isRail = ref(true)
 const drawer = ref(true)
 const tarteelDrawer = ref(false)

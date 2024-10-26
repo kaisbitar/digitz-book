@@ -2,6 +2,7 @@
   <div class="d-flex">
     <div v-if="targetTarteel" class="d-block" :style="{ width: '55px' }">
       <AppToggleBtn
+        class="back-btn"
         :badgeContent="targetTarteel"
         :isActive="true"
         activeIcon="mdi-arrow-right"
@@ -9,7 +10,7 @@
       />
     </div>
     <SuraHeader
-      class="mr-4 flex-wrap"
+      class="flex-wrap"
       :title="`${suraNumber} ${suraName} `"
       :numberOfVerses="numberOfVerses"
       :numberOfWords="numberOfWords"
@@ -175,4 +176,9 @@ onMounted(() => {
 })
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.back-btn .v-badge {
+  margin-top: 10px;
+  margin-bottom: 30px;
+}
+</style>

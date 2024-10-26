@@ -62,6 +62,8 @@ export function useAutoComplete(dataStore, tarteelStore) {
       inputText: tarteel.value,
       results: items,
     })
+    tarteelStore.setSelectedRatlIndex(0)
+    tarteelStore.setSelectedRatl(items[0])
     tarteelStore.addToTarteelHistory(tarteel.value)
   }
 

@@ -3,7 +3,7 @@
     <v-card
       v-if="isInputVisible"
       :key="isInputVisible"
-      class="d-flex mr-auto mb-1 position-sticky mt-md-n11 mt-n3 z-1"
+      class="d-flex mr-sm-auto mb-1 position-sticky mt-sm-n11 mb-sm-1 mb-3 z-1"
       width="300"
       variant="text"
     >
