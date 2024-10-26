@@ -21,10 +21,9 @@
       ref="tarteelContainer"
       class="tarteel-container"
       :style="{ height: `${dynamicHeight}px`, overflowY: 'auto' }"
-      @scroll="handleScroll"
     >
       <template
-        v-for="(verse, index) in displayedItems"
+        v-for="(verse, index) in ratl.verses"
         :key="index"
         style="height: 1px"
       >
@@ -40,25 +39,32 @@
           @click="handleSelectedVerse(verse, ratl.word)"
         />
       </template>
-      <div v-if="isLoading" class="text-center my-2">
-        <v-progress-circular
-          indeterminate
-          color="primary"
-        ></v-progress-circular>
-      </div>
     </div>
   </div>
-  <NoData v-else />
+  <v-container v-else class="fill-height" fluid>
+    <v-row align="center" justify="center">
+      <v-col cols="12" sm="8" md="6" lg="4" class="text-center">
+        <v-icon
+          icon="mdi-book-open-page-variant"
+          size="x-large"
+          color="primary"
+          class="mb-4"
+        ></v-icon>
+        <v-card elevation="2" class="pa-4">
+          <v-card-text class="text-h6"> ورتل القرآن ترتيلا.. </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, nextTick, watch } from "vue"
+import { ref, computed, onMounted, nextTick } from "vue"
 import { useStore } from "@/stores/appStore"
 import { useRouter } from "vue-router"
 import { useTarteelStore } from "@/stores/tarteelStore"
 import { useWindow } from "@/mixins/window"
 import { useResizeHandler } from "@/hooks/useResizeObserver"
-import { useInfiniteScroll } from "@/hooks/useInfiniteScroll"
 
 const tarteelContainer = ref(null)
 const { setContainerHeight, dynamicHeight } = useWindow(tarteelContainer)
@@ -84,56 +90,17 @@ const handleSelectedVerse = (verse, tarteel) => {
   router.push("sura")
 }
 
-const fetchVerses = (page, itemsPerPage) => {
-  if (!ratl.value || !ratl.value.verses) return []
-
-  const start = (page - 1) * itemsPerPage
-  const end = page * itemsPerPage
-  return ratl.value.verses.slice(start, end)
-}
-
-const activeVerse = computed(() => {
-  if (!targetedVerseIndex.value || !ratl.value?.verses) return null
-  return ratl.value.verses.find(
-    (v) => v.verseNumberToQuran === parseInt(targetedVerseIndex.value)
-  )
-})
-
-const {
-  displayedItems,
-  isLoading,
-  allItemsLoaded,
-  handleScroll,
-  loadMoreItems,
-  loadPageContainingItem,
-} = useInfiniteScroll(fetchVerses, {
-  itemsPerPage: 100,
-  initialActiveItem: activeVerse.value,
-})
-
 onMounted(async () => {
-  console.log(ratl.value)
   await nextTick()
-  if (!tarteelContainer.value) return
-
-  useResizeHandler({
-    elementRef: tarteelContainer,
-    elementFunc: setContainerHeight,
-  })
-  setContainerHeight()
+  if (tarteelContainer.value) {
+    useResizeHandler({
+      elementRef: tarteelContainer,
+      elementFunc: setContainerHeight,
+    })
+    setContainerHeight()
+    scrollToActiveItem(".active-verse-text", ".tarteel-container")
+  }
 })
-
-watch(
-  activeVerse,
-  async (newActiveVerse) => {
-    if (newActiveVerse) {
-      await loadPageContainingItem(newActiveVerse)
-      await nextTick()
-      scrollToActiveItem(".active-verse-text", ".tarteel-container")
-    }
-  },
-  { immediate: true }
-)
 </script>
 
 <style></style>
