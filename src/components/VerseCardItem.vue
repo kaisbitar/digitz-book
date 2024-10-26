@@ -55,9 +55,14 @@ const indexData = computed(() => ({
   },
 }))
 const countData = computed(() => ({
-  كلمة: { value: props.item.numberOfWords, color: "word-count" },
-  حرف: { value: props.item.numberOfLetters, color: "letter-count" },
+  كلمة: {
+    value: props.item.verseText.split(" ").length.toString(),
+    color: "word-count",
+  },
+  حرف: {
+    value: props.item.verseText.replace(/ /g, "").length.toString(),
+    color: "letter-count",
+  },
 }))
 </script>
-
 <style scoped></style>

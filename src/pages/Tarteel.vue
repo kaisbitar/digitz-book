@@ -23,12 +23,13 @@
       :style="{ height: `${dynamicHeight}px`, overflowY: 'auto' }"
     >
       <template
-        v-for="verse in ratl.verses"
-        :key="verse.index"
+        v-for="(verse, index) in ratl.verses"
+        :key="index"
         style="height: 1px"
       >
         <VerseCardItem
           :item="verse"
+          :index="index"
           :textToHighlight="ratl.word"
           :active="parseInt(targetedVerseIndex) === verse.verseNumberToQuran"
           :class="{
