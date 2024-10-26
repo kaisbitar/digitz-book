@@ -55,8 +55,10 @@ const {
 const inputHasError = ref(false)
 const errorMessage = ref("")
 const inputHasSuccess = ref(false)
+const emit = defineEmits(["update:isInputVisible"])
 
 const handleTarteel = () => {
+  emit("update:isInputVisible", false)
   if (tarteel.value === "" || currentWordsList.value.length === 0) return
   if (checkedItems.value.length > 0) {
     storeTarteels(checkedItems.value)

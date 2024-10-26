@@ -21,6 +21,7 @@
         />
       </v-item>
     </v-item-group>
+    <div class="mt-7 mb-7 text-center">صدق الله العظيم</div>
   </div>
 </template>
 

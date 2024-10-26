@@ -102,7 +102,8 @@ th {
 .activeSuraItem,
 .active-verse-table,
 .active-verse-text,
-.active-index-item {
+.active-index-item,
+.active-tarteel-item {
   background: rgb(var(--v-theme-active-row)) !important;
   .verse-card-item-text {
     text-shadow: 0px 0px 3px rgb(var(--v-theme-on-active-row), 0);

@@ -2,10 +2,14 @@
   <!-- {{ suraTextArray }} -->
   <div ref="suraTextRef">
     <v-card
-      class="sura-text-container scrolling-container px-5"
+      class="sura-text-container scrolling-container pa-sm-10 pa-2 pb-9 mx-auto bg-surface mt-1"
       :height="dynamicHeight"
-      variant="outlined"
+      max-width="850px"
+      elevation="1"
+      rounded
     >
+      <div class="mb-7 text-center">بسم الله الرحمن الرحيم</div>
+
       <span
         v-for="(verse, index) in suraTextArray"
         :key="index"
@@ -14,7 +18,6 @@
           'active-verse-text': isTargetedVerse(index),
           'dimmed-verse': !isTargetedVerse(index),
         }"
-        class="justify-center"
       >
         <v-badge
           :content="`${index + 1}`"
@@ -23,16 +26,6 @@
           offset-y="0"
           inline
         ></v-badge>
-        <!-- <v-chip
-          class="ml-2 mr-"
-          size="x-small"
-          color=""
-          variant="outlined"
-          :class="{ 'active-chip': isTargetedVerse(index) }"
-          @click="hasActiveVerse && setTargetedVerse(verse, index + 1)"
-        >
-          {{ index + 1 }}
-        </v-chip> -->
         <span
           :id="`v${index + 1}`"
           class="verse-content"
@@ -42,6 +35,7 @@
           <span v-else>{{ verse }}</span>
         </span>
       </span>
+      <div class="mt-7 text-center">صدق الله العظيم</div>
     </v-card>
   </div>
 </template>
@@ -103,7 +97,8 @@ onMounted(async () => {
   padding: 4px 0px 8px 5px;
 }
 .active-verse-text {
-  padding: 4px 0px 8px 5px;
+  padding: 12px;
   background-color: rgb(var(--v-theme-active-row)) !important;
+  border-radius: 4px;
 }
 </style>

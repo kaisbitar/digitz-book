@@ -32,7 +32,7 @@
 defineProps({
   badgeColor: {
     type: String,
-    default: "red",
+    default: "error",
   },
   badgeContent: {
     type: String,

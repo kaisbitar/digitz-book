@@ -1,36 +1,35 @@
-import { onMounted, onUnmounted, ref, Ref } from "vue"
+import { Ref } from "vue"
 
-interface ResizeHandlerOptions {
-  elementRef?: Ref<HTMLElement | null>
-  elementFunc?: () => void
-  breakpointThreshold?: number
-}
+export function useResizeHandler({
+  elementRef,
+  elementFunc,
+}: {
+  elementRef: Ref<HTMLElement | null>
+  elementFunc: () => void
+}) {
+  let observer: ResizeObserver | null = null
 
-export function useResizeHandler(options: ResizeHandlerOptions = {}) {
-  const { elementRef, elementFunc } = options
-  let resizeObserver: ResizeObserver | null = null
+  const initObserver = () => {
+    if (!elementRef.value) {
+      console.warn("Element reference is not available for ResizeObserver")
+      return
+    }
 
-  const handleResize = () => {
-    elementFunc?.()
-  }
-
-  onMounted(() => {
-    window.addEventListener("resize", handleResize)
-    resizeObserver = new ResizeObserver(() => {
+    observer = new ResizeObserver(() => {
       elementFunc()
     })
-    resizeObserver.observe(elementRef.value)
-    handleResize()
-  })
 
-  onUnmounted(() => {
-    window.removeEventListener("resize", handleResize)
-    if (resizeObserver) {
-      resizeObserver.disconnect()
+    observer.observe(elementRef.value)
+  }
+
+  const cleanup = () => {
+    if (observer) {
+      observer.disconnect()
     }
-  })
+  }
 
   return {
-    handleResize,
+    initObserver,
+    cleanup,
   }
 }
