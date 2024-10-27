@@ -16,7 +16,6 @@
       <v-list-item>
         <v-list-item-title>
           <span class="ml-2">ترتيل {{ tarteel }}..</span>
-
           <v-badge
             :content="`${currentWordsList.length} رتل`"
             floating
@@ -25,31 +24,31 @@
         </v-list-item-title>
       </v-list-item>
       <v-divider></v-divider>
-      <v-list-item>
-        <v-expand-transition>
-          <div v-if="showAutoWordsList">
-            <AutoWordList
-              :items="currentWordsList"
-              :checked-items="localCheckedItems"
-              @update:currentWordsList="updateWordsList"
-              @update:checked-items="updateLocalCheckedItems"
-            />
-            <AppTarteelBtn
-              :checked-items="localCheckedItems"
-              :is-disabled="currentWordsList.length === 0"
-              @submit="onTarteelSubmit"
-            />
-          </div>
-          <v-lazy
-            v-else
-            :options="{
-              threshold: 0.5,
-            }"
-          >
-            <LettersChart :letter="currentLetter" />
-          </v-lazy>
-        </v-expand-transition>
-      </v-list-item>
+      <!-- <v-list-item> -->
+      <v-expand-transition>
+        <div v-if="showAutoWordsList">
+          <AutoWordList
+            :items="currentWordsList"
+            :checked-items="localCheckedItems"
+            @update:currentWordsList="updateWordsList"
+            @update:checked-items="updateLocalCheckedItems"
+          />
+          <AppTarteelBtn
+            :checked-items="localCheckedItems"
+            :is-disabled="currentWordsList.length === 0"
+            @submit="onTarteelSubmit"
+          />
+        </div>
+        <v-lazy
+          v-else
+          :options="{
+            threshold: 0.5,
+          }"
+        >
+          <LettersChart :letter="currentLetter" />
+        </v-lazy>
+      </v-expand-transition>
+      <!-- </v-list-item> -->
     </v-list>
   </v-menu>
 </template>
