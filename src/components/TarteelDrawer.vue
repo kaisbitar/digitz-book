@@ -150,6 +150,12 @@ watch(localDrawer, (newValue) => {
   emit("update:drawer", newValue)
 })
 
+watch(router.currentRoute, () => {
+  if (router.currentRoute.value.name === "tarteel") {
+    localDrawer.value = true
+  }
+})
+
 const tarteelDrawerRef = ref(null)
 const { setContainerHeight, dynamicHeight, scrollToActiveItem } =
   useWindow(tarteelDrawerRef)

@@ -47,8 +47,8 @@ export default createVuetify({
           highlight: "#8c8c36",
           "active-row": "#2f2f2f",
           "count-key-item": "#919191",
-          "verse-count": "#7C4DFFD9", // Brighter purple with 85% opacity
-          "word-count": "#00E676D9", // Brighter green with 85% opacity
+          "verse-count": "#3f2f6b", // Brighter purple with 85% opacity
+          "word-count": "#2f9b5f", // Brighter green with 85% opacity
           "letter-count": "#FFAB00D9", // Brighter amber with 85% opacity
           "Quran-count": "#FF80ABD9", // Brighter pink with 85% opacity
         },
