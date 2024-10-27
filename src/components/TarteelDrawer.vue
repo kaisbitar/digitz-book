@@ -103,16 +103,14 @@ const navigateToTarteel = () => {
 const updateSelectedSearch = (index) => {
   tarteelStore.setSearchedTarteel(index)
   tarteelStore.setSelectedRatlIndex(0)
-  const selectedResult = selectedSearch.value.results[0]
-  tarteelStore.setSelectedRatl(selectedResult)
-  store.setTarget(selectedResult.verses[0])
+  tarteelStore.setSelectedRatl(selectedSearch.value.results[0])
+  store.setTarget(selectedSearch.value.results[0].verses[0])
 }
 
 const updateSelectedRatl = (index) => {
   tarteelStore.setSelectedRatlIndex(index)
-  const selectedResult = selectedSearch.value.results[index]
-  tarteelStore.setSelectedRatl(selectedResult)
-  store.setTarget(selectedResult.verses[0])
+  tarteelStore.setSelectedRatl(selectedSearch.value.results[index])
+  store.setTarget(selectedSearch.value.results[index].verses[0])
 }
 
 const handleSelectedSearch = (index) => {
@@ -125,6 +123,7 @@ const handleSelectedSearch = (index) => {
 
 const handleSelectedRatl = (index) => {
   navigateToTarteel()
+  if (selectedRatlIndex.value === index) return
   updateSelectedRatl(index)
 }
 
