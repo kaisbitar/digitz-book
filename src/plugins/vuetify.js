@@ -32,10 +32,10 @@ export default createVuetify({
           "on-highlight": "#060603",
           "active-row": "#e4e4e4",
           "count-key-item": "#919191",
-          "verse-count": "#6366F1", // Indigo
-          "word-count": "#10B981", // Emerald
-          "letter-count": "#F59E0B", // Amber
-          "Quran-count": "#EC4899", // Pink
+          "verse-count": "#3F51B5D9", // Deeper indigo with 85% opacity
+          "word-count": "#4CAF50D9", // Deeper green with 85% opacity
+          "letter-count": "#FF9800D9", // Deeper amber with 85% opacity
+          "Quran-count": "#E91E63D9", // Deeper pink with 85% opacity
         },
       },
       dark: {
@@ -47,10 +47,10 @@ export default createVuetify({
           highlight: "#8c8c36",
           "active-row": "#2f2f2f",
           "count-key-item": "#919191",
-          "verse-count": "#818CF8", // Lighter Indigo
-          "word-count": "#34D399", // Lighter Emerald
-          "letter-count": "#FBBF24", // Lighter Amber
-          "Quran-count": "#F472B6", // Lighter Pink
+          "verse-count": "#7C4DFFD9", // Brighter purple with 85% opacity
+          "word-count": "#00E676D9", // Brighter green with 85% opacity
+          "letter-count": "#FFAB00D9", // Brighter amber with 85% opacity
+          "Quran-count": "#FF80ABD9", // Brighter pink with 85% opacity
         },
       },
       testing: {
@@ -67,10 +67,10 @@ export default createVuetify({
           highlight: "#a5e3a1",
           "active-row": "#313142",
           "count-key-item": "#919191",
-          "verse-count": "#89B4FA", // Soft blue to match the existing palette
-          "word-count": "#A6E3A1", // Soft green from the existing palette
-          "letter-count": "#FAB387", // Soft orange from the existing palette
-          "Quran-count": "#F5C2E7", // Soft pink from the existing palette
+          "verse-count": "#B4BEFFD9", // Lighter indigo with 85% opacity
+          "word-count": "#BAF2BBD9", // Lighter green with 85% opacity
+          "letter-count": "#FFE17FD9", // Lighter amber with 85% opacity
+          "Quran-count": "#FFAFD9D9", // Lighter pink with 85% opacity
         },
       },
       testing2: {
@@ -88,10 +88,10 @@ export default createVuetify({
           "active-row": "#E8EAF6", // Very light indigo
           "count-key-item": "#78909C", // Blue-gray
           "on-highlight": "#212121", // Very dark gray
-          "verse-count": "#651FFF", // Deep purple
-          "word-count": "#2979FF", // Blue
-          "letter-count": "#00B0FF", // Light blue
-          "Quran-count": "#1DE9B6", // Teal
+          "verse-count": "#651FFFD9", // Vivid deep purple with 85% opacity
+          "word-count": "#2979FFD9", // Vivid blue with 85% opacity
+          "letter-count": "#00B0FFD9", // Vivid light blue with 85% opacity
+          "Quran-count": "#1DE9B6D9", // Vivid teal with 85% opacity
         },
       },
     },

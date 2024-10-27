@@ -4,10 +4,7 @@
     @update:modelValue="$emit('update:modelValue', $event)"
     @click:outside="handleClose"
     :transition="transition ? transition : 'slide-x-transition'"
-    :fullscreen="windowWidth === 'small'"
-    :width="windowWidth === 'small' ? '100%' : '70%'"
-    max-width="1200"
-    height="100%"
+    fullscreen
     :overlay="false"
   >
     <template #default="{ isActive }">

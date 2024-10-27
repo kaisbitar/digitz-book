@@ -1,3 +1,8 @@
+import { fetchWordMeaning, fetchWordRoot } from "@/api/api.js"
+import { useStore } from "@/stores/appStore"
+
+const store = useStore()
+
 export const extractFromDictionnary = (allData) => {
   const lines = allData.split("\n")
   const results = []
@@ -32,6 +37,44 @@ export const extractFromDictionnary = (allData) => {
   })
 
   return results
+}
+
+export const fetchWordData = async (word) => {
+  loadingWords[props.wordIndex] = true
+  const wordRoot = await fetchWordRootData(word)
+
+  await fetchWordMeaningData(word, wordRoot)
+  loadingWords[props.wordIndex] = false
+}
+
+export const fetchWordRootData = async (word) => {
+  if (word.startsWith("ال")) return word
+  try {
+    const wordRootsApi = import.meta.env.VITE_WORD_ROOTS_API_URL
+    const root = await fetchWordRoot(wordRootsApi, word)
+    if (!root.words[0].root) return word
+    if (root.words[0].root.includes("/")) {
+      const cleanRoot = root.words[0].root.split("/")[0]
+      return cleanRoot
+    }
+    return root.words[0].root
+  } catch (error) {
+    return word
+  }
+}
+
+export const fetchWordMeaningData = async (word, wordRoot) => {
+  const appApi = import.meta.env.VITE_APP_API_URL
+  let response = await fetchWordMeaning(appApi, wordRoot)
+  if (response.length === 0) {
+    const modifiedWordRoot = wordRoot.slice(1, -2)
+    response = await fetchWordMeaning(appApi, modifiedWordRoot)
+  }
+  const extractedMeaning = extractFromDictionnary(response[0], wordRoot)
+
+  store.setWordMeaning({ word, meaning: extractedMeaning })
+  meanings[word] = extractedMeaning
+  updateCurrentMeaning(meanings[word])
 }
 
 const hasThreeLettersInCommon = (word1, word2) => {
