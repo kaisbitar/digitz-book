@@ -40,9 +40,9 @@ export const useTarteelStore = defineStore("tarteel", {
     setStoredTarteels(results) {
       this.storedTarteels.push(results)
       // Automatically select the newly added tarteel
-      this.setThisTarteel(this.storedTarteels.length - 1)
+      this.setSearchedTarteel(this.storedTarteels.length - 1)
     },
-    setThisTarteel(index) {
+    setSearchedTarteel(index) {
       if (index >= 0 && index < this.storedTarteels.length) {
         this.selectedTarteelIndex = index
       } else {
@@ -76,10 +76,10 @@ export const useTarteelStore = defineStore("tarteel", {
         return
       }
       if (index > 0) {
-        this.setThisTarteel(index - 1)
+        this.setSearchedTarteel(index - 1)
         return
       }
-      this.setThisTarteel(0)
+      this.setSearchedTarteel(0)
     },
     setSelectedRatl(ratl) {
       this.selectedRatl = ratl
