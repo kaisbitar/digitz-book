@@ -5,7 +5,6 @@ export const getLettersChartOptions = (
   customOptions = {}
 ) => {
   const theme = useTheme()
-
   // Access theme colors
   const primaryColor = theme.current.value.colors["letter-count"]
   const secondaryColor = "#ccc"
@@ -19,7 +18,6 @@ export const getLettersChartOptions = (
         offsetY: 200,
       },
     },
-
     fill: {
       type: "gradient",
       gradient: {
@@ -27,14 +25,13 @@ export const getLettersChartOptions = (
         type: "horizontal",
         // gradientToColors: undefined,
         // gradientToColors: ["fff"],
-        shade: "dark",
         // type: "vertical",
-        shadeIntensity: 0.25,
-        gradientToColors: [secondaryColor],
-        inverseColors: true,
-        opacityFrom: 0.85,
-        opacityTo: 0.85,
-        stops: [1, 0, 10],
+        // shadeIntensity: 0.25,
+        // gradientToColors: [secondaryColor],
+        // inverseColors: true,
+        // opacityFrom: 0.85,
+        // opacityTo: 0.85,
+        // stops: [1, 0, 10],
       },
     },
     zoom: {
@@ -53,29 +50,7 @@ export const getLettersChartOptions = (
         horizontal: true,
       },
     },
-
-    // fillSeriesColor: primaryColor,
-    // annotations: {
-    //   xaxis: [
-    //     {
-    //       x: "ص",
-    //       x2: "ح",
-    //       borderColor: "#000",
-    //       fillColor: "#FEB019",
-    //     },
-    //   ],
-    //   yaxis: [
-    //     {
-    //       y: "ص",
-    //       y2: 2000,
-    //       borderColor: "#000",
-    //       fillColor: "#FEB019",
-    //       label: {
-    //         text: "Y-axis range",
-    //       },
-    //     },
-    //   ],
-    // },
+    fillSeriesColor: primaryColor,
     dataLabels: {
       enabled: true,
       offsetX: 30,
@@ -95,15 +70,15 @@ export const getLettersChartOptions = (
         letterSpacing: "0 !important",
       },
     },
-    theme: {
-      monochrome: {
-        enabled: true,
-        color: primaryColor,
-      },
-    },
+    // theme: {
+    //   monochrome: {
+    //     enabled: true,
+    //     color: primaryColor,
+    //   },
+    // },
     stroke: {
       curve: "smooth",
-      width: 10,
+      width: 1,
       colors: ["#000"], // Use secondary color for stroke
     },
     xaxis: {
@@ -132,33 +107,33 @@ export const getLettersChartOptions = (
       min: 1,
     },
     // categories: letters.categories,
-    yaxis: {
-      labels: {
-        show: true,
-        style: {
-          fontFamily: "unset",
-        },
-      },
-      title: {
-        offsetX: 10,
-        style: {
-          fontSize: "18px",
-          fontFamily: "unset",
-        },
-      },
-    },
-    grid: {
-      show: false,
-    },
-    markers: {
-      size: [10, 10],
-      color: "#000",
-      hover: {
-        size: 9,
-        sizeOffset: 3,
-        color: "#000",
-      },
-    },
+    // yaxis: {
+    //   labels: {
+    //     show: true,
+    //     style: {
+    //       fontFamily: "unset",
+    //     },
+    //   },
+    //   title: {
+    //     offsetX: 10,
+    //     style: {
+    //       fontSize: "18px",
+    //       fontFamily: "unset",
+    //     },
+    //   },
+    // },
+    // grid: {
+    //   show: false,
+    // },
+    // markers: {
+    //   size: [10, 10],
+    //   color: "#000",
+    //   hover: {
+    //     size: 9,
+    //     sizeOffset: 3,
+    //     color: "#000",
+    //   },
+    // },
     tooltip: {
       enabled: true,
       // shared: true,
@@ -186,32 +161,31 @@ export const getLettersChartOptions = (
     },
   }
 
-  // Update themeColors object
-  const themeColors = {
-    theme: {
-      monochrome: {
-        enabled: true,
-        color: primaryColor,
-      },
-    },
-    stroke: {
-      colors: [secondaryColor],
-    },
-  }
+  // const themeColors = {
+  //   theme: {
+  //     monochrome: {
+  //       enabled: true,
+  //       color: primaryColor,
+  //     },
+  //   },
+  //   stroke: {
+  //     colors: [secondaryColor],
+  //   },
+  // }
 
-  // // Merge default options, theme colors, and custom options
-  const mergedOptions = {
-    ...defaultOptions,
-    ...themeColors,
-    ...customOptions,
-    xaxis: {
-      ...defaultOptions.xaxis,
-      categories: letters.categories,
-    },
-    series: letters.series,
-  }
+  // const mergedOptions = {
+  //   ...defaultOptions,
+  //   ...themeColors,
+  //   ...customOptions,
+  //   xaxis: {
+  //     ...defaultOptions.xaxis,
+  //     categories: letters.categories,
+  //   },
+  //   series: letters.series,
+  // }
 
-  return mergedOptions
+  // return mergedOptions
+  return defaultOptions
 }
 
 export default getLettersChartOptions
