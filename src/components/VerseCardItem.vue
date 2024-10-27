@@ -23,8 +23,6 @@
 <script setup>
 import { useInputFiltering } from "@/mixins/inputFiltering"
 const { highlight } = useInputFiltering()
-import { useTheme } from "vuetify"
-const theme = useTheme()
 
 const props = defineProps({
   item: Object,
@@ -54,6 +52,7 @@ const indexData = computed(() => ({
     color: "verse-number-to-quran",
   },
 }))
+
 const countData = computed(() => ({
   كلمة: {
     value: props.item.verseText.split(" ").length.toString(),
