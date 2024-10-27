@@ -32,6 +32,13 @@
         }"
         @click="handleSelectedVerse(verse, ratl.word)"
       />
+      <v-progress-linear
+        v-if="isLoading"
+        :height="4"
+        color="verse-count"
+        indeterminate
+        rounded
+      ></v-progress-linear>
     </div>
   </div>
   <NoData v-else />
@@ -56,7 +63,7 @@ const searchedTarteels = computed(() => tarteelStore.getStoredTarteels)
 const ratl = computed(() => tarteelStore.getSelectedRatl)
 const targetedVerseIndex = computed(() => store.getTarget?.verseNumberToQuran)
 
-const { paginatedItems, handleVirtualScroll, handleLoading } = usePagination(
+const { paginatedItems, handleVirtualScroll, isLoading } = usePagination(
   computed(() => ratl.value?.verses || []),
   targetedVerseIndex
 )
@@ -104,7 +111,6 @@ const handleScrolling = () => {
 watch(
   () => ratl.value,
   () => {
-    handleLoading()
     handleScrolling()
   }
 )
@@ -112,13 +118,11 @@ watch(
 watch(
   () => searchedTarteels.value,
   () => {
-    handleLoading()
     handleScrolling()
   }
 )
 
 onMounted(async () => {
-  handleLoading()
   await nextTick()
   handleScrolling()
 })

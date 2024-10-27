@@ -1,10 +1,12 @@
 <template>
-  <v-card variant="plain" class="">
+  <v-card variant="plain">
     <v-card-text class="text-center letters-container" v-if="selectedLetter">
       <span class="text-h2 font-weight-bold ml-4">{{
         selectedLetter.letter
       }}</span>
-      <span class="text-h4 ml-4">{{ selectedLetter.count }}</span>
+      <span class="text-h4 ml-4"
+        >{{ selectedLetter.count }}<span class="text-caption">مرة</span></span
+      >
     </v-card-text>
 
     <Chart

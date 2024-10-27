@@ -1,16 +1,16 @@
 import { ref, computed, watch } from "vue"
 
-export function usePagination(itemsRef, targetedIndexRef, itemsPerPage = 20) {
+export function usePagination(itemsRef, targetedIndexRef, itemsPerPage = 5) {
   const currentPage = ref(1)
   const totalItems = ref(0)
+  const isLoading = ref(false)
 
   const paginatedItems = computed(() => {
-    const start = (currentPage.value - 1) * itemsPerPage
-    const end = start + itemsPerPage
+    const end = currentPage.value * itemsPerPage
     return (
-      itemsRef.value?.slice(start, end).map((item, index) => ({
+      itemsRef.value?.slice(0, end).map((item, index) => ({
         ...item,
-        originalIndex: start + index,
+        originalIndex: index,
       })) || []
     )
   })
@@ -27,8 +27,15 @@ export function usePagination(itemsRef, targetedIndexRef, itemsPerPage = 20) {
   }
 
   const loadMoreItems = () => {
-    if (currentPage.value * itemsPerPage < totalItems.value) {
-      currentPage.value++
+    if (
+      currentPage.value * itemsPerPage < totalItems.value &&
+      !isLoading.value
+    ) {
+      isLoading.value = true
+      setTimeout(() => {
+        currentPage.value++
+        isLoading.value = false
+      }, 300)
     }
   }
 
@@ -60,5 +67,6 @@ export function usePagination(itemsRef, targetedIndexRef, itemsPerPage = 20) {
     resetPagination,
     handleVirtualScroll,
     handleLoading,
+    isLoading,
   }
 }

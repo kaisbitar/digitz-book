@@ -4,7 +4,7 @@
       v-if="isInputVisible"
       :key="isInputVisible"
       class="d-flex mr-sm-auto mb-1 position-sticky mt-sm-n11 mb-sm-1 mb-3 z-1"
-      width="300"
+      :width="isMobile ? 'auto' : '300'"
       variant="text"
     >
       <AppInputField
@@ -15,7 +15,6 @@
         :type="'verse-count'"
         @clear="onClear"
         @keydown.enter="onEnter"
-        :style="{ maxWidth: '190px' }"
       />
       <AppToggleBtn
         class="mt-3 mr-1"
@@ -47,7 +46,10 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue"
+import { ref, watch, computed } from "vue"
+import { useDisplay } from "vuetify"
+
+const display = useDisplay()
 
 const props = defineProps({
   tabs: Array,
@@ -75,6 +77,10 @@ watch(
     localSearch.value = newValue
   }
 )
+
+const isMobile = computed(() => {
+  return display.xs.value
+})
 
 const onSearchToggle = () => {
   emit("searchToggle", !props.isInputVisible)
