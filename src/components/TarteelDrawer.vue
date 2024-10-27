@@ -38,7 +38,6 @@ import { useWindow } from "@/mixins/window"
 import { useResizeHandler } from "@/hooks/useResizeObserver"
 import { useTarteelStore } from "@/stores/tarteelStore"
 import { useStore } from "@/stores/appStore"
-import { useDisplay } from "vuetify"
 
 const router = useRouter()
 const store = useStore()
@@ -129,7 +128,8 @@ const handleSelectedRatl = (index) => {
 
 const deleteTarteel = (index) => {
   tarteelStore.removeTarteelItem(index)
-  updateSelectedTarteel(index)
+  handleSelectedSearch(index)
+  scrollToTop()
 }
 
 const deleteRatl = (index) => {
