@@ -1,48 +1,54 @@
 <template>
-  <v-scale-transition>
-    <v-card
-      v-if="isInputVisible"
-      :key="isInputVisible"
-      class="d-flex mr-sm-auto mb-1 position-sticky mt-sm-n11 mb-sm-1 mb-3 z-1"
-      :width="isMobile ? 'auto' : '300'"
-      variant="text"
-    >
-      <AppInputField
-        class="flex-grow-1"
-        v-model="localSearch"
-        @update:modelValue="onInput"
-        :fieldPlaceHolder="placeholderText"
-        :type="'verse-count'"
-        @clear="onClear"
-        @keydown.enter="onEnter"
-      />
-      <AppToggleBtn
-        class="mt-3 mr-1"
-        :isActive="true"
-        activeIcon="mdi-arrow-up"
-      />
-      <AppToggleBtn class="mt-3" :isActive="true" activeIcon="mdi-arrow-down" />
-    </v-card>
-  </v-scale-transition>
+  <div class="toolbar-container">
+    <v-scale-transition>
+      <v-card
+        v-if="isInputVisible"
+        :key="isInputVisible"
+        class="d-flex"
+        :width="isMobile ? 'auto' : '300'"
+        variant="text"
+      >
+        <AppInputField
+          class="flex-grow-1"
+          v-model="localSearch"
+          @update:modelValue="onInput"
+          :fieldPlaceHolder="placeholderText"
+          :type="'verse-count'"
+          @clear="onClear"
+          @keydown.enter="onEnter"
+        />
+        <AppToggleBtn
+          class="mt-3 mr-1"
+          :isActive="true"
+          activeIcon="mdi-arrow-up"
+        />
+        <AppToggleBtn
+          class="mt-3"
+          :isActive="true"
+          activeIcon="mdi-arrow-down"
+        />
+      </v-card>
+    </v-scale-transition>
 
-  <v-toolbar density="compact" rounded>
-    <AppTabs
-      :tabs="tabs"
-      :activeTab="activeTab"
-      @update:activeTab="updateActiveTab"
-    />
-    <v-spacer></v-spacer>
-    <AppToggleBtn
-      :badgeContent="badgeIsActive ? badgeContent : ''"
-      class=""
-      activeIcon="mdi-file-search-outline"
-      :isActive="isInputVisible"
-      :btnText="searchBtnText"
-      @toggle="onSearchToggle"
-    />
-    <v-spacer></v-spacer>
-    <slot name="additional-actions"></slot>
-  </v-toolbar>
+    <v-toolbar density="compact" rounded elevation="2" class="toolbar-fixed">
+      <AppTabs
+        :tabs="tabs"
+        :activeTab="activeTab"
+        @update:activeTab="updateActiveTab"
+      />
+      <v-spacer></v-spacer>
+      <AppToggleBtn
+        :badgeContent="badgeIsActive ? badgeContent : ''"
+        class=""
+        activeIcon="mdi-file-search-outline"
+        :isActive="isInputVisible"
+        :btnText="searchBtnText"
+        @toggle="onSearchToggle"
+      />
+      <v-spacer></v-spacer>
+      <slot name="additional-actions"></slot>
+    </v-toolbar>
+  </div>
 </template>
 
 <script setup>
@@ -106,4 +112,15 @@ const onEnter = () => {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.toolbar-container {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  background-color: rgb(var(--v-theme-background));
+}
+
+.toolbar-fixed {
+  border-bottom: thin solid rgba(var(--v-border-color), var(--v-border-opacity));
+}
+</style>

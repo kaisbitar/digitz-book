@@ -1,12 +1,10 @@
 <template>
   <v-navigation-drawer
     v-model="localDrawer"
-    :width="isDetailView ? drawerWidthDetail : drawerWidthNoDetail"
+    :width="isDetailView ? 550 : 270"
     :location="'left'"
   >
     <v-toolbar dark>
-      <!-- <v-toolbar-title v-if="!isInputVisible">السور</v-toolbar-title> -->
-
       <AppToggleBtn
         :isActive="isInputVisible"
         btnText="ترتيل السور"
@@ -27,8 +25,8 @@
       <v-spacer></v-spacer>
       <AppToggleBtn
         :isActive="isDetailView"
-        inActiveIcon="mdi-chevron-right"
-        activeIcon="mdi-chevron-left"
+        inActiveIcon="mdi-list-box-outline"
+        activeIcon="mdi-list-box"
         size="default"
         @toggle="toggleDetailView"
       />
@@ -46,6 +44,7 @@
       :tableHeaders="indexHeaders"
       :fieldPlaceHolder="'السور'"
       :activeItemKey="targetedIndex"
+      :tableHeight="'calc(100vh - 64px - 48px - 8px)'"
       @rowClicked="handleSelectedSura"
     />
   </v-navigation-drawer>
@@ -60,8 +59,7 @@ import { useWindow } from "@/mixins/window"
 import { useInputFiltering } from "@/mixins/inputFiltering"
 import { useDisplay } from "vuetify"
 
-const { scrollToActiveItem, drawerWidthDetail, drawerWidthNoDetail } =
-  useWindow()
+const { scrollToActiveItem } = useWindow()
 const { updateSearchValue, search } = useInputFiltering()
 
 const router = useRouter()
@@ -143,4 +141,8 @@ onMounted(() => {
 })
 </script>
 
-<style scoped></style>
+<style>
+.index-container .v-table__wrapper {
+  overflow-x: hidden !important;
+}
+</style>

@@ -1,57 +1,17 @@
-import { computed, ref, onMounted, onUnmounted, nextTick } from "vue"
-import { useStore } from "@/stores/appStore"
+import { nextTick } from "vue"
 import { useGoTo } from "vuetify"
-import { useDisplay } from "vuetify"
 
 export function useWindow(elementRef) {
-  const store = useStore()
   const goTo = useGoTo()
-  const { mobile } = useDisplay()
 
-  const windowHeight = computed(() => window.innerHeight)
-  const windowWidth = computed(() =>
-    window.innerWidth <= 1300 ? "small" : "large"
-  )
-
-  const drawerWidthDetail = computed(() => {
-    return 550
-  })
-  const drawerWidthNoDetail = computed(() => {
-    return 270
-  })
-
-  const dynamicHeight = ref(0)
-
-  const setContainerHeight = () => {
-    // const buffer = mobile.value ? 60 : 5
-    const buffer = 0
-    if (elementRef && elementRef.value) {
-      const windowHeight = window.innerHeight
-      const containerRect = elementRef.value.getBoundingClientRect()
-      const containerTop = containerRect.top
-      const newHeight = windowHeight - containerTop - buffer
-      dynamicHeight.value = newHeight
-      elementRef.value.style.height = `${newHeight}px`
-    }
-  }
-
-  const handleResize = () => {
-    setContainerHeight()
-  }
-
-  const scrollToItem = async (activeItem, container, isDialog) => {
+  const scrollToItem = async (activeItem, container) => {
     await nextTick()
     setTimeout(() => {
-      const activeRowSelector = isDialog
-        ? `.v-dialog ${activeItem}`
-        : `${activeItem}`
-
-      const activeVerseItem = document.querySelector(activeRowSelector)
+      const activeVerseItem = document.querySelector(activeItem)
       if (!activeVerseItem) return
 
-      const baseContainer = isDialog ? `.v-dialog ${container}` : `${container}`
       goTo(activeVerseItem, {
-        container: baseContainer,
+        container: container,
         offset: -100,
         duration: 300,
         easing: "easeInOutCubic",
@@ -60,25 +20,10 @@ export function useWindow(elementRef) {
   }
 
   const scrollToActiveItem = async (activeItem, container) => {
-    const isDialog = store.getIsDialog
-    await scrollToItem(activeItem, container, isDialog)
+    await scrollToItem(activeItem, container)
   }
 
-  onMounted(() => {
-    window.addEventListener("resize", handleResize)
-  })
-
-  onUnmounted(() => {
-    window.removeEventListener("resize", handleResize)
-  })
-
   return {
-    windowHeight,
-    setContainerHeight,
-    dynamicHeight,
     scrollToActiveItem,
-    windowWidth,
-    drawerWidthDetail,
-    drawerWidthNoDetail,
   }
 }

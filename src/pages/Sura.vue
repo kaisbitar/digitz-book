@@ -1,44 +1,39 @@
 <template>
-  <div class="d-flex">
-    <!-- <div v-if="targetTarteel" class="d-block" :style="{ width: '55px' }">
-      <AppToggleBtn
-        class="back-btn"
-        :badgeContent="targetTarteel"
-        :isActive="true"
-        activeIcon="mdi-arrow-right"
-        @click="goBack"
-      />
-    </div> -->
+  <template class="d-flex flex-column h-100 pa-0 pt-4 px-4">
     <SuraHeader
       v-if="!showVerseDetails"
-      class="flex-wrap"
+      class="flex-wrap mb-4"
       :title="`${suraNumber} ${suraName} `"
       :numberOfVerses="numberOfVerses"
       :numberOfWords="numberOfWords"
       :numberOfLetters="numberOfLetters"
     />
-  </div>
-  <SuraBoard
-    v-if="!showVerseDetails"
-    :tabs="tabs"
-    :suraName="suraName"
-    :suraWithTashkeel="suraWithTashkeel"
-    :versesBasics="versesBasics"
-    :chartFreqSeries="chartFreqSeries"
-    :chartOptions="chartOptions"
-    @verseSelected="handleVerseSelectedOnTable"
-  />
-  <div class="position-absolute" style="right: 900px; top: 50px">
-    <v-btn icon="mdi-arrow-left" @click="showVerseDetails = false" />
-  </div>
-  <v-slide-x-transition>
-    <VerseDetails
-      v-if="showVerseDetails"
-      :verse="targetedVerseText.verseText"
-      :title="suraName"
-      :inputText="targetTarteel"
-    />
-  </v-slide-x-transition>
+
+    <div class="pa-0">
+      <SuraBoard
+        v-if="!showVerseDetails"
+        :tabs="tabs"
+        :suraName="suraName"
+        :suraWithTashkeel="suraWithTashkeel"
+        :versesBasics="versesBasics"
+        :chartFreqSeries="chartFreqSeries"
+        :chartOptions="chartOptions"
+        @verseSelected="handleVerseSelectedOnTable"
+      />
+    </div>
+
+    <!-- <div class="position-absolute" style="right: 900px; top: 50px">
+      <v-btn icon="mdi-arrow-left" @click="showVerseDetails = false" />
+    </div> -->
+    <v-slide-x-transition>
+      <VerseDetails
+        v-if="showVerseDetails"
+        :verse="targetedVerseText.verseText"
+        :title="suraName"
+        :inputText="targetTarteel"
+      />
+    </v-slide-x-transition>
+  </template>
 </template>
 
 <script setup>

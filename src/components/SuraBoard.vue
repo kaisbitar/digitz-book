@@ -148,3 +148,9 @@ onMounted(() => {
   scrollToActiveVerse()
 })
 </script>
+
+<style scoped>
+.overflow-y-auto {
+  height: calc(100vh - 110px - 100px);
+}
+</style>

@@ -1,12 +1,10 @@
 <template>
-  <v-app>
+  <div class="d-flex flex-column h-screen">
     <AppNav v-if="activeRoute !== 'home'" />
-    <v-main>
-      <v-container class="" fluid>
-        <router-view />
-      </v-container>
+    <v-main class="flex-grow-1">
+      <router-view />
     </v-main>
-  </v-app>
+  </div>
 </template>
 
 <script setup>
