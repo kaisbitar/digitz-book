@@ -1,6 +1,6 @@
 <template>
   <v-card
-    class="sura-text-container overflow-y-auto scrolling-container px-sm-10 px-2 pb-9 mx-auto bg-surface"
+    class="sura-text-container sura-board-overflow scrolling-container px-sm-10 px-2 pb-9 mx-auto bg-surface"
     max-width="850px"
     variant="text"
     rounded

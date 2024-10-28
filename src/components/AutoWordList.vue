@@ -1,5 +1,5 @@
 <template>
-  <v-list class="flex-grow-1 overflow-y-auto">
+  <v-list class="flex-grow-1 sura-board-overflow">
     <v-virtual-scroll :items="items" :height="height" :item-height="itemHeight">
       <template v-slot:default="{ item }">
         <v-hover v-slot="{ isHovering, props }">

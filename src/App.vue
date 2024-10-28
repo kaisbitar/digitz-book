@@ -33,8 +33,15 @@ onMounted(async () => {
 @import "@/styles/variables.scss";
 $body-font-family: "Almarai", sans-serif;
 
-.v-application {
+html {
   font-family: $body-font-family !important;
+  overflow: hidden;
+  position: relative;
+}
+
+.sura-board-overflow {
+  height: calc(100vh - 170px);
+  overflow: auto;
 }
 
 .v-application,

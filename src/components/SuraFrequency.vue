@@ -1,5 +1,5 @@
 <template>
-  <v-card class="pa-4 overflow-y-auto">
+  <v-card class="pa-4 sura-board-overflow">
     <ChartRadioButtons :intitalType="chartFreqType" @typeChanged="changeType" />
     <Chart :series="chartFreqSeries" :options="chartOptions" :height="height" />
   </v-card>

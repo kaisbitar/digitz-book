@@ -1,6 +1,9 @@
 <template>
   <!-- <TarteelChart :series="ratl" /> -->
-  <template v-if="ratl && ratl.verses">
+  <div
+    v-if="ratl && ratl.verses"
+    class="d-flex flex-column h-100 pa-0 pt-4 px-4"
+  >
     <div class="d-flex mb-4">
       <span class="text-h4 ml-4">{{ ratl.word }}</span>
       <v-badge
@@ -12,8 +15,14 @@
         :offset-y="badge.offsetY"
       ></v-badge>
     </div>
-    <v-toolbar title="المعنى" class="" rounded density="compact"> </v-toolbar>
-    <div class="tarteel-container" @scroll="handleInfiniteScroll">
+
+    <v-toolbar title="المعنى" class="" elevation="2" rounded density="compact">
+    </v-toolbar>
+
+    <div
+      class="tarteel-container sura-board-overflow"
+      @scroll="handleInfiniteScroll"
+    >
       <VerseCardItem
         v-for="verse in paginatedItems"
         :item="verse"
@@ -35,8 +44,11 @@
         rounded
       ></v-progress-linear>
     </div>
+  </div>
+
+  <template v-else>
+    <NoData />
   </template>
-  <NoData v-else />
 </template>
 
 <script setup>

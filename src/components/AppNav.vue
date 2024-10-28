@@ -1,5 +1,4 @@
 <template>
-  <!-- <div> -->
   <v-app-bar :elevation="0" density="compact" class="border-b" location="top">
     <v-app-bar-nav-icon
       @click="toggleRailAppNavDrawer"
@@ -67,10 +66,7 @@
     @navigateTo="handleNavigation"
     @update:modelValue="updateDrawer"
   />
-  <!-- THis is a work around for a bug on phones only when location is set to right
-        :location="isMobile && !drawer ? 'left' : 'right'"  -->
   <TarteelDrawer v-model:drawer="tarteelDrawer" />
-  <!-- </div> -->
 </template>
 
 <script setup>
