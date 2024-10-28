@@ -3,15 +3,15 @@
     ref="chartRef"
     :series="series"
     :options="options"
-    :height="chartWindowHeight"
+    :height="height"
   />
+  <!-- :height="chartWindowHeight" -->
 </template>
 
 <script setup>
 import VueApexCharts from "vue3-apexcharts"
 import { ref, computed, onMounted, nextTick } from "vue"
 
-const chartWindowHeight = computed(() => window.innerHeight - 200)
 const props = defineProps(["height", "options", "series"])
 
 const chartRef = ref(null)

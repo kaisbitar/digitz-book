@@ -1,7 +1,8 @@
 <template>
+  <!-- <TarteelChart :series="ratl" /> -->
   <div v-if="ratl && ratl.verses">
     <div class="d-flex mb-4">
-      <div class="text-h4 ml-4">{{ ratl.word }}</div>
+      <span class="text-h4 ml-4">{{ ratl.word }}</span>
       <v-badge
         v-for="badge in badges"
         :key="badge.id"
@@ -11,13 +12,12 @@
         :offset-y="badge.offsetY"
       ></v-badge>
     </div>
-
     <v-toolbar title="المعنى" class="" rounded density="compact"> </v-toolbar>
     <div
       ref="tarteelContainer"
       class="tarteel-container"
       :style="{ height: `${dynamicHeight}px`, overflowY: 'auto' }"
-      @scroll="handleVirtualScroll"
+      @scroll="handleInfiniteScroll"
     >
       <VerseCardItem
         v-for="verse in paginatedItems"
@@ -63,7 +63,7 @@ const searchedTarteels = computed(() => tarteelStore.getStoredTarteels)
 const ratl = computed(() => tarteelStore.getSelectedRatl)
 const targetedVerseIndex = computed(() => store.getTarget?.verseNumberToQuran)
 
-const { paginatedItems, handleVirtualScroll, isLoading } = usePagination(
+const { paginatedItems, handleInfiniteScroll, isLoading } = usePagination(
   computed(() => ratl.value?.verses || []),
   targetedVerseIndex
 )
@@ -73,6 +73,7 @@ const handleSelectedVerse = (verse, tarteel) => {
     fileName: verse.fileName,
     verseIndex: verse.verseIndex,
     verseNumberToQuran: verse.verseNumberToQuran.toString(),
+    verseText: verse.verseText,
     tarteel,
   })
   router.push("sura")

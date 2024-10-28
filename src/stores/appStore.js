@@ -14,6 +14,7 @@ export const useStore = defineStore("Quran", {
       fileName: "001الفاتحة",
       verseIndex: 1,
       verseNumberToQuran: 1,
+      verseText: null,
       tarteel: null,
     },
     suras: {},
@@ -71,6 +72,7 @@ export const useStore = defineStore("Quran", {
         fileName: target.fileName,
         verseIndex: target.verseIndex,
         verseNumberToQuran: target.verseNumberToQuran,
+        verseText: target.verseText,
         tarteel: target.tarteel,
       }
     },

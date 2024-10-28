@@ -85,6 +85,7 @@ const setTargetedSuraAndVerse = (item) => {
     fileName: `${suraNumber}${suraName}`,
     verseIndex: item.verseIndex,
     verseNumberToQuran: item.verseNumberToQuran,
+    verseText: item.verseText,
   })
 }
 

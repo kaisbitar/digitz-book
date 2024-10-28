@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex">
-    <div v-if="targetTarteel" class="d-block" :style="{ width: '55px' }">
+    <!-- <div v-if="targetTarteel" class="d-block" :style="{ width: '55px' }">
       <AppToggleBtn
         class="back-btn"
         :badgeContent="targetTarteel"
@@ -8,8 +8,9 @@
         activeIcon="mdi-arrow-right"
         @click="goBack"
       />
-    </div>
+    </div> -->
     <SuraHeader
+      v-if="!showVerseDetails"
       class="flex-wrap"
       :title="`${suraNumber} ${suraName} `"
       :numberOfVerses="numberOfVerses"
@@ -18,6 +19,7 @@
     />
   </div>
   <SuraBoard
+    v-if="!showVerseDetails"
     :tabs="tabs"
     :suraName="suraName"
     :suraWithTashkeel="suraWithTashkeel"
@@ -26,12 +28,17 @@
     :chartOptions="chartOptions"
     @verseSelected="handleVerseSelectedOnTable"
   />
-  <VerseDetails
-    v-model="showVerseDetails"
-    :verse="selectedVerseText"
-    :title="fileName"
-    :inputText="targetTarteel"
-  />
+  <div class="position-absolute" style="right: 900px; top: 50px">
+    <v-btn icon="mdi-arrow-left" @click="showVerseDetails = false" />
+  </div>
+  <v-slide-x-transition>
+    <VerseDetails
+      v-if="showVerseDetails"
+      :verse="targetedVerseText.verseText"
+      :title="suraName"
+      :inputText="targetTarteel"
+    />
+  </v-slide-x-transition>
 </template>
 
 <script setup>
@@ -48,6 +55,7 @@ import {
   setSuraToolTip,
   setMushafToolTip,
 } from "@/utils/suraUtils"
+import SuraBoard from "@/components/SuraBoard.vue"
 
 const router = useRouter()
 const props = defineProps(["suraInputText"])
@@ -85,6 +93,7 @@ const tabs = computed(() => [
 const fileName = computed(() => store.getTarget?.fileName || "001الفاتحة")
 const suraNumber = computed(() => parseInt(store.getTarget?.suraNumber))
 const suraName = computed(() => store.getTarget?.suraName)
+const targetedVerseText = computed(() => store.getTarget)
 const targetTarteel = computed(() => store.getTarget?.tarteel)
 
 const tableQuranIndex = computed(() => dataStore.getQuranIndex)

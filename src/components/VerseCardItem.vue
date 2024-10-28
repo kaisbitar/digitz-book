@@ -5,8 +5,8 @@
     variant="outlined"
   >
     <v-card-subtitle class="verse-card-item-title mb-2">
-      <v-chip size="small" class="mr-n3 ml-2">{{ index + 1 }} </v-chip>
-      {{ suraNumber }} {{ suraName }}
+      <v-badge :content="index + 1" offset-x="-10" offset-y="-8"> </v-badge>
+      <span class="mr-10">{{ suraNumber }} {{ suraName }}</span>
     </v-card-subtitle>
 
     <v-card-text
@@ -47,16 +47,16 @@ const handleClick = () => {
 
 const indexData = computed(() => ({
   رقم: { value: props.item.verseIndex, color: "verse-count" },
-  مصحف: {
-    value: props.item.verseNumberToQuran,
-    color: "verse-number-to-quran",
+  كلمة: {
+    value: props.item.verseText.split(" ").length.toString(),
+    color: "word-count",
   },
 }))
 
 const countData = computed(() => ({
-  كلمة: {
-    value: props.item.verseText.split(" ").length.toString(),
-    color: "word-count",
+  مصحف: {
+    value: props.item.verseNumberToQuran,
+    color: "verse-number-to-quran",
   },
   حرف: {
     value: props.item.verseText.replace(/ /g, "").length.toString(),
