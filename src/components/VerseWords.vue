@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="text-center justify-content-center"
-    v-click-outside="onClickOutside"
-  >
+  <div v-click-outside="onClickOutside">
     <div
       v-for="(word, index) in verseWords"
       :key="index"
@@ -74,7 +71,7 @@ const onClickOutside = () => {
   margin: 0 4px;
   cursor: pointer;
   transition: color 0.3s;
-  font-size: 25px;
+  font-size: 22px;
 }
 
 .word:hover {

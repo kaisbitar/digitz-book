@@ -70,11 +70,10 @@ export const fetchWordMeaningData = async (word, wordRoot) => {
     const modifiedWordRoot = wordRoot.slice(1, -2)
     response = await fetchWordMeaning(appApi, modifiedWordRoot)
   }
-  const extractedMeaning = extractFromDictionnary(response[0], wordRoot)
+  const extractedMeaning = extractFromDictionnary(response[0])
 
   store.setWordMeaning({ word, meaning: extractedMeaning })
-  meanings[word] = extractedMeaning
-  updateCurrentMeaning(meanings[word])
+  return extractedMeaning // Return the meaning instead of updating component state
 }
 
 const hasThreeLettersInCommon = (word1, word2) => {

@@ -31,7 +31,7 @@ export default createVuetify({
           highlight: "#ffff00",
           "on-highlight": "#060603",
           "active-row": "#e4e4e4",
-          "count-key-item": "#919191",
+          "count-key-item": "#878787",
           "verse-count": "#3F51B5D9", // Deeper indigo with 85% opacity
           "word-count": "#4CAF50D9", // Deeper green with 85% opacity
           "letter-count": "#FF9800D9", // Deeper amber with 85% opacity
@@ -85,7 +85,7 @@ export default createVuetify({
           "on-background": "#212121", // Very dark gray
           "on-surface": "#424242", // Dark gray
           highlight: "#FFC400", // Amber
-          "active-row": "#E8EAF6", // Very light indigo
+          "active-row": "#d8f8dc2e", // Very light indigo
           "count-key-item": "#78909C", // Blue-gray
           "on-highlight": "#212121", // Very dark gray
           "verse-count": "#651FFFD9", // Vivid deep purple with 85% opacity

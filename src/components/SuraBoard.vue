@@ -106,6 +106,7 @@ const onEnter = (value) => {
       fileName: props.versesBasics[0].fileName,
       verseIndex: props.versesBasics[0].verseIndex || 0,
       verseNumberToQuran: props.versesBasics[0].verseNumberToQuran,
+      verseText: props.versesBasics[0].verseText,
     })
     return
   }

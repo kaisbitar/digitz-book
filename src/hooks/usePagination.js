@@ -43,7 +43,7 @@ export function usePagination(itemsRef, targetedIndexRef, itemsPerPage = 5) {
     currentPage.value = 1
   }
 
-  const handleVirtualScroll = (event) => {
+  const handleInfiniteScroll = (event) => {
     const { scrollTop, scrollHeight, clientHeight } = event.target
     if (scrollTop + clientHeight >= scrollHeight - 100) {
       loadMoreItems()
@@ -65,7 +65,7 @@ export function usePagination(itemsRef, targetedIndexRef, itemsPerPage = 5) {
     paginatedItems,
     loadMoreItems,
     resetPagination,
-    handleVirtualScroll,
+    handleInfiniteScroll,
     handleLoading,
     isLoading,
   }

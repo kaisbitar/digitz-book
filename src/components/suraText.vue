@@ -66,6 +66,7 @@ const setTargetedVerse = (verse, index) => {
     fileName: store.getTarget.fileName,
     verseIndex: index,
     verseNumberToQuran: verse.verseNumberToQuran,
+    verseText: verse.verseText,
   })
 }
 

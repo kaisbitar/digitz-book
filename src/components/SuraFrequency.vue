@@ -22,12 +22,12 @@ import { useResizeHandler } from "@/hooks/useResizeObserver"
 const props = defineProps({
   chartFreqSeries: Array,
   chartOptions: Object,
-  height: [Number, String],
 })
 
 const store = useStore()
 
 const chartFreqType = computed(() => store.getChartFreqType)
+const height = computed(() => window.innerHeight - 200)
 
 const changeType = (type) => {
   store.setChartFreqType(type)

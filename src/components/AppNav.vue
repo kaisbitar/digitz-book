@@ -1,76 +1,76 @@
 <template>
-  <div>
-    <v-app-bar :elevation="0" density="compact" class="border-b">
-      <v-app-bar-nav-icon
-        @click="toggleRailAppNavDrawer"
-        class="ml-2"
-        v-if="!(isMobile && isInputVisible)"
-      />
-
-      <div class="w-100 d-flex">
-        <v-app-bar-title v-if="!isInputVisible" class="pt-1">
-          الكتاب المرقوم
-        </v-app-bar-title>
-        <AutoBoard
-          v-if="isInputVisible"
-          class="flex-grow-1 mt-1"
-          :style="{ maxWidth: '850px' }"
-          @update:isInputVisible="isInputVisible = $event"
-        />
-      </div>
-      <v-spacer v-if="!isMobile"></v-spacer>
-      <AppToggleBtn
-        :isActive="isInputVisible"
-        btnText="ترتيل القرآن"
-        inActiveIcon="mdi-magnify"
-        activeIcon="mdi-close"
-        size="default"
-        @toggle="isInputVisible = !isInputVisible"
-      />
-      <AppToggleBtn
-        v-if="!(isMobile && isInputVisible)"
-        class="mx-2 mx-sm-4 tarteel-btn"
-        :badgeContent="tarteelBadgeContent"
-        btnText="تراتيل"
-        :btnVariant="getButtonVariant('tarteel')"
-        :isActive="openDrawers.tarteel"
-        inActiveIcon="mdi-database-search-outline"
-        activeIcon="mdi-database-search"
-        size="default"
-        @toggle="toggleDrawer('tarteel')"
-      />
-      <AppToggleBtn
-        v-if="!(isMobile && isInputVisible)"
-        class="mx-2 mx-sm-4"
-        btnText="السور"
-        :btnVariant="getButtonVariant('index')"
-        :isActive="openDrawers.index"
-        inActiveIcon="mdi-book-open-outline"
-        activeIcon="mdi-book-open"
-        size="default"
-        @toggle="toggleDrawer('index')"
-      />
-    </v-app-bar>
-    <v-divider></v-divider>
-
-    <TableQuranIndex v-model:drawer="indexDrawer" />
-
-    <AppNavDrawer
-      v-model="drawer"
-      :rail="isRail && !isMobile"
-      :location="isMobile ? 'left' : 'right'"
-      :temporary="isMobile"
-      :permanent="!isMobile"
-      :navigationItems="navigationItems"
-      :activeRoute="activeRoute"
-      :expand-on-hover="!isMobile"
-      @navigateTo="handleNavigation"
-      @update:modelValue="updateDrawer"
+  <!-- <div> -->
+  <v-app-bar :elevation="0" density="compact" class="border-b" location="top">
+    <v-app-bar-nav-icon
+      @click="toggleRailAppNavDrawer"
+      class="ml-2"
+      v-if="!(isMobile && isInputVisible)"
     />
-    <!-- THis is a work around for a bug on phones only when location is set to right
+
+    <div class="w-100 d-flex">
+      <v-app-bar-title v-if="!isInputVisible" class="pt-1">
+        الكتاب المرقوم
+      </v-app-bar-title>
+      <AutoBoard
+        v-if="isInputVisible"
+        class="flex-grow-1 mt-1"
+        :style="{ maxWidth: '850px' }"
+        @update:isInputVisible="isInputVisible = $event"
+      />
+    </div>
+    <v-spacer v-if="!isMobile"></v-spacer>
+    <AppToggleBtn
+      :isActive="isInputVisible"
+      btnText="ترتيل القرآن"
+      inActiveIcon="mdi-magnify"
+      activeIcon="mdi-close"
+      size="default"
+      @toggle="isInputVisible = !isInputVisible"
+    />
+    <AppToggleBtn
+      v-if="!(isMobile && isInputVisible)"
+      class="mx-2 mx-sm-4 tarteel-btn"
+      :badgeContent="tarteelBadgeContent"
+      btnText="تراتيل"
+      :btnVariant="getButtonVariant('tarteel')"
+      :isActive="openDrawers.tarteel"
+      inActiveIcon="mdi-database-search-outline"
+      activeIcon="mdi-database-search"
+      size="default"
+      @toggle="toggleDrawer('tarteel')"
+    />
+    <AppToggleBtn
+      v-if="!(isMobile && isInputVisible)"
+      class="mx-2 mx-sm-4"
+      btnText="السور"
+      :btnVariant="getButtonVariant('index')"
+      :isActive="openDrawers.index"
+      inActiveIcon="mdi-book-open-outline"
+      activeIcon="mdi-book-open"
+      size="default"
+      @toggle="toggleDrawer('index')"
+    />
+  </v-app-bar>
+  <v-divider></v-divider>
+
+  <TableQuranIndex v-model:drawer="indexDrawer" />
+
+  <AppNavDrawer
+    v-model="drawer"
+    :rail="isRail && !isMobile"
+    :location="isMobile ? 'left' : 'right'"
+    :temporary="isMobile"
+    :permanent="!isMobile"
+    :navigationItems="navigationItems"
+    :activeRoute="activeRoute"
+    :expand-on-hover="!isMobile"
+    @navigateTo="handleNavigation"
+    @update:modelValue="updateDrawer"
+  />
+  <!-- THis is a work around for a bug on phones only when location is set to right
         :location="isMobile && !drawer ? 'left' : 'right'"  -->
-    <TarteelDrawer v-model:drawer="tarteelDrawer" />
-  </div>
+  <TarteelDrawer v-model:drawer="tarteelDrawer" />
+  <!-- </div> -->
 </template>
 
 <script setup>
