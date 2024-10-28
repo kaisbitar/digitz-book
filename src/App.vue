@@ -7,8 +7,8 @@
 <script setup>
 import { useStore } from "@/stores/appStore"
 import { useDataStore } from "@/stores/dataStore"
-import { useWindow } from "@/mixins/window"
-const { windowWidth } = useWindow()
+import { useDisplay } from "vuetify"
+const display = useDisplay()
 
 const store = useStore()
 const dataStore = useDataStore()
@@ -17,8 +17,12 @@ const getTheData = async () => {
   await dataStore.getQuranData()
 }
 
+const isMobile = computed(() => {
+  return display.xs.value
+})
+
 onMounted(async () => {
-  if (windowWidth.value === "small") {
+  if (isMobile.value) {
     store.setVersesMobileView(true)
   }
   await getTheData()
@@ -27,18 +31,12 @@ onMounted(async () => {
 
 <style lang="scss">
 @import "@/styles/variables.scss";
-// $body-font-family: "Cairo", sans-serif;
 $body-font-family: "Almarai", sans-serif;
 
 .v-application {
   font-family: $body-font-family !important;
 }
-html {
-  overflow: hidden;
-  position: relative;
-}
-// body {
-// }
+
 .v-application,
 .v-overlay-container,
 .v-tab,
@@ -52,17 +50,12 @@ html {
 .text-sm-h3,
 .text-h4 {
   font-family: $body-font-family !important;
-  // font-family: system-ui !important;
   font-family: unset;
 }
 
 .v-table--density-default {
   --v-table-header-height: 56px !important;
   --v-table-row-height: 31px !important;
-}
-
-th {
-  // height: 10px !important;
 }
 
 .tableItem {
@@ -76,7 +69,6 @@ th {
 .highlight-match {
   color: rgb(var(--v-theme-on-highlight));
   background: rgb(var(--v-theme-highlight)) !important;
-  // text-shadow: 0px 0px 5px rgb(var(--v-theme-on-highlight), 0.3);
   font-weight: bold;
   padding: 2px;
 }

@@ -1,46 +1,42 @@
 <template>
-  <!-- {{ suraTextArray }} -->
-  <div ref="suraTextRef">
-    <v-card
-      class="sura-text-container scrolling-container pa-sm-10 pa-2 pb-9 mx-auto bg-surface mt-1"
-      :height="dynamicHeight"
-      max-width="850px"
-      variant="text"
-      rounded
-    >
-      <div class="mb-7 text-center">بسم الله الرحمن الرحيم</div>
+  <v-card
+    class="sura-text-container overflow-y-auto scrolling-container px-sm-10 px-2 pb-9 mx-auto bg-surface"
+    max-width="850px"
+    variant="text"
+    rounded
+  >
+    <div class="mt-4 mb-7 text-center">بسم الله الرحمن الرحيم</div>
 
-      <div class="verse-container">
+    <div class="verse-container">
+      <span
+        v-for="(verse, index) in suraTextArray"
+        :key="index"
+        @click="setTargetedVerse(verse, index + 1)"
+        :class="{
+          'active-verse-text': isTargetedVerse(index),
+          'dimmed-verse': !isTargetedVerse(index),
+        }"
+      >
+        <v-badge
+          :content="`${index + 1}`"
+          color="verse-count"
+          offset-x="5"
+          offset-y="0"
+          inline
+        ></v-badge>
         <span
-          v-for="(verse, index) in suraTextArray"
-          :key="index"
+          :id="`v${index + 1}`"
+          class="verse-content"
           @click="setTargetedVerse(verse, index + 1)"
-          :class="{
-            'active-verse-text': isTargetedVerse(index),
-            'dimmed-verse': !isTargetedVerse(index),
-          }"
         >
-          <v-badge
-            :content="`${index + 1}`"
-            color="verse-count"
-            offset-x="5"
-            offset-y="0"
-            inline
-          ></v-badge>
-          <span
-            :id="`v${index + 1}`"
-            class="verse-content"
-            @click="setTargetedVerse(verse, index + 1)"
-          >
-            <span v-if="inputText" v-html="highlight(verse, inputText)" />
-            <span v-else>{{ verse }}</span>
-          </span>
+          <span v-if="inputText" v-html="highlight(verse, inputText)" />
+          <span v-else>{{ verse }}</span>
         </span>
-      </div>
+      </span>
+    </div>
 
-      <div class="mt-7 text-center">صدق الله العظيم</div>
-    </v-card>
-  </div>
+    <div class="mt-7 text-center">صدق الله العظيم</div>
+  </v-card>
 </template>
 
 <script setup>
@@ -48,7 +44,6 @@ import { ref, computed, onMounted, nextTick } from "vue"
 import { useStore } from "@/stores/appStore"
 import { useInputFiltering } from "@/mixins/inputFiltering"
 import { useWindow } from "@/mixins/window"
-import { useResizeHandler } from "@/hooks/useResizeObserver"
 
 const { scrollToActiveItem } = useWindow()
 const { search, highlight } = useInputFiltering()
@@ -70,14 +65,9 @@ const setTargetedVerse = (verse, index) => {
   })
 }
 
-const suraTextRef = ref(null)
-const { setContainerHeight, dynamicHeight } = useWindow(suraTextRef)
-useResizeHandler({ elementRef: suraTextRef, elementFunc: setContainerHeight })
-
 onMounted(async () => {
   scrollToActiveItem(".active-verse-text", ".sura-text-container")
   await nextTick()
-  setContainerHeight()
 })
 </script>
 

@@ -1,41 +1,38 @@
 <template>
-  <v-navigation-drawer v-model="localDrawer" location="left" width="250">
-    <v-toolbar dark>
-      <v-toolbar-title>ترتيل</v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-btn icon @click="localDrawer = false">
-        <v-icon>mdi-close</v-icon>
-      </v-btn>
-    </v-toolbar>
+  <div class="overflow-y-auto">
+    <v-navigation-drawer v-model="localDrawer" location="left" width="250">
+      <v-toolbar dark>
+        <v-toolbar-title>ترتيل</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-btn icon @click="localDrawer = false">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </v-toolbar>
 
-    <v-card elevation="10" class="mb-1">
-      <TarteelList
-        :items="storedSearches"
-        :selectedItem="selectedTarteelIndex"
-        @selecteItem="handleSelectedSearch"
-        @deleteItem="deleteTarteel"
-      />
-    </v-card>
-    <div
-      class="overflow-y-auto tarteel-drawer-container"
-      ref="tarteelDrawerRef"
-      :style="{ height: `${dynamicHeight}px` }"
-    >
-      <TarteelList
-        :items="selectedRatls"
-        :selectedItem="selectedRatlIndex"
-        @selecteItem="handleSelectedRatl"
-        @deleteItem="deleteRatl"
-      />
-    </div>
-  </v-navigation-drawer>
+      <v-card elevation="2" class="mb-1 overflow-y-auto-searches">
+        <TarteelList
+          :items="storedSearches"
+          :selectedItem="selectedTarteelIndex"
+          @selecteItem="handleSelectedSearch"
+          @deleteItem="deleteTarteel"
+        />
+      </v-card>
+      <div class="overflow-y-auto-ratls tarteel-drawer-container">
+        <TarteelList
+          :items="selectedRatls"
+          :selectedItem="selectedRatlIndex"
+          @selecteItem="handleSelectedRatl"
+          @deleteItem="deleteRatl"
+        />
+      </div>
+    </v-navigation-drawer>
+  </div>
 </template>
 
 <script setup>
 import { ref, computed, watch } from "vue"
 import { useRouter } from "vue-router"
 import { useWindow } from "@/mixins/window"
-import { useResizeHandler } from "@/hooks/useResizeObserver"
 import { useTarteelStore } from "@/stores/tarteelStore"
 import { useStore } from "@/stores/appStore"
 
@@ -157,16 +154,20 @@ watch(router.currentRoute, () => {
 })
 
 const tarteelDrawerRef = ref(null)
-const { setContainerHeight, dynamicHeight, scrollToActiveItem } =
-  useWindow(tarteelDrawerRef)
-useResizeHandler({
-  elementRef: tarteelDrawerRef,
-  elementFunc: setContainerHeight,
-})
+const { scrollToActiveItem } = useWindow(tarteelDrawerRef)
 
-onMounted(async () => {
+onMounted(() => {
   scrollToActiveItem(".active-tarteel-item", ".tarteel-drawer-container")
-  await nextTick()
-  setContainerHeight()
 })
 </script>
+
+<style scoped>
+.overflow-y-auto-searches {
+  height: 250px;
+  overflow-y: auto;
+}
+.overflow-y-auto-ratls {
+  height: calc(100vh - 370px);
+  overflow-y: auto;
+}
+</style>

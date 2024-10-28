@@ -1,9 +1,5 @@
 <template>
-  <div
-    class="overflow-y-auto"
-    ref="tableMobileRef"
-    :style="{ height: `${dynamicHeight}px` }"
-  >
+  <div ref="tableMobileRef" class="overflow-y-auto">
     <v-item-group v-for="(item, index) in data" :key="item.verseNumberToQuran">
       <v-item v-slot="{ isSelected, selectedClass, toggle }">
         <VerseCardItem
@@ -27,8 +23,6 @@
 
 <script setup lang="ts">
 import { ref, nextTick, onMounted } from "vue"
-import { useWindow } from "@/mixins/window"
-import { useResizeHandler } from "@/hooks/useResizeObserver"
 
 const selectedItem = ref(null)
 const emit = defineEmits<{
@@ -49,22 +43,9 @@ const selectItem = (item: any) => {
   emit("rowClicked", item)
 }
 
-const tableMobileRef = ref(null)
-
-const { setContainerHeight, dynamicHeight } = useWindow(tableMobileRef)
-useResizeHandler({
-  elementRef: tableMobileRef,
-  elementFunc: setContainerHeight,
-})
-
 onMounted(async () => {
   await nextTick()
-  setContainerHeight()
 })
 </script>
 
-<style scoped>
-.overflow-y-auto {
-  overflow-y: auto;
-}
-</style>
+<style scoped></style>

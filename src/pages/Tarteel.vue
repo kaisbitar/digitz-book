@@ -1,6 +1,6 @@
 <template>
   <!-- <TarteelChart :series="ratl" /> -->
-  <div v-if="ratl && ratl.verses">
+  <template v-if="ratl && ratl.verses">
     <div class="d-flex mb-4">
       <span class="text-h4 ml-4">{{ ratl.word }}</span>
       <v-badge
@@ -13,12 +13,7 @@
       ></v-badge>
     </div>
     <v-toolbar title="المعنى" class="" rounded density="compact"> </v-toolbar>
-    <div
-      ref="tarteelContainer"
-      class="tarteel-container"
-      :style="{ height: `${dynamicHeight}px`, overflowY: 'auto' }"
-      @scroll="handleInfiniteScroll"
-    >
+    <div class="tarteel-container" @scroll="handleInfiniteScroll">
       <VerseCardItem
         v-for="verse in paginatedItems"
         :item="verse"
@@ -40,7 +35,7 @@
         rounded
       ></v-progress-linear>
     </div>
-  </div>
+  </template>
   <NoData v-else />
 </template>
 
@@ -50,14 +45,11 @@ import { useStore } from "@/stores/appStore"
 import { useRouter } from "vue-router"
 import { useTarteelStore } from "@/stores/tarteelStore"
 import { useWindow } from "@/mixins/window"
-import { useResizeHandler } from "@/hooks/useResizeObserver"
 import { usePagination } from "@/hooks/usePagination"
 
 const tarteelStore = useTarteelStore()
 const router = useRouter()
 const store = useStore()
-
-const tarteelContainer = ref(null)
 
 const searchedTarteels = computed(() => tarteelStore.getStoredTarteels)
 const ratl = computed(() => tarteelStore.getSelectedRatl)
@@ -96,16 +88,9 @@ const badges = computed(() => [
   },
 ])
 
-const { setContainerHeight, dynamicHeight } = useWindow(tarteelContainer)
 const { scrollToActiveItem } = useWindow()
 
 const handleScrolling = () => {
-  if (!tarteelContainer.value) return
-  useResizeHandler({
-    elementRef: tarteelContainer,
-    elementFunc: setContainerHeight,
-  })
-  setContainerHeight()
   scrollToActiveItem(".active-verse-text", ".tarteel-container")
 }
 

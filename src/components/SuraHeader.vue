@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex mb-4">
+  <div class="d-flex">
     <span class="text-h4 ml-4">{{ title }}</span>
     <AppMetaData :metaData="suraMetaData" />
   </div>

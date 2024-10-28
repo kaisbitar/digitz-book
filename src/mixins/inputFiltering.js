@@ -1,5 +1,4 @@
-import { ref, computed, onMounted } from "vue"
-import { useStore } from "@/stores/appStore"
+import { ref } from "vue"
 
 export function useInputFiltering() {
   const search = ref("")
@@ -8,8 +7,6 @@ export function useInputFiltering() {
   function updateSearchValue(newSearch) {
     search.value = newSearch
   }
-
-  const highlightedText = ref("")
 
   const highlight = (text, textToHighlight) => {
     if (!text) return
@@ -31,15 +28,10 @@ export function useInputFiltering() {
     )
   }
 
-  const captureHoveredWord = (word) => {
-    highlightedText.value = word
-  }
-
   return {
     search,
     matchingStatus,
     updateSearchValue,
     highlight,
-    captureHoveredWord,
   }
 }
