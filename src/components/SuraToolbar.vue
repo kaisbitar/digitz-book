@@ -9,7 +9,7 @@
         variant="text"
       >
         <AppInputField
-          class="flex-grow-1"
+          class="flex-grow-1 mb-1"
           v-model="localSearch"
           @update:modelValue="onInput"
           :fieldPlaceHolder="placeholderText"
@@ -18,14 +18,14 @@
           @keydown.enter="onEnter"
         />
         <AppToggleBtn
-          class="mt-3 mr-1"
+          class="mt-2 mr-1"
           :isActive="true"
-          activeIcon="mdi-arrow-up"
+          activeIcon="mdi-chevron-up"
         />
         <AppToggleBtn
-          class="mt-3"
+          class="mt-2"
           :isActive="true"
-          activeIcon="mdi-arrow-down"
+          activeIcon="mdi-chevron-down"
         />
       </v-card>
     </v-scale-transition>

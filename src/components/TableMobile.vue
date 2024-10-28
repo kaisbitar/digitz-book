@@ -16,8 +16,10 @@
           @verse-clicked="selectItem(item), toggle()"
         />
       </v-item>
+      <div v-if="index === data.length - 1" class="mt-3 mb-3 text-center">
+        صدق الله العظيم
+      </div>
     </v-item-group>
-    <div class="mt-7 mb-7 text-center">صدق الله العظيم</div>
   </div>
 </template>
 
