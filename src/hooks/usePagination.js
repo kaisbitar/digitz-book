@@ -1,6 +1,6 @@
 import { ref, computed, watch } from "vue"
 
-export function usePagination(itemsRef, targetedIndexRef, itemsPerPage = 5) {
+export function usePagination(itemsRef, targetedIndexRef, itemsPerPage = 50) {
   const currentPage = ref(1)
   const totalItems = ref(0)
   const isLoading = ref(false)
@@ -17,7 +17,7 @@ export function usePagination(itemsRef, targetedIndexRef, itemsPerPage = 5) {
 
   const handleLoading = () => {
     const targetIndex = itemsRef.value.findIndex(
-      (item) => item.verseNumberToQuran === parseInt(targetedIndexRef.value)
+      (item) => item.verseNumberToQuran == targetedIndexRef.value
     )
     if (targetIndex === -1) {
       loadMoreItems()
@@ -66,7 +66,6 @@ export function usePagination(itemsRef, targetedIndexRef, itemsPerPage = 5) {
     loadMoreItems,
     resetPagination,
     handleInfiniteScroll,
-    handleLoading,
     isLoading,
   }
 }

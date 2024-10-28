@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, nextTick } from "vue"
+import { ref, watch, onMounted, nextTick, onUnmounted } from "vue"
 import { useInputFiltering } from "@/mixins/inputFiltering"
 
 interface TableItem {
@@ -47,9 +47,14 @@ const tableRef = ref(null)
 
 const { search } = useInputFiltering()
 
-defineEmits<{
+const emit = defineEmits<{
   (e: "rowClicked", item: TableItem): void
+  (e: "scroll", event: Event): void
 }>()
+
+const handleScroll = (event: Event) => {
+  emit("scroll", event)
+}
 
 watch(
   () => props.tableInputText,
@@ -61,7 +66,21 @@ watch(
 onMounted(async () => {
   search.value = props.tableInputText
   await nextTick()
+
+  // Get the scrollable container after the component is mounted
+  const scrollContainer = tableRef.value.$el.querySelector(".v-table__wrapper")
+  if (scrollContainer) {
+    scrollContainer.addEventListener("scroll", handleScroll)
+  }
 })
+
+// Don't forget to clean up the event listener
+// onUnmounted(() => {
+//   const scrollContainer = tableRef.value.$el.querySelector(".v-table__wrapper")
+//   if (scrollContainer) {
+//     scrollContainer.removeEventListener("scroll", handleScroll)
+//   }
+// })
 </script>
 
 <style>
