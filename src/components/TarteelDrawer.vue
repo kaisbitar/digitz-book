@@ -1,15 +1,13 @@
 <template>
-  <div class="overflow-y-auto">
-    <v-navigation-drawer v-model="localDrawer" location="left" width="250">
-      <v-toolbar dark>
-        <v-toolbar-title>ترتيل</v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-btn icon @click="localDrawer = false">
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-      </v-toolbar>
-
-      <v-card elevation="2" class="mb-1 overflow-y-auto-searches">
+  <v-navigation-drawer v-model="localDrawer" location="left" width="250">
+    <div class="d-flex flex-column fill-height">
+      <v-card elevation="2" class="mb-1">
+        <v-toolbar>
+          <v-toolbar-title>ترتيل</v-toolbar-title>
+          <v-btn icon @click="localDrawer = false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-toolbar>
         <TarteelList
           :items="storedSearches"
           :selectedItem="selectedTarteelIndex"
@@ -17,7 +15,8 @@
           @deleteItem="deleteTarteel"
         />
       </v-card>
-      <div class="overflow-y-auto-ratls tarteel-drawer-container">
+
+      <div class="ratls-container">
         <TarteelList
           :items="selectedRatls"
           :selectedItem="selectedRatlIndex"
@@ -25,8 +24,8 @@
           @deleteItem="deleteRatl"
         />
       </div>
-    </v-navigation-drawer>
-  </div>
+    </div>
+  </v-navigation-drawer>
 </template>
 
 <script setup>
@@ -162,12 +161,9 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.overflow-y-auto-searches {
-  height: 250px;
+.ratls-container {
+  flex: 1;
   overflow-y: auto;
-}
-.overflow-y-auto-ratls {
-  height: calc(100vh - 370px);
-  overflow-y: auto;
+  min-height: 0; /* Important for Firefox */
 }
 </style>

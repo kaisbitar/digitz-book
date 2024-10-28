@@ -67,7 +67,6 @@ const props = defineProps({
 const emit = defineEmits([, "verseSelected"])
 const searchBtnText = ref(`ترتيل ${props.suraName}`)
 const isInputVisible = ref(false)
-const filterIndex = ref(0)
 const inputText = ref("")
 
 const filteredVerses = computed(() => {
@@ -149,8 +148,4 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
-.overflow-y-auto {
-  height: calc(100vh - 110px - 100px);
-}
-</style>
+<style scoped></style>

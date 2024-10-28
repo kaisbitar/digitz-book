@@ -9,22 +9,17 @@
       :numberOfLetters="numberOfLetters"
     />
 
-    <div class="pa-0">
-      <SuraBoard
-        v-if="!showVerseDetails"
-        :tabs="tabs"
-        :suraName="suraName"
-        :suraWithTashkeel="suraWithTashkeel"
-        :versesBasics="versesBasics"
-        :chartFreqSeries="chartFreqSeries"
-        :chartOptions="chartOptions"
-        @verseSelected="handleVerseSelectedOnTable"
-      />
-    </div>
+    <SuraBoard
+      v-if="!showVerseDetails"
+      :tabs="tabs"
+      :suraName="suraName"
+      :suraWithTashkeel="suraWithTashkeel"
+      :versesBasics="versesBasics"
+      :chartFreqSeries="chartFreqSeries"
+      :chartOptions="chartOptions"
+      @verseSelected="handleVerseSelectedOnTable"
+    />
 
-    <!-- <div class="position-absolute" style="right: 900px; top: 50px">
-      <v-btn icon="mdi-arrow-left" @click="showVerseDetails = false" />
-    </div> -->
     <v-slide-x-transition>
       <VerseDetails
         v-if="showVerseDetails"
