@@ -86,7 +86,9 @@ const drawer = ref(true)
 const tarteelDrawer = ref(false)
 const indexDrawer = ref(false)
 const tarteelBadgeContent = computed(() => {
-  return String(tarteelStore.storedTarteels.length)
+  return String(
+    tarteelStore.storedTarteels.length ? tarteelStore.storedTarteels.length : ""
+  )
 })
 
 const handleNavigation = (route) => {

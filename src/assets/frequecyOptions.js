@@ -42,6 +42,24 @@ export const getChartOptions = (length) => {
       width: 1.2,
       colors: ["#0000001f"],
     },
+    tooltip: {
+      enabled: true,
+      enabledOnSeries: undefined,
+      intersect: false,
+      shared: false,
+      custom: undefined,
+      fillSeriesColor: false,
+      theme: false,
+      style: {
+        fontSize: "0px",
+      },
+      onDatasetHover: {
+        highlightDataSeries: false,
+      },
+      x: { show: false },
+      y: { show: false },
+      marker: { show: false },
+    },
     markers: {
       size: [0, 0],
       color: "#000",

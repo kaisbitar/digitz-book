@@ -29,29 +29,34 @@
       @keydown.enter="onEnter"
     >
       <template v-slot:append-input-items>
-        <!-- <span style="width: 50px"> -->
-        {{ badgeContent }}/{{ currentIndex + 1 }}
-        <!-- </span> -->
-        <v-divider vertical class="mr-2"></v-divider>
-        <AppToggleBtn
-          class="mr-1"
-          :isActive="true"
-          activeIcon="mdi-chevron-up"
-          size="default"
+        <span class="ml-4 text-caption">
+          {{ badgeContent }}/{{ currentIndex + 1 }}
+        </span>
+        <v-divider vertical class="ml-2"></v-divider>
+        <v-btn
+          icon="mdi-chevron-up"
+          elevation="0"
+          clickable
+          class="mx-1"
+          size="x-small"
           @click="handleClickUp"
-        />
-        <AppToggleBtn
-          :isActive="true"
-          activeIcon="mdi-chevron-down"
-          size="default"
+        ></v-btn>
+        <v-btn
+          icon="mdi-chevron-down"
+          elevation="0"
+          clickable
+          class="mx-1"
+          size="x-small"
           @click="handleClickDown"
-        />
-        <AppToggleBtn
-          :isActive="true"
-          activeIcon="mdi-close"
-          size="default"
+        ></v-btn>
+        <v-btn
+          icon="mdi-close"
+          elevation="0"
+          clickable
+          class="mx-1"
+          size="x-small"
           @click="onClear"
-        />
+        ></v-btn>
       </template>
     </AppInputField>
   </div>
@@ -59,9 +64,6 @@
 
 <script setup>
 import { ref, watch, computed } from "vue"
-import { useDisplay } from "vuetify"
-
-const display = useDisplay()
 
 const props = defineProps({
   tabs: Array,

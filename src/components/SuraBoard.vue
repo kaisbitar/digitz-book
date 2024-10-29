@@ -45,6 +45,7 @@
     <v-window-item value="frequency">
       <SuraFrequency
         class="mt-2 mb-n2"
+        :verses="versesBasics"
         :chartFreqSeries="chartFreqSeries"
         :chartOptions="chartOptions"
       />
@@ -133,7 +134,9 @@ const scrollToActiveVerse = () => {
       scrollToActiveItem(".active-verse-text", ".sura-text-container")
       return
     }
-    VersesOverviewRef.value.tablesScroll()
+    if (activeTab.value === "versesTab" && VersesOverviewRef.value) {
+      VersesOverviewRef.value.tablesScroll()
+    }
   })
 }
 

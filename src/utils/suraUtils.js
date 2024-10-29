@@ -22,22 +22,6 @@ export const prepareSuraData = ({
   wordsSeries.value = [{ data: words.reverse() }]
 }
 
-export const prepareMushafData = ({
-  oneQuranFile,
-  versesBasics,
-  suraTextArray,
-  letterSeries,
-  versesSeries,
-  wordsSeries,
-  tableQuranIndex,
-}) => {
-  versesBasics.value = oneQuranFile.value.map((item) => buildVerseObject(item))
-  suraTextArray.value = oneQuranFile.value.map((item) => item.verseText)
-  letterSeries.value = getMushafSeries("numberOfLetters", tableQuranIndex)
-  versesSeries.value = getMushafSeries("numberOfVerses", tableQuranIndex)
-  wordsSeries.value = getMushafSeries("numberOfWords", tableQuranIndex)
-}
-
 export const setSuraToolTip = ({
   reversedSuraTextArray,
   tooltipLabel,
@@ -66,18 +50,61 @@ export const setSuraToolTip = ({
           </p>
         </div>`
     },
-    shared: false,
+    // shared: false,
     followCursor: true,
   }
+
   Object.assign(chartOptions.value, { tooltip: x })
-  return chartOptions.value
 }
 
-export const setMushafToolTip = ({ tableQuranIndex, setSuraToolTip }) => {
-  var QuranToolTip = tableQuranIndex.value.map((item) => {
+export const prepareMushafData = ({
+  oneQuranFile,
+  versesBasics,
+  suraTextArray,
+  letterSeries,
+  versesSeries,
+  wordsSeries,
+  tableQuranIndex,
+}) => {
+  versesBasics.value = oneQuranFile.value.map((item) => buildVerseObject(item))
+  suraTextArray.value = oneQuranFile.value.map((item) => item.verseText)
+  letterSeries.value = getMushafSeries("numberOfLetters", tableQuranIndex)
+  versesSeries.value = getMushafSeries("numberOfVerses", tableQuranIndex)
+  wordsSeries.value = getMushafSeries("numberOfWords", tableQuranIndex)
+}
+
+export const setMushafToolTip = ({
+  tableQuranIndex,
+  getMushafChartOptions,
+  chartOptions,
+}) => {
+  const mushafOptions = getMushafChartOptions(tableQuranIndex.value.length)
+  Object.assign(chartOptions.value, mushafOptions)
+
+  const QuranToolTip = [...tableQuranIndex.value].map((item) => {
     return item.fileName.replace(/[0-9]/g, "")
   })
-  setSuraToolTip(QuranToolTip.shift())
+
+  const tooltipConfig = {
+    custom: ({ series, seriesIndex, dataPointIndex, w }) => {
+      const reversedIndex = dataPointIndex
+      return `
+        <div class="mr-2 ml-2 pt-2">
+          <div class="d-flex">
+            <span class="tipInfo">
+              <span class="tipLabel">سورة</span> ${reversedIndex + 1}
+            </span>
+          </div>
+          <p class="tipInfo tipText pr-1 pl-2">
+            ${QuranToolTip[reversedIndex + 1]}
+          </p> 
+        </div>`
+    },
+    // shared: false,
+    followCursor: true,
+  }
+
+  chartOptions.value.tooltip = tooltipConfig
 }
 
 const buildVerseObject = (item) => ({

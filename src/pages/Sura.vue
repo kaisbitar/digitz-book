@@ -35,10 +35,9 @@
 import { ref, computed, watch, onMounted } from "vue"
 import { useStore } from "@/stores/appStore"
 import { useDataStore } from "@/stores/dataStore"
-import { useInputFiltering } from "@/mixins/inputFiltering"
 import { useRouter } from "vue-router"
 import getChartOptions from "@/assets/frequecyOptions"
-
+import { getMushafChartOptions } from "@/assets/mushafChartOptions"
 import {
   prepareSuraData,
   prepareMushafData,
@@ -67,19 +66,6 @@ const suraDetails = ref({})
 const selectedVerseText = ref("")
 const showVerseDetails = ref(false)
 
-const isMobileView = computed(() => store.getVersesMobileView)
-
-const tabs = computed(() => [
-  { title: "نص", name: "suraText", icon: "mdi-text-box-outline" },
-  {
-    title: "تفصيل",
-    value: numberOfVerses,
-    name: "versesTab",
-    icon: isMobileView.value ? "mdi-format-list-bulleted" : "mdi-view-list",
-  },
-  { title: "تواتر", name: "frequency", icon: "mdi-chart-bar" },
-])
-
 const fileName = computed(() => store.getTarget?.fileName || "001الفاتحة")
 const suraNumber = computed(() => parseInt(store.getTarget?.suraNumber))
 const suraName = computed(() => store.getTarget?.suraName)
@@ -92,6 +78,9 @@ const suraKeyValues = computed(
   () => tableQuranIndex.value[suraNumber.value] || tableQuranIndex.value[1]
 )
 const chartOptions = computed(() => getChartOptions(suraTextArray.value.length))
+const mushafChartOptions = computed(() =>
+  getMushafChartOptions(tableQuranIndex.value.length)
+)
 const chartFreqType = computed(() => store.getChartFreqType)
 const chartFreqSeries = computed(() =>
   chartFreqType.value === "words" ? wordsSeries.value : letterSeries.value
@@ -139,7 +128,11 @@ const prepareData = () => {
       tableQuranIndex,
     })
     suraWithTashkeel.value = allVersesWithTashkeel.value
-    setMushafToolTip({ tableQuranIndex, setSuraToolTip })
+    // setMushafToolTip({
+    //   tableQuranIndex,
+    //   getMushafChartOptions,
+    //   chartOptions,
+    // })
     return
   }
   prepareSuraData({
@@ -155,17 +148,30 @@ const prepareData = () => {
     startIndex.value,
     endIndex.value
   )
-  setSuraToolTip({
-    reversedSuraTextArray: suraTextArray.value.reverse(),
-    tooltipLabel,
-    tooltipLabel2,
-    chartOptions,
-  })
+  // setSuraToolTip({
+  //   reversedSuraTextArray: suraTextArray.value.reverse(),
+  //   tooltipLabel,
+  //   tooltipLabel2,
+  //   chartOptions,
+  // })
 }
 
 const goBack = () => {
   router.back()
 }
+
+const isMobileView = computed(() => store.getVersesMobileView)
+
+const tabs = computed(() => [
+  { title: "نص", name: "suraText", icon: "mdi-text-box-outline" },
+  {
+    title: "تفصيل",
+    value: numberOfVerses,
+    name: "versesTab",
+    icon: isMobileView.value ? "mdi-format-list-bulleted" : "mdi-view-list",
+  },
+  { title: "تواتر", name: "frequency", icon: "mdi-chart-bar" },
+])
 
 watch(fileName, prepareData)
 
