@@ -73,9 +73,15 @@ defineExpose({ tablesScroll })
 
 watch(isMobileView, tablesScroll)
 
+watch(targetedVerseIndex, () => {
+  tablesScroll()
+  handleInfiniteScroll()
+})
+
 onMounted(async () => {
   await nextTick()
   tablesScroll()
+  handleInfiniteScroll()
 })
 const versesHeaders = ref([
   {

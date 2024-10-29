@@ -8,10 +8,13 @@
     :isInputVisible="isInputVisible"
     :badgeIsActive="!!inputText"
     :badgeContent="badgeContent"
+    :currentIndex="currentIndex"
     @update:activeTab="updateActiveTab"
     @update:search="onInput"
     @searchToggle="onSearchToggle"
     @enter="onEnter"
+    @navigate-up="handleClickUp"
+    @navigate-down="handleClickDown"
   >
     <template #additional-actions>
       <AppFilterActions
@@ -84,9 +87,11 @@ const badgeContent = computed(() => {
 })
 
 const targetTarteel = computed(() => store.getTarget?.tarteel)
+
 const tagetedVerseIndex = computed(() => {
   return store.getTarget.verseIndex
 })
+
 watch(tagetedVerseIndex, () => {
   scrollToActiveVerse()
 })
@@ -101,19 +106,16 @@ const onSearchToggle = (value) => {
 
 const onEnter = (value) => {
   if (value === "") {
-    store.setTarget({
-      fileName: props.versesBasics[0].fileName,
-      verseIndex: props.versesBasics[0].verseIndex || 0,
-      verseNumberToQuran: props.versesBasics[0].verseNumberToQuran,
-      verseText: props.versesBasics[0].verseText,
-    })
+    setTargetVerse(props.versesBasics[0])
     return
   }
+  navigateVerses()
 }
 
 const onInput = (value) => {
   inputText.value = value
   searchBtnText.value = value || `ترتيل ${props.suraName}`
+  currentIndex.value = -1
 }
 
 const activeTab = computed({
@@ -139,6 +141,25 @@ const updateActiveTab = (value) => {
   store.setActiveSuraTab(value)
 }
 
+const currentIndex = ref(0)
+
+const navigateVerses = (direction) => {
+  const isUp = direction === "up"
+  const lastIndex = filteredVerses.value.length - 1
+
+  if (isUp && currentIndex.value <= 0) return
+  if (!isUp && currentIndex.value >= lastIndex) {
+    currentIndex.value = 0
+    return setTargetVerse(filteredVerses.value[currentIndex.value])
+  }
+
+  currentIndex.value += isUp ? -1 : 1
+  setTargetVerse(filteredVerses.value[currentIndex.value])
+}
+
+const handleClickUp = () => navigateVerses("up")
+const handleClickDown = () => navigateVerses("down")
+
 onMounted(() => {
   if (targetTarteel.value) {
     inputText.value = targetTarteel.value
@@ -146,6 +167,15 @@ onMounted(() => {
   }
   scrollToActiveVerse()
 })
+
+const setTargetVerse = (verse) => {
+  store.setTarget({
+    fileName: verse.fileName,
+    verseIndex: verse.verseIndex || 0,
+    verseNumberToQuran: verse.verseNumberToQuran,
+    verseText: verse.verseText,
+  })
+}
 </script>
 
 <style scoped></style>

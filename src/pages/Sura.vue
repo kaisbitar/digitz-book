@@ -1,5 +1,5 @@
 <template>
-  <template class="d-flex flex-column h-100 pa-0 pt-4 px-4">
+  <template class="d-flex flex-column h-100 pa-0 pt-4 px-1 px-sm-8">
     <SuraHeader
       v-if="!showVerseDetails"
       class="flex-wrap mb-4"
