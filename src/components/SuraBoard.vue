@@ -19,7 +19,7 @@
     <template #additional-actions>
       <AppFilterActions
         v-if="activeTab === 'versesTab'"
-        v-show="$vuetify.display.mdAndUp"
+        v-show="!$vuetify.display.xs"
       />
     </template>
   </SuraToolbar>
@@ -47,7 +47,7 @@
         class="mt-2 mb-n2"
         :verses="versesBasics"
         :chartFreqSeries="chartFreqSeries"
-        :chartOptions="chartOptions"
+        :versesBasics="versesBasics"
       />
     </v-window-item>
   </v-window>

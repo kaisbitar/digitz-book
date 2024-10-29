@@ -16,7 +16,6 @@
       :suraWithTashkeel="suraWithTashkeel"
       :versesBasics="versesBasics"
       :chartFreqSeries="chartFreqSeries"
-      :chartOptions="chartOptions"
       @verseSelected="handleVerseSelectedOnTable"
     />
 
@@ -36,7 +35,6 @@ import { ref, computed, watch, onMounted } from "vue"
 import { useStore } from "@/stores/appStore"
 import { useDataStore } from "@/stores/dataStore"
 import { useRouter } from "vue-router"
-import getChartOptions from "@/assets/frequecyOptions"
 import { getMushafChartOptions } from "@/assets/mushafChartOptions"
 import {
   prepareSuraData,
@@ -77,7 +75,6 @@ const tableQuranIndex = computed(() => dataStore.getQuranIndex)
 const suraKeyValues = computed(
   () => tableQuranIndex.value[suraNumber.value] || tableQuranIndex.value[1]
 )
-const chartOptions = computed(() => getChartOptions(suraTextArray.value.length))
 const mushafChartOptions = computed(() =>
   getMushafChartOptions(tableQuranIndex.value.length)
 )

@@ -1,8 +1,7 @@
 <template>
-  <v-card class="pa-4 sura-board-overflow" variant="plain">
+  <v-card class="px-4 sura-board-overflow" variant="plain">
     <!-- <ChartRadioButtons :intitalType="chartFreqType" @typeChanged="changeType" /> -->
     <v-card-text class="position-absolute" v-if="displayVerse">
-      <!-- Verse Number -->
       <v-scale-transition>
         <div :key="displayVerse.verseIndex">
           <span class="text-caption count-key-item">آية</span>
@@ -12,12 +11,11 @@
         </div>
       </v-scale-transition>
 
-      <!-- Verse Text -->
-      <div class="text-h6 mt-1 ml-4 mb-2">
-        {{ displayVerse.verseText }}
-      </div>
+      <div
+        class="text-h6 mt-1 ml-4 mb-2"
+        v-html="highlight(displayVerse.verseText, displayVerse.tarteel)"
+      ></div>
 
-      <!-- Statistics -->
       <v-scale-transition>
         <div
           :key="`${displayVerse.numberOfLetters}-${displayVerse.numberOfWords}`"
@@ -31,11 +29,13 @@
         </div>
       </v-scale-transition>
     </v-card-text>
+
     <Chart
       :series="chartFreqSeries"
       :options="chartOptions"
       :height="height"
-      @mouseMove="handleMouseMove"
+      @mouse-leave="displayVerse = target"
+      @mouse-move="handleMouseMove"
       @click="handleClick"
     />
   </v-card>
@@ -43,17 +43,22 @@
 
 <script setup>
 import { useStore } from "@/stores/appStore"
+import getChartOptions from "@/assets/frequecyOptions"
+
+import { useInputFiltering } from "@/mixins/inputFiltering"
+const { search, highlight } = useInputFiltering()
 const props = defineProps({
   chartFreqSeries: Array,
-  chartOptions: Object,
+  verses: Object,
   verses: Array,
 })
 
 const store = useStore()
 
 const target = computed(() => store.getTarget)
-const displayVerse = ref(props.verses[0])
+const displayVerse = ref(target.value)
 const chartFreqType = computed(() => store.getChartFreqType)
+const chartOptions = computed(() => getChartOptions(props.verses.length))
 const height = computed(() => window.innerHeight - 200)
 
 const handleMouseMove = (dataPointIndex) => {
@@ -70,11 +75,11 @@ const handleClick = (dataPointIndex) => {
   store.setActiveSuraTab("versesTab")
 }
 watch(target, () => {
-  displayVerse.value = props.verses[0]
+  displayVerse.value = target
 })
 onMounted(async () => {
   await nextTick()
-  displayVerse.value = props.verses[0]
+  // displayVerse.value = props.verses[0]
 })
 </script>
 
