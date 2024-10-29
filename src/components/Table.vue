@@ -65,22 +65,12 @@ watch(
 
 onMounted(async () => {
   search.value = props.tableInputText
-  await nextTick()
 
-  // Get the scrollable container after the component is mounted
   const scrollContainer = tableRef.value.$el.querySelector(".v-table__wrapper")
   if (scrollContainer) {
     scrollContainer.addEventListener("scroll", handleScroll)
   }
 })
-
-// Don't forget to clean up the event listener
-// onUnmounted(() => {
-//   const scrollContainer = tableRef.value.$el.querySelector(".v-table__wrapper")
-//   if (scrollContainer) {
-//     scrollContainer.removeEventListener("scroll", handleScroll)
-//   }
-// })
 </script>
 
 <style>

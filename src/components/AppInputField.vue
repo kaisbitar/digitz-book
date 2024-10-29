@@ -1,32 +1,25 @@
 <template>
-  <div>
-    <!-- <v-badge
-      :content="dataToShow"
-      :color="type"
-      offset-x="5"
-      offset-y="4"
-    ></v-badge> -->
-    <v-text-field
-      :model-value="modelValue"
-      v-bind="$attrs"
-      :label="`ترتيل ${fieldPlaceHolder}`"
-      density="compact"
-      clearable
-      persistent-clear
-      autofocus
-      @click:clear="handleClear"
-      prepend-inner-icon="mdi-magnify"
-      hide-details
-      :color="hasSuccess ? 'success' : 'primary'"
-      :error="!!errorMessage"
-      :error-messages="errorMessage"
-      class="flex-grow-1"
-      @update:model-value="handleInput"
-      @focus="$emit('focus')"
-    >
-    </v-text-field>
-    <slot></slot>
-  </div>
+  <v-text-field
+    v-bind="$attrs"
+    class="flex-grow-1"
+    :model-value="modelValue"
+    :label="`ترتيل ${fieldPlaceHolder}`"
+    :color="hasSuccess ? 'success' : 'primary'"
+    :error="!!errorMessage"
+    :error-messages="errorMessage"
+    density="default"
+    prepend-inner-icon="mdi-magnify"
+    autofocus
+    hide-details
+    @click:clear="handleClear"
+    @update:model-value="handleInput"
+    @focus="$emit('focus')"
+  >
+    <template v-slot:append-inner>
+      <slot name="append-input-items"></slot>
+    </template>
+  </v-text-field>
+  <slot></slot>
 </template>
 
 <script setup>

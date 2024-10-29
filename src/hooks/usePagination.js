@@ -44,10 +44,12 @@ export function usePagination(itemsRef, targetedIndexRef, itemsPerPage = 50) {
   }
 
   const handleInfiniteScroll = (event) => {
-    const { scrollTop, scrollHeight, clientHeight } = event.target
-    if (scrollTop + clientHeight >= scrollHeight - 100) {
-      loadMoreItems()
-    }
+    if (!event) return
+    loadMoreItems()
+    // const { scrollTop, scrollHeight, clientHeight } = event.target
+    // if (scrollTop + clientHeight >= scrollHeight - 100) {
+    //   loadMoreItems()
+    // }
   }
 
   watch(

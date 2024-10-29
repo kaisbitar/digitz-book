@@ -1,35 +1,5 @@
 <template>
   <div class="toolbar-container">
-    <v-scale-transition>
-      <v-card
-        v-if="isInputVisible"
-        :key="isInputVisible"
-        class="d-flex"
-        :width="isMobile ? 'auto' : '300'"
-        variant="text"
-      >
-        <AppInputField
-          class="flex-grow-1 mb-1"
-          v-model="localSearch"
-          @update:modelValue="onInput"
-          :fieldPlaceHolder="placeholderText"
-          :type="'verse-count'"
-          @clear="onClear"
-          @keydown.enter="onEnter"
-        />
-        <AppToggleBtn
-          class="mt-2 mr-1"
-          :isActive="true"
-          activeIcon="mdi-chevron-up"
-        />
-        <AppToggleBtn
-          class="mt-2"
-          :isActive="true"
-          activeIcon="mdi-chevron-down"
-        />
-      </v-card>
-    </v-scale-transition>
-
     <v-toolbar density="compact" rounded elevation="2" class="toolbar-fixed">
       <AppTabs
         :tabs="tabs"
@@ -48,6 +18,42 @@
       <v-spacer></v-spacer>
       <slot name="additional-actions"></slot>
     </v-toolbar>
+
+    <AppInputField
+      v-if="isInputVisible"
+      v-model="localSearch"
+      :type="'verse-count'"
+      :fieldPlaceHolder="placeholderText"
+      class="mt-1"
+      @update:modelValue="onInput"
+      @keydown.enter="onEnter"
+    >
+      <template v-slot:append-input-items>
+        <!-- <span style="width: 50px"> -->
+        {{ badgeContent }}/{{ currentIndex + 1 }}
+        <!-- </span> -->
+        <v-divider vertical class="mr-2"></v-divider>
+        <AppToggleBtn
+          class="mr-1"
+          :isActive="true"
+          activeIcon="mdi-chevron-up"
+          size="default"
+          @click="handleClickUp"
+        />
+        <AppToggleBtn
+          :isActive="true"
+          activeIcon="mdi-chevron-down"
+          size="default"
+          @click="handleClickDown"
+        />
+        <AppToggleBtn
+          :isActive="true"
+          activeIcon="mdi-close"
+          size="default"
+          @click="onClear"
+        />
+      </template>
+    </AppInputField>
   </div>
 </template>
 
@@ -66,6 +72,7 @@ const props = defineProps({
   isInputVisible: Boolean,
   badgeContent: String,
   badgeIsActive: Boolean,
+  currentIndex: Number,
 })
 
 const emit = defineEmits([
@@ -73,6 +80,8 @@ const emit = defineEmits([
   "update:search",
   "searchToggle",
   "enter",
+  "navigate-up",
+  "navigate-down",
 ])
 
 const localSearch = ref(props.search || "")
@@ -83,10 +92,6 @@ watch(
     localSearch.value = newValue
   }
 )
-
-const isMobile = computed(() => {
-  return display.xs.value
-})
 
 const onSearchToggle = () => {
   emit("searchToggle", !props.isInputVisible)
@@ -110,6 +115,14 @@ const updateActiveTab = (value) => {
 const onEnter = () => {
   emit("enter", localSearch.value)
 }
+
+const handleClickUp = () => {
+  emit("navigate-up")
+}
+
+const handleClickDown = () => {
+  emit("navigate-down")
+}
 </script>
 
 <style scoped>
@@ -117,10 +130,5 @@ const onEnter = () => {
   position: sticky;
   top: 0;
   z-index: 4;
-  background-color: rgb(var(--v-theme-background));
-}
-
-.toolbar-fixed {
-  border-bottom: thin solid rgba(var(--v-border-color), var(--v-border-opacity));
 }
 </style>
