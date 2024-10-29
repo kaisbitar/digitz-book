@@ -14,9 +14,10 @@
       v-html="highlight(item.verseText, textToHighlight)"
     >
     </v-card-text>
-
-    <AppMetaData :metaData="indexData" class="d-flex mr-3" />
-    <AppMetaData :metaData="countData" class="d-flex mr-3" />
+    <div class="d-flex flex-row-reverse">
+      <AppMetaData :metaData="countData" class="d-flex mr-3" />
+      <AppMetaData :metaData="indexData" class="d-flex mr-3" />
+    </div>
   </v-card>
 </template>
 
@@ -54,13 +55,13 @@ const indexData = computed(() => ({
 }))
 
 const countData = computed(() => ({
-  مصحف: {
-    value: props.item.verseNumberToQuran,
-    color: "verse-number-to-quran",
-  },
   حرف: {
     value: props.item.verseText.replace(/ /g, "").length.toString(),
     color: "letter-count",
+  },
+  مصحف: {
+    value: props.item.verseNumberToQuran,
+    color: "verse-number-to-quran",
   },
 }))
 </script>

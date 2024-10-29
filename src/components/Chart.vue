@@ -2,7 +2,7 @@
   <VueApexCharts
     ref="chartRef"
     :series="series"
-    :options="options"
+    :options="mergedOptions"
     :height="height"
     :class="$vuetify.display.xs ? '' : 'px-9'"
     @dataPointSelection="dataPointSelection"
@@ -14,7 +14,15 @@
 import VueApexCharts from "vue3-apexcharts"
 import { ref, computed, onMounted, nextTick } from "vue"
 
-const props = defineProps(["height", "options", "series"])
+const props = defineProps({
+  height: [String, Number],
+  options: Object,
+  series: Array,
+  annotations: {
+    type: Array,
+    default: () => [],
+  },
+})
 const emit = defineEmits(["mouseMove", "dataPointSelection"])
 const chartRef = ref(null)
 
@@ -27,6 +35,12 @@ const dataPointSelection = computed(() => {
 const handleMouseMove = (event, chartContext, config) => {
   emit("mouseMove", config.dataPointIndex)
 }
+
+const mergedOptions = computed(() => {
+  return {
+    ...props.options,
+  }
+})
 
 defineExpose({ dataPointSelection })
 </script>

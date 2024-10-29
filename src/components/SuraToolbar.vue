@@ -39,7 +39,7 @@
           clickable
           class="mx-1"
           size="x-small"
-          @click="handleClickUp"
+          @click.prevent="handleClickUp"
         ></v-btn>
         <v-btn
           icon="mdi-chevron-down"
@@ -47,7 +47,7 @@
           clickable
           class="mx-1"
           size="x-small"
-          @click="handleClickDown"
+          @click.prevent="handleClickDown"
         ></v-btn>
         <v-btn
           icon="mdi-close"
