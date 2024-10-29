@@ -4,8 +4,10 @@
     :series="series"
     :options="options"
     :height="height"
+    :class="$vuetify.display.xs ? '' : 'px-9'"
+    @dataPointSelection="dataPointSelection"
+    @mouseMove="handleMouseMove"
   />
-  <!-- :height="chartWindowHeight" -->
 </template>
 
 <script setup>
@@ -13,12 +15,17 @@ import VueApexCharts from "vue3-apexcharts"
 import { ref, computed, onMounted, nextTick } from "vue"
 
 const props = defineProps(["height", "options", "series"])
-
+const emit = defineEmits(["mouseMove", "dataPointSelection"])
 const chartRef = ref(null)
 
-const dataPointSelection = (seriesIndex, dataPointIndex) => {
-  chartRef.value.chart.toggleDataPointSelection(seriesIndex, dataPointIndex)
-  // chartRef.value.chart.dataPointMouseEnter(seriesIndex, dataPointIndex)
+const dataPointSelection = computed(() => {
+  return (seriesIndex, dataPointIndex) => {
+    chartRef.value.chart.toggleDataPointSelection(seriesIndex, dataPointIndex)
+  }
+})
+
+const handleMouseMove = (event, chartContext, config) => {
+  emit("mouseMove", config.dataPointIndex)
 }
 
 defineExpose({ dataPointSelection })

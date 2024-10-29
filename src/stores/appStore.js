@@ -1,10 +1,4 @@
 import { defineStore } from "pinia"
-import {
-  fetchSuraDetails,
-  fetchOneQuranFile,
-  fetchtableQuranIndex,
-  fetchAllVersesWithTashkeel,
-} from "../api/api.js"
 
 export const useStore = defineStore("Quran", {
   state: () => ({
@@ -38,7 +32,6 @@ export const useStore = defineStore("Quran", {
     getVersesMobileView: (state) => state.versesMobileView,
     getIsDialog: (state) => state.isDialog,
     getTarget: (state) => state.target,
-    getQuranIndex: (state) => state.QuranIndex,
     getActiveSuraTab: (state) => state.activeSuraTab,
     getActiveRoute: (state) => state.activeRoute,
     getChartFreqType: (state) => state.chartFreqType,
@@ -85,9 +78,6 @@ export const useStore = defineStore("Quran", {
     },
 
     setRemoveSearchItem(index) {},
-    setQuranIndex(items) {
-      this.QuranIndex = items
-    },
     setSuraDetails(suraDetails) {
       this.suras[this.target.fileName].suraDetails = suraDetails.suraDetails
     },
