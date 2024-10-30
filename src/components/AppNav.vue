@@ -59,16 +59,15 @@
   <AppNavDrawer
     v-model="drawer"
     :rail="isRail && !isMobile"
-    :location="isMobile ? 'left' : 'right'"
+    :location="'right'"
     :temporary="isMobile"
-    :permanent="!isMobile"
     :navigationItems="navigationItems"
     :activeRoute="activeRoute"
     :expand-on-hover="!isMobile"
     @navigateTo="handleNavigation"
     @update:modelValue="updateDrawer"
   />
-  <TarteelDrawer v-model:drawer="tarteelDrawer" />
+  <TarteelDrawer />
 </template>
 
 <script setup>
@@ -76,6 +75,7 @@ import { ref, computed } from "vue"
 import { useRouter } from "vue-router"
 import { useDisplay } from "vuetify"
 import { useTarteelStore } from "@/stores/tarteelStore"
+import { useStore } from "@/stores/appStore"
 
 const tarteelStore = useTarteelStore()
 const router = useRouter()
@@ -85,8 +85,8 @@ const activeRoute = computed(() => router.currentRoute.value.name)
 const isInputVisible = ref(false)
 const isRail = ref(true)
 const drawer = ref(true)
-const tarteelDrawer = ref(false)
 const indexDrawer = ref(false)
+
 const tarteelBadgeContent = computed(() => {
   return String(
     tarteelStore.storedTarteels.length ? tarteelStore.storedTarteels.length : ""
@@ -96,6 +96,62 @@ const tarteelBadgeContent = computed(() => {
 const handleNavigation = (route) => {
   router.push(route)
 }
+
+const openDrawers = ref({
+  index: false,
+  tarteel: false,
+})
+
+const getButtonVariant = (drawerName) => {
+  return openDrawers.value[drawerName] ? "tonal" : "text"
+}
+
+const toggleDrawer = (drawerName) => {
+  if (drawerName === "tarteel") {
+    store.setTarteelDrawer(!store.tarteelDrawer)
+    return
+  }
+  openDrawers.value[drawerName] = !openDrawers.value[drawerName]
+  if (drawerName === "index") {
+    indexDrawer.value = openDrawers.value.index
+    return
+  }
+}
+
+watch(indexDrawer, (newValue) => {
+  openDrawers.value.index = newValue
+})
+
+watch(router.currentRoute, async () => {
+  if (router.currentRoute.value.name === "tarteel") {
+    await nextTick()
+    store.setTarteelDrawer(true)
+  }
+})
+
+const isMobile = computed(() => {
+  return display.smAndDown.value
+})
+
+const toggleAppNavDrawer = () => {
+  drawer.value = !drawer.value
+  if (!isMobile.value && drawer.value) {
+    isRail.value = false
+  }
+}
+
+const toggleRailAppNavDrawer = () => {
+  toggleAppNavDrawer()
+  if (!isMobile.value) {
+    isRail.value = !isRail.value
+    drawer.value = true
+  }
+}
+
+const updateDrawer = (value) => {
+  drawer.value = value
+}
+
 const navigationItems = [
   {
     route: "/",
@@ -123,54 +179,7 @@ const navigationItems = [
   },
 ]
 
-const openDrawers = ref({
-  index: false,
-  tarteel: false,
-})
-
-const getButtonVariant = (drawerName) => {
-  return openDrawers.value[drawerName] ? "tonal" : "text"
-}
-
-const toggleDrawer = (drawerName) => {
-  openDrawers.value[drawerName] = !openDrawers.value[drawerName]
-  if (drawerName === "index") {
-    indexDrawer.value = openDrawers.value.index
-    return
-  }
-  tarteelDrawer.value = openDrawers.value.tarteel
-}
-
-watch(indexDrawer, (newValue) => {
-  openDrawers.value.index = newValue
-})
-
-watch(tarteelDrawer, (newValue) => {
-  openDrawers.value.tarteel = newValue
-})
-
-const isMobile = computed(() => {
-  return display.smAndDown.value
-})
-
-const toggleAppNavDrawer = () => {
-  drawer.value = !drawer.value
-  if (!isMobile.value && drawer.value) {
-    isRail.value = false
-  }
-}
-
-const toggleRailAppNavDrawer = () => {
-  toggleAppNavDrawer()
-  if (!isMobile.value) {
-    isRail.value = !isRail.value
-    drawer.value = true
-  }
-}
-
-const updateDrawer = (value) => {
-  drawer.value = value
-}
+const store = useStore()
 </script>
 
 <style>
