@@ -1,10 +1,14 @@
 <template>
-  <v-navigation-drawer v-model="localDrawer" location="left" width="250">
+  <v-navigation-drawer
+    v-model="store.tarteelDrawer"
+    location="left"
+    width="250"
+  >
     <div class="d-flex flex-column fill-height">
       <v-card elevation="2" class="mb-1">
         <v-toolbar>
           <v-toolbar-title>ترتيل</v-toolbar-title>
-          <v-btn icon @click="localDrawer = false">
+          <v-btn icon @click="handleClose">
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-toolbar>
@@ -16,7 +20,7 @@
         />
       </v-card>
 
-      <div class="ratls-container">
+      <div class="ratls-container tarteelDrawerRef">
         <TarteelList
           :items="selectedRatls"
           :selectedItem="selectedRatlIndex"
@@ -37,21 +41,6 @@ import { useStore } from "@/stores/appStore"
 
 const router = useRouter()
 const store = useStore()
-
-const props = defineProps({
-  drawer: {
-    type: Boolean,
-    required: true,
-  },
-})
-
-const emit = defineEmits(["update:drawer"])
-
-const scrollToTop = () => {
-  if (tarteelDrawerRef.value) {
-    tarteelDrawerRef.value.scrollTop = 0
-  }
-}
 
 const tarteelStore = useTarteelStore()
 
@@ -118,6 +107,7 @@ const handleSelectedSearch = (index) => {
 
 const handleSelectedRatl = (index) => {
   navigateToTarteel()
+  store.setTarteelDrawer(false)
   if (selectedRatlIndex.value === index) return
   updateSelectedRatl(index)
 }
@@ -133,31 +123,16 @@ const deleteRatl = (index) => {
   updateSelectedRatl(index)
 }
 
-const localDrawer = ref(true)
-
-watch(
-  () => props.drawer,
-  (newValue) => {
-    localDrawer.value = newValue
+const scrollToTop = () => {
+  if (tarteelDrawerRef.value) {
+    tarteelDrawerRef.value.scrollTop = 0
   }
-)
+}
 
-watch(localDrawer, (newValue) => {
-  emit("update:drawer", newValue)
-})
+const handleClose = () => {}
+store.setTarteelDrawer(false)
 
-watch(router.currentRoute, () => {
-  if (router.currentRoute.value.name === "tarteel") {
-    localDrawer.value = true
-  }
-})
-
-const tarteelDrawerRef = ref(null)
-const { scrollToActiveItem } = useWindow(tarteelDrawerRef)
-
-onMounted(() => {
-  // scrollToActiveItem(".active-tarteel-item", ".tarteel-drawer-container")
-})
+onMounted(() => {})
 </script>
 
 <style scoped>

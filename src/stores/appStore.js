@@ -18,6 +18,7 @@ export const useStore = defineStore("Quran", {
     chartFreqType: "words",
     isDialog: false,
     wordMeanings: {},
+    tarteelDrawer: false,
   }),
   persist: {
     enabled: true,
@@ -97,6 +98,9 @@ export const useStore = defineStore("Quran", {
     },
     setWordMeaning({ word, meaning }) {
       this.wordMeanings[word] = meaning
+    },
+    setTarteelDrawer(value) {
+      this.tarteelDrawer = value
     },
   },
 })

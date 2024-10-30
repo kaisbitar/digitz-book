@@ -1,5 +1,5 @@
 <template>
-  <template class="d-flex flex-column h-100 pa-0 pt-4 px-4 px-sm-8">
+  <template class="d-flex flex-column h-100 pa-0 pt-4 px-4">
     <SuraBoard
       v-if="!showVerseDetails"
       :tabs="tabs"
