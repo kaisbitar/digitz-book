@@ -1,8 +1,7 @@
 <template>
-  <!-- <div class="d-flex flex-grow-1"> -->
   <AppInputField
     v-if="isInputVisible"
-    class="mt-2"
+    class="mt-2 sura-input-field"
     v-model="localSearch"
     :fieldPlaceHolder="placeholderText"
     :hasError="hasError"
@@ -11,9 +10,7 @@
     @keydown.enter="onEnter"
   >
     <template v-slot:append-input-items>
-      <span class="ml-4 text-caption">
-        {{ badgeContent }}/{{ currentIndex + 1 }}
-      </span>
+      <span class="mt-3 ml-4"> {{ badgeContent }}/{{ currentIndex + 1 }} </span>
       <v-divider class="ml-2"></v-divider>
       <v-btn
         v-for="btn in inputNavigation"
@@ -21,14 +18,13 @@
         :class="btn.class"
         :icon="btn.icon"
         :elevation="0"
-        size="x-small"
+        size="default"
         clickable
         :tabindex="btn.tabindex"
         @click="btn.action"
       ></v-btn>
     </template>
   </AppInputField>
-  <!-- </div> -->
   <v-toolbar density="compact" rounded elevation="2" class="toolbar-fixed">
     <AppTabs
       :tabs="tabs"
@@ -157,6 +153,9 @@ const inputNavigation = [
 ]
 </script>
 
-<style scoped>
-/* v-field v-field--appended v-field--prepended v-field--variant-underlined v-theme--light v-locale--is-rtl */
+<style>
+.sura-input-field .v-field__append-inner {
+  margin-top: -29px !important;
+  padding-bottom: 13px !important;
+}
 </style>

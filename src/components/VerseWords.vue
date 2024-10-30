@@ -6,7 +6,8 @@
       class="word"
       :class="{
         'text-blue-darken-4':
-          index === wordSelectedOnChart[wordSelectedOnChart.length - 1],
+          // index === wordSelectedOnChart[wordSelectedOnChart.length - 1],
+          false,
       }"
     >
       <WordTooltip
