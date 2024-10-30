@@ -107,7 +107,7 @@ export const setMushafToolTip = ({
   chartOptions.value.tooltip = tooltipConfig
 }
 
-const buildVerseObject = (item) => ({
+export const buildVerseObject = (item) => ({
   suraName: item.fileName.replace(/[0-9]/g, ""),
   suraNumber: item.fileName.replace(/[^0-9]/g, ""),
   fileName: item.fileName,

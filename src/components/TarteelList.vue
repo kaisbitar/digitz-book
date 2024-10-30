@@ -16,9 +16,16 @@
     </template>
 
     <template v-slot:append>
+      <!-- <span class="text- ml-3">
+        {{ item.count }}
+      </span>
+      <span class="text-caption count-key-item">{{
+        getCoutingTypeLabel(item.coutingType)
+      }}</span> -->
       <v-badge
         :content="`${item.count} ${getCoutingTypeLabel(item.coutingType)}`"
         :color="item.coutingType"
+        class="word-count"
         offset-x="5"
         offset-y="0"
         inline

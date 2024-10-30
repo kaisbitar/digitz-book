@@ -13,12 +13,14 @@
       <AutoBoard
         v-if="isInputVisible"
         class="flex-grow-1 mt-1"
+        :class="{ 'px-1': isMobile }"
         :style="{ maxWidth: '850px' }"
         @update:isInputVisible="isInputVisible = $event"
       />
     </div>
     <v-spacer v-if="!isMobile"></v-spacer>
     <AppToggleBtn
+      v-if="!(isMobile && isInputVisible)"
       :isActive="isInputVisible"
       btnText="ترتيل القرآن"
       inActiveIcon="mdi-magnify"
@@ -132,11 +134,11 @@ const getButtonVariant = (drawerName) => {
 
 const toggleDrawer = (drawerName) => {
   openDrawers.value[drawerName] = !openDrawers.value[drawerName]
-  if (drawerName === "tarteel") {
-    tarteelDrawer.value = openDrawers.value.tarteel
-  } else if (drawerName === "index") {
+  if (drawerName === "index") {
     indexDrawer.value = openDrawers.value.index
+    return
   }
+  tarteelDrawer.value = openDrawers.value.tarteel
 }
 
 watch(indexDrawer, (newValue) => {

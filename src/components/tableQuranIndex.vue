@@ -58,7 +58,7 @@ import { useRouter } from "vue-router"
 import { useWindow } from "@/mixins/window"
 import { useInputFiltering } from "@/mixins/inputFiltering"
 import { useDisplay } from "vuetify"
-
+import { buildVerseObject } from "@/utils/suraUtils"
 const { scrollToActiveItem } = useWindow()
 const { updateSearchValue, search } = useInputFiltering()
 
@@ -100,9 +100,8 @@ const indexHeaders = ref([
   { title: "حروف", key: "numberOfLetters" },
   { title: "مصحف", key: "verseNumberToQuran" },
 ])
-
+const QuranOneFile = computed(() => dataStore.getOneQuranFile)
 const activeRoute = computed(() => router.currentRoute.value.name)
-
 const targetedIndex = computed(() => {
   return store.getTarget.fileName
 })
@@ -112,11 +111,8 @@ const isMobile = computed(() => {
 })
 
 const handleSelectedSura = (sura) => {
-  store.setTarget({
-    fileName: sura.fileName,
-    verseIndex: 1,
-    verseNumberToQuran: sura.verseNumberToQuran.toString(),
-  })
+  const verseObject = buildVerseObject(getFirstVerse(sura.fileName))
+  store.setTarget(verseObject)
 
   if (activeRoute !== "sura") {
     router.push({ name: "sura" })
@@ -126,6 +122,14 @@ const handleSelectedSura = (sura) => {
   }
 
   store.setSearchIndex(-1)
+}
+
+const getFirstVerse = (fileName) => {
+  const verse = QuranOneFile.value.find(
+    (file) => file.fileName === fileName && file.verseIndex === 1
+  )
+
+  return verse
 }
 
 const toggleDetailView = () => {

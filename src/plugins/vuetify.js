@@ -33,7 +33,7 @@ export default createVuetify({
           "active-row": "#e4e4e4",
           "count-key-item": "#878787",
           "verse-count": "#3F51B5D9", // Deeper indigo with 85% opacity
-          "word-count": "#4CAF50D9", // Deeper green with 85% opacity
+          "word-count": "#4CAF5096", // Deeper green with 85% opacity
           "letter-count": "#FF9800D9", // Deeper amber with 85% opacity
           "Quran-count": "#E91E63D9", // Deeper pink with 85% opacity
         },

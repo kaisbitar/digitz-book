@@ -24,6 +24,16 @@
       @update:checkedItems="updateCheckedItems"
       @submitTarteel="handleTarteel"
     />
+    <template v-slot:append-input-items>
+      <v-btn
+        icon="mdi-close"
+        elevation="0"
+        clickable
+        class="mx-1"
+        size="x-small"
+        @click.prevent="emit('update:isInputVisible', false)"
+      ></v-btn>
+    </template>
   </AppInputField>
 </template>
 
@@ -92,10 +102,4 @@ const handleClear = () => {
 }
 </script>
 
-<style scoped>
-.sticky-header {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-}
-</style>
+<style scoped></style>

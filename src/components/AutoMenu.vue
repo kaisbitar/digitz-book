@@ -1,18 +1,13 @@
 <template>
   <v-menu
     :modelValue="menu"
-    @update:modelValue="$emit('update:menu', $event)"
     :close-on-content-click="false"
-    offset="2"
-    offset-y
-    transition="fade-transition"
     :max-height="'auto'"
     location="bottom"
+    activator="parent"
+    @update:modelValue="$emit('update:menu', $event)"
   >
-    <template v-slot:activator="{ props }">
-      <div v-bind="props"></div>
-    </template>
-    <v-list>
+    <v-list class="mt-1">
       <v-list-item>
         <v-list-item-title>
           <span class="ml-2">ترتيل {{ tarteel }}..</span>
@@ -24,7 +19,6 @@
         </v-list-item-title>
       </v-list-item>
       <v-divider></v-divider>
-      <!-- <v-list-item> -->
       <v-expand-transition>
         <div v-if="showAutoWordsList">
           <AutoWordList
@@ -48,7 +42,6 @@
           <LettersChart :letter="currentLetter" />
         </v-lazy>
       </v-expand-transition>
-      <!-- </v-list-item> -->
     </v-list>
   </v-menu>
 </template>

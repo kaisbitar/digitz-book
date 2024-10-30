@@ -1,5 +1,5 @@
 <template>
-  <template class="d-flex flex-column h-100 pa-0 pt-4 px-1 px-sm-8">
+  <template class="d-flex flex-column h-100 pa-0 pt-4 px-4 px-sm-8">
     <SuraHeader
       v-if="!showVerseDetails"
       class="flex-wrap mb-4"
@@ -22,6 +22,8 @@
     <v-slide-x-transition>
       <VerseDetails
         v-if="showVerseDetails"
+        v-model="showVerseDetails"
+        @goBack="showVerseDetails = !showVerseDetails"
         :verse="targetedVerseText.verseText"
         :title="suraName"
         :inputText="targetTarteel"
