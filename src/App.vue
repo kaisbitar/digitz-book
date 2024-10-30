@@ -43,6 +43,10 @@ html {
   height: calc(100vh - 170px);
   overflow: auto;
 }
+.sura-chart-overflow {
+  height: calc(100vh - 100px);
+  overflow: auto;
+}
 
 .v-application,
 .v-overlay-container,
@@ -76,7 +80,7 @@ html {
 .highlight-match {
   color: rgb(var(--v-theme-on-highlight));
   background: rgb(var(--v-theme-highlight)) !important;
-  font-weight: bold;
+  // font-weight: bold;
   padding: 2px;
 }
 
@@ -136,7 +140,8 @@ html {
 .v-card-text,
 .text-caption,
 .text-sm-h3,
-.text-h4 {
+.text-h4,
+.v-card-text .highlight-match {
   letter-spacing: 0 !important;
 }
 </style>

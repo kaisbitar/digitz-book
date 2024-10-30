@@ -27,9 +27,10 @@ const emit = defineEmits(["mouseMove", "dataPointSelection"])
 const chartRef = ref(null)
 
 const dataPointSelection = computed(() => {
-  return (seriesIndex, dataPointIndex) => {
-    chartRef.value.chart.toggleDataPointSelection(seriesIndex, dataPointIndex)
-  }
+  if (!chartRef.value)
+    return (seriesIndex, dataPointIndex) => {
+      chartRef.value.chart.toggleDataPointSelection(seriesIndex, dataPointIndex)
+    }
 })
 
 const handleMouseMove = (event, chartContext, config) => {

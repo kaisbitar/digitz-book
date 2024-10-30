@@ -55,18 +55,16 @@ export const useStore = defineStore("Quran", {
       this.activeRoute = activeRoute
     },
     setTarget(target) {
-      const suraNumber = target.fileName
-        .replace(/[ء-٩]/g, "")
-        .replace(/\s/g, "")
-      const suraName = target.fileName.replace(/[0-9]/g, "")
       this.target = {
-        suraNumber,
-        suraName,
+        suraNumber: target.fileName.replace(/[ء-٩]/g, "").replace(/\s/g, ""),
+        suraName: target.fileName.replace(/[0-9]/g, ""),
         fileName: target.fileName,
         verseIndex: target.verseIndex,
         verseNumberToQuran: target.verseNumberToQuran,
         verseText: target.verseText,
         tarteel: target.tarteel,
+        numberOfLetters: target.verseText.replace(/ /g, "").length.toString(),
+        numberOfWords: target.verseText.split(" ").length.toString(),
       }
     },
     resetTarget() {
@@ -77,7 +75,6 @@ export const useStore = defineStore("Quran", {
       this.suras = {}
     },
 
-    setRemoveSearchItem(index) {},
     setSuraDetails(suraDetails) {
       this.suras[this.target.fileName].suraDetails = suraDetails.suraDetails
     },

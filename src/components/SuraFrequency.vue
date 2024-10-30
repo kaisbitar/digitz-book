@@ -1,7 +1,7 @@
 <template>
   <v-card class="px-4 sura-board-overflow" variant="plain">
     <!-- <ChartRadioButtons :intitalType="chartFreqType" @typeChanged="changeType" /> -->
-    <v-card-text class="position-absolute" v-if="displayVerse">
+    <v-card-text v-if="displayVerse" class="position-absolute">
       <v-scale-transition>
         <div :key="displayVerse.verseIndex">
           <span class="text-caption count-key-item">آية</span>
@@ -59,7 +59,7 @@ const target = computed(() => store.getTarget)
 const displayVerse = ref(target.value)
 const chartFreqType = computed(() => store.getChartFreqType)
 const chartOptions = computed(() => getChartOptions(props.verses.length))
-const height = computed(() => window.innerHeight - 200)
+const height = computed(() => window.innerHeight - 290)
 
 const handleMouseMove = (dataPointIndex) => {
   const totalPoints = props.chartFreqSeries[0].data.length
@@ -75,11 +75,11 @@ const handleClick = (dataPointIndex) => {
   store.setActiveSuraTab("versesTab")
 }
 watch(target, () => {
-  displayVerse.value = target
+  displayVerse.value = target.value
 })
 onMounted(async () => {
   await nextTick()
-  // displayVerse.value = props.verses[0]
+  displayVerse.value = target.value
 })
 </script>
 

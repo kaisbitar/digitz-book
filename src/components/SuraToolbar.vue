@@ -1,65 +1,62 @@
 <template>
-  <div class="toolbar-container">
-    <v-toolbar density="compact" rounded elevation="2" class="toolbar-fixed">
-      <AppTabs
-        :tabs="tabs"
-        :activeTab="activeTab"
-        @update:activeTab="updateActiveTab"
-      />
-      <v-spacer></v-spacer>
-      <AppToggleBtn
-        :badgeContent="badgeIsActive ? badgeContent : ''"
-        class=""
-        activeIcon="mdi-file-search-outline"
-        :isActive="isInputVisible"
-        :btnText="searchBtnText"
-        @toggle="onSearchToggle"
-      />
-      <v-spacer></v-spacer>
-      <slot name="additional-actions"></slot>
-    </v-toolbar>
-
-    <AppInputField
-      v-if="isInputVisible"
-      v-model="localSearch"
-      :type="'verse-count'"
-      :fieldPlaceHolder="placeholderText"
-      class="mt-1"
-      @update:modelValue="onInput"
-      @keydown.enter="onEnter"
-    >
-      <template v-slot:append-input-items>
-        <span class="ml-4 text-caption">
-          {{ badgeContent }}/{{ currentIndex + 1 }}
-        </span>
-        <v-divider vertical class="ml-2"></v-divider>
-        <v-btn
-          icon="mdi-chevron-up"
-          elevation="0"
-          clickable
-          class="mx-1"
-          size="x-small"
-          @click.prevent="handleClickUp"
-        ></v-btn>
-        <v-btn
-          icon="mdi-chevron-down"
-          elevation="0"
-          clickable
-          class="mx-1"
-          size="x-small"
-          @click.prevent="handleClickDown"
-        ></v-btn>
-        <v-btn
-          icon="mdi-close"
-          elevation="0"
-          clickable
-          class="mx-1"
-          size="x-small"
-          @click="onClear"
-        ></v-btn>
-      </template>
-    </AppInputField>
-  </div>
+  <!-- <div class="toolbar-container"> -->
+  <AppInputField
+    v-if="isInputVisible"
+    v-model="localSearch"
+    :fieldPlaceHolder="placeholderText"
+    class="mt-1"
+    @update:modelValue="onInput"
+    @keydown.enter="onEnter"
+  >
+    <template v-slot:append-input-items>
+      <span class="ml-4 mt-2 text-caption">
+        {{ badgeContent }}/{{ currentIndex + 1 }}
+      </span>
+      <v-divider vertical class="ml-2"></v-divider>
+      <v-btn
+        icon="mdi-chevron-up"
+        elevation="0"
+        clickable
+        size="small"
+        tabindex="-1"
+        @click="handleClickUp"
+      ></v-btn>
+      <v-btn
+        icon="mdi-chevron-down"
+        elevation="0"
+        clickable
+        size="small"
+        tabindex="-1"
+        @click="handleClickDown"
+      ></v-btn>
+      <v-btn
+        icon="mdi-close"
+        elevation="0"
+        clickable
+        size="small"
+        @click="onClear"
+      ></v-btn>
+    </template>
+  </AppInputField>
+  <v-toolbar density="compact" rounded elevation="2" class="toolbar-fixed">
+    <AppTabs
+      :tabs="tabs"
+      :activeTab="activeTab"
+      @update:activeTab="updateActiveTab"
+    />
+    <v-spacer></v-spacer>
+    <AppToggleBtn
+      :badgeContent="badgeIsActive ? badgeContent : ''"
+      class=""
+      activeIcon="mdi-file-search-outline"
+      :isActive="isInputVisible"
+      :btnText="searchBtnText"
+      @toggle="onSearchToggle"
+    />
+    <v-spacer></v-spacer>
+    <slot name="additional-actions"></slot>
+  </v-toolbar>
+  <!-- </div> -->
 </template>
 
 <script setup>

@@ -1,18 +1,24 @@
 <template>
-  <v-card class="" variant="text">
-    <v-card-title class="text-h4 text-center mb-4">
-      آية {{ verseIndex }} - سورة {{ title }}
+  <v-card class="sura-chart-overflow" variant="text">
+    <v-card-title class="text-h4 mb-4 d-flex">
+      سورة {{ title }} - آية {{ verseIndex }}
+      <v-btn
+        class="mr-auto"
+        icon="mdi-arrow-left"
+        variant="text"
+        @click="goBack"
+      ></v-btn>
     </v-card-title>
-    <v-card-text>
+    <v-card-subtitle>
       <AppMetaData
         :metaData="{
-          رقم: { value: verseIndex },
+          // رقم: { value: verseIndex },
           كلمة: { value: countVerseWords(verse) },
           حرف: { value: countVerseLetters(verse) },
           مصحف: { value: verseIndexToQuran },
         }"
       />
-    </v-card-text>
+    </v-card-subtitle>
     <v-card-text>
       <VerseWords
         class="justify-center"
@@ -56,6 +62,10 @@ const wordsSeries = computed(() =>
     .reverse()
     .map((word) => word.length)
 )
+
+const goBack = () => {
+  emit("update:modelValue", false)
+}
 
 const verseIndex = computed(() => parseInt(store.getTarget.verseIndex))
 const verseIndexToQuran = computed(() =>

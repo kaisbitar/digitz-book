@@ -1,6 +1,6 @@
 <template>
-  <v-card
-    class="sura-text-container sura-board-overflow scrolling-container px-sm-10 px-2 pb-9 mx-auto bg-surface"
+  <div
+    class="sura-text-container sura-board-overflow scrolling-container px-sm-10 px-2 pb-9 mt-1 mx-auto bg-surface"
     max-width="850px"
     variant="text"
     rounded
@@ -19,7 +19,7 @@
       >
         <v-badge
           :content="`${index + 1}`"
-          color="verse-count"
+          color="count-key-item"
           offset-x="5"
           offset-y="0"
           inline
@@ -36,7 +36,7 @@
     </div>
 
     <div class="mt-7 text-center">صدق الله العظيم</div>
-  </v-card>
+  </div>
 </template>
 
 <script setup>
@@ -44,24 +44,31 @@ import { ref, computed, onMounted, nextTick } from "vue"
 import { useStore } from "@/stores/appStore"
 import { useInputFiltering } from "@/mixins/inputFiltering"
 import { useWindow } from "@/mixins/window"
+import { useDataStore } from "@/stores/dataStore"
 
 const { scrollToActiveItem } = useWindow()
 const { search, highlight } = useInputFiltering()
 const store = useStore()
+const dataStore = useDataStore()
 
 const props = defineProps(["inputText", "suraTextArray"])
 
-const suraTargetedVerseIndex = computed(() => store.getTarget?.verseIndex)
+const target = computed(() => store.getTarget)
 const isTargetedVerse = computed(
-  () => (index) => index + 1 === parseInt(suraTargetedVerseIndex.value)
+  () => (index) => index + 1 === parseInt(target.value.verseIndex)
 )
 
 const setTargetedVerse = (verse, index) => {
+  const verseNumberToQuran = dataStore.oneQuranFile.find(
+    (verse) =>
+      verse.fileName === target.value.fileName &&
+      verse.verseIndex === target.value.verseIndex
+  ).verseNumberToQuran
   store.setTarget({
-    fileName: store.getTarget.fileName,
+    ...store.getTarget,
     verseIndex: index,
-    verseNumberToQuran: verse.verseNumberToQuran,
-    verseText: verse.verseText,
+    verseText: verse,
+    verseNumberToQuran,
   })
 }
 
@@ -76,7 +83,7 @@ onMounted(async () => {
 
 .sura-text-container {
   font-size: 19px;
-  line-height: 2;
+  line-height: 1.8;
   overflow-y: auto;
 }
 
@@ -96,9 +103,9 @@ onMounted(async () => {
 }
 
 .active-verse-text {
-  padding: 2px 4px;
+  // padding: 2px 4px;
   background-color: rgb(var(--v-theme-active-row)) !important;
   border-radius: 4px;
-  padding: 12px 5px 12px 10px;
+  padding: 4px 0px 8px 8px;
 }
 </style>
