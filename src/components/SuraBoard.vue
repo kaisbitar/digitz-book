@@ -170,6 +170,7 @@ onMounted(() => {
     isInputVisible.value = true
   }
   scrollToActiveVerse()
+  searchBtnText.value = inputText.value
 })
 
 const setTargetVerse = (verse) => {

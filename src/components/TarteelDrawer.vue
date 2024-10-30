@@ -38,8 +38,10 @@ import { useRouter } from "vue-router"
 import { useWindow } from "@/mixins/window"
 import { useTarteelStore } from "@/stores/tarteelStore"
 import { useStore } from "@/stores/appStore"
+import { useDisplay } from "vuetify"
 
 const router = useRouter()
+const display = useDisplay()
 const store = useStore()
 
 const tarteelStore = useTarteelStore()
@@ -105,9 +107,15 @@ const handleSelectedSearch = (index) => {
   }
 }
 
+const isMobile = computed(() => {
+  return display.mobile.value
+})
+
 const handleSelectedRatl = (index) => {
   navigateToTarteel()
-  store.setTarteelDrawer(false)
+  if (isMobile.value) {
+    store.setTarteelDrawer(false)
+  }
   if (selectedRatlIndex.value === index) return
   updateSelectedRatl(index)
 }

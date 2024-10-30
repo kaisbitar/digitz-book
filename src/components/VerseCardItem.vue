@@ -12,8 +12,8 @@
     <v-card-text
       class="verse-card-item-text pa-1 mb-3"
       v-html="highlight(item.verseText, textToHighlight)"
-    >
-    </v-card-text>
+    />
+    <!-- <VerseWords :verse="item.verseText" /> -->
     <div class="d-flex flex-row-reverse" :style="{ maxWidth: '1091px' }">
       <AppMetaData :metaData="countData" class="d-flex mr-3" />
       <AppMetaData :metaData="indexData" class="d-flex mr-3" />

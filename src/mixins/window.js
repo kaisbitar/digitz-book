@@ -13,7 +13,7 @@ export function useWindow(elementRef) {
       goTo(activeVerseItem, {
         container: container,
         offset: -100,
-        duration: 1000,
+        duration: 300,
         easing: "easeInOutCubic",
       })
     }, 200)

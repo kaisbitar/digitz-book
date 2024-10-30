@@ -106,6 +106,8 @@ const getButtonVariant = (drawerName) => {
   return openDrawers.value[drawerName] ? "tonal" : "text"
 }
 
+const store = useStore()
+
 const toggleDrawer = (drawerName) => {
   if (drawerName === "tarteel") {
     store.setTarteelDrawer(!store.tarteelDrawer)
@@ -178,12 +180,14 @@ const navigationItems = [
     label: "تفسيري",
   },
 ]
-
-const store = useStore()
 </script>
 
 <style>
 .tarteel-btn .v-badge__badge {
   z-index: 2;
+}
+label.v-label.v-field-label {
+  /* font-size: 15px; */
+  /* margin-top: -5px !important; */
 }
 </style>
