@@ -1,14 +1,5 @@
 <template>
   <template class="d-flex flex-column h-100 pa-0 pt-4 px-4 px-sm-8">
-    <SuraHeader
-      v-if="!showVerseDetails"
-      class="flex-wrap mb-4"
-      :title="`${suraNumber} ${suraName} `"
-      :numberOfVerses="numberOfVerses"
-      :numberOfWords="numberOfWords"
-      :numberOfLetters="numberOfLetters"
-    />
-
     <SuraBoard
       v-if="!showVerseDetails"
       :tabs="tabs"
@@ -38,12 +29,7 @@ import { useStore } from "@/stores/appStore"
 import { useDataStore } from "@/stores/dataStore"
 import { useRouter } from "vue-router"
 import { getMushafChartOptions } from "@/assets/mushafChartOptions"
-import {
-  prepareSuraData,
-  prepareMushafData,
-  setSuraToolTip,
-  setMushafToolTip,
-} from "@/utils/suraUtils"
+import { prepareSuraData, prepareMushafData } from "@/utils/suraUtils"
 import SuraBoard from "@/components/SuraBoard.vue"
 
 const router = useRouter()
@@ -52,9 +38,6 @@ const store = useStore()
 const dataStore = useDataStore()
 
 const suraWithTashkeel = ref([])
-const numberOfLetters = ref(null)
-const numberOfVerses = ref(null)
-const numberOfWords = ref(null)
 const startIndex = ref(null)
 const endIndex = ref(null)
 const suraTextArray = ref([])
@@ -73,7 +56,6 @@ const targetedVerseText = computed(() => store.getTarget)
 const targetTarteel = computed(() => store.getTarget?.tarteel)
 
 const tableQuranIndex = computed(() => dataStore.getQuranIndex)
-
 const suraKeyValues = computed(
   () => tableQuranIndex.value[suraNumber.value] || tableQuranIndex.value[1]
 )
@@ -88,23 +70,12 @@ const chartFreqSeries = computed(() =>
 const oneQuranFile = computed(() => dataStore.getOneQuranFile)
 const allVersesWithTashkeel = computed(() => dataStore.getAllVersesWithTashkeel)
 
-const tooltipLabel = computed(() => {
-  return chartFreqType.value === "words" ? "كلمة" : "حرف"
-})
-
-const tooltipLabel2 = computed(() => {
-  return fileName.value !== "000المصحف" ? "آية" : "سورة"
-})
-
 const handleVerseSelectedOnTable = (verse) => {
   selectedVerseText.value = verse.verseText
   showVerseDetails.value = true
 }
 
 const setSuraBasics = () => {
-  numberOfLetters.value = suraKeyValues.value.numberOfLetters
-  numberOfVerses.value = suraKeyValues.value.numberOfVerses
-  numberOfWords.value = suraKeyValues.value.numberOfWords
   startIndex.value = suraKeyValues.value.verseNumberToQuran - 1
   endIndex.value = suraKeyValues.value.numberOfVerses + startIndex.value
 }
@@ -127,11 +98,6 @@ const prepareData = () => {
       tableQuranIndex,
     })
     suraWithTashkeel.value = allVersesWithTashkeel.value
-    // setMushafToolTip({
-    //   tableQuranIndex,
-    //   getMushafChartOptions,
-    //   chartOptions,
-    // })
     return
   }
   prepareSuraData({
@@ -147,12 +113,6 @@ const prepareData = () => {
     startIndex.value,
     endIndex.value
   )
-  // setSuraToolTip({
-  //   reversedSuraTextArray: suraTextArray.value.reverse(),
-  //   tooltipLabel,
-  //   tooltipLabel2,
-  //   chartOptions,
-  // })
 }
 
 const goBack = () => {
@@ -165,7 +125,6 @@ const tabs = computed(() => [
   { title: "نص", name: "suraText", icon: "mdi-text-box-outline" },
   {
     title: "تفصيل",
-    value: numberOfVerses,
     name: "versesTab",
     icon: isMobileView.value ? "mdi-format-list-bulleted" : "mdi-view-list",
   },

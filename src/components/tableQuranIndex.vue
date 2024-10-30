@@ -43,7 +43,7 @@
       :tableInputText="search"
       :tableHeaders="indexHeaders"
       :fieldPlaceHolder="'السور'"
-      :activeItemKey="targetedIndex"
+      :activeItemKey="targetedFileName"
       :tableHeight="'calc(100vh - 64px - 48px - 8px)'"
       @rowClicked="handleSelectedSura"
     />
@@ -102,7 +102,7 @@ const indexHeaders = ref([
 ])
 const QuranOneFile = computed(() => dataStore.getOneQuranFile)
 const activeRoute = computed(() => router.currentRoute.value.name)
-const targetedIndex = computed(() => {
+const targetedFileName = computed(() => {
   return store.getTarget.fileName
 })
 
@@ -111,17 +111,20 @@ const isMobile = computed(() => {
 })
 
 const handleSelectedSura = (sura) => {
-  const verseObject = buildVerseObject(getFirstVerse(sura.fileName))
-  store.setTarget(verseObject)
-
   if (activeRoute !== "sura") {
     router.push({ name: "sura" })
   }
   if (isMobile.value) {
     localDrawer.value = false
   }
+  if (sura.fileName === targetedFileName.value) return
 
-  store.setSearchIndex(-1)
+  if (sura.fileName !== "000المصحف") {
+    const verseObject = buildVerseObject(getFirstVerse(sura.fileName))
+    store.setTarget(verseObject)
+    return
+  }
+  store.setTarget({ fileName: "000المصحف" })
 }
 
 const getFirstVerse = (fileName) => {
@@ -136,7 +139,7 @@ const toggleDetailView = () => {
   isDetailView.value = !isDetailView.value
 }
 
-watch(targetedIndex, () => {
+watch(targetedFileName, () => {
   scrollToActiveItem(`.active-index-item`, `.index-container .v-table__wrapper`)
 })
 

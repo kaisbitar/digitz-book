@@ -59,7 +59,7 @@ const target = computed(() => store.getTarget)
 const displayVerse = ref(target.value)
 const chartFreqType = computed(() => store.getChartFreqType)
 const chartOptions = computed(() => getChartOptions(props.verses.length))
-const height = computed(() => window.innerHeight - 290)
+const height = computed(() => window.innerHeight - 220)
 
 const handleMouseMove = (dataPointIndex) => {
   const totalPoints = props.chartFreqSeries[0].data.length
