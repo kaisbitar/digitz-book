@@ -1,39 +1,46 @@
 <template>
   <div class="d-flex">
-    <span class="text-h4 ml-4">{{ title }}</span>
+    <span class="text-h4 ml-1">{{ suraNumber }}</span>
+    <span class="text-h4 ml-4">{{ target.suraName }}</span>
     <AppMetaData :metaData="suraMetaData" />
-    <v-btn
-      class="mr-auto"
-      icon="mdi-arrow-left"
-      variant="text"
-      @click="goBack"
-    ></v-btn>
   </div>
 </template>
 
 <script setup>
 import AppMetaData from "./AppMetaData.vue"
-import { useRouter } from "vue-router"
+import { computed, onMounted, ref } from "vue"
+import { useDataStore } from "@/stores/dataStore"
+import { useStore } from "@/stores/appStore"
 
-const router = useRouter()
-
+const dataStore = useDataStore()
+const store = useStore()
 const props = defineProps({
   title: String,
-  numberOfWords: Number,
-  numberOfVerses: Number,
-  numberOfLetters: Number,
   showMetaData: Boolean,
 })
 
+const tableQuranIndex = computed(() => dataStore.getQuranIndex)
+const target = computed(() => store.getTarget)
+const suraNumber = computed(() => {
+  const numberPart = target.value.fileName
+    .replace(/[ء-٩]/g, "")
+    .replace(/\s/g, "")
+  return parseInt(numberPart, 10).toString()
+})
+
+const suraKeyValues = computed(
+  () => tableQuranIndex.value[suraNumber.value] || tableQuranIndex.value[1]
+)
+
 const suraMetaData = computed(() => ({
-  آية: { value: props.numberOfVerses },
-  كلمة: { value: props.numberOfWords },
-  حرف: { value: props.numberOfLetters },
+  آية: { value: suraKeyValues.value.numberOfVerses },
+  كلمة: { value: suraKeyValues.value.numberOfWords },
+  حرف: { value: suraKeyValues.value.numberOfLetters },
 }))
 
-const goBack = () => {
-  router.go(-1)
-}
+onMounted(() => {
+  // setSuraBasics()
+})
 </script>
 
 <style scoped></style>

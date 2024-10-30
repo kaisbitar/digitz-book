@@ -1,4 +1,5 @@
 <template>
+  <SuraHeader v-if="!isInputVisible" class="flex-wrap mb-4" />
   <SuraToolbar
     :tabs="tabs"
     :activeTab="activeTab"

@@ -1,10 +1,11 @@
 <template>
-  <!-- <div class="toolbar-container"> -->
   <AppInputField
     v-if="isInputVisible"
     v-model="localSearch"
     :fieldPlaceHolder="placeholderText"
     class="mt-1"
+    :hasError="hasError"
+    :hasSuccess="hasSuccess"
     @update:modelValue="onInput"
     @keydown.enter="onEnter"
   >
@@ -56,7 +57,6 @@
     <v-spacer></v-spacer>
     <slot name="additional-actions"></slot>
   </v-toolbar>
-  <!-- </div> -->
 </template>
 
 <script setup>
@@ -84,7 +84,8 @@ const emit = defineEmits([
 ])
 
 const localSearch = ref(props.search || "")
-
+const hasError = ref(false)
+const hasSuccess = ref(false)
 watch(
   () => props.search,
   (newValue) => {
@@ -96,9 +97,20 @@ const onSearchToggle = () => {
   emit("searchToggle", !props.isInputVisible)
 }
 
-const onInput = (value) => {
+const onInput = async (value) => {
   localSearch.value = value
+  hasError.value = false
+  hasSuccess.value = false
   emit("update:search", value)
+  nextTick(() => {
+    if (parseInt(props.badgeContent) > 0) {
+      hasError.value = false
+      hasSuccess.value = true
+      return
+    }
+    hasError.value = true
+    hasSuccess.value = false
+  })
 }
 
 const onClear = () => {
@@ -124,10 +136,4 @@ const handleClickDown = () => {
 }
 </script>
 
-<style scoped>
-.toolbar-container {
-  position: sticky;
-  top: 0;
-  z-index: 4;
-}
-</style>
+<style scoped></style>

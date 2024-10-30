@@ -156,7 +156,7 @@ const tarteelDrawerRef = ref(null)
 const { scrollToActiveItem } = useWindow(tarteelDrawerRef)
 
 onMounted(() => {
-  scrollToActiveItem(".active-tarteel-item", ".tarteel-drawer-container")
+  // scrollToActiveItem(".active-tarteel-item", ".tarteel-drawer-container")
 })
 </script>
 

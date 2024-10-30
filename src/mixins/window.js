@@ -13,10 +13,10 @@ export function useWindow(elementRef) {
       goTo(activeVerseItem, {
         container: container,
         offset: -100,
-        duration: 300,
+        duration: 1000,
         easing: "easeInOutCubic",
       })
-    }, 100)
+    }, 200)
   }
 
   const scrollToActiveItem = async (activeItem, container) => {

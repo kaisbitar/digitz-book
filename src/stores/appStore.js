@@ -55,16 +55,29 @@ export const useStore = defineStore("Quran", {
       this.activeRoute = activeRoute
     },
     setTarget(target) {
+      if (target.fileName !== "000المصحف") {
+        this.target = {
+          suraNumber: target.fileName.replace(/[ء-٩]/g, "").replace(/\s/g, ""),
+          suraName: target.fileName.replace(/[0-9]/g, ""),
+          fileName: target.fileName,
+          verseIndex: target.verseIndex,
+          verseNumberToQuran: target.verseNumberToQuran,
+          verseText: target.verseText,
+          tarteel: target.tarteel,
+          numberOfLetters: target.verseText.replace(/ /g, "").length.toString(),
+          numberOfWords: target.verseText.split(" ").length.toString(),
+        }
+        return
+      }
       this.target = {
-        suraNumber: target.fileName.replace(/[ء-٩]/g, "").replace(/\s/g, ""),
-        suraName: target.fileName.replace(/[0-9]/g, ""),
-        fileName: target.fileName,
-        verseIndex: target.verseIndex,
-        verseNumberToQuran: target.verseNumberToQuran,
-        verseText: target.verseText,
-        tarteel: target.tarteel,
-        numberOfLetters: target.verseText.replace(/ /g, "").length.toString(),
-        numberOfWords: target.verseText.split(" ").length.toString(),
+        fileName: "000المصحف",
+        suraNumber: "0",
+        suraName: "المصحف",
+        verseIndex: 1,
+        verseNumberToQuran: 1,
+        numberOfLetters: 324117,
+        numberOfWords: 77432,
+        verseText: "بسم الله الرحمن الرحيم",
       }
     },
     resetTarget() {

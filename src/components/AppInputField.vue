@@ -6,8 +6,7 @@
       :model-value="modelValue"
       :label="`ترتيل ${fieldPlaceHolder}`"
       :color="hasSuccess ? 'success' : 'primary'"
-      :error="!!errorMessage"
-      :error-messages="errorMessage"
+      :error="hasError"
       density="compact"
       prepend-inner-icon="mdi-magnify"
       autofocus
@@ -47,9 +46,9 @@ const props = defineProps({
     type: String,
     default: "primary",
   },
-  errorMessage: {
-    type: String,
-    default: "",
+  hasError: {
+    type: Boolean,
+    default: false,
   },
   hasSuccess: {
     type: Boolean,
