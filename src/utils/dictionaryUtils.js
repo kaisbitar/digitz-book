@@ -40,11 +40,8 @@ export const extractFromDictionnary = (allData) => {
 }
 
 export const fetchWordData = async (word) => {
-  loadingWords[props.wordIndex] = true
   const wordRoot = await fetchWordRootData(word)
-
   await fetchWordMeaningData(word, wordRoot)
-  loadingWords[props.wordIndex] = false
 }
 
 export const fetchWordRootData = async (word) => {

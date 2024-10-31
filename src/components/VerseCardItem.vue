@@ -1,5 +1,6 @@
 <template>
   <v-card
+    hover
     class="px-4 pt-4 pb-4 mt-2 mb-2 verse-card-item"
     @click="handleClick"
     variant="outlined"
@@ -13,7 +14,7 @@
       class="verse-card-item-text pa-1 mb-3"
       v-html="highlight(item.verseText, textToHighlight)"
     />
-    <!-- <VerseWords :verse="item.verseText" /> -->
+    <!-- <VerseWords v-else :verse="item.verseText" /> -->
     <div class="d-flex flex-row-reverse" :style="{ maxWidth: '1091px' }">
       <AppMetaData :metaData="countData" class="d-flex mr-3" />
       <AppMetaData :metaData="indexData" class="d-flex mr-3" />

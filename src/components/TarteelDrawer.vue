@@ -131,10 +131,11 @@ const deleteRatl = (index) => {
   updateSelectedRatl(index)
 }
 
-const scrollToTop = () => {
-  if (tarteelDrawerRef.value) {
-    tarteelDrawerRef.value.scrollTop = 0
-  }
+const tarteelDrawerRef = ref(null)
+const scrollToTop = async () => {
+  await nextTick()
+  if (!tarteelDrawerRef.value) return
+  tarteelDrawerRef.value.scrollTop = 0
 }
 
 const handleClose = () => {}

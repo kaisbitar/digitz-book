@@ -40,6 +40,7 @@ export default createVuetify({
       },
       dark: {
         colors: {
+          surface: "#121212", // Pure white
           primary: "#2196F3", // A lighter blue for better contrast in dark mode
           secondary: "#4DB6AC", // A lighter teal for dark mode
           success: "#66BB6A", // A slightly lighter green for dark mode
@@ -48,7 +49,7 @@ export default createVuetify({
           "active-row": "#2f2f2f",
           "count-key-item": "#919191",
           "verse-count": "#3f2f6b", // Brighter purple with 85% opacity
-          "word-count": "#2f9b5f", // Brighter green with 85% opacity
+          "word-count": "#185031", // Brighter green with 85% opacity
           "letter-count": "#FFAB00D9", // Brighter amber with 85% opacity
           "Quran-count": "#FF80ABD9", // Brighter pink with 85% opacity
         },
@@ -59,7 +60,7 @@ export default createVuetify({
           secondary: "#F5C2E7", // A light pink that complements the theme
           success: "#A6E3A1", // A soft green that fits the pastel palette
           error: "#F38BA8", // A soft red that fits the pastel palette
-          background: "#181825",
+          // background: "#181825",
           surface: "#1E1E2E",
           "surface-light": "#2a333c",
           "on-background": "#CDD6F4",
@@ -67,8 +68,8 @@ export default createVuetify({
           highlight: "#a5e3a1",
           "active-row": "#313142",
           "count-key-item": "#919191",
-          "verse-count": "#B4BEFFD9", // Lighter indigo with 85% opacity
-          "word-count": "#BAF2BBD9", // Lighter green with 85% opacity
+          "verse-count": "#525a90", // Lighter indigo with 85% opacity
+          "word-count": "#2f4e32", // Lighter green with 85% opacity
           "letter-count": "#FFE17FD9", // Lighter amber with 85% opacity
           "Quran-count": "#FFAFD9D9", // Lighter pink with 85% opacity
         },

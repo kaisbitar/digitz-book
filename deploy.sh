@@ -7,14 +7,16 @@ REMOTE_PORT="2222"
 REMOTE_PATH="/var/www/q-project/front-end"
 BUILD_FILE="build.tar"
 SUDO_PASSWORD="Emadis@dad85"
+
 # Function to handle errors
 handle_error() {
     echo "Error: $1"
     exit 1
 }
 
-# Build the project
-npm run build || handle_error "Failed to build the project"
+# Ensure we're building with production environment
+echo "Building project with production environment..."
+NODE_ENV=production npm run build || handle_error "Failed to build the project"
 
 # Create tar file
 tar cvzf $BUILD_FILE dist || handle_error "Failed to create tar file"

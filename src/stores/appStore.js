@@ -100,7 +100,6 @@ export const useStore = defineStore("Quran", {
       this.wordMeanings[word] = meaning
     },
     setTarteelDrawer(value) {
-      console.log(value)
       this.tarteelDrawer = value
     },
   },

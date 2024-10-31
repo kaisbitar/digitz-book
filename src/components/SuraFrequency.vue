@@ -8,6 +8,11 @@
           <span class="text-h4 ml-3 count-key-item">
             {{ displayVerse.verseIndex }}
           </span>
+
+          <span class="text-caption count-key-item">مصحف</span>
+          <span class="text-h4 ml-3 count-key-item">
+            {{ displayVerse.verseNumberToQuran }}
+          </span>
         </div>
       </v-scale-transition>
 

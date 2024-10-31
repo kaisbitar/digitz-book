@@ -6,6 +6,8 @@ export function usePagination(itemsRef, targetedIndexRef, itemsPerPage = 50) {
   const isLoading = ref(false)
 
   const paginatedItems = computed(() => {
+    if (totalItems.value <= itemsPerPage) return itemsRef.value
+
     const end = currentPage.value * itemsPerPage
     return (
       itemsRef.value?.slice(0, end).map((item, index) => ({
@@ -44,7 +46,7 @@ export function usePagination(itemsRef, targetedIndexRef, itemsPerPage = 50) {
   }
 
   const handleInfiniteScroll = (event) => {
-    if (!event) return
+    // if (!event) preturn
     loadMoreItems()
     // const { scrollTop, scrollHeight, clientHeight } = event.target
     // if (scrollTop + clientHeight >= scrollHeight - 100) {
