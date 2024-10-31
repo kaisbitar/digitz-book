@@ -4,27 +4,49 @@
     v-if="ratl && ratl.verses"
     class="d-flex flex-column h-100 pa-0 pt-4 px-4"
   >
-    <div class="d-flex mb-4">
+    <div class="d-flex mb-2">
       <span class="text-h4 ml-4">{{ ratl.word }}</span>
-      <v-badge
-        v-for="badge in badges"
-        :key="badge.id"
-        :color="badge.color"
-        :content="badge.content"
-        :offset-x="badge.offsetX"
-        :offset-y="badge.offsetY"
-      ></v-badge>
+
+      <span class="text-h4 mr-3 count-key-item">
+        {{ ratl.verses.length }}
+        <span class="text-caption mr-n1 count-key-item">آية</span>
+      </span>
+
+      <span class="text-h4 mr-3 count-key-item">
+        {{ ratl.count }}
+        <span class="text-caption mr-n1 count-key-item">مرة</span>
+      </span>
+
+      <v-btn
+        icon="mdi-chevron-down"
+        elevation="0"
+        class="mr-auto"
+        @click="expanded = !expanded"
+      >
+      </v-btn>
     </div>
 
-    <v-toolbar title="المعنى" class="" elevation="2" rounded density="compact">
-    </v-toolbar>
+    <v-card
+      hover
+      variant="plain"
+      elevation="1"
+      class="pa-2"
+      :class="expanded ? 'tarteel-overflow' : 'fixed-height'"
+      @click="expanded = !expanded"
+    >
+      <TarteelWordMeaning
+        :word="ratl.word"
+        :expanded="expanded"
+        :class="expanded ? 'tarteel-meaning-overflow' : 'fixed-height'"
+      />
+    </v-card>
 
     <div
-      class="tarteel-container sura-board-overflow"
+      class="tarteel-container tarteel-board-overflow"
       @scroll="handleInfiniteScroll"
     >
       <VerseCardItem
-        v-for="verse in paginatedItems"
+        v-for="(verse, index) in paginatedItems"
         :item="verse"
         :key="verse.originalIndex"
         :index="verse.originalIndex"
@@ -43,6 +65,7 @@
         indeterminate
         rounded
       ></v-progress-linear>
+      <div class="mt-3 mb-3 text-center">صدق الله العظيم</div>
     </div>
   </div>
 
@@ -63,6 +86,8 @@ const tarteelStore = useTarteelStore()
 const router = useRouter()
 const store = useStore()
 
+const expanded = ref(false)
+
 const searchedTarteels = computed(() => tarteelStore.getStoredTarteels)
 const ratl = computed(() => tarteelStore.getSelectedRatl)
 const targetedVerseIndex = computed(() => store.getTarget?.verseNumberToQuran)
@@ -82,23 +107,6 @@ const handleSelectedVerse = (verse, tarteel) => {
   })
   router.push("sura")
 }
-
-const badges = computed(() => [
-  {
-    id: "count",
-    color: "count",
-    content: `${ratl.value.count || 0} مرة`,
-    offsetX: "-60",
-    offsetY: "20",
-  },
-  {
-    id: "verse-count",
-    color: "verse-count",
-    content: `${ratl.value.verses.length} آية`,
-    offsetX: "-15",
-    offsetY: "20",
-  },
-])
 
 const { scrollToActiveItem } = useWindow()
 
@@ -124,6 +132,28 @@ onMounted(async () => {
   await nextTick()
   handleScrolling()
 })
+
+// const badges = computed(() => [
+//   {
+//     id: "count",
+//     color: "count",
+//     content: `${ratl.value.count || 0} مرة`,
+//     offsetX: "-60",
+//     offsetY: "20",
+//   },
+//   {
+//     id: "verse-count",
+//     color: "verse-count",
+//     content: `${ratl.value.verses.length} آية`,
+//     offsetX: "-15",
+//     offsetY: "20",
+//   },
+// ])
 </script>
 
-<style></style>
+<style>
+.fixed-height {
+  height: 70px; /* or whatever height you prefer */
+  overflow: hidden;
+}
+</style>

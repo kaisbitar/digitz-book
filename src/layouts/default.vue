@@ -2,7 +2,11 @@
   <div class="d-flex flex-column h-screen">
     <AppNav v-if="activeRoute !== 'home'" />
     <v-main class="flex-grow-1">
-      <router-view />
+      <router-view v-slot="{ Component }">
+        <!-- <v-expand-transition> -->
+        <component :is="Component" />
+        <!-- </v-expand-transition> -->
+      </router-view>
     </v-main>
   </div>
 </template>

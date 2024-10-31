@@ -98,11 +98,6 @@ defineExpose({ closeAllTooltips, closeLastTooltips })
 
 const store = useStore()
 
-const storeWordMeanings = computed(() => ({
-  get: (word) => store.getWordMeaning(word),
-  has: (word) => !!store.getWordMeaning(word),
-}))
-
 const handleClickedWord = async (word) => {
   emit("update:clickedWordIndex", props.wordIndex)
   setCurrentWord(word)
@@ -149,12 +144,11 @@ const openDialog = () => {
   showWordMeaningDialog.value = true
 }
 
-const quranStore = useStore()
 const isInStore = ref(false)
 
 const wordMeanings = computed(() => ({
-  get: (word) => quranStore.getWordMeaning(word),
-  has: (word) => !!quranStore.getWordMeaning(word),
+  get: (word) => store.getWordMeaning(word),
+  has: (word) => !!store.getWordMeaning(word),
 }))
 
 const checkIfInStore = () => {

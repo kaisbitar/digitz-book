@@ -43,6 +43,17 @@ html {
   height: calc(100vh - 170px);
   overflow: auto;
 }
+
+.tarteel-board-overflow {
+  height: calc(100vh - 192px);
+  overflow: auto;
+}
+
+.tarteel-meaning-overflow {
+  height: calc(50vh - 100px);
+  overflow: auto;
+}
+
 .sura-chart-overflow {
   height: calc(100vh - 100px);
   overflow: auto;
