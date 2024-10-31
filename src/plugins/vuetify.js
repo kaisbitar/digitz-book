@@ -60,7 +60,7 @@ export default createVuetify({
           secondary: "#F5C2E7", // A light pink that complements the theme
           success: "#A6E3A1", // A soft green that fits the pastel palette
           error: "#F38BA8", // A soft red that fits the pastel palette
-          // background: "#181825",
+          background: "#181825",
           surface: "#1E1E2E",
           "surface-light": "#2a333c",
           "on-background": "#CDD6F4",

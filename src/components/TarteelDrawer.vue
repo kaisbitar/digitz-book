@@ -138,8 +138,10 @@ const scrollToTop = async () => {
   tarteelDrawerRef.value.scrollTop = 0
 }
 
-const handleClose = () => {}
-store.setTarteelDrawer(false)
+const handleClose = async () => {
+  await nextTick()
+  store.setTarteelDrawer(false)
+}
 
 onMounted(() => {})
 </script>
