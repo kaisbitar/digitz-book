@@ -12,7 +12,7 @@ export function usePagination(itemsRef, targetedIndexRef, itemsPerPage = 50) {
     return (
       itemsRef.value?.slice(0, end).map((item, index) => ({
         ...item,
-        originalIndex: index,
+        originalIndex: parseInt(index),
       })) || []
     )
   })

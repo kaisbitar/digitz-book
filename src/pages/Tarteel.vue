@@ -49,7 +49,7 @@
         v-for="(verse, index) in paginatedItems"
         :item="verse"
         :key="verse.originalIndex"
-        :index="verse.originalIndex"
+        :index="index"
         :textToHighlight="ratl.word"
         :active="parseInt(targetedVerseIndex) === verse.verseNumberToQuran"
         :class="{
@@ -65,7 +65,7 @@
         indeterminate
         rounded
       ></v-progress-linear>
-      <div class="mt-3 mb-3 text-center">صدق الله العظيم</div>
+      <div class="mt-5 mb-3 text-center">صدق الله العظيم</div>
     </div>
   </div>
 

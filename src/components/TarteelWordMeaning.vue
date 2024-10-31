@@ -1,39 +1,34 @@
 <template>
-  <div>
-    <v-slide-y-transition>
-      <v-skeleton-loader v-if="loading" type="article">
-        فَإِنَّ مَعَ الْعُسْرِ يُسْرًا, إِنَّ مَعَ الْعُسْرِ يُسْرًا
-      </v-skeleton-loader>
-    </v-slide-y-transition>
-    <v-slide-y-transition>
-      <div v-if="!loading">
-        <v-list-item
-          v-if="!expanded"
-          :subtitle="results[0].meaning[0].dictionary"
-          class="px-2"
-        >
-          <template v-slot:prepend>
-            <v-icon icon="mdi-translate" class="mr-2" />
-          </template>
-          <v-list-item-title>
-            <span class="ml-2">{{ results[0].meaning[0].word }}: </span>
-            {{ results[0].meaning[0].meaning }}
-          </v-list-item-title>
-        </v-list-item>
+  <v-slide-y-transition>
+    <v-fade-transition v-if="loading">
+      فَإِنَّ مَعَ الْعُسْرِ يُسْرًا, إِنَّ مَعَ الْعُسْرِ يُسْرًا...
+    </v-fade-transition>
+    <v-list-item
+      v-if="!expanded && !loading"
+      :subtitle="results[0].meaning[0].dictionary"
+      class="px-2"
+    >
+      <template v-slot:prepend>
+        <v-icon icon="mdi-translate" class="mr-2" />
+      </template>
 
-        <v-list v-else lines="two">
-          <v-list-item
-            v-for="(item, index) in results[0]?.meaning"
-            :key="index"
-            :subtitle="item.dictionary"
-          >
-            <span class="ml-2">{{ item.word }}: </span>
-            <span v-html="highlight(item.meaning, props.word)"></span>
-          </v-list-item>
-        </v-list>
-      </div>
-    </v-slide-y-transition>
-  </div>
+      <v-list-item-title>
+        <span class="ml-2">{{ results[0].meaning[0].word }}: </span>
+        {{ results[0].meaning[0].meaning }}
+      </v-list-item-title>
+    </v-list-item>
+
+    <v-list v-else lines="two">
+      <v-list-item
+        v-for="(item, index) in results[0]?.meaning"
+        :key="index"
+        :subtitle="item.dictionary"
+      >
+        <span class="ml-2">{{ item.word }}: </span>
+        <span v-html="highlight(item.meaning, props.word)"></span>
+      </v-list-item>
+    </v-list>
+  </v-slide-y-transition>
 </template>
 <script setup>
 import { ref, onMounted, computed, watch, nextTick } from "vue"
