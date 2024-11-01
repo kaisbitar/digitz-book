@@ -1,188 +1,61 @@
 <template>
   <v-tooltip
-    :open-on-hover="false"
-    open-on-click
-    location="bottom"
     v-model="showWordMeaningTip[wordIndex]"
+    location="bottom"
+    :open-delay="300"
+    :open-on-hover="false"
   >
     <template v-slot:activator="{ props }">
-      <span v-bind="props" @click="handleClickedWord(word)">
-        <span
-          v-if="word.includes(inputText)"
-          :class="{
-            'text-purple-darken-3': clickedWords[wordIndex],
-            'text-purple-lighten-3': isInStore,
-          }"
-        >
-          {{ word.split(inputText)[0] }}
-          <span class="highlight-match">{{ inputText }}</span>
-          {{ word.split(inputText)[1] }}
-        </span>
-        <span
-          v-else
-          :class="{
-            'text-purple-darken-3': clickedWords[wordIndex],
-            'text-purple-lighten-3': isInStore,
-          }"
-        >
-          {{ word }}
-        </span>
+      <!-- @mouseover="handleHover(word)" -->
+      <span v-bind="props" @click="handleClick(word)">
+        {{ word }}
       </span>
     </template>
-    <WordTooltipDialog
-      :word="word"
-      :currentWord="currentWord"
-      :currentMeaning="currentMeaning"
-      :loading="loadingWords[wordIndex]"
-      :meanings="meanings"
-      :closingBarData="closingBarData"
-    />
+    <v-progress-circular v-if="loading" indeterminate />
+    <span v-if="!loading">{{ currentMeaning?.[0]?.meaning }}</span>
   </v-tooltip>
 </template>
 
 <script setup>
-import { fetchWordMeaning, fetchWordRoot } from "@/api/api.js"
-import {
-  extractFromDictionnary,
-  fetchWordRootData,
-  fetchWordMeaningData,
-} from "@/utils/dictionaryUtils.js"
-import { useStore } from "@/stores/appStore.js"
-
 const props = defineProps({
-  word: {
-    type: String,
-    required: true,
-  },
-  wordIndex: {
-    type: Number,
-    required: true,
-  },
-  closeTootip: {
-    type: Boolean,
+  word: { type: String, required: true },
+  wordIndex: { type: Number, required: true },
+  closeTootip: { type: Boolean, required: false },
+  inputText: { type: String, required: false },
+  wordSelectedOnChart: { type: Array, required: false },
+  currentWord: { type: String, required: true },
+  currentMeaning: { type: Array, required: true },
+  loading: { type: Boolean, required: false },
+  meanings: {
+    type: Object,
     required: false,
-  },
-  inputText: {
-    type: String,
-    required: false,
-  },
-  wordSelectedOnChart: {
-    type: Array,
-    required: false,
+    default: () => ({}),
   },
 })
 
-const emit = defineEmits(["update:clickedWordIndex"])
-
+const emit = defineEmits(["update:hoverWordIndex", "update:clickWordIndex"])
 const showWordMeaningTip = reactive({})
-const clickedWords = reactive({})
-const loadingWords = reactive({})
-const meanings = reactive({})
 
-const currentMeaning = ref([])
-const currentWord = ref("")
-const showWordMeaningDialog = ref(false)
-
-const closingBarData = computed(() => ({
-  inputText: currentWord,
-}))
 const closeLastTooltips = (index) => {
   showWordMeaningTip[index] = false
 }
+
 const closeAllTooltips = () => {
   Object.keys(showWordMeaningTip).forEach((word) => {
     showWordMeaningTip[word] = false
   })
 }
+
+const handleHover = async (word) => {
+  await new Promise((resolve) => setTimeout(resolve, 300))
+  emit("update:hoverWordIndex", props.wordIndex)
+}
+
+const handleClick = () => {
+  emit("update:clickWordIndex", props.wordIndex)
+}
+
 defineExpose({ closeAllTooltips, closeLastTooltips })
-
-const store = useStore()
-
-const handleClickedWord = async (word) => {
-  emit("update:clickedWordIndex", props.wordIndex)
-  setCurrentWord(word)
-  await fetchWordData(word)
-}
-
-const setCurrentWord = (word) => {
-  currentMeaning.value = []
-  clickedWords[props.wordIndex] = true
-  currentWord.value = word
-}
-
-const fetchWordData = async (word) => {
-  loadingWords[props.wordIndex] = true
-  const wordRoot = await fetchWordRootData(word)
-
-  const extractedMeaning = await fetchWordMeaningData(word, wordRoot)
-  meanings[word] = extractedMeaning
-  updateCurrentMeaning(meanings[word])
-  loadingWords[props.wordIndex] = false
-}
-
-const updateCurrentMeaning = (meaningsArray) => {
-  const selectedMeanings = getLimitedMeanings(meaningsArray, 300)
-  currentMeaning.value = selectedMeanings
-  loadingWords[currentWord.value] = false
-}
-
-const getLimitedMeanings = (meaningsArray, limit) => {
-  return meaningsArray.map((item) => {
-    const limitedMeaning =
-      item.meaning.length > limit
-        ? item.meaning.substring(0, limit) + "..."
-        : item.meaning
-
-    return {
-      ...item,
-      meaning: limitedMeaning,
-    }
-  })
-}
-
-const openDialog = () => {
-  showWordMeaningDialog.value = true
-}
-
-const isInStore = ref(false)
-
-const wordMeanings = computed(() => ({
-  get: (word) => store.getWordMeaning(word),
-  has: (word) => !!store.getWordMeaning(word),
-}))
-
-const checkIfInStore = () => {
-  isInStore.value = wordMeanings.value.has(props.word)
-}
-
-onMounted(() => {
-  checkIfInStore()
-})
-onBeforeUnmount(() => {
-  checkIfInStore()
-})
 </script>
 
-<style scoped>
-.tooltip-meaning {
-  max-width: 482px;
-  position: relative !important;
-  pointer-events: auto;
-}
-
-.word {
-  display: inline-block;
-  margin: 0 4px;
-  cursor: pointer;
-  transition: color 0.3s;
-  font-size: 25px;
-}
-
-.word:hover {
-  color: #007bff !important;
-}
-
-.text-green-darken-1 {
-  color: #1b5e20; /* Adjust this color as needed */
-}
-</style>
+<style scoped></style>

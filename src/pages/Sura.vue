@@ -10,16 +10,13 @@
       @verseSelected="handleVerseSelectedOnTable"
     />
 
-    <v-slide-x-transition>
-      <VerseDetails
-        v-if="showVerseDetails"
-        v-model="showVerseDetails"
-        @goBack="showVerseDetails = !showVerseDetails"
-        :verse="targetedVerseText.verseText"
-        :title="suraName"
-        :inputText="targetTarteel"
-      />
-    </v-slide-x-transition>
+    <VerseDetails
+      v-if="showVerseDetails"
+      :verse="targetedVerseText"
+      :title="suraName"
+      :inputText="targetTarteel"
+      @go-back="showVerseDetails = !showVerseDetails"
+    />
   </template>
 </template>
 
@@ -46,14 +43,13 @@ const letterSeries = ref([{ data: [] }])
 const versesSeries = ref([{ data: [] }])
 const wordsSeries = ref([{ data: [] }])
 const suraDetails = ref({})
-const selectedVerseText = ref("")
 const showVerseDetails = ref(false)
 
 const fileName = computed(() => store.getTarget?.fileName || "001الفاتحة")
 const suraNumber = computed(() => parseInt(store.getTarget?.suraNumber))
 const suraName = computed(() => store.getTarget?.suraName)
 const targetedVerseText = computed(() => store.getTarget)
-const targetTarteel = computed(() => store.getTarget?.tarteel)
+const targetTarteel = computed(() => store.getTarget?.tarteel || "")
 
 const tableQuranIndex = computed(() => dataStore.getQuranIndex)
 const suraKeyValues = computed(
@@ -71,7 +67,6 @@ const oneQuranFile = computed(() => dataStore.getOneQuranFile)
 const allVersesWithTashkeel = computed(() => dataStore.getAllVersesWithTashkeel)
 
 const handleVerseSelectedOnTable = (verse) => {
-  selectedVerseText.value = verse.verseText
   showVerseDetails.value = true
 }
 

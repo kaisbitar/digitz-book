@@ -26,11 +26,11 @@
           :key="`${displayVerse.numberOfLetters}-${displayVerse.numberOfWords}`"
           class="text-h4 count-key-item"
         >
-          <span>{{ displayVerse.numberOfLetters }}</span>
-          <span class="text-caption ml-4">حرف</span>
-
           <span>{{ displayVerse.numberOfWords }}</span>
           <span class="text-caption ml-4">كلمة</span>
+
+          <span>{{ displayVerse.numberOfLetters }}</span>
+          <span class="text-caption ml-4">حرف</span>
         </div>
       </v-scale-transition>
     </v-card-text>

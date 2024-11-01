@@ -1,34 +1,46 @@
 <template>
-  <v-slide-y-transition>
-    <v-fade-transition v-if="loading">
-      فَإِنَّ مَعَ الْعُسْرِ يُسْرًا, إِنَّ مَعَ الْعُسْرِ يُسْرًا...
+  <div>
+    <v-fade-transition v-if="loading" mode="out-in">
+      فَإِنَّ مَعَ الْعُسْرِ يُسْرًا, إِنَّ مَعَ الْعُسْرِ يُسْرًا
     </v-fade-transition>
-    <v-list-item
-      v-if="!expanded && !loading"
-      :subtitle="results[0].meaning[0].dictionary"
-      class="px-2"
-    >
-      <template v-slot:prepend>
-        <v-icon icon="mdi-translate" class="mr-2" />
-      </template>
 
-      <v-list-item-title>
-        <span class="ml-2">{{ results[0].meaning[0].word }}: </span>
-        {{ results[0].meaning[0].meaning }}
-      </v-list-item-title>
-    </v-list-item>
+    <v-slide-y-transition mode="out-in">
+      <div v-if="!loading">
+        <v-list-item v-if="!expanded" lines="one" class="px-2">
+          <template v-slot:prepend>
+            <v-icon icon="mdi-translate" class="mr-2" />
+          </template>
 
-    <v-list v-else lines="two">
-      <v-list-item
-        v-for="(item, index) in results[0]?.meaning"
-        :key="index"
-        :subtitle="item.dictionary"
-      >
-        <span class="ml-2">{{ item.word }}: </span>
-        <span v-html="highlight(item.meaning, props.word)"></span>
-      </v-list-item>
-    </v-list>
-  </v-slide-y-transition>
+          <v-list-item-title key="content">
+            {{ results[0].meaning[0].word }}
+          </v-list-item-title>
+          <v-list-item-subtitle>{{
+            results[0].meaning[0].meaning
+          }}</v-list-item-subtitle>
+          <span class="text-caption">{{
+            results[0].meaning[0].dictionary
+          }}</span>
+        </v-list-item>
+
+        <WordMeaningCard :meanings="results[0]?.meaning" />
+        <!-- <v-card v-else lines="two">
+          <v-card-item
+            v-for="(item, index) in results[0]?.meaning"
+            :key="index"
+          >
+            <v-card-title class="ml-2 count-key-item">{{
+              item.word
+            }}</v-card-title>
+            <v-card-text class="mb-n5">{{ item.meaning }} </v-card-text>
+            <span class="text-caption count-key-item">{{
+              item.dictionary
+            }}</span>
+            <v-divider horizontal length="50%" class="mt-7" />
+          </v-card-item>
+        </v-card> -->
+      </div>
+    </v-slide-y-transition>
+  </div>
 </template>
 <script setup>
 import { ref, onMounted, computed, watch, nextTick } from "vue"
@@ -53,10 +65,9 @@ const props = defineProps({
   },
 })
 
-const error = ref(null)
 const loading = ref(true)
 const results = computed(() => {
-  if (!loading.value && !error.value) {
+  if (!loading.value) {
     const meaning = store.getWordMeaning(props.word)
     return meaning ? [{ meaning }] : [{ meaning: [] }]
   }
@@ -70,7 +81,6 @@ const storedMeaning = computed(() => ({
 
 const fetchMeanings = async () => {
   try {
-    error.value = null
     loading.value = true
     if (storedMeaning.value.has(props.word)) {
       return
@@ -82,9 +92,6 @@ const fetchMeanings = async () => {
     if (extractedMeaning && extractedMeaning[0]?.meaning?.length > 0) {
       store.setWordMeaning(props.word, extractedMeaning[0].meaning)
     }
-  } catch (err) {
-    console.error("Error fetching word meanings:", err)
-    error.value = err
   } finally {
     loading.value = false
   }
