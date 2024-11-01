@@ -16,7 +16,7 @@ export function useWindow(elementRef) {
         duration: 300,
         easing: "easeInOutCubic",
       })
-    }, 700)
+    }, 300)
   }
 
   const scrollToActiveItem = async (activeItem, container) => {

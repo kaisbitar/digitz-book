@@ -46,19 +46,7 @@ const { paginatedItems, handleInfiniteScroll, isLoading } = usePagination(
 
 const handleVerseSelected = (item) => {
   if (!item) return
-  setTargetedSuraAndVerse(item)
   emit("verseSelected", item)
-}
-
-const setTargetedSuraAndVerse = (item) => {
-  const suraNumber = item.fileName.replace(/[ء-٩]/g, "").replace(/\s/g, "")
-  const suraName = item.fileName.replace(/[0-9]/g, "")
-  store.setTarget({
-    fileName: `${suraNumber}${suraName}`,
-    verseIndex: item.verseIndex,
-    verseNumberToQuran: item.verseNumberToQuran,
-    verseText: item.verseText,
-  })
 }
 
 const versesContainer = computed(() =>

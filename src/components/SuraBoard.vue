@@ -1,5 +1,9 @@
 <template>
-  <SuraHeader v-if="!isInputVisible" class="flex-wrap mb-4" />
+  <div :style="{ height: isInputVisible ? '3px' : '59px' }">
+    <v-slide-x-transition mode="out-in">
+      <SuraHeader v-if="!isInputVisible" class="flex-wrap mb-4" />
+    </v-slide-x-transition>
+  </div>
   <SuraToolbar
     :tabs="tabs"
     :activeTab="activeTab"
@@ -99,6 +103,7 @@ watch(tagetedVerseIndex, () => {
 })
 
 const onVerseSelected = (verse) => {
+  setTargetVerse(verse)
   emit("verseSelected", verse)
 }
 
@@ -167,7 +172,9 @@ const handleClickDown = () => navigateVerses("down")
 onMounted(() => {
   if (targetTarteel.value) {
     inputText.value = targetTarteel.value
-    isInputVisible.value = true
+    setTimeout(() => {
+      isInputVisible.value = true
+    }, 2000)
   }
   scrollToActiveVerse()
   searchBtnText.value = inputText.value
@@ -179,6 +186,7 @@ const setTargetVerse = (verse) => {
     verseIndex: verse.verseIndex || 0,
     verseNumberToQuran: verse.verseNumberToQuran,
     verseText: verse.verseText,
+    tarteel: inputText.value,
   })
 }
 </script>

@@ -45,7 +45,7 @@ export default createVuetify({
           secondary: "#4DB6AC", // A lighter teal for dark mode
           success: "#66BB6A", // A slightly lighter green for dark mode
           error: "#EF5350", // A slightly lighter red for dark mode
-          highlight: "#8c8c36",
+          highlight: "#324507",
           "active-row": "#2f2f2f",
           "count-key-item": "#919191",
           "verse-count": "#3f2f6b", // Brighter purple with 85% opacity

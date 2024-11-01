@@ -45,7 +45,7 @@ html {
 }
 
 .tarteel-board-overflow {
-  height: calc(100vh - 192px);
+  height: calc(100vh - 205px);
   overflow: auto;
 }
 

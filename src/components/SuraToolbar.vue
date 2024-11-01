@@ -19,6 +19,7 @@
         :icon="btn.icon"
         :elevation="0"
         size="default"
+        variant="tonal"
         clickable
         :tabindex="btn.tabindex"
         @click="btn.action"

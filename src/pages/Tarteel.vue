@@ -151,9 +151,9 @@ onMounted(async () => {
 // ])
 </script>
 
-<style>
+<style scoped>
 .fixed-height {
-  height: 70px; /* or whatever height you prefer */
+  height: 85px; /* or whatever height you prefer */
   overflow: hidden;
 }
 </style>
