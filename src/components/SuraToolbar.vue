@@ -1,24 +1,27 @@
 <template>
   <AppInputField
     v-if="isInputVisible"
-    class="mt-2 sura-input-field"
+    class="sura-input-field mt-2"
     v-model="localSearch"
     :fieldPlaceHolder="placeholderText"
     :hasError="hasError"
     :hasSuccess="hasSuccess"
     @update:modelValue="onInput"
-    @keydown.enter="onEnter"
+    @keydown:enter="onEnter"
   >
     <template v-slot:append-input-items>
-      <span class="mt-3 ml-4"> {{ badgeContent }}/{{ currentIndex + 1 }} </span>
+      <span v-if="inputIndex > 0" class="ml-4">
+        {{ badgeContent }}/{{ inputIndex }}
+      </span>
       <v-divider class="ml-2"></v-divider>
       <v-btn
+        class="mt-n4"
         v-for="btn in inputNavigation"
         :key="btn.icon"
         :class="btn.class"
         :icon="btn.icon"
         :elevation="0"
-        size="default"
+        size="small"
         variant="tonal"
         clickable
         :tabindex="btn.tabindex"
@@ -58,7 +61,7 @@ const props = defineProps({
   isInputVisible: Boolean,
   badgeContent: String,
   badgeIsActive: Boolean,
-  currentIndex: Number,
+  inputIndex: Number,
 })
 
 const emit = defineEmits([
@@ -155,8 +158,7 @@ const inputNavigation = [
 </script>
 
 <style>
-.sura-input-field .v-field__append-inner {
-  margin-top: -29px !important;
-  padding-bottom: 13px !important;
+.sura-input-field .v-input__control {
+  height: 43px !important;
 }
 </style>

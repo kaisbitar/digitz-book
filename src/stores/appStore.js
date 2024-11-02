@@ -16,7 +16,6 @@ export const useStore = defineStore("Quran", {
     activeSuraTab: "numberOfVerses",
     activeRoute: "search",
     chartFreqType: "words",
-    isDialog: false,
     wordMeanings: {},
     tarteelDrawer: true,
   }),
@@ -31,7 +30,6 @@ export const useStore = defineStore("Quran", {
   },
   getters: {
     getVersesMobileView: (state) => state.versesMobileView,
-    getIsDialog: (state) => state.isDialog,
     getTarget: (state) => state.target,
     getActiveSuraTab: (state) => state.activeSuraTab,
     getActiveRoute: (state) => state.activeRoute,
@@ -41,10 +39,6 @@ export const useStore = defineStore("Quran", {
   actions: {
     setVersesMobileView(state) {
       this.versesMobileView = state
-    },
-
-    setIsDialog(isDialog) {
-      this.isDialog = isDialog
     },
     setChartFreqType(chartFreqType) {
       this.chartFreqType = chartFreqType
@@ -61,8 +55,8 @@ export const useStore = defineStore("Quran", {
           suraNumber: target.fileName.replace(/[ء-٩]/g, "").replace(/\s/g, ""),
           suraName: target.fileName.replace(/[0-9]/g, ""),
           fileName: target.fileName,
-          verseIndex: parseInt(target.verseIndex),
-          verseNumberToQuran: parseInt(target.verseNumberToQuran),
+          verseIndex: target.verseIndex,
+          verseNumberToQuran: target.verseNumberToQuran,
           verseText: target.verseText,
           tarteel: target.tarteel,
           numberOfLetters: target.verseText.replace(/ /g, "").length,
@@ -84,7 +78,6 @@ export const useStore = defineStore("Quran", {
     resetTarget() {
       this.target = { fileName: "001الفاتحة", verseIndex: null }
     },
-    setSearchIndex(index) {},
     resetSuras() {
       this.suras = {}
     },

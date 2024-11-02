@@ -142,6 +142,7 @@ html {
 .text-caption,
 .text-sm-h3,
 .text-h4,
+.font-weight-bold,
 .v-card-text .highlight-match {
   letter-spacing: 0 !important;
 }

@@ -1,5 +1,5 @@
 <template>
-  <div :style="{ height: isInputVisible ? '3px' : '59px' }">
+  <div :style="{ height: isInputVisible ? '0px' : '59px' }">
     <v-slide-x-transition mode="out-in">
       <SuraHeader v-if="!isInputVisible" class="flex-wrap mb-4" />
     </v-slide-x-transition>
@@ -13,7 +13,7 @@
     :isInputVisible="isInputVisible"
     :badgeIsActive="!!inputText"
     :badgeContent="badgeContent"
-    :currentIndex="currentIndex"
+    :inputIndex="inputIndex"
     @update:activeTab="updateActiveTab"
     @update:search="onInput"
     @searchToggle="onSearchToggle"
@@ -73,7 +73,7 @@ const props = defineProps({
   chartOptions: Object,
 })
 
-const emit = defineEmits([, "verseSelected"])
+const emit = defineEmits(["verseSelected"])
 const searchBtnText = ref(`ترتيل ${props.suraName}`)
 const isInputVisible = ref(false)
 const inputText = ref("")
@@ -92,13 +92,17 @@ const badgeContent = computed(() => {
   return filteredVerses.value.length ? `${filteredVerses.value.length}` : ""
 })
 
-const targetTarteel = computed(() => store.getTarget?.tarteel)
-
-const tagetedVerseIndex = computed(() => {
-  return store.getTarget.verseIndex
+const inputIndex = computed(() => {
+  return currentIndex.value >= 0 ? currentIndex.value + 1 : 0
 })
 
-watch(tagetedVerseIndex, () => {
+const targetTarteel = computed(() => store.getTarget?.tarteel)
+
+const targetNumberToQuran = computed(() => {
+  return store.getTarget.verseNumberToQuran
+})
+
+watch(targetNumberToQuran, () => {
   scrollToActiveVerse()
 })
 
@@ -109,20 +113,6 @@ const onVerseSelected = (verse) => {
 
 const onSearchToggle = (value) => {
   isInputVisible.value = value
-}
-
-const onEnter = (value) => {
-  if (value === "") {
-    setTargetVerse(props.versesBasics[0])
-    return
-  }
-  navigateVerses()
-}
-
-const onInput = (value) => {
-  inputText.value = value
-  searchBtnText.value = value || `ترتيل ${props.suraName}`
-  currentIndex.value = -1
 }
 
 const activeTab = computed({
@@ -151,41 +141,75 @@ const updateActiveTab = (value) => {
 }
 
 const currentIndex = ref(0)
-
-const navigateVerses = (direction) => {
-  const isUp = direction === "up"
-  const lastIndex = filteredVerses.value.length - 1
-
-  if (isUp && currentIndex.value <= 0) return
-  if (!isUp && currentIndex.value >= lastIndex) {
-    currentIndex.value = 0
-    return setTargetVerse(filteredVerses.value[currentIndex.value])
-  }
-
-  currentIndex.value += isUp ? -1 : 1
-  setTargetVerse(filteredVerses.value[currentIndex.value])
-}
-
 const handleClickUp = () => navigateVerses("up")
 const handleClickDown = () => navigateVerses("down")
 
-onMounted(() => {
+const navigateVerses = (direction) => {
+  if (!filteredVerses.value.length) {
+    return
+  }
+
+  if (direction === "up") {
+    if (currentIndex.value <= 0) {
+      currentIndex.value = filteredVerses.value.length - 1
+      return setTargetVerse(filteredVerses.value[currentIndex.value])
+    }
+
+    currentIndex.value--
+    return setTargetVerse(filteredVerses.value[currentIndex.value])
+  }
+
+  if (currentIndex.value >= filteredVerses.value.length - 1) {
+    currentIndex.value = -1
+  }
+
+  currentIndex.value++
+  return setTargetVerse(filteredVerses.value[currentIndex.value])
+}
+
+const onEnter = (value) => {
+  if (value === "") {
+    setTargetVerse(props.versesBasics[0])
+    return
+  }
+  navigateVerses("down")
+}
+
+const onInput = (value) => {
+  inputText.value = value
+  searchBtnText.value = value || `ترتيل ${props.suraName}`
+  currentIndex.value = -1
+  setTimeout(() => {
+    navigateVerses("down")
+  }, 100)
+}
+
+const handleLanding = async () => {
   if (targetTarteel.value) {
     inputText.value = targetTarteel.value
+    searchBtnText.value = inputText.value
+
+    await nextTick()
+    filteredVerses.value.map((verse, index) => {
+      if (verse.verseNumberToQuran == targetNumberToQuran.value) {
+        currentIndex.value = index
+      }
+    })
+
     setTimeout(() => {
       isInputVisible.value = true
     }, 1000)
   }
+}
+
+onMounted(() => {
+  handleLanding()
   scrollToActiveVerse()
-  searchBtnText.value = inputText.value
 })
 
 const setTargetVerse = (verse) => {
   store.setTarget({
-    fileName: verse.fileName,
-    verseIndex: verse.verseIndex || 0,
-    verseNumberToQuran: verse.verseNumberToQuran,
-    verseText: verse.verseText,
+    ...verse,
     tarteel: inputText.value,
   })
 }

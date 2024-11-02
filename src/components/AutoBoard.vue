@@ -5,7 +5,6 @@
     :dataToShow="`${totalWordsCount} كلمة`"
     :type="'word-count'"
     :hasError="inputHasError"
-    :errorMessage="errorMessage"
     :hasSuccess="inputHasSuccess"
     @update:modelValue="handleInput"
     @clear="handleClear"
@@ -63,7 +62,6 @@ const {
 } = useAutoComplete(dataStore, tarteelStore)
 
 const inputHasError = ref(false)
-const errorMessage = ref("")
 const inputHasSuccess = ref(false)
 const emit = defineEmits(["update:isInputVisible"])
 
@@ -88,12 +86,10 @@ const handleInput = (value) => {
   if (currentWordsList.value.length > 0) {
     inputHasSuccess.value = true
     inputHasError.value = false
-    errorMessage.value = ""
     return
   }
   inputHasSuccess.value = false
   inputHasError.value = true
-  errorMessage.value = "Input is too long"
 }
 
 const handleClear = () => {

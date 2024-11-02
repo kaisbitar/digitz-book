@@ -2,7 +2,6 @@
   <div class="input-field-container">
     <v-text-field
       v-bind="$attrs"
-      class="flex-grow-1"
       :model-value="modelValue"
       :label="`ترتيل ${fieldPlaceHolder}`"
       :color="hasSuccess ? 'success' : 'primary'"
@@ -14,6 +13,7 @@
       variant="underlined"
       @click:clear="handleClear"
       @update:model-value="handleInput"
+      @keydown.enter.prevent="$emit('keydown:enter', modelValue)"
       @focus="$emit('focus')"
     >
       <template v-slot:append-inner>

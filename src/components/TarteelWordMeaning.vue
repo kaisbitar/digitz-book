@@ -9,6 +9,7 @@
         v-if="!loading"
         :meanings="results[0]?.meaning"
         :expanded="expanded"
+        :variant="'plain'"
         :cardClass="expanded ? 'tarteel-meaning-overflow' : 'fixed-height'"
         @click="expanded = !expanded"
       />
