@@ -1,45 +1,20 @@
 <template>
-  <!-- <TarteelChart :series="ratl" /> -->
   <div
     v-if="ratl && ratl.verses"
     class="d-flex flex-column h-100 pa-0 pt-4 px-4"
   >
-    <div class="d-flex mb-2">
-      <span class="text-h4 ml-4">{{ ratl.word }}</span>
+    <TarteelHeader
+      :word="ratl.word"
+      :verses-count="ratl.verses.length"
+      :occurrence-count="ratl.count"
+      v-model:expanded="expanded"
+    />
 
-      <span class="text-h4 mr-3 count-key-item">
-        {{ ratl.verses.length }}
-        <span class="text-caption mr-n1 count-key-item">آية</span>
-      </span>
-
-      <span class="text-h4 mr-3 count-key-item">
-        {{ ratl.count }}
-        <span class="text-caption mr-n1 count-key-item">مرة</span>
-      </span>
-
-      <v-btn
-        icon="mdi-chevron-down"
-        elevation="0"
-        class="mr-auto"
-        @click="expanded = !expanded"
-      >
-      </v-btn>
-    </div>
-
-    <v-card
-      hover
-      variant="plain"
-      elevation="1"
-      class="pa-2"
-      :class="expanded ? 'tarteel-overflow' : 'fixed-height'"
+    <TarteelWordMeaning
+      :class="expanded ? 'tarteel-meaning-overflow' : 'fixed-height'"
+      :word="ratl.word"
       @click="expanded = !expanded"
-    >
-      <TarteelWordMeaning
-        :word="ratl.word"
-        :expanded="expanded"
-        :class="expanded ? 'tarteel-meaning-overflow' : 'fixed-height'"
-      />
-    </v-card>
+    />
 
     <div
       class="tarteel-container tarteel-board-overflow"
@@ -58,19 +33,15 @@
         }"
         @click="handleSelectedVerse(verse, ratl.word)"
       />
-      <v-progress-linear
-        v-if="isLoading"
-        :height="4"
-        color="verse-count"
-        indeterminate
-        rounded
-      ></v-progress-linear>
       <div class="mt-5 mb-3 text-center">صدق الله العظيم</div>
     </div>
   </div>
 
   <template v-else>
-    <NoData />
+    <NoData
+      text="ورتل القرآن ترتيلا.."
+      icon="mdi-book-open-page-variant-outline"
+    />
   </template>
 </template>
 
@@ -81,6 +52,7 @@ import { useRouter } from "vue-router"
 import { useTarteelStore } from "@/stores/tarteelStore"
 import { useWindow } from "@/mixins/window"
 import { usePagination } from "@/hooks/usePagination"
+import TarteelHeader from "@/components/TarteelHeader.vue"
 
 const tarteelStore = useTarteelStore()
 const router = useRouter()
@@ -132,28 +104,20 @@ onMounted(async () => {
   await nextTick()
   handleScrolling()
 })
-
-// const badges = computed(() => [
-//   {
-//     id: "count",
-//     color: "count",
-//     content: `${ratl.value.count || 0} مرة`,
-//     offsetX: "-60",
-//     offsetY: "20",
-//   },
-//   {
-//     id: "verse-count",
-//     color: "verse-count",
-//     content: `${ratl.value.verses.length} آية`,
-//     offsetX: "-15",
-//     offsetY: "20",
-//   },
-// ])
 </script>
 
 <style scoped>
+.tarteel-board-overflow {
+  height: calc(100vh - 205px);
+  overflow: auto;
+}
 .fixed-height {
-  height: 85px; /* or whatever height you prefer */
+  height: 100px; /* or whatever height you prefer */
   overflow: hidden;
+}
+
+.tarteel-meaning-overflow {
+  height: calc(50vh - 100px);
+  overflow: auto;
 }
 </style>

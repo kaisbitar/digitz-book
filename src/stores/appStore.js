@@ -36,7 +36,7 @@ export const useStore = defineStore("Quran", {
     getActiveSuraTab: (state) => state.activeSuraTab,
     getActiveRoute: (state) => state.activeRoute,
     getChartFreqType: (state) => state.chartFreqType,
-    getWordMeaning: (state) => (word) => state.wordMeanings[word] || null,
+    getWordMeaning: (state) => (word) => state.wordMeanings[word],
   },
   actions: {
     setVersesMobileView(state) {
@@ -61,12 +61,12 @@ export const useStore = defineStore("Quran", {
           suraNumber: target.fileName.replace(/[ء-٩]/g, "").replace(/\s/g, ""),
           suraName: target.fileName.replace(/[0-9]/g, ""),
           fileName: target.fileName,
-          verseIndex: target.verseIndex,
-          verseNumberToQuran: target.verseNumberToQuran,
+          verseIndex: parseInt(target.verseIndex),
+          verseNumberToQuran: parseInt(target.verseNumberToQuran),
           verseText: target.verseText,
           tarteel: target.tarteel,
-          numberOfLetters: target.verseText.replace(/ /g, "").length.toString(),
-          numberOfWords: target.verseText.split(" ").length.toString(),
+          numberOfLetters: target.verseText.replace(/ /g, "").length,
+          numberOfWords: target.verseText.split(" ").length,
         }
         return
       }

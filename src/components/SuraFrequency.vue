@@ -3,17 +3,11 @@
     <!-- <ChartRadioButtons :intitalType="chartFreqType" @typeChanged="changeType" /> -->
     <v-card-text v-if="displayVerse" class="position-absolute">
       <v-scale-transition>
-        <div :key="displayVerse.verseIndex">
-          <span class="text-caption count-key-item">آية</span>
-          <span class="text-h4 ml-3 count-key-item">
-            {{ displayVerse.verseIndex }}
-          </span>
-
-          <span class="text-caption count-key-item">مصحف</span>
-          <span class="text-h4 ml-3 count-key-item">
-            {{ displayVerse.verseNumberToQuran }}
-          </span>
-        </div>
+        <VerseNumbers
+          :key="displayVerse.verseIndex"
+          :verse-index="displayVerse.verseIndex"
+          :verse-number-to-quran="displayVerse.verseNumberToQuran"
+        />
       </v-scale-transition>
 
       <div
@@ -22,16 +16,11 @@
       ></div>
 
       <v-scale-transition>
-        <div
+        <VerseStats
           :key="`${displayVerse.numberOfLetters}-${displayVerse.numberOfWords}`"
-          class="text-h4 count-key-item"
-        >
-          <span>{{ displayVerse.numberOfWords }}</span>
-          <span class="text-caption ml-4">كلمة</span>
-
-          <span>{{ displayVerse.numberOfLetters }}</span>
-          <span class="text-caption ml-4">حرف</span>
-        </div>
+          :number-of-words="displayVerse.numberOfWords"
+          :number-of-letters="displayVerse.numberOfLetters"
+        />
       </v-scale-transition>
     </v-card-text>
 

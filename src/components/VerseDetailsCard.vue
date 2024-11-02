@@ -1,57 +1,33 @@
 <template>
-  <v-card variant="text" class="pa-1">
-    <v-card-subtitle class="mt-1 mb-n1">
-      <span class="text-h4 mr-3 count-key-item">
-        <span class="text-caption ml-n1 count-key-item">آية</span>
-        {{ verse.verseIndex }}
-      </span>
-
-      <span class="text-h4 mr-3 count-key-item">
-        <span class="text-caption ml-n1 count-key-item">مصحف</span>
-        {{ verse.verseNumberToQuran }}
-      </span>
-    </v-card-subtitle>
-    <v-card-text>
-      <VerseDetailsWords
-        :verse="verse.verseText"
-        :inputText="inputText"
-        :wordSelectedOnChart="wordSelectedOnChart"
-        @wordClicked="handleWordClick"
-        @update:currentWord="currentWord = $event"
-        @update:currentMeaning="meaningToDisplay = $event"
-      />
-    </v-card-text>
-
-    <v-card-subtitle>
-      <span class="text-h4 mr-3 count-key-item">
-        {{ countVerseWords(verse.verseText) }}
-        <span class="text-caption mr-n1 count-key-item">كلمة</span>
-      </span>
-
-      <span class="text-h4 mr-3 count-key-item">
-        {{ countVerseLetters(verse.verseText) }}
-        <span class="text-caption mr-n1 count-key-item">حرف</span>
-      </span>
-    </v-card-subtitle>
-  </v-card>
-
-  <v-card
-    class="verse-details-overflow pa-1 mt-3"
-    variant="outlined"
-    max-width="500"
-  >
-    <WordMeaningCard :meanings="meaningToDisplay" />
-  </v-card>
+  <VerseNumbers
+    :verse-index="parseInt(verse.verseIndex)"
+    :verse-number-to-quran="parseInt(verse.verseNumberToQuran)"
+  />
+  <VerseDetailsWords
+    :verse="verse.verseText"
+    :inputText="inputText"
+    @update:currentWord="$emit('update:currentWord', $event)"
+    @update:currentMeaning="$emit('update:currentMeaning', $event)"
+    @update:loading="$emit('update:loading', $event)"
+  />
+  <VerseStats
+    class="mt-1"
+    :number-of-words="String(countVerseWords(verse.verseText))"
+    :number-of-letters="String(countVerseLetters(verse.verseText))"
+  />
 </template>
 
 <script setup>
 import { useCounting } from "@/mixins/counting"
+import VerseNumbers from "./VerseNumbers.vue"
 
 const { countVerseWords, countVerseLetters } = useCounting()
 
-const meaningToDisplay = ref([])
-const currentWord = ref("")
-const showMeaning = ref(true)
+const emit = defineEmits([
+  "update:currentMeaning",
+  "update:currentWord",
+  "update:loading",
+])
 
 defineProps({
   verse: {
@@ -62,15 +38,7 @@ defineProps({
     type: String,
     required: false,
   },
-  wordSelectedOnChart: {
-    type: Array,
-    required: true,
-  },
 })
-
-const handleWordClick = () => {
-  showMeaning.value = !showMeaning.value
-}
 </script>
 
 <style scoped>
