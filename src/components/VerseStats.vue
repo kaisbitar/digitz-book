@@ -9,10 +9,8 @@
 </template>
 
 <script setup>
-import { tail } from "lodash-es"
-
 defineProps({
-  numberOfWords: String,
-  numberOfLetters: String,
+  numberOfWords: [Number, String],
+  numberOfLetters: [Number, String],
 })
 </script>

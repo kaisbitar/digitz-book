@@ -1,11 +1,6 @@
 import { useStore } from "../stores/appStore"
 
 export function useCounting() {
-  const store = useStore()
-  const suraNumber = computed(() =>
-    parseInt(store.getTarget.fileName.replace(/^\D+/g, ""))
-  )
-
   const countVerseWords = (verseText) => {
     if (verseText === "") return 0
     return verseText.split(" ").length
@@ -29,20 +24,7 @@ export function useCounting() {
     return count
   }
 
-  const setSuraFromArrow = (direction) => {
-    if (direction === "up") {
-      store.setTarget({
-        fileName: dataStore.getQuranIndex[suraNumber.value - 1].fileName,
-      })
-      return
-    }
-    store.setTarget({
-      fileName: dataStore.getQuranIndex[suraNumber.value + 1].fileName,
-    })
-  }
-
   return {
-    setSuraFromArrow,
     countWordMatch,
     countVerseWords,
     countVerseLetters,

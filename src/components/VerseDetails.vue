@@ -8,7 +8,13 @@
     </v-toolbar-title>
 
     <template v-for="button in navigationButtons" :key="button.action">
-      <v-btn icon @click="button.action">
+      <v-btn
+        icon
+        @click="button.action"
+        size="small"
+        variant="tonal"
+        class="mr-2"
+      >
         <v-icon>{{ button.icon }}</v-icon>
       </v-btn>
     </template>

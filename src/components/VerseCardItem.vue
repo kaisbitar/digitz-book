@@ -50,18 +50,18 @@ const handleClick = () => {
 const indexData = computed(() => ({
   رقم: { value: props.item.verseIndex, color: "verse-count" },
   كلمة: {
-    value: props.item.verseText.split(" ").length.toString(),
+    value: props.item.verseText.split(" ").length,
     color: "word-count",
   },
 }))
 
 const countData = computed(() => ({
   حرف: {
-    value: props.item.verseText.replace(/ /g, "").length.toString(),
+    value: props.item.verseText.replace(/ /g, "").length,
     color: "letter-count",
   },
   مصحف: {
-    value: props.item.verseNumberToQuran,
+    value: parseInt(props.item.verseNumberToQuran),
     color: "verse-number-to-quran",
   },
 }))

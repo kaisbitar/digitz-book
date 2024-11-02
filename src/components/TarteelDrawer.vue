@@ -87,6 +87,7 @@ const navigateToTarteel = () => {
 }
 
 const updateSelectedSearch = (index) => {
+  if (storedSearches.value.length === 0) return
   tarteelStore.setSearchedTarteel(index)
   tarteelStore.setSelectedRatlIndex(0)
   tarteelStore.setSelectedRatl(selectedSearch.value.results[0])
