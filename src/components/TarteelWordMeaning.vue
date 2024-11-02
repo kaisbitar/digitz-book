@@ -10,6 +10,7 @@
         :meanings="results[0]?.meaning"
         :expanded="expanded"
         :variant="'plain'"
+        :elevation="2"
         :cardClass="expanded ? 'tarteel-meaning-overflow' : 'fixed-height'"
         @click="expanded = !expanded"
       />
