@@ -12,7 +12,6 @@
 
     <VerseDetails
       v-if="showVerseDetails"
-      :verse="targetedVerseText"
       :title="suraName"
       :inputText="targetTarteel"
       @go-back="showVerseDetails = !showVerseDetails"

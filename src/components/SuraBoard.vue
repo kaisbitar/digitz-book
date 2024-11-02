@@ -174,7 +174,7 @@ onMounted(() => {
     inputText.value = targetTarteel.value
     setTimeout(() => {
       isInputVisible.value = true
-    }, 2000)
+    }, 1000)
   }
   scrollToActiveVerse()
   searchBtnText.value = inputText.value
