@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar>
+  <v-toolbar rounded elevation="2">
     <v-toolbar-title class="text-center font-weight-bold">
       <span v-html="highlight(inputText, props.inputText)"></span>
       <span v-if="inputText" class="ml-1"> - </span>

@@ -10,6 +10,8 @@
       v-model:expanded="expanded"
     />
 
+    <v-divider class="mx-auto" width="50%"></v-divider>
+
     <TarteelWordMeaning
       :class="expanded ? 'tarteel-meaning-overflow' : 'fixed-height'"
       :word="ratl.word"
