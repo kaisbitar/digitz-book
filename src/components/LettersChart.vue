@@ -1,5 +1,5 @@
 <template>
-  <v-card variant="plain">
+  <v-card variant="text">
     <v-card-text class="text-center letters-container" v-if="selectedLetter">
       <span class="text-h2 font-weight-bold ml-4">{{
         selectedLetter.letter
@@ -8,26 +8,40 @@
         >{{ selectedLetter.count }}<span class="text-caption">مرة</span></span
       >
     </v-card-text>
-
-    <Chart
-      v-if="chartOptions && letters.series"
+    <VueApexCharts
       ref="chartRef"
-      :options="chartOptions"
       :series="letters.series"
-      @dataPointSelection="handleDataPointSelection"
+      :options="chartOptions"
+      :class="$vuetify.display.xs ? '' : 'px-9'"
     />
   </v-card>
 </template>
 
 <script setup>
+import VueApexCharts from "vue3-apexcharts"
+
 import { useDataStore } from "@/stores/dataStore"
 import { computed, ref, onMounted, watch, nextTick } from "vue"
-import getLettersChartOptions from "@/assets/lettersOptionsWide"
-import Chart from "./Chart.vue"
+import lettersOptions from "@/assets/lettersOptions"
 
 const props = defineProps(["letter"])
 
-const chartOptions = computed(() => getLettersChartOptions())
+const chartOptions = computed(() => {
+  const baseOptions = lettersOptions()
+  if (selectedLetter.value) {
+    return {
+      ...baseOptions,
+      dataLabels: {
+        enabled: true,
+        formatter: function (val, opts) {
+          const currentLetter = letters.value.categories[opts.dataPointIndex]
+          return currentLetter === selectedLetter.value.letter ? val : ""
+        },
+      },
+    }
+  }
+  return baseOptions
+})
 const dataStore = useDataStore()
 const chartRef = ref(null)
 const selectedLetter = ref(null)
@@ -52,27 +66,24 @@ const letters = computed(() => {
   }
 })
 
-const handleDataPointSelection = (event, chartContext, config) => {
-  const { dataPointIndex } = config
-  selectedLetter.value = {
-    letter: letters.value.categories[dataPointIndex],
-    count: letters.value.series[0].data[dataPointIndex].y,
+const selectDataPoint = (letterIndex) => {
+  if (chartRef.value && chartRef.value.chart) {
+    chartRef.value.chart.toggleDataPointSelection(0, letterIndex)
   }
 }
 
 const showTooltipForLetter = () => {
-  if (chartRef.value && props.letter) {
-    const letterIndex = letters.value.categories.findIndex(
-      (cat) => cat === props.letter
-    )
-    if (letterIndex !== -1 && chartRef.value.dataPointSelection) {
-      chartRef.value.dataPointSelection(0, letterIndex)
-      selectedLetter.value = {
-        letter: props.letter,
-        count: letters.value.series[0].data[letterIndex].y,
-      }
-    }
+  if (!chartRef.value) return
+  const letterIndex = letters.value.categories.findIndex(
+    (cat) => cat === props.letter
+  )
+  if (letterIndex === -1) return
+
+  selectedLetter.value = {
+    letter: letters.value.categories[letterIndex],
+    count: letters.value.series[0].data[letterIndex].y,
   }
+  selectDataPoint(letterIndex)
 }
 
 watch(
@@ -98,7 +109,9 @@ onMounted(async () => {
 .letters-container {
   position: absolute;
   z-index: 4;
-  margin-top: 201px;
-  margin-right: 91px;
+  left: 50%;
+  top: 30%;
+  transform: translate(-50%, -50%);
+  width: auto;
 }
 </style>

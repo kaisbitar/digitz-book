@@ -9,6 +9,7 @@
     @update:modelValue="handleInput"
     @clear="handleClear"
     @focus="onFocus"
+    @click="onFocus"
     @keydown.enter="handleTarteel"
   >
     <AutoMenu

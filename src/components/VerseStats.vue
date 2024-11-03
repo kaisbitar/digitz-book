@@ -10,7 +10,7 @@
 
 <script setup>
 defineProps({
-  numberOfWords: [Number, String],
-  numberOfLetters: [Number, String],
+  numberOfWords: [Number],
+  numberOfLetters: [Number],
 })
 </script>

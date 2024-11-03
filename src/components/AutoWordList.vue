@@ -1,9 +1,10 @@
 <template>
-  <v-list class="flex-grow-1 sura-board-overflow">
+  <v-list class="flex-grow-1 auto-word-list">
     <v-virtual-scroll :items="items" :height="height" :item-height="itemHeight">
       <template v-slot:default="{ item }">
         <v-hover v-slot="{ isHovering, props }">
           <v-list-item
+            max-width="300"
             color="primary"
             v-bind="props"
             :active="isItemChecked(item)"
@@ -20,24 +21,24 @@
             </template>
             <v-list-item-title>
               {{ item.word }}
-              <v-badge
+              <!-- <v-badge
                 :content="`${item.count} مرة`"
                 floating
                 offset-x="-80"
                 offset-y="0"
                 color="default-count"
-              ></v-badge>
-              <v-badge
-                :content="`${item.verses.length} آية`"
-                floating
-                offset-x="-19"
-                offset-y="0"
-                color="verse-count"
-              ></v-badge>
+              ></v-badge> -->
             </v-list-item-title>
 
             <template v-slot:append>
-              <v-spacer></v-spacer>
+              <span class="ml-10">{{ item.verses.length }}</span>
+              <v-badge
+                :content="`آية`"
+                floating
+                offset-x="30"
+                offset-y="6"
+                color="verse-count"
+              ></v-badge>
               <v-btn
                 icon="mdi-close"
                 variant="text"
@@ -51,6 +52,10 @@
       </template>
     </v-virtual-scroll>
   </v-list>
+  <!-- <AppTarteelBtn
+    :checked-items="checkedItems"
+    :is-disabled="items.length === 0"
+  /> -->
 </template>
 
 <script setup>
@@ -71,7 +76,7 @@ const props = defineProps({
   },
   height: {
     type: [Number, String],
-    default: 300,
+    default: 490,
   },
   itemHeight: {
     type: [Number, String],
@@ -106,4 +111,9 @@ const removeItem = (item) => {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.auto-word-list {
+  z-index: 1;
+  opacity: 0.7;
+}
+</style>
