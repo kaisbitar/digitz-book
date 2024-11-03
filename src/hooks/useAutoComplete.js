@@ -42,7 +42,8 @@ export function useAutoComplete(dataStore, tarteelStore) {
     updateFilteredWords()
   }
 
-  const onFocus = () => {
+  const onFocus = async () => {
+    await nextTick()
     menu.value = true
   }
 

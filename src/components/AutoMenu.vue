@@ -11,38 +11,49 @@
       <v-list-item>
         <v-list-item-title>
           <span class="ml-2">ترتيل {{ tarteel }}..</span>
+          <span class="ml-2"> {{ currentWordsList.length }}</span>
           <v-badge
-            :content="`${currentWordsList.length} رتل`"
+            :content="` رتل`"
             floating
             :color="currentWordsList.length > 0 ? 'word-count' : 'red'"
           />
         </v-list-item-title>
       </v-list-item>
       <v-divider></v-divider>
-      <v-expand-transition>
-        <div v-if="showAutoWordsList">
+      <v-sheet class="position-relative w-100">
+        <v-scroll-x-transition mode="out-in">
           <AutoWordList
+            :key="showAutoWordsList"
+            v-if="showAutoWordsList"
+            class="position-absolute w-100"
             :items="currentWordsList"
             :checked-items="localCheckedItems"
             @update:currentWordsList="updateWordsList"
             @update:checked-items="updateLocalCheckedItems"
           />
-          <AppTarteelBtn
-            :checked-items="localCheckedItems"
-            :is-disabled="currentWordsList.length === 0"
-            @submit="onTarteelSubmit"
-          />
-        </div>
-        <v-lazy
-          v-else
-          :options="{
-            threshold: 0.5,
-          }"
-        >
-          <LettersChart :letter="currentLetter" />
-        </v-lazy>
-      </v-expand-transition>
+        </v-scroll-x-transition>
+
+        <v-sheet class="position-relative">
+          <v-lazy
+            :options="{
+              threshold: 0.5,
+            }"
+            :class="showAutoWordsList ? 'opacity-30' : ''"
+          >
+            <LettersChart :letter="currentLetter" />
+          </v-lazy>
+        </v-sheet>
+      </v-sheet>
     </v-list>
+    <v-sheet class="tarteel-btn">
+      <AppTarteelBtn
+        class="tarteel-btn"
+        v-if="showAutoWordsList"
+        :checked-items="localCheckedItems"
+        :is-disabled="currentWordsList.length === 0"
+        @submit="onTarteelSubmit"
+      />
+    </v-sheet>
   </v-menu>
 </template>
 
@@ -97,10 +108,10 @@ const onTarteelSubmit = () => {
 
 const checkTarteelLength = () => {
   if (debounceTimer.value) clearTimeout(debounceTimer.value)
-  debounceTimer.value = setTimeout(() => {
-    showAutoWordsList.value = props.tarteel.length >= 2
-    emit("update:menu", showAutoWordsList.value)
-  }, 1500)
+  // debounceTimer.value = setTimeout(() => {
+  showAutoWordsList.value = props.tarteel.length >= 2
+  emit("update:menu", showAutoWordsList.value)
+  // }, 500)
 }
 
 watch(
@@ -117,3 +128,10 @@ watch(
 
 onMounted(() => {})
 </script>
+
+<style scoped>
+.tarteel-btn {
+  z-index: 2;
+  /* opacity: 0.9; */
+}
+</style>

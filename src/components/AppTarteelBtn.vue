@@ -1,11 +1,5 @@
 <template>
-  <v-btn
-    @click="onSubmit"
-    variant="tonal"
-    block
-    size="large"
-    :disabled="isDisabled"
-  >
+  <v-btn @click="onSubmit" block size="large" :disabled="isDisabled">
     <span v-show="checkedItemsCount === 0"> رتل جميع الكلمات </span>
 
     <span v-show="checkedItemsCount > 0" class="font-weight-bold">

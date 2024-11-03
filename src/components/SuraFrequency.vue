@@ -5,8 +5,8 @@
       <v-scale-transition>
         <VerseNumbers
           :key="displayVerse.verseIndex"
-          :verse-index="displayVerse.verseIndex"
-          :verse-number-to-quran="displayVerse.verseNumberToQuran"
+          :verse-index="parseInt(displayVerse.verseIndex)"
+          :verse-number-to-quran="parseInt(displayVerse.verseNumberToQuran)"
         />
       </v-scale-transition>
 
@@ -14,12 +14,11 @@
         class="text-h6 mt-1 ml-4 mb-2"
         v-html="highlight(displayVerse.verseText, displayVerse.tarteel)"
       ></div>
-
       <v-scale-transition>
         <VerseStats
           :key="`${displayVerse.numberOfLetters}-${displayVerse.numberOfWords}`"
-          :number-of-words="displayVerse.numberOfWords"
-          :number-of-letters="displayVerse.numberOfLetters"
+          :number-of-words="parseInt(displayVerse.numberOfWords)"
+          :number-of-letters="parseInt(displayVerse.numberOfLetters)"
         />
       </v-scale-transition>
     </v-card-text>

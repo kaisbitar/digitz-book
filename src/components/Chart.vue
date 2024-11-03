@@ -5,7 +5,6 @@
     :options="mergedOptions"
     :height="height"
     :class="$vuetify.display.xs ? '' : 'px-9'"
-    @dataPointSelection="dataPointSelection"
     @mouseMove="handleMouseMove"
   />
 </template>
@@ -26,12 +25,12 @@ const props = defineProps({
 const emit = defineEmits(["mouseMove", "dataPointSelection"])
 const chartRef = ref(null)
 
-const dataPointSelection = computed(() => {
-  if (!chartRef.value)
-    return (seriesIndex, dataPointIndex) => {
-      chartRef.value.chart.toggleDataPointSelection(seriesIndex, dataPointIndex)
-    }
-})
+// const dataPointSelection = computed(() => {
+//   if (!chartRef.value)
+//     return (seriesIndex, dataPointIndex) => {
+//       chartRef.value.chart.toggleDataPointSelection(seriesIndex, dataPointIndex)
+//     }
+// })
 
 const handleMouseMove = (event, chartContext, config) => {
   emit("mouseMove", config.dataPointIndex)
@@ -43,7 +42,7 @@ const mergedOptions = computed(() => {
   }
 })
 
-defineExpose({ dataPointSelection })
+// defineExpose({ dataPointSelection })
 </script>
 
 <style>
