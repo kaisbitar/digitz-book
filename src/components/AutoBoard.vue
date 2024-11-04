@@ -6,23 +6,28 @@
     :type="'word-count'"
     :hasError="inputHasError"
     :hasSuccess="inputHasSuccess"
-    @update:modelValue="handleInput"
+    :loading="isLoading"
+    @update:modelValue="handleInput($event)"
     @clear="handleClear"
     @focus="onFocus"
     @click="onFocus"
-    @keydown.enter="handleTarteel"
+    @keydown:enter="handleTarteel"
+    @keydown:backspace="() => (isBackspacing = true)"
   >
     <AutoMenu
+      class="mt-4"
       :menu="menu"
       :tarteel="tarteel"
       :currentWordsList="currentWordsList"
       :totalWordsCount="totalWordsCount"
       :currentLetter="currentLetter"
       :checkedItems="checkedItems"
+      :isLoading="isLoading"
       @update:menu="menu = $event"
-      @update:items="updateWordsList"
+      @update:items="updateFilteredList"
       @update:checkedItems="updateCheckedItems"
       @submitTarteel="handleTarteel"
+      @update:isLoading="isLoading = $event"
     />
     <template v-slot:append-input-items>
       <v-btn
@@ -54,48 +59,52 @@ const {
   currentWordsList,
   totalWordsCount,
   checkedItems,
-  onInput,
-  onFocus,
+  handleInputChange,
+  toggleMenu,
   clearInput,
-  updateWordsList,
+  updateFilteredList,
   storeTarteels,
   updateCheckedItems,
 } = useAutoComplete(dataStore, tarteelStore)
 
 const inputHasError = ref(false)
 const inputHasSuccess = ref(false)
+const isLoading = ref(false)
+
 const emit = defineEmits(["update:isInputVisible"])
 
-const handleTarteel = () => {
-  emit("update:isInputVisible", false)
-  if (tarteel.value === "" || currentWordsList.value.length === 0) return
-  if (checkedItems.value.length > 0) {
-    storeTarteels(checkedItems.value)
-  } else {
-    storeTarteels(currentWordsList.value)
-  }
-  updateCheckedItems([])
-  updateWordsList([])
-  tarteel.value = ""
-  menu.value = false
-  router.push({ name: "tarteel" })
-}
+const isBackspacing = ref(false)
 
 const handleInput = (value) => {
-  onInput(value)
-  menu.value = true
-  if (currentWordsList.value.length > 0) {
-    inputHasSuccess.value = true
-    inputHasError.value = false
-    return
-  }
-  inputHasSuccess.value = false
-  inputHasError.value = true
+  const hasResults = handleInputChange(value, isBackspacing.value)
+
+  inputHasSuccess.value = hasResults
+  inputHasError.value = !hasResults && !isBackspacing.value
+  isBackspacing.value = false
+}
+
+const handleTarteel = () => {
+  if (tarteel.value === "" || currentWordsList.value.length === 0) return
+
+  storeTarteels(
+    checkedItems.value.length > 0 ? checkedItems.value : currentWordsList.value
+  )
+
+  updateCheckedItems([])
+  updateFilteredList([])
+  clearInput()
+  toggleMenu(false)
+
+  emit("update:isInputVisible", false)
+  router.push({ name: "tarteel" })
 }
 
 const handleClear = () => {
   clearInput()
-  menu.value = true
+}
+
+const onFocus = () => {
+  toggleMenu(true)
 }
 </script>
 

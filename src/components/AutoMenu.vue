@@ -7,58 +7,48 @@
     activator="parent"
     @update:modelValue="$emit('update:menu', $event)"
   >
-    <v-list class="mt-1">
-      <v-list-item>
-        <v-list-item-title>
-          <span class="ml-2">ترتيل {{ tarteel }}..</span>
-          <span class="ml-2"> {{ currentWordsList.length }}</span>
-          <v-badge
-            :content="` رتل`"
-            floating
-            :color="currentWordsList.length > 0 ? 'word-count' : 'red'"
-          />
-        </v-list-item-title>
-      </v-list-item>
-      <v-divider></v-divider>
-      <v-sheet class="position-relative w-100">
-        <v-scroll-x-transition mode="out-in">
-          <AutoWordList
-            :key="showAutoWordsList"
-            v-if="showAutoWordsList"
-            class="position-absolute w-100"
-            :items="currentWordsList"
-            :checked-items="localCheckedItems"
-            @update:currentWordsList="updateWordsList"
-            @update:checked-items="updateLocalCheckedItems"
-          />
-        </v-scroll-x-transition>
-
-        <v-sheet class="position-relative">
-          <v-lazy
-            :options="{
-              threshold: 0.5,
-            }"
-            :class="showAutoWordsList ? 'opacity-30' : ''"
-          >
-            <LettersChart :letter="currentLetter" />
-          </v-lazy>
-        </v-sheet>
-      </v-sheet>
-    </v-list>
-    <v-sheet class="tarteel-btn">
-      <AppTarteelBtn
-        class="tarteel-btn"
+    <v-sheet>
+      <AutoWordList
+        :key="currentWordsList"
         v-if="showAutoWordsList"
-        :checked-items="localCheckedItems"
-        :is-disabled="currentWordsList.length === 0"
-        @submit="onTarteelSubmit"
+        class="position-absolute w-100"
+        :items="currentWordsList"
+        :checked-items="checkedItems"
+        :height="500"
+        @update:currentWordsList="emit('update:items', $event)"
+        @update:checked-items="emit('update:checkedItems', $event)"
+        @submitTarteel="onTarteelSubmit"
       />
+      <AutoVerseList
+        :key="currentWordsList"
+        v-if="showAutoVerseList"
+        class="position-absolute w-100"
+        :items="currentWordsList"
+        :checked-items="checkedItems"
+        @update:currentWordsList="emit('update:items', $event)"
+        @update:checked-items="emit('update:checkedItems', $event)"
+        @submitTarteel="onTarteelSubmit"
+      />
+
+      <v-lazy
+        :options="{
+          threshold: 0.5,
+        }"
+      >
+        <LettersChart
+          class="opacity-transition"
+          :class="{
+            'opacity-10': showAutoWordsList || showAutoVerseList,
+          }"
+          :letter="currentLetter"
+        />
+      </v-lazy>
     </v-sheet>
   </v-menu>
 </template>
 
 <script setup>
-import { ref, watch } from "vue"
+import { ref, watch, computed } from "vue"
 
 const props = defineProps({
   menu: Boolean,
@@ -73,65 +63,55 @@ const emit = defineEmits([
   "update:menu",
   "update:items",
   "update:checkedItems",
+  "update:isLoading",
   "submitTarteel",
   "remove-item",
 ])
 
 const showAutoWordsList = ref(false)
-const localCheckedItems = ref(props.checkedItems || [])
+const showAutoVerseList = ref(false)
 const debounceTimer = ref(null)
-
-watch(
-  () => props.checkedItems,
-  (newCheckedItems) => {
-    localCheckedItems.value = newCheckedItems
-  }
-)
-
-const updateWordsList = (newItems) => {
-  emit("update:items", newItems)
-}
-
-const updateLocalCheckedItems = (newItems) => {
-  localCheckedItems.value = newItems
-  emit("update:checkedItems", newItems)
-}
 
 const onTarteelSubmit = () => {
   emit(
     "submitTarteel",
-    localCheckedItems.value.length > 0
-      ? localCheckedItems.value
+    props.checkedItems.length > 0
+      ? props.checkedItems.value
       : props.currentWordsList
   )
 }
 
-const checkTarteelLength = () => {
+const checkTarteelLength = (newValue) => {
   if (debounceTimer.value) clearTimeout(debounceTimer.value)
-  // debounceTimer.value = setTimeout(() => {
-  showAutoWordsList.value = props.tarteel.length >= 2
-  emit("update:menu", showAutoWordsList.value)
-  // }, 500)
+  emit("update:isLoading", true)
+
+  debounceTimer.value = setTimeout(() => {
+    const updateState = (showWords = false, showVerses = false) => {
+      showAutoWordsList.value = showWords
+      showAutoVerseList.value = showVerses
+      emit("update:menu", true)
+      emit("update:isLoading", false)
+    }
+
+    if (newValue.length <= 1) return updateState()
+    if (newValue.includes(" ")) return updateState(false, true)
+    return updateState(true, false)
+  }, 300)
 }
 
 watch(
   () => props.tarteel,
   (newValue) => {
-    if (newValue.length < 2) {
-      showAutoWordsList.value = false
-      if (debounceTimer.value) clearTimeout(debounceTimer.value)
-    } else {
-      checkTarteelLength()
-    }
-  }
+    checkTarteelLength(newValue)
+  },
+  { immediate: true }
 )
 
 onMounted(() => {})
 </script>
 
 <style scoped>
-.tarteel-btn {
-  z-index: 2;
-  /* opacity: 0.9; */
+.opacity-transition {
+  transition: opacity 0.3s ease;
 }
 </style>

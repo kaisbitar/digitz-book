@@ -1,11 +1,9 @@
 <template>
-  <v-list class="flex-grow-1 auto-word-list">
-    <v-virtual-scroll :items="items" :height="height" :item-height="itemHeight">
+  <v-list class="auto-word-list opacity-70">
+    <v-virtual-scroll :items="items" :item-height="48">
       <template v-slot:default="{ item }">
         <v-hover v-slot="{ isHovering, props }">
           <v-list-item
-            max-width="300"
-            color="primary"
             v-bind="props"
             :active="isItemChecked(item)"
             @click="toggleItemCheck(item)"
@@ -18,20 +16,9 @@
                 hide-details
                 @click.stop
               ></v-checkbox>
-            </template>
-            <v-list-item-title>
-              {{ item.word }}
-              <!-- <v-badge
-                :content="`${item.count} مرة`"
-                floating
-                offset-x="-80"
-                offset-y="0"
-                color="default-count"
-              ></v-badge> -->
-            </v-list-item-title>
-
-            <template v-slot:append>
-              <span class="ml-10">{{ item.verses.length }}</span>
+              <span class="ml-15" :style="{ width: '5px' }">{{
+                item.verses.length
+              }}</span>
               <v-badge
                 :content="`آية`"
                 floating
@@ -39,6 +26,12 @@
                 offset-y="6"
                 color="verse-count"
               ></v-badge>
+            </template>
+            <v-list-item-title>
+              {{ item.word }}
+            </v-list-item-title>
+
+            <template v-slot:append>
               <v-btn
                 icon="mdi-close"
                 variant="text"
@@ -51,11 +44,15 @@
         </v-hover>
       </template>
     </v-virtual-scroll>
+
+    <div class="list-append">
+      <AppTarteelBtn
+        :checked-items="checkedItems"
+        :is-disabled="items.length === 0"
+        @submit="emit('submitTarteel')"
+      />
+    </div>
   </v-list>
-  <!-- <AppTarteelBtn
-    :checked-items="checkedItems"
-    :is-disabled="items.length === 0"
-  /> -->
 </template>
 
 <script setup>
@@ -70,21 +67,17 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
-  currentWordsList: {
-    type: Array,
-    default: () => [],
-  },
   height: {
     type: [Number, String],
     default: 490,
   },
-  itemHeight: {
-    type: [Number, String],
-    default: 50,
-  },
 })
 
-const emit = defineEmits(["update:checkedItems", "update:currentWordsList"])
+const emit = defineEmits([
+  "update:checkedItems",
+  "update:currentWordsList",
+  "submitTarteel",
+])
 
 const isItemChecked = (item) =>
   props.checkedItems.some((checkedItem) => checkedItem.word === item.word)
@@ -114,6 +107,19 @@ const removeItem = (item) => {
 <style scoped>
 .auto-word-list {
   z-index: 1;
-  opacity: 0.7;
+  padding-top: 0 !important;
+  /* width: 300px; */
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+:deep(.v-virtual-scroll) {
+  flex: 1;
+  height: auto !important;
+}
+
+.list-append {
+  padding: 0px 16px;
 }
 </style>
