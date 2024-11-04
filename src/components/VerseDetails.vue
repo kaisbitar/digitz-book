@@ -1,23 +1,32 @@
 <template>
   <v-toolbar rounded elevation="2">
-    <v-toolbar-title class="text-center font-weight-bold">
-      <span v-html="highlight(inputText, props.inputText)"></span>
-      <span v-if="inputText" class="ml-1"> - </span>
-      <span class="ml-1">سورة {{ targetVerse.suraName }} </span> -
-      <span class="mr-1"> آية {{ targetVerse.verseIndex }}</span>
-    </v-toolbar-title>
-
-    <template v-for="button in navigationButtons" :key="button.action">
+    <v-toolbar-title class="text-center">
+      <span class="ml-1 font-weight-bold d-none"> >سورة </span>
       <v-btn
         icon
-        @click="button.action"
+        @click="goPreviousVerse"
         size="small"
         variant="tonal"
-        class="mr-2"
+        class="mx-2"
       >
-        <v-icon>{{ button.icon }}</v-icon>
+        <v-icon>mdi-chevron-up</v-icon>
       </v-btn>
-    </template>
+      <span>{{ targetVerse.suraName }} - آية {{ targetVerse.verseIndex }}</span>
+      <v-btn
+        icon
+        @click="goNextVerse"
+        size="small"
+        variant="tonal"
+        class="mx-2"
+      >
+        <v-icon>mdi-chevron-down</v-icon>
+      </v-btn>
+    </v-toolbar-title>
+    <span v-html="highlight(inputText, props.inputText)"></span>
+
+    <v-btn icon @click="goBack" size="small" variant="tonal" class="mr-2">
+      <v-icon>mdi-arrow-left</v-icon>
+    </v-btn>
   </v-toolbar>
 
   <v-container class="verse-details-container">

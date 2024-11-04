@@ -33,7 +33,7 @@ const emit = defineEmits<{
 const props = defineProps<{
   data: any
   tableInputText?: string
-  activeItemKey: string
+  activeItemKey?: string
 }>()
 
 const isTargetedRow = (item: any) => {

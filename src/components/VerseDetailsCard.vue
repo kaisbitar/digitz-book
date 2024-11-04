@@ -11,7 +11,7 @@
     @update:loading="$emit('update:loading', $event)"
   />
   <VerseStats
-    class="mt-1"
+    class="mt-2"
     :number-of-words="String(countVerseWords(verse.verseText))"
     :number-of-letters="String(countVerseLetters(verse.verseText))"
   />

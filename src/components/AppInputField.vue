@@ -14,6 +14,7 @@
       @click:clear="handleClear"
       @update:model-value="handleInput"
       @keydown.enter.prevent="$emit('keydown:enter', modelValue)"
+      @keydown.backspace="$emit('keydown:backspace')"
       @focus="$emit('focus')"
     >
       <template v-slot:append-inner>
@@ -61,6 +62,7 @@ const emit = defineEmits([
   "clear",
   "focus",
   "keydown:enter",
+  "keydown:backspace",
 ])
 
 const theme = useTheme()

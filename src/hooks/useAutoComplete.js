@@ -5,57 +5,82 @@ export function useAutoComplete(dataStore, tarteelStore) {
   const tarteel = ref("")
   const menu = ref(false)
   const currentLetter = ref("")
-  const filteredWordsList = ref([])
+  const filteredList = ref([])
   const checkedItems = ref([])
 
-  const currentWordsList = computed(() => filteredWordsList.value)
+  const currentWordsList = computed(() => filteredList.value)
   const totalWordsCount = computed(() => currentWordsList.value.length)
 
-  const updateFilteredWords = () => {
-    if (!tarteel.value) {
-      filteredWordsList.value = []
-      return
-    }
-
-    if (tarteel.value.length === 0) {
-      filteredWordsList.value = []
-      return
-    }
-
-    const filteredResults = filterWords(
-      tarteel.value,
-      dataStore.getOneQuranFile
-    )
-    filteredWordsList.value = filteredResults.results.map((item) => ({
+  const updateFilteredWords = (word) => {
+    const filteredResults = filterWords(word, dataStore.getOneQuranFile)
+    filteredList.value = filteredResults.results.map((item) => ({
       word: item.word,
       count: item.count,
       verses: item.verses,
     }))
   }
 
-  const onInput = (value) => {
-    if (!value) return
-
-    tarteel.value = value
-    menu.value = true
-    currentLetter.value = value[value.length - 1]
-    updateFilteredWords()
+  const updateFilteredVerses = (sentence) => {
+    filteredList.value = []
+    const filteredResults = dataStore.getOneQuranFile.filter((verse) => {
+      if (verse.verseText.includes(sentence)) {
+        return {
+          ...verse,
+        }
+      }
+    })
+    if (filteredResults.length === 0) {
+      filteredList.value = []
+      return
+    }
+    filteredList.value = [
+      {
+        word: sentence,
+        count: filteredResults.length,
+        verses: filteredResults,
+      },
+    ]
   }
 
-  const onFocus = async () => {
-    await nextTick()
-    menu.value = true
+  const toggleMenu = (isOpen = true) => {
+    menu.value = isOpen
+  }
+
+  const handleInputChange = (value, isBackspacing = false) => {
+    if (!value) {
+      clearInput()
+      return
+    }
+
+    if (isBackspacing && value.length === 1) {
+      tarteel.value = tarteel.value.slice(0, -1)
+      currentLetter.value = value[value.length - 1]
+
+      return
+    }
+
+    tarteel.value = value
+    currentLetter.value = value[value.length - 1]
+    toggleMenu()
+
+    if (!value.includes(" ") && value.length > 1) {
+      updateFilteredWords(value)
+    } else {
+      updateFilteredVerses(value)
+    }
+
+    return filteredList.value.length > 0
   }
 
   const clearInput = () => {
     tarteel.value = ""
     currentLetter.value = ""
-    menu.value = true
-    filteredWordsList.value = []
+    filteredList.value = []
+    toggleMenu()
   }
 
-  const updateWordsList = (newItems) => {
-    filteredWordsList.value = newItems
+  const updateFilteredList = (newItems) => {
+    filteredList.value = newItems
   }
 
   const storeTarteels = (items) => {
@@ -79,10 +104,10 @@ export function useAutoComplete(dataStore, tarteelStore) {
     currentWordsList,
     totalWordsCount,
     checkedItems,
-    onInput,
-    onFocus,
+    handleInputChange,
+    toggleMenu,
     clearInput,
-    updateWordsList,
+    updateFilteredList,
     storeTarteels,
     updateCheckedItems,
   }

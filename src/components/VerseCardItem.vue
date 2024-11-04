@@ -1,7 +1,7 @@
 <template>
   <v-card
     hover
-    class="px-4 pt-4 pb-4 mt-2 mb-2 verse-card-item"
+    class="mx-sm-4 mx-0 px-4 pt-4 pb-4 mt-2 mb-2 verse-card-item"
     @click="handleClick"
     variant="outlined"
   >
@@ -63,6 +63,10 @@ const countData = computed(() => ({
   مصحف: {
     value: parseInt(props.item.verseNumberToQuran),
     color: "verse-number-to-quran",
+  },
+  عدة: {
+    value: props.item.verseText.split(" ").length,
+    color: "word-count",
   },
 }))
 </script>

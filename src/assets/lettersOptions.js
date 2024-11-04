@@ -4,7 +4,7 @@ export const lettersOptions = () => {
       type: "bar",
       offsetY: -10,
       toolbar: {
-        show: true,
+        show: false,
         offsetY: 20,
       },
     },

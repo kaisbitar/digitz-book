@@ -1,6 +1,6 @@
 <template>
   <v-card variant="text">
-    <v-card-text class="text-center letters-container" v-if="selectedLetter">
+    <v-card-text v-if="selectedLetter" class="text-center letters-container">
       <span class="text-h2 font-weight-bold ml-4">{{
         selectedLetter.letter
       }}</span>
