@@ -5,22 +5,18 @@
       class="ml-2"
       v-if="!(isMobile && isInputVisible)"
     />
-
-    <div class="w-100 d-flex">
-      <v-app-bar-title v-if="!isInputVisible" class="pt-1">
-        الكتاب المرقوم
-      </v-app-bar-title>
+    <v-app-bar-title class="mr-0" style="max-width: 140px" v-if="!isMobile">
+      الكتاب المرقوم
+    </v-app-bar-title>
+    <v-container v-if="isInputVisible" class="pt-6" max-width="1197">
       <AutoBoard
+        class="search-input"
         v-if="isInputVisible"
-        class="flex-grow-1 mt-1"
-        :class="{ 'px-1': isMobile }"
-        :style="{ maxWidth: '850px' }"
         @update:isInputVisible="isInputVisible = $event"
       />
-    </div>
-    <v-spacer v-if="!isMobile"></v-spacer>
+    </v-container>
     <AppToggleBtn
-      v-if="!(isMobile && isInputVisible)"
+      v-if="!isInputVisible"
       :isActive="isInputVisible"
       btnText="ترتيل القرآن"
       inActiveIcon="mdi-magnify"
@@ -28,6 +24,7 @@
       size="default"
       @toggle="isInputVisible = !isInputVisible"
     />
+    <v-spacer v-if="!isMobile"></v-spacer>
     <AppToggleBtn
       v-if="!(isMobile && isInputVisible)"
       class="mx-2 mx-sm-4 tarteel-btn"
@@ -71,7 +68,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue"
+import { ref, computed, onMounted } from "vue"
 import { useRouter } from "vue-router"
 import { useDisplay } from "vuetify"
 import { useTarteelStore } from "@/stores/tarteelStore"
@@ -180,14 +177,15 @@ const navigationItems = [
     label: "تفسيري",
   },
 ]
+onMounted(() => {
+  // if (!isMobile.value) {
+  //   isInputVisible.value = true
+  // }
+})
 </script>
 
 <style>
 .tarteel-btn .v-badge__badge {
   z-index: 2;
-}
-label.v-label.v-field-label {
-  /* font-size: 15px; */
-  /* margin-top: -5px !important; */
 }
 </style>

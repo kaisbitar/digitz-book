@@ -35,6 +35,7 @@
         <VerseDetailsCard
           :verse="targetVerse"
           :inputText="inputText"
+          :currentWord="currentWord"
           @update:currentMeaning="currentMeaning = $event"
           @update:currentWord="currentWord = $event"
           @update:loading="isLoading = $event"

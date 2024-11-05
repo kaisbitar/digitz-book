@@ -10,7 +10,6 @@
     @update:modelValue="handleInput($event)"
     @clear="handleClear"
     @focus="onFocus"
-    @click="onFocus"
     @keydown:enter="handleTarteel"
     @keydown:backspace="() => (isBackspacing = true)"
   >
@@ -24,10 +23,10 @@
       :checkedItems="checkedItems"
       :isLoading="isLoading"
       @update:menu="menu = $event"
+      @update:isLoading="isLoading = $event"
       @update:items="updateFilteredList"
       @update:checkedItems="updateCheckedItems"
       @submitTarteel="handleTarteel"
-      @update:isLoading="isLoading = $event"
     />
     <template v-slot:append-input-items>
       <v-btn
@@ -81,6 +80,7 @@ const handleInput = (value) => {
   inputHasSuccess.value = hasResults
   inputHasError.value = !hasResults && !isBackspacing.value
   isBackspacing.value = false
+  toggleMenu(true)
 }
 
 const handleTarteel = () => {
@@ -93,10 +93,8 @@ const handleTarteel = () => {
   updateCheckedItems([])
   updateFilteredList([])
   clearInput()
-  toggleMenu(false)
-
-  emit("update:isInputVisible", false)
   router.push({ name: "tarteel" })
+  toggleMenu(false)
 }
 
 const handleClear = () => {

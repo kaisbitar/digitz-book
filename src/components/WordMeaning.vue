@@ -1,62 +1,58 @@
 <template>
-  <div>
-    <v-fade-transition v-if="loading" mode="out-in">
-      فَإِنَّ مَعَ الْعُسْرِ يُسْرًا, إِنَّ مَعَ الْعُسْرِ يُسْرًا
-    </v-fade-transition>
-    <v-slide-y-transition mode="out-in">
-      <v-card
-        v-if="!loading"
-        :key="results[0]?.meaning[0]?.word"
-        :class="expanded ? 'tarteel-meaning-overflow' : 'fixed-height'"
-        hover
-        @click="expanded = !expanded"
-      >
-        <!-- Collapsed View -->
+  <v-slide-y-transition mode="out-in">
+    <v-card
+      :key="results[0]?.meaning[0]?.word"
+      :class="expanded ? 'tarteel-meaning-overflow' : 'fixed-height'"
+      hover
+      @click="expanded = !expanded"
+    >
+      <v-fade-transition v-if="loading" mode="out-in">
+        فَإِنَّ مَعَ الْعُسْرِ يُسْرًا, إِنَّ مَعَ الْعُسْرِ يُسْرًا
+      </v-fade-transition>
 
-        <v-card-item v-if="!expanded">
-          <template v-slot:prepend>
-            <v-icon icon="mdi-translate" class="mx-2" />
-          </template>
+      <v-card-item v-if="!expanded && !loading">
+        <template v-slot:prepend>
+          <v-icon icon="mdi-translate" class="mx-2" />
+        </template>
 
-          <v-card-title class="ml-2 count-key-item">
-            {{ results[0]?.meaning[0]?.word }}
-          </v-card-title>
-          <v-card-text class="text-truncate mb-n5">
-            {{ results[0]?.meaning[0]?.meaning }}
-          </v-card-text>
-          <span class="text-caption count-key-item">
-            {{ results[0]?.meaning[0]?.dictionary }}
-          </span>
-        </v-card-item>
+        <v-card-title class="ml-2 count-key-item">
+          {{ results[0]?.meaning[0]?.word }}
+        </v-card-title>
+        <v-card-text class="text-truncate mb-n5">
+          {{ results[0]?.meaning[0]?.meaning }}
+        </v-card-text>
+        <span class="text-caption count-key-item">
+          {{ results[0]?.meaning[0]?.dictionary }}
+        </span>
+      </v-card-item>
 
-        <!-- Expanded View -->
-        <v-scroll-y-transition>
-          <div v-if="expanded" :key="results[0]?.meaning">
-            <v-card-item
-              v-for="(item, index) in results[0]?.meaning"
-              :key="item.word + index"
-            >
-              <v-card-title class="ml-2 count-key-item">
-                {{ item.word }}
-              </v-card-title>
+      <!-- Expanded View -->
+      <v-scroll-y-transition>
+        <div v-if="expanded" :key="results[0]?.meaning">
+          <v-card-item
+            v-for="(item, index) in results[0]?.meaning"
+            :key="item.word + index"
+          >
+            <v-card-title class="ml-2 count-key-item">
+              {{ item.word }}
+            </v-card-title>
 
-              <v-card-text class="mb-n5">{{ item.meaning }}</v-card-text>
-              <span class="text-caption count-key-item">{{
-                item.dictionary
-              }}</span>
+            <v-card-text class="mb-n5">{{ item.meaning }}</v-card-text>
+            <span class="text-caption count-key-item">{{
+              item.dictionary
+            }}</span>
 
-              <v-divider
-                v-if="index < results[0]?.meaning.length - 1"
-                horizontal
-                length="50%"
-                class="mt-7"
-              />
-            </v-card-item>
-          </div>
-        </v-scroll-y-transition>
-      </v-card>
-    </v-slide-y-transition>
-  </div>
+            <v-divider
+              v-if="index < results[0]?.meaning.length - 1"
+              horizontal
+              length="50%"
+              class="mt-7"
+            />
+          </v-card-item>
+        </div>
+      </v-scroll-y-transition>
+    </v-card>
+  </v-slide-y-transition>
 </template>
 
 <script setup>
