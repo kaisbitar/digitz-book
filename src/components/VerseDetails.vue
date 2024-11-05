@@ -1,7 +1,7 @@
 <template>
   <v-toolbar rounded elevation="2">
     <v-toolbar-title class="text-center">
-      <span class="ml-1 font-weight-bold d-none"> >سورة </span>
+      <!-- <span class="ml-1 font-weight-bold d-none"> سورة </span> -->
       <v-btn
         icon
         @click="goPreviousVerse"
@@ -11,7 +11,7 @@
       >
         <v-icon>mdi-chevron-up</v-icon>
       </v-btn>
-      <span>{{ targetVerse.suraName }} - آية {{ targetVerse.verseIndex }}</span>
+      {{ targetVerse.suraName }} - آية {{ targetVerse.verseIndex }}
       <v-btn
         icon
         @click="goNextVerse"
@@ -41,16 +41,13 @@
         />
       </v-col>
     </v-row>
-
     <v-row>
       <v-col cols="12" md="6">
-        <WordMeaningCard
-          :variant="'outlined'"
-          :meanings="currentMeaning"
+        <WordMeaning
           :word="currentWord"
-          :expanded="true"
-          :cardClass="'word-meaning-verse-details'"
-          :loading="isLoading"
+          :expanded="wordExpanded"
+          :class="wordExpanded ? 'word-meaning-verse-details' : 'fixed-height'"
+          @click="wordExpanded = !wordExpanded"
         />
       </v-col>
 
@@ -66,7 +63,6 @@
 </template>
 
 <script setup>
-import { setVerseChartTooltips } from "@/utils/verseUtils"
 import getChartOptions from "@/assets/frequecyOptions"
 import { useInputFiltering } from "@/mixins/inputFiltering"
 import { useStore } from "@/stores/appStore"
@@ -84,6 +80,8 @@ const props = defineProps({
 const currentWord = ref("")
 const currentMeaning = ref([])
 const isLoading = ref(false)
+const wordExpanded = ref(false)
+
 const targetVerse = computed(() => store.target)
 
 const chartOptions = computed(() => getChartOptions(wordsSeries.value.length))
@@ -117,23 +115,9 @@ const goBack = () => {
   emit("go-back")
 }
 
-const navigationButtons = computed(() => [
-  {
-    icon: "mdi-plus",
-    action: goNextVerse,
-    title: "Next Verse",
-  },
-  {
-    icon: "mdi-minus",
-    action: goPreviousVerse,
-    title: "Previous Verse",
-  },
-  {
-    icon: "mdi-arrow-left",
-    action: goBack,
-    title: "Go Back",
-  },
-])
+onMounted(() => {
+  currentWord.value = targetVerse.value.verseText.split(" ")[0]
+})
 </script>
 
 <style lang="scss">

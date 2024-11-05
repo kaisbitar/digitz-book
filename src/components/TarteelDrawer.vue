@@ -19,9 +19,9 @@
           @deleteItem="deleteTarteel"
         />
       </v-card>
-
       <div class="ratls-container tarteelDrawerRef">
         <TarteelList
+          v-if="selectedRatls?.length > 1"
           :items="selectedRatls"
           :selectedItem="selectedRatlIndex"
           @selecteItem="handleSelectedRatl"

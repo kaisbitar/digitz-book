@@ -3,7 +3,7 @@
     v-for="(word, index) in verseWords"
     :key="index"
     class="word ml-0 mr-1"
-    @click="handleWordClick(index)"
+    @click="handleWordClick(index, word)"
   >
     <span v-html="highlight(word, inputText)"></span>
   </div>
@@ -45,40 +45,41 @@ const storedMeaning = computed(() => ({
   has: (word) => !!store.getWordMeaning(word),
 }))
 
-const handleWordClick = async (index) => {
-  await fetchWordData(verseWords.value[index])
-}
-
-const fetchWordData = async (word) => {
-  try {
-    emit("update:loading", true)
-
-    if (storedMeaning.value.has(word)) {
-      emitWordData(word, storedMeaning.value.get(word))
-      return
-    }
-
-    const wordRoot = await fetchWordRootData(word)
-    const extractedMeaning = await fetchWordMeaningData(word, wordRoot)
-
-    store.setWordMeaning(word, extractedMeaning)
-    emitWordData(word, extractedMeaning)
-  } finally {
-    emit("update:loading", false)
-  }
-}
-
-const emitWordData = (word, meaning) => {
-  emit("update:currentMeaning", meaning)
+const handleWordClick = async (index, word) => {
+  // await fetchWordData(verseWords.value[index])
   emit("update:currentWord", word)
 }
-watch(verseWords, () => {
-  fetchWordData(verseWords.value[0])
-})
 
-onMounted(() => {
-  fetchWordData(verseWords.value[0])
-})
+// const fetchWordData = async (word) => {
+//   try {
+//     emit("update:loading", true)
+
+//     if (storedMeaning.value.has(word)) {
+//       emitWordData(word, storedMeaning.value.get(word))
+//       return
+//     }
+
+//     const wordRoot = await fetchWordRootData(word)
+//     const extractedMeaning = await fetchWordMeaningData(word, wordRoot)
+
+//     store.setWordMeaning(word, extractedMeaning)
+//     emitWordData(word, extractedMeaning)
+//   } finally {
+//     emit("update:loading", false)
+//   }
+// }
+
+const emitWordData = (word, meaning) => {
+  // emit("update:currentMeaning", meaning)
+  emit("update:currentWord", word)
+}
+// watch(verseWords, () => {
+//   fetchWordData(verseWords.value[0])
+// })
+
+// onMounted(() => {
+//   fetchWordData(verseWords.value[0])
+// })
 </script>
 
 <style lang="scss">

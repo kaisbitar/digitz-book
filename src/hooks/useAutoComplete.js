@@ -29,10 +29,12 @@ export function useAutoComplete(dataStore, tarteelStore) {
         }
       }
     })
+
     if (filteredResults.length === 0) {
       filteredList.value = []
       return
     }
+
     filteredList.value = [
       {
         word: sentence,

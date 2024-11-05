@@ -12,8 +12,8 @@
   />
   <VerseStats
     class="mt-2"
-    :number-of-words="String(countVerseWords(verse.verseText))"
-    :number-of-letters="String(countVerseLetters(verse.verseText))"
+    :number-of-words="parseInt(countVerseWords(verse.verseText))"
+    :number-of-letters="parseInt(countVerseLetters(verse.verseText))"
   />
 </template>
 

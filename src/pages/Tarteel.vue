@@ -12,7 +12,7 @@
 
     <v-divider class="mx-auto" width="50%"></v-divider>
 
-    <TarteelWordMeaning
+    <WordMeaning
       :class="expanded ? 'tarteel-meaning-overflow' : 'fixed-height'"
       :word="ratl.word"
       @click="expanded = !expanded"
