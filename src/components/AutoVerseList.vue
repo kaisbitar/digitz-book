@@ -4,6 +4,7 @@
       :data="paginatedItems"
       :tableInputText="items[0]?.word"
       @scroll="handleInfiniteScroll"
+      @rowClicked="handleVerseClick"
     />
     <div class="list-append">
       <AppTarteelBtn
@@ -50,6 +51,11 @@ const { paginatedItems, handleInfiniteScroll, isLoading } = usePagination(
   computed(() => props.items[0]?.verses || []),
   targetedVerseIndex
 )
+
+const handleVerseClick = (verse) => {
+  store.setTarget(verse)
+  emit("submitTarteel")
+}
 </script>
 
 <style scoped>

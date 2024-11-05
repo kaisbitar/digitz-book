@@ -92,7 +92,7 @@ html {
 }
 
 .v-card-text.verse-card-item-text {
-  font-size: 19px;
+  font-size: 16px;
   max-width: 1083px;
 }
 
@@ -143,7 +143,8 @@ html {
 .text-sm-h3,
 .text-h4,
 .font-weight-bold,
-.v-card-text .highlight-match {
+.v-card-text,
+.highlight-match {
   letter-spacing: 0 !important;
 }
 </style>
