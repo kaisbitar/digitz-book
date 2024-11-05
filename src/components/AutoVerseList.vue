@@ -1,5 +1,5 @@
 <template>
-  <v-list class="auto-verse-list opacity-70">
+  <v-list class="auto-verse-list opacity-80">
     <TableMobile
       :data="paginatedItems"
       :tableInputText="items[0]?.word"

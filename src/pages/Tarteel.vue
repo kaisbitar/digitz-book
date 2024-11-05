@@ -110,7 +110,7 @@ onMounted(async () => {
 
 <style scoped>
 .tarteel-board-overflow {
-  height: calc(100vh - 205px);
+  height: calc(100vh - 230px);
   overflow: auto;
 }
 .fixed-height {

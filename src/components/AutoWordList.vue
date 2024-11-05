@@ -1,5 +1,5 @@
 <template>
-  <v-list class="auto-word-list opacity-70">
+  <v-list class="auto-word-list opacity-80">
     <v-virtual-scroll :items="items" :item-height="48">
       <template v-slot:default="{ item }">
         <v-hover v-slot="{ isHovering, props }">

@@ -6,6 +6,7 @@
   <VerseDetailsWords
     :verse="verse.verseText"
     :inputText="inputText"
+    :currentWord="currentWord"
     @update:currentWord="$emit('update:currentWord', $event)"
     @update:currentMeaning="$emit('update:currentMeaning', $event)"
     @update:loading="$emit('update:loading', $event)"
@@ -35,6 +36,10 @@ defineProps({
     required: true,
   },
   inputText: {
+    type: String,
+    required: false,
+  },
+  currentWord: {
     type: String,
     required: false,
   },

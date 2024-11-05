@@ -89,12 +89,12 @@ const checkTarteelLength = (newValue) => {
     const updateState = (showWords = false, showVerses = false) => {
       showAutoWordsList.value = showWords
       showAutoVerseList.value = showVerses
-      emit("update:menu", true)
       emit("update:isLoading", false)
     }
 
     if (newValue.length <= 1) return updateState()
     if (newValue.includes(" ")) return updateState(false, true)
+
     return updateState(true, false)
   }, 300)
 }
