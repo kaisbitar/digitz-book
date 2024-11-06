@@ -77,6 +77,7 @@ export function useAutoComplete(dataStore, tarteelStore) {
   const debouncedSearch = debounce(async (value) => {
     if (value.length === 1) {
       currentLetter.value = value
+      tarteel.value = value
       return true
     }
 
