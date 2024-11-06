@@ -1,24 +1,11 @@
 <template>
   <v-toolbar rounded elevation="2">
     <v-toolbar-title class="text-center">
-      <!-- <span class="ml-1 font-weight-bold d-none"> سورة </span> -->
-      <v-btn
-        icon
-        @click="goPreviousVerse"
-        size="small"
-        variant="tonal"
-        class="mx-2"
-      >
+      <v-btn icon @click="goPreviousVerse" size="small" class="mx-2">
         <v-icon>mdi-chevron-up</v-icon>
       </v-btn>
       {{ targetVerse.suraName }} - آية {{ targetVerse.verseIndex }}
-      <v-btn
-        icon
-        @click="goNextVerse"
-        size="small"
-        variant="tonal"
-        class="mx-2"
-      >
+      <v-btn icon @click="goNextVerse" size="small" class="mx-2">
         <v-icon>mdi-chevron-down</v-icon>
       </v-btn>
     </v-toolbar-title>
