@@ -8,7 +8,9 @@
       :verses-count="ratl.verses.length"
       :occurrence-count="ratl.count"
       v-model:expanded="expanded"
-    />
+    >
+    </TarteelHeader>
+    <UserNote :dialog="true" :word="ratl.word" />
 
     <v-divider class="mx-auto" width="50%"></v-divider>
 
@@ -54,11 +56,12 @@ import { useRouter } from "vue-router"
 import { useTarteelStore } from "@/stores/tarteelStore"
 import { useWindow } from "@/mixins/window"
 import { useIndexedPagination } from "@/hooks/useIndexedPagination"
-import TarteelHeader from "@/components/TarteelHeader.vue"
+import { useNotesStore } from "@/stores/notesStore"
 
 const tarteelStore = useTarteelStore()
 const router = useRouter()
 const store = useStore()
+const notesStore = useNotesStore()
 
 const expanded = ref(false)
 
@@ -106,6 +109,17 @@ watch(
 onMounted(async () => {
   await nextTick()
   handleScrolling()
+
+  if (ratl.value?.word) {
+    try {
+      const note = await notesStore.getNoteForWord(ratl.value.word)
+      if (note) {
+        // Do something with the note, maybe show it
+      }
+    } catch (error) {
+      console.error("Failed to load note:", error)
+    }
+  }
 })
 </script>
 

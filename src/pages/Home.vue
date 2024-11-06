@@ -14,7 +14,9 @@
       <h2 class="text-lg">ترتيل</h2>
     </v-col>
     <v-col cols="6" class="d-flex flex-column align-center">
-      <v-icon @click="" size="100">mdi-account-outline</v-icon>
+      <v-icon @click="goToPage('tafsiri')" size="100"
+        >mdi-account-outline</v-icon
+      >
       <h2 class="text-lg">تفسيري</h2>
     </v-col>
   </v-row>

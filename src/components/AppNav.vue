@@ -48,6 +48,7 @@
       size="default"
       @toggle="toggleDrawer('index')"
     />
+    <UserAvatar />
   </v-app-bar>
   <v-divider></v-divider>
 
@@ -73,6 +74,7 @@ import { useRouter } from "vue-router"
 import { useDisplay } from "vuetify"
 import { useTarteelStore } from "@/stores/tarteelStore"
 import { useStore } from "@/stores/appStore"
+import UserAvatar from "@/components/Profile/UserAvatar.vue"
 
 const tarteelStore = useTarteelStore()
 const router = useRouter()
@@ -171,7 +173,7 @@ const navigationItems = [
     label: "ترتيل",
   },
   {
-    route: "/",
+    route: "/tafsiri",
     icon: "mdi-account-outline",
     activeIcon: "mdi-account",
     label: "تفسيري",
