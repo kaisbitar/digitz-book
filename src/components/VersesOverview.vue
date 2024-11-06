@@ -26,7 +26,7 @@
 import { ref, computed, onMounted } from "vue"
 import { useStore } from "@/stores/appStore"
 import { useWindow } from "@/mixins/window"
-import { usePagination } from "@/hooks/usePagination"
+import { useIndexedPagination } from "@/hooks/useIndexedPagination"
 
 const { scrollToActiveItem } = useWindow()
 
@@ -39,10 +39,11 @@ const isMobileView = computed(() => store.getVersesMobileView)
 
 const targetedVerseIndex = computed(() => store.getTarget?.verseNumberToQuran)
 
-const { paginatedItems, handleInfiniteScroll, isLoading } = usePagination(
-  computed(() => props.verses || []),
-  targetedVerseIndex
-)
+const { paginatedItems, handleInfiniteScroll, isLoading } =
+  useIndexedPagination(
+    computed(() => props.verses || []),
+    targetedVerseIndex
+  )
 
 const handleVerseSelected = (item) => {
   if (!item) return

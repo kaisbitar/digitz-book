@@ -53,7 +53,7 @@ import { useStore } from "@/stores/appStore"
 import { useRouter } from "vue-router"
 import { useTarteelStore } from "@/stores/tarteelStore"
 import { useWindow } from "@/mixins/window"
-import { usePagination } from "@/hooks/usePagination"
+import { useIndexedPagination } from "@/hooks/useIndexedPagination"
 import TarteelHeader from "@/components/TarteelHeader.vue"
 
 const tarteelStore = useTarteelStore()
@@ -66,10 +66,11 @@ const searchedTarteels = computed(() => tarteelStore.getStoredTarteels)
 const ratl = computed(() => tarteelStore.getSelectedRatl)
 const targetedVerseIndex = computed(() => store.getTarget?.verseNumberToQuran)
 
-const { paginatedItems, handleInfiniteScroll, isLoading } = usePagination(
-  computed(() => ratl.value?.verses || []),
-  targetedVerseIndex
-)
+const { paginatedItems, handleInfiniteScroll, isLoading } =
+  useIndexedPagination(
+    computed(() => ratl.value?.verses || []),
+    targetedVerseIndex
+  )
 
 const handleSelectedVerse = (verse, tarteel) => {
   store.setTarget({

@@ -1,8 +1,8 @@
 <template>
   <v-btn @click="onSubmit" block size="large" :disabled="isDisabled">
-    <span v-show="checkedItemsCount === 0"> رتل جميع الكلمات </span>
+    <!-- <span v-show="checkedItemsCount === 0"> رتل جميع الكلمات </span> -->
 
-    <span v-show="checkedItemsCount > 0" class="font-weight-bold">
+    <span class="font-weight-bold">
       {{ checkedItemsCount }}
       <v-scale-transition>
         <v-badge

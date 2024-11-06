@@ -1,6 +1,6 @@
 import { ref, computed, watch } from "vue"
 
-export function usePagination(itemsRef, targetedIndexRef, itemsPerPage = 50) {
+export function useSimplePagination(itemsRef, itemsPerPage = 50) {
   const currentPage = ref(1)
   const totalItems = ref(0)
   const isLoading = ref(false)
@@ -9,24 +9,8 @@ export function usePagination(itemsRef, targetedIndexRef, itemsPerPage = 50) {
     if (totalItems.value <= itemsPerPage) return itemsRef.value
 
     const end = currentPage.value * itemsPerPage
-    return (
-      itemsRef.value?.slice(0, end).map((item, index) => ({
-        ...item,
-        originalIndex: parseInt(index),
-      })) || []
-    )
+    return itemsRef.value?.slice(0, end) || []
   })
-
-  const handleLoading = () => {
-    const targetIndex = itemsRef.value.findIndex(
-      (item) => item.verseNumberToQuran == targetedIndexRef.value
-    )
-    if (targetIndex === -1) {
-      loadMoreItems()
-      return
-    }
-    currentPage.value = Math.floor(targetIndex / itemsPerPage) + 1
-  }
 
   const loadMoreItems = () => {
     if (
@@ -45,13 +29,8 @@ export function usePagination(itemsRef, targetedIndexRef, itemsPerPage = 50) {
     currentPage.value = 1
   }
 
-  const handleInfiniteScroll = (event) => {
-    // if (!event) preturn
+  const handleInfiniteScroll = () => {
     loadMoreItems()
-    // const { scrollTop, scrollHeight, clientHeight } = event.target
-    // if (scrollTop + clientHeight >= scrollHeight - 100) {
-    //   loadMoreItems()
-    // }
   }
 
   watch(
@@ -59,7 +38,6 @@ export function usePagination(itemsRef, targetedIndexRef, itemsPerPage = 50) {
     (newItems) => {
       totalItems.value = newItems?.length || 0
       resetPagination()
-      handleLoading()
     },
     { immediate: true }
   )

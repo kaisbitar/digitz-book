@@ -1,5 +1,19 @@
-import { ref, computed } from "vue"
+import { ref, computed, watchEffect, onUnmounted } from "vue"
 import { filterWords } from "@/utils/autoWordFilter"
+
+function debounce(func, wait) {
+  let timeout
+  return function executedFunction(...args) {
+    return new Promise((resolve) => {
+      const later = async () => {
+        clearTimeout(timeout)
+        resolve(await func(...args))
+      }
+      clearTimeout(timeout)
+      timeout = setTimeout(later, wait)
+    })
+  }
+}
 
 export function useAutoComplete(dataStore, tarteelStore) {
   const tarteel = ref("")
@@ -22,6 +36,7 @@ export function useAutoComplete(dataStore, tarteelStore) {
 
   const updateFilteredVerses = (sentence) => {
     filteredList.value = []
+
     const filteredResults = dataStore.getOneQuranFile.filter((verse) => {
       if (verse.verseText.includes(sentence)) {
         return {
@@ -30,10 +45,7 @@ export function useAutoComplete(dataStore, tarteelStore) {
       }
     })
 
-    if (filteredResults.length === 0) {
-      filteredList.value = []
-      return
-    }
+    if (filteredResults.length === 0) return (filteredList.value = [])
 
     filteredList.value = [
       {
@@ -48,31 +60,34 @@ export function useAutoComplete(dataStore, tarteelStore) {
     menu.value = isOpen
   }
 
-  const handleInputChange = (value, isBackspacing = false) => {
+  const handleInputChange = async (value) => {
     if (!value) {
       clearInput()
-      return
-    }
-
-    if (isBackspacing && value.length === 1) {
-      tarteel.value = tarteel.value.slice(0, -1)
-      currentLetter.value = value[value.length - 1]
-
-      return
+      return false
     }
 
     tarteel.value = value
     currentLetter.value = value[value.length - 1]
     toggleMenu()
 
-    if (!value.includes(" ") && value.length > 1) {
-      updateFilteredWords(value)
-    } else {
-      updateFilteredVerses(value)
+    const results = await debouncedSearch(value)
+    return results
+  }
+
+  const debouncedSearch = debounce(async (value) => {
+    if (value.length === 1) {
+      currentLetter.value = value
+      return true
     }
 
+    if (!value.includes(" ")) {
+      await updateFilteredWords(value)
+      return filteredList.value.length > 0
+    }
+
+    await updateFilteredVerses(value)
     return filteredList.value.length > 0
-  }
+  }, 300)
 
   const clearInput = () => {
     tarteel.value = ""
