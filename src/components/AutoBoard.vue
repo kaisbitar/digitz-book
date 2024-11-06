@@ -69,7 +69,7 @@ const inputHasError = ref(false)
 const inputHasSuccess = ref(false)
 const isLoading = ref(false)
 
-const emit = defineEmits(["update:isInputVisible"])
+const emit = defineEmits(["update:isInputVisible", "submitTarteel"])
 
 const handleInput = async (value) => {
   const hasResults = await handleInputChange(value)
@@ -91,6 +91,7 @@ const handleTarteel = () => {
   clearInput()
   router.push({ name: "tarteel" })
   toggleMenu(false)
+  emit("submitTarteel")
 }
 
 const handleClear = () => {

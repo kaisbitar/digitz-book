@@ -12,6 +12,7 @@
       <AutoBoard
         v-if="isInputVisible"
         @update:isInputVisible="isInputVisible = $event"
+        @submitTarteel="isMobile ? (isInputVisible = false) : null"
       />
     </v-container>
     <AppToggleBtn

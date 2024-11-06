@@ -40,8 +40,14 @@ const handleVerseClick = (verse) => {
 </script>
 
 <style scoped>
-.auto-verse-list {
+/* .auto-verse-list {
   padding-top: 0 !important;
   max-height: 500px;
+} */
+@media (max-width: 768px) {
+  .sura-board-overflow {
+    height: calc(100vh - 450px);
+    overflow: auto;
+  }
 }
 </style>

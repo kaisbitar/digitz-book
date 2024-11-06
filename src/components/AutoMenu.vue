@@ -14,7 +14,7 @@
         class="w-100"
         :items="currentWordsList"
         :checked-items="checkedItems"
-        :height="500"
+        :height="$vuetify.display.xs ? 300 : 'auto'"
         @update:currentWordsList="emit('update:items', $event)"
         @update:checked-items="emit('update:checkedItems', $event)"
         @submitTarteel="onTarteelSubmit"
