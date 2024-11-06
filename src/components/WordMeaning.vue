@@ -6,9 +6,13 @@
       hover
       @click="expanded = !expanded"
     >
-      <v-fade-transition v-if="loading" mode="out-in">
-        فَإِنَّ مَعَ الْعُسْرِ يُسْرًا, إِنَّ مَعَ الْعُسْرِ يُسْرًا
-      </v-fade-transition>
+      <v-card-item v-if="loading">
+        <v-fade-transition mode="out-in">
+          <v-card-title class="pa-3">
+            فَإِنَّ مَعَ الْعُسْرِ يُسْرًا, إِنَّ مَعَ الْعُسْرِ يُسْرًا
+          </v-card-title>
+        </v-fade-transition>
+      </v-card-item>
 
       <v-card-item v-if="!expanded && !loading">
         <template v-slot:prepend>
@@ -27,30 +31,25 @@
       </v-card-item>
 
       <!-- Expanded View -->
-      <v-scroll-y-transition>
-        <div v-if="expanded" :key="results[0]?.meaning">
-          <v-card-item
-            v-for="(item, index) in results[0]?.meaning"
-            :key="item.word + index"
-          >
-            <v-card-title class="ml-2 count-key-item">
-              {{ item.word }}
-            </v-card-title>
+      <v-card-item
+        v-if="expanded"
+        :key="results[0]?.meaning"
+        v-for="(item, index) in results[0]?.meaning"
+      >
+        <v-card-title class="ml-2 count-key-item">
+          {{ item.word }}
+        </v-card-title>
 
-            <v-card-text class="mb-n5">{{ item.meaning }}</v-card-text>
-            <span class="text-caption count-key-item">{{
-              item.dictionary
-            }}</span>
+        <v-card-text class="mb-n5">{{ item.meaning }}</v-card-text>
+        <span class="text-caption count-key-item">{{ item.dictionary }}</span>
 
-            <v-divider
-              v-if="index < results[0]?.meaning.length - 1"
-              horizontal
-              length="50%"
-              class="mt-7"
-            />
-          </v-card-item>
-        </div>
-      </v-scroll-y-transition>
+        <v-divider
+          v-if="index < results[0]?.meaning.length - 1"
+          horizontal
+          length="50%"
+          class="mt-7"
+        />
+      </v-card-item>
     </v-card>
   </v-slide-y-transition>
 </template>
