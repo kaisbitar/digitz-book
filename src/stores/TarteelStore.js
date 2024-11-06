@@ -39,7 +39,6 @@ export const useTarteelStore = defineStore("tarteel", {
   actions: {
     setStoredTarteels(results) {
       this.storedTarteels.push(results)
-      // Automatically select the newly added tarteel
       this.setSearchedTarteel(this.storedTarteels.length - 1)
     },
     setSearchedTarteel(index) {

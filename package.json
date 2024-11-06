@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@mdi/font": "7.4.47",
+    "@supabase/supabase-js": "^2.46.1",
     "apexcharts": "^3.53.0",
     "axios": "^1.7.7",
     "core-js": "^3.37.1",
@@ -31,6 +32,7 @@
     "eslint-plugin-vue": "^9.27.0",
     "pinia": "^2.1.7",
     "sass": "1.77.6",
+    "supabase": "^1.215.0",
     "unplugin-auto-import": "^0.17.6",
     "unplugin-fonts": "^1.1.1",
     "unplugin-vue-components": "^0.27.2",

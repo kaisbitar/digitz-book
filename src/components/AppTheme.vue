@@ -1,7 +1,7 @@
 <template>
   <v-radio-group
     v-model="selectedTheme"
-    @update:modelValue="changeTheme"
+    @update:modelValue="setTheme"
     mandatory
     color="primary"
   >
@@ -31,9 +31,13 @@
 <script setup>
 import { useTheme } from "vuetify"
 import { ref, onMounted, watch } from "vue"
+import { useAuthStore } from "@/stores/authStore"
+import { useStore } from "@/stores/appStore"
 
+const authStore = useAuthStore()
+const appStore = useStore()
 const theme = useTheme()
-const selectedTheme = ref("light")
+const selectedTheme = ref(appStore.getCurrentTheme)
 
 const themeOptions = [
   {
@@ -48,7 +52,6 @@ const themeOptions = [
     icon: "mdi-moon-waning-crescent",
     color: "grey-darken",
   },
-  { value: "system", label: "نظام", icon: "mdi-monitor", color: "grey-darken" },
   {
     value: "testing",
     label: "لون ليلي",
@@ -63,33 +66,27 @@ const themeOptions = [
   },
 ]
 
-const changeTheme = () => {
-  if (selectedTheme.value === "system") {
-    theme.global.name.value = window.matchMedia("(prefers-color-scheme: dark)")
-      .matches
-      ? "dark"
-      : "light"
-  } else {
-    theme.global.name.value = selectedTheme.value
+const setTheme = async () => {
+  theme.global.name.value = selectedTheme.value
+  await appStore.updatePreferences({ theme: selectedTheme.value })
+}
+
+onMounted(async () => {
+  if (
+    !authStore.isAuthenticated ||
+    !authStore.userSettings?.preferences?.theme
+  ) {
+    selectedTheme.value = appStore.getCurrentTheme
+    setTheme()
+    return
   }
-}
 
-const watchSystemTheme = () => {
-  window
-    .matchMedia("(prefers-color-scheme: dark)")
-    .addEventListener("change", (e) => {
-      if (selectedTheme.value === "system") {
-        theme.global.name.value = e.matches ? "dark" : "light"
-      }
-    })
-}
+  selectedTheme.value = authStore.userSettings.preferences.theme
 
-onMounted(() => {
-  selectedTheme.value = theme.global.current.value.dark ? "dark" : "light"
-  watchSystemTheme()
+  setTheme()
 })
 
-watch(selectedTheme, changeTheme)
+watch(selectedTheme, setTheme)
 </script>
 
 <style scoped></style>

@@ -1,4 +1,5 @@
 import { defineStore } from "pinia"
+import { useAuthStore } from "@/stores/authStore"
 
 export const useStore = defineStore("Quran", {
   state: () => ({
@@ -18,6 +19,11 @@ export const useStore = defineStore("Quran", {
     chartFreqType: "words",
     wordMeanings: {},
     tarteelDrawer: true,
+    userPreferences: {
+      theme: "light",
+      fontSize: "medium",
+      // other UI preferences
+    },
   }),
   persist: {
     enabled: true,
@@ -35,6 +41,7 @@ export const useStore = defineStore("Quran", {
     getActiveRoute: (state) => state.activeRoute,
     getChartFreqType: (state) => state.chartFreqType,
     getWordMeaning: (state) => (word) => state.wordMeanings[word],
+    getCurrentTheme: (state) => state.userPreferences.theme,
   },
   actions: {
     setVersesMobileView(state) {
@@ -94,6 +101,23 @@ export const useStore = defineStore("Quran", {
     },
     setTarteelDrawer(value) {
       this.tarteelDrawer = value
+    },
+    async updatePreferences(preferences) {
+      this.userPreferences = {
+        ...this.userPreferences,
+        ...preferences,
+      }
+
+      const authStore = useAuthStore()
+      if (authStore.isAuthenticated) {
+        try {
+          await authStore.updateUserSettings({
+            preferences: this.userPreferences,
+          })
+        } catch (error) {
+          console.error("Failed to sync preferences with database:", error)
+        }
+      }
     },
   },
 })
