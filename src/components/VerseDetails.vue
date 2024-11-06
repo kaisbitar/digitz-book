@@ -82,21 +82,25 @@ const wordsSeries = computed(() =>
 const oneQuranFile = computed(() => dataStore.getOneQuranFile)
 
 const goNextVerse = async () => {
-  const nextVerse = await oneQuranFile.value.filter((item) => {
-    if (item.verseNumberToQuran == targetVerse.value.verseNumberToQuran + 1) {
-      return targetVerse
-    }
-  })
-  store.setTarget({ ...nextVerse[0], tarteel: props.inputText })
+  const nextVerse = oneQuranFile.value.find(
+    (item) =>
+      item.verseNumberToQuran ===
+      parseInt(targetVerse.value.verseNumberToQuran) + 1
+  )
+  if (nextVerse) {
+    store.setTarget({ ...nextVerse, tarteel: props.inputText })
+  }
 }
 
 const goPreviousVerse = async () => {
-  const previousVerse = await oneQuranFile.value.filter((item) => {
-    if (item.verseNumberToQuran == targetVerse.value.verseNumberToQuran - 1) {
-      return targetVerse
-    }
-  })
-  store.setTarget({ ...previousVerse[0], tarteel: props.inputText })
+  const previousVerse = oneQuranFile.value.find(
+    (item) =>
+      item.verseNumberToQuran ===
+      parseInt(targetVerse.value.verseNumberToQuran) - 1
+  )
+  if (previousVerse) {
+    store.setTarget({ ...previousVerse, tarteel: props.inputText })
+  }
 }
 
 const goBack = () => {
