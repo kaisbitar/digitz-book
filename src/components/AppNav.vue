@@ -8,9 +8,8 @@
     <v-app-bar-title class="mr-0" style="max-width: 140px" v-if="!isMobile">
       الكتاب المرقوم
     </v-app-bar-title>
-    <v-container v-if="isInputVisible" class="pt-6" max-width="1197">
+    <v-container v-if="isInputVisible" class="pt-6" max-width="900">
       <AutoBoard
-        class="search-input"
         v-if="isInputVisible"
         @update:isInputVisible="isInputVisible = $event"
       />
@@ -24,7 +23,7 @@
       size="default"
       @toggle="isInputVisible = !isInputVisible"
     />
-    <v-spacer v-if="!isMobile"></v-spacer>
+    <v-spacer></v-spacer>
     <AppToggleBtn
       v-if="!(isMobile && isInputVisible)"
       class="mx-2 mx-sm-4 tarteel-btn"
@@ -178,9 +177,9 @@ const navigationItems = [
   },
 ]
 onMounted(() => {
-  // if (!isMobile.value) {
-  //   isInputVisible.value = true
-  // }
+  if (!isMobile.value) {
+    isInputVisible.value = true
+  }
 })
 </script>
 

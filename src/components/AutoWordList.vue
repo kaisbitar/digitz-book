@@ -1,6 +1,11 @@
 <template>
-  <v-list class="auto-word-list opacity-80">
-    <v-virtual-scroll :items="items" :item-height="48">
+  <v-list class="auto-word-list">
+    <v-virtual-scroll
+      :items="paginatedItems"
+      :height="height"
+      :item-height="48"
+      @scroll="handleInfiniteScroll"
+    >
       <template v-slot:default="{ item }">
         <v-hover v-slot="{ isHovering, props }">
           <v-list-item
@@ -10,27 +15,31 @@
             class="py-1"
           >
             <template v-slot:prepend>
-              <v-checkbox
-                :model-value="isItemChecked(item)"
-                @update:model-value="toggleItemCheck(item)"
-                hide-details
-                @click.stop
-              ></v-checkbox>
-              <span class="ml-15" :style="{ width: '5px' }">{{
+              <div class="d-flex align-center" style="width: 57px">
+                <v-checkbox
+                  :model-value="isItemChecked(item)"
+                  @update:model-value="toggleItemCheck(item)"
+                  hide-details
+                  @click.stop
+                ></v-checkbox>
+              </div>
+              <v-list-item-title class="text-right" style="width: 100px">
+                {{ item.word }}
+              </v-list-item-title>
+            </template>
+
+            <div class="d-flex align-center ml-8">
+              <span class="text-body-1" style="width: 50px">{{
                 item.verses.length
               }}</span>
               <v-badge
                 :content="`آية`"
                 floating
-                offset-x="30"
+                offset-x="9"
                 offset-y="6"
                 color="verse-count"
               ></v-badge>
-            </template>
-            <v-list-item-title>
-              {{ item.word }}
-            </v-list-item-title>
-
+            </div>
             <template v-slot:append>
               <v-btn
                 icon="mdi-close"
@@ -44,19 +53,12 @@
         </v-hover>
       </template>
     </v-virtual-scroll>
-
-    <div class="list-append">
-      <AppTarteelBtn
-        :checked-items="checkedItems"
-        :is-disabled="items.length === 0"
-        @submit="emit('submitTarteel')"
-      />
-    </div>
   </v-list>
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from "vue"
+import { defineProps, defineEmits, toRef } from "vue"
+import { useSimplePagination } from "@/hooks/useSimplePagination"
 
 const props = defineProps({
   items: {
@@ -72,6 +74,10 @@ const props = defineProps({
     default: 490,
   },
 })
+
+const { paginatedItems, handleInfiniteScroll, isLoading } = useSimplePagination(
+  toRef(props, "items")
+)
 
 const emit = defineEmits([
   "update:checkedItems",
@@ -106,20 +112,7 @@ const removeItem = (item) => {
 
 <style scoped>
 .auto-word-list {
-  z-index: 1;
   padding-top: 0 !important;
-  /* width: 300px; */
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-:deep(.v-virtual-scroll) {
-  flex: 1;
-  height: auto !important;
-}
-
-.list-append {
-  padding: 0px 16px;
+  max-height: 500px;
 }
 </style>

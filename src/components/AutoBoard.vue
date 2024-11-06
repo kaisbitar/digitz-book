@@ -11,7 +11,6 @@
     @clear="handleClear"
     @focus="onFocus"
     @keydown:enter="handleTarteel"
-    @keydown:backspace="() => (isBackspacing = true)"
   >
     <AutoMenu
       class="mt-4"
@@ -72,14 +71,11 @@ const isLoading = ref(false)
 
 const emit = defineEmits(["update:isInputVisible"])
 
-const isBackspacing = ref(false)
-
-const handleInput = (value) => {
-  const hasResults = handleInputChange(value, isBackspacing.value)
+const handleInput = async (value) => {
+  const hasResults = await handleInputChange(value)
 
   inputHasSuccess.value = hasResults
-  inputHasError.value = !hasResults && !isBackspacing.value
-  isBackspacing.value = false
+  inputHasError.value = !hasResults
   toggleMenu(true)
 }
 
