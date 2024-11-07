@@ -1,20 +1,15 @@
 <template>
-  <v-slide-y-transition mode="out-in">
-    <v-card
-      :key="results[0]?.meaning[0]?.word"
-      :class="expanded ? 'tarteel-meaning-overflow' : 'fixed-height'"
-      hover
-      @click="expanded = !expanded"
-    >
-      <v-card-item v-if="loading">
-        <v-fade-transition mode="out-in">
-          <v-card-title class="pa-3">
-            فَإِنَّ مَعَ الْعُسْرِ يُسْرًا, إِنَّ مَعَ الْعُسْرِ يُسْرًا
-          </v-card-title>
-        </v-fade-transition>
-      </v-card-item>
+  <div>
+    <v-card-item v-if="loading">
+      <v-fade-transition mode="out-in">
+        <v-card-title class="pa-3">
+          فَإِنَّ مَعَ الْعُسْرِ يُسْرًا, إِنَّ مَعَ الْعُسْرِ يُسْرًا
+        </v-card-title>
+      </v-fade-transition>
+    </v-card-item>
 
-      <v-card-item v-if="!expanded && !loading">
+    <v-card hover v-if="!isWordMeaningOpen && !loading">
+      <v-card-item>
         <template v-slot:prepend>
           <v-icon icon="mdi-translate" class="mx-2" />
         </template>
@@ -29,29 +24,32 @@
           {{ results[0]?.meaning[0]?.dictionary }}
         </span>
       </v-card-item>
-
-      <!-- Expanded View -->
-      <v-card-item
-        v-if="expanded"
-        :key="results[0]?.meaning"
-        v-for="(item, index) in results[0]?.meaning"
-      >
-        <v-card-title class="ml-2 count-key-item">
-          {{ item.word }}
-        </v-card-title>
-
-        <v-card-text class="mb-n5">{{ item.meaning }}</v-card-text>
-        <span class="text-caption count-key-item">{{ item.dictionary }}</span>
-
-        <v-divider
-          v-if="index < results[0]?.meaning.length - 1"
-          horizontal
-          length="50%"
-          class="mt-7"
-        />
-      </v-card-item>
     </v-card>
-  </v-slide-y-transition>
+
+    <v-slide-y-transition mode="out-in">
+      <v-card
+        v-if="isWordMeaningOpen"
+        :key="results[0]?.meaning[0]?.word"
+        :class="isWordMeaningOpen ? 'tarteel-meaning-overflow' : 'fixed-height'"
+      >
+        <v-card-item v-for="(item, index) in results[0]?.meaning">
+          <v-card-title class="ml-2 count-key-item">
+            {{ item.word }}
+          </v-card-title>
+
+          <v-card-text class="mb-n5">{{ item.meaning }}</v-card-text>
+          <span class="text-caption count-key-item">{{ item.dictionary }}</span>
+
+          <v-divider
+            v-if="index < results[0]?.meaning.length - 1"
+            horizontal
+            length="50%"
+            class="mt-7"
+          />
+        </v-card-item>
+      </v-card>
+    </v-slide-y-transition>
+  </div>
 </template>
 
 <script setup>
@@ -65,7 +63,7 @@ import {
 
 const store = useStore()
 const { highlight } = useInputFiltering()
-
+const emit = defineEmits(["update:isWordMeaningOpen"])
 const props = defineProps({
   word: {
     type: String,
@@ -75,10 +73,13 @@ const props = defineProps({
     type: String,
     default: "plain",
   },
+  isWordMeaningOpen: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const loading = ref(true)
-const expanded = ref(false)
 
 const results = computed(() => {
   if (!loading.value) {
@@ -134,5 +135,10 @@ watch(
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
+}
+
+.tarteel-meaning-overflow {
+  height: calc(50vh - 100px);
+  overflow: auto;
 }
 </style>

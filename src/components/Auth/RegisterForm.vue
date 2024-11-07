@@ -1,49 +1,58 @@
 <template>
-  <v-card class="pa-4">
-    <v-form @submit.prevent="handleSubmit">
-      <v-text-field
-        v-model="email"
-        label="Email"
-        type="email"
-        required
-      ></v-text-field>
+  <v-container fluid>
+    <v-row justify="center">
+      <v-col cols="12" sm="8" md="6" lg="4">
+        <v-card class="pa-4" max-width="460">
+          <v-form @submit.prevent="handleSubmit">
+            <v-text-field
+              v-model="email"
+              label="البريد الإلكتروني"
+              type="email"
+              autocomplete="email"
+              required
+            ></v-text-field>
 
-      <v-text-field
-        v-model="password"
-        label="Password"
-        type="password"
-        required
-      ></v-text-field>
+            <v-text-field
+              v-model="password"
+              label="كلمة المرور"
+              type="password"
+              autocomplete="new-password"
+              required
+            ></v-text-field>
 
-      <v-text-field
-        v-model="confirmPassword"
-        label="Confirm Password"
-        type="password"
-        required
-        :error-messages="passwordError"
-      ></v-text-field>
+            <v-text-field
+              v-model="confirmPassword"
+              label="تأكيد كلمة المرور"
+              type="password"
+              autocomplete="new-password"
+              required
+              :error-messages="passwordError"
+            ></v-text-field>
 
-      <v-btn
-        type="submit"
-        color="primary"
-        block
-        :loading="authStore.loading"
-        :disabled="!isValid"
-      >
-        Register
-      </v-btn>
+            <v-btn
+              type="submit"
+              color="primary"
+              block
+              :loading="authStore.loading"
+              :disabled="!isValid"
+            >
+              انشاء حساب
+            </v-btn>
 
-      <v-alert v-if="error" type="error" class="mt-3">
-        {{ error }}
-      </v-alert>
-    </v-form>
+            <v-alert v-if="error" type="error" class="mt-3">
+              {{ error }}
+            </v-alert>
+          </v-form>
 
-    <v-divider class="my-4"></v-divider>
+          <v-divider class="my-4"></v-divider>
 
-    <v-btn variant="text" block :to="{ name: 'Login' }">
-      Already have an account? Login
-    </v-btn>
-  </v-card>
+          <v-btn variant="text" block :to="{ name: 'Login' }">
+            لديك حساب؟ تسجيل الدخول
+          </v-btn>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script setup>

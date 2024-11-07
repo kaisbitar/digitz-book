@@ -11,14 +11,6 @@
       {{ occurrenceCount }}
       <span class="text-caption mr-n1 count-key-item">مرة</span>
     </span>
-
-    <v-btn
-      icon="mdi-chevron-down"
-      elevation="0"
-      class="mr-auto"
-      @click="$emit('update:expanded', !expanded)"
-    >
-    </v-btn>
   </div>
 </template>
 
@@ -34,10 +26,6 @@ defineProps({
   },
   occurrenceCount: {
     type: Number,
-    required: true,
-  },
-  expanded: {
-    type: Boolean,
     required: true,
   },
 })

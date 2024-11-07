@@ -104,7 +104,7 @@ const handleSelectedSearch = (index) => {
   navigateToTarteel()
   if (selectedTarteelIndex.value !== index) {
     updateSelectedSearch(index)
-    scrollToTop()
+    // scrollToTop()
   }
 }
 
@@ -124,7 +124,7 @@ const handleSelectedRatl = (index) => {
 const deleteTarteel = (index) => {
   tarteelStore.removeTarteelItem(index)
   handleSelectedSearch(index)
-  scrollToTop()
+  // scrollToTop()
 }
 
 const deleteRatl = (index) => {
@@ -134,9 +134,9 @@ const deleteRatl = (index) => {
 
 const tarteelDrawerRef = ref(null)
 const scrollToTop = async () => {
-  await nextTick()
-  if (!tarteelDrawerRef.value) return
-  tarteelDrawerRef.value.scrollTop = 0
+  // await nextTick()
+  // if (!tarteelDrawerRef.value) return
+  // tarteelDrawerRef.value.scrollTop = 0
 }
 
 const handleClose = async () => {
