@@ -10,7 +10,7 @@
       >
         <v-avatar size="32">
           <v-icon v-if="!authStore.userSettings?.display_name">
-            mdi-account
+            mdi-account-outline
           </v-icon>
           <span v-else>
             {{ getInitials(authStore.userSettings.display_name) }}
