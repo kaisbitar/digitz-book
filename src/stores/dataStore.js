@@ -54,9 +54,7 @@ export const useDataStore = defineStore("data", {
       try {
         const appApi = import.meta.env.VITE_APP_API_URL
 
-        // Fetch Quran file and index
         await this.fetchQuranFileAndIndex(appApi)
-        // Fetch and process verses
         await this.fetchAndProcessVerses(appApi)
       } catch (error) {
         console.error("Error fetching Quran data:", error)

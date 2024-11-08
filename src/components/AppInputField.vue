@@ -18,6 +18,7 @@
       @focus="$emit('focus')"
     >
       <template v-slot:append-inner>
+        <v-icon class="close-btn" icon="mdi-close" @click="$emit('close')" />
         <slot name="append-input-items"></slot>
       </template>
     </v-text-field>
@@ -63,6 +64,7 @@ const emit = defineEmits([
   "focus",
   "keydown:enter",
   "keydown:backspace",
+  "close",
 ])
 
 const theme = useTheme()
@@ -77,4 +79,9 @@ const handleInput = (value) => {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.close-btn {
+  cursor: pointer;
+  margin-right: 8px;
+}
+</style>

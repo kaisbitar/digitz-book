@@ -83,11 +83,6 @@ export const useNotesStore = defineStore("notes", {
       const authStore = useAuthStore()
       if (!authStore.user) return null
       try {
-        console.log("Fetching note for:", {
-          word,
-          userId: authStore.user.id,
-        })
-
         const { data, error } = await supabase
           .from("user_notes")
           .select("*")

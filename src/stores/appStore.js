@@ -19,10 +19,10 @@ export const useStore = defineStore("Quran", {
     chartFreqType: "words",
     wordMeanings: {},
     tarteelDrawer: true,
+    indexDrawer: false,
     userPreferences: {
       theme: "light",
       fontSize: "medium",
-      // other UI preferences
     },
   }),
   persist: {
@@ -42,6 +42,8 @@ export const useStore = defineStore("Quran", {
     getChartFreqType: (state) => state.chartFreqType,
     getWordMeaning: (state) => (word) => state.wordMeanings[word],
     getCurrentTheme: (state) => state.userPreferences.theme,
+    getTarteelDrawer: (state) => state.tarteelDrawer,
+    getIndexDrawer: (state) => state.indexDrawer,
   },
   actions: {
     setVersesMobileView(state) {
@@ -68,6 +70,7 @@ export const useStore = defineStore("Quran", {
           tarteel: target.tarteel,
           numberOfLetters: target.verseText.replace(/ /g, "").length,
           numberOfWords: target.verseText.split(" ").length,
+          verseValue: target.verseValue,
         }
         return
       }
@@ -80,6 +83,7 @@ export const useStore = defineStore("Quran", {
         numberOfLetters: 324117,
         numberOfWords: 77432,
         verseText: "بسم الله الرحمن الرحيم",
+        verseValue: 115,
       }
     },
     resetTarget() {
@@ -101,6 +105,9 @@ export const useStore = defineStore("Quran", {
     },
     setTarteelDrawer(value) {
       this.tarteelDrawer = value
+    },
+    setIndexDrawer(value) {
+      this.indexDrawer = value
     },
     async updatePreferences(preferences) {
       this.userPreferences = {

@@ -11,10 +11,19 @@
       {{ occurrenceCount }}
       <span class="text-caption mr-n1 count-key-item">مرة</span>
     </span>
+
+    <span class="text-h4 mr-3 count-key-item"
+      >{{ calculateWordValue(word) }}
+      <span class="text-caption mr-n1 count-key-item">مرقوم</span>
+    </span>
   </div>
 </template>
 
 <script setup>
+import { useCounting } from "@/mixins/counting"
+
+const { calculateWordValue } = useCounting()
+
 defineProps({
   word: {
     type: String,

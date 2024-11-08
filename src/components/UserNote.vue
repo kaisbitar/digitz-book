@@ -161,18 +161,4 @@ const handleMeaningItemClick = (item) => {
   height: calc(100vh - 100px);
   overflow: auto;
 }
-/* .fixed-height {
-  height: 100px;
-  overflow: hidden;
-}
-
-
-
-.border-r {
-  border-right: 1px solid rgb(0 0 0 / 0.12);
-}
-
-.border-l {
-  border-left: 1px solid rgb(0 0 0 / 0.12);
-} */
 </style>
