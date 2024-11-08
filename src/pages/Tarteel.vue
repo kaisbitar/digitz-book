@@ -3,7 +3,7 @@
     v-if="ratl && ratl.verses"
     class="d-flex flex-column h-100 pa-0 pt-4 px-4"
   > -->
-  <template class="d-flex align-center pt-4 px-4">
+  <template class="d-flex align-center pt-4 pb-4 px-4">
     <TarteelHeader
       :word="ratl.word"
       :verses-count="ratl.verses.length"
@@ -13,14 +13,14 @@
     <v-btn
       v-if="!isWordMeaningOpen"
       icon="mdi-pencil-outline"
-      elevation="0"
+      elevation="1"
       class="mr-auto"
       @click="isUserNoteOpen = true"
     />
     <v-btn
       v-if="isWordMeaningOpen"
       icon="mdi-close"
-      elevation="0"
+      elevation="1"
       class="mr-auto"
       @click="isWordMeaningOpen = false"
     />
@@ -32,8 +32,10 @@
     :word="ratl.word"
     class="px-4"
     :isWordMeaningOpen="isWordMeaningOpen"
+    :class="isWordMeaningOpen ? 'tarteel-meaning-overflow' : 'fixed-height'"
     @update:isWordMeaningOpen="isWordMeaningOpen = $event"
     @click="isWordMeaningOpen = true"
+    @meaningItemClick="isUserNoteOpen = true"
   />
 
   <UserNote v-model="isUserNoteOpen" :word="ratl.word" :verses="ratl.verses" />
@@ -148,7 +150,11 @@ onMounted(async () => {
   overflow: auto;
 }
 .fixed-height {
-  height: 100px; /* or whatever height you prefer */
+  height: 94px;
   overflow: hidden;
+}
+.tarteel-meaning-overflow {
+  height: calc(50vh - 100px);
+  overflow: auto;
 }
 </style>

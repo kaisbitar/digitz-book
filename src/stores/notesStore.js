@@ -24,6 +24,11 @@ export const useNotesStore = defineStore("notes", {
       return state.notes.find((note) => note.word === word)
     },
     hasNotes: (state) => state.notes.length > 0,
+    getNotesHistoryForWord: (state) => (word) => {
+      return state.notes
+        .filter((note) => note.word === word)
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    },
   },
 
   actions: {

@@ -1,7 +1,6 @@
 <template>
   <div
-    class="sura-text-container sura-board-overflow scrolling-container px-sm-10 px-2 pb-9 mt-1 mx-auto bg-surface"
-    max-width="850px"
+    class="sura-text-container sura-board-overflow scrolling-container px-sm-10 pa-2 pb-9 mt-1 mx-auto bg-surface"
     variant="text"
     rounded
   >
@@ -85,6 +84,7 @@ onMounted(async () => {
   font-size: 19px;
   line-height: 1.8;
   overflow-y: auto;
+  max-width: 600px;
 }
 
 .verse-container {

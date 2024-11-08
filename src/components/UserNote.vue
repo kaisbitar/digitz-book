@@ -1,33 +1,42 @@
 <template>
-  <v-bottom-sheet v-model="isOpen" scrollable>
-    <v-card class="mx-auto" max-width="600px">
-      <v-container>
-        <v-row justify="center">
-          <v-col cols="12">
-            <v-card-title>
-              تفسيري <span class="mr-2">({{ word }})</span>
-            </v-card-title>
+  <v-dialog v-model="isOpen" fullscreen>
+    <v-layout>
+      <v-app-bar density="compact">
+        <v-app-bar-title>تفسيري لـ ({{ word }})</v-app-bar-title>
+        <template v-slot:append>
+          <v-btn icon="mdi-close" @click="isOpen = false" />
+        </template>
+      </v-app-bar>
 
-            <v-btn
-              v-if="isWordMeaningOpen"
-              icon="mdi-close"
-              elevation="0"
-              class="mr-auto d-block"
-              @click="isWordMeaningOpen = false"
-            />
+      <v-main>
+        <v-container fluid class="fill-height pa-0">
+          <v-row no-gutters style="height: 100%">
+            <v-col cols="3" class="border-r bg-white">
+              <v-card flat>
+                <WordMeaning
+                  :word="word"
+                  class="px-4 chat-meaning-overflow"
+                  :isWordMeaningOpen="true"
+                  @meaningItemClick="handleMeaningItemClick"
+                />
+              </v-card>
+            </v-col>
 
-            <WordMeaning
-              :word="word"
-              class="px-4"
-              :isWordMeaningOpen="isWordMeaningOpen"
-              :class="
-                isWordMeaningOpen ? 'tarteel-meaning-overflow' : 'fixed-height'
-              "
-              @update:isWordMeaningOpen="isWordMeaningOpen = $event"
-              @click="isWordMeaningOpen = true"
-            />
+            <v-col cols="6" class="border-l bg-white">
+              <v-list>
+                <v-list-subheader>الملاحظات السابقة</v-list-subheader>
+                <v-list-item
+                  v-for="note in previousNotes"
+                  :key="note.id"
+                  :subtitle="note.note"
+                  :prepend-icon="'mdi-note-text'"
+                >
+                  <template v-slot:title>
+                    {{ formatDate(note.created_at) }}
+                  </template>
+                </v-list-item>
+              </v-list>
 
-            <v-card-text>
               <v-textarea
                 v-model="noteText"
                 label="أضف ملاحظتك"
@@ -35,27 +44,32 @@
                 auto-grow
                 :loading="loading"
               ></v-textarea>
-            </v-card-text>
 
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="primary" @click="saveNote" :loading="loading">
+              <v-btn
+                color="primary"
+                block
+                @click="saveNote"
+                :loading="loading"
+                class="mb-2"
+              >
                 {{ noteText ? "تحديث" : "حفظ" }}
               </v-btn>
-              <v-btn color="error" @click="isOpen = false" :disabled="loading">
-                إلغاء
-              </v-btn>
-            </v-card-actions>
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-card>
-  </v-bottom-sheet>
+            </v-col>
+
+            <v-col cols="3">
+              <UserChat :word="word" />
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-main>
+    </v-layout>
+  </v-dialog>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, watch } from "vue"
 import { useNotesStore } from "@/stores/notesStore"
+import UserChat from "./UserChat.vue"
 
 const props = defineProps({
   word: {
@@ -127,16 +141,38 @@ onMounted(async () => {
     loading.value = false
   }
 })
+
+const previousNotes = computed(() =>
+  notesStore.getNotesHistoryForWord(props.word)
+)
+
+const formatDate = (date) => {
+  return new Date(date).toLocaleDateString("EN")
+}
+
+const handleMeaningItemClick = (item) => {
+  const meaningText = `${item.word}: ${item.meaning} (${item.dictionary})`
+  noteText.value += noteText.value ? `\n\n${meaningText}` : meaningText
+}
 </script>
 
 <style scoped>
-.fixed-height {
-  height: 100px; /* or whatever height you prefer */
+.chat-meaning-overflow {
+  height: calc(100vh - 100px);
+  overflow: auto;
+}
+/* .fixed-height {
+  height: 100px;
   overflow: hidden;
 }
 
-.tarteel-meaning-overflow {
-  height: calc(50vh - 100px);
-  overflow: auto;
+
+
+.border-r {
+  border-right: 1px solid rgb(0 0 0 / 0.12);
 }
+
+.border-l {
+  border-left: 1px solid rgb(0 0 0 / 0.12);
+} */
 </style>
