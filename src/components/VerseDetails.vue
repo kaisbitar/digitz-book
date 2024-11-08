@@ -31,11 +31,20 @@
     </v-row>
     <v-row>
       <v-col cols="12" md="6">
+        <v-btn
+          v-if="isWordMeaningOpen"
+          icon="mdi-close"
+          elevation="0"
+          class="mr-auto d-block"
+          @click="isWordMeaningOpen = false"
+        />
         <WordMeaning
           :word="currentWord"
-          :expanded="wordExpanded"
-          :class="wordExpanded ? 'word-meaning-verse-details' : 'fixed-height'"
-          @click="wordExpanded = !wordExpanded"
+          :isWordMeaningOpen="isWordMeaningOpen"
+          :class="
+            isWordMeaningOpen ? 'word-meaning-verse-details' : 'fixed-height'
+          "
+          @click="isWordMeaningOpen = !isWordMeaningOpen"
         />
       </v-col>
 
@@ -68,7 +77,7 @@ const props = defineProps({
 const currentWord = ref("")
 const currentMeaning = ref([])
 const isLoading = ref(false)
-const wordExpanded = ref(false)
+const isWordMeaningOpen = ref(false)
 
 const targetVerse = computed(() => store.target)
 

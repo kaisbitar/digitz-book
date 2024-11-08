@@ -24,6 +24,7 @@ export default createVuetify({
     themes: {
       light: {
         colors: {
+          background: "#f9f9f9",
           primary: "#1976D2", // A vibrant blue
           secondary: "#26A69A", // A teal color
           success: "#4CAF50", // A green color for success messages

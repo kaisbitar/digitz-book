@@ -27,18 +27,24 @@
     </v-card>
 
     <v-slide-y-transition mode="out-in">
-      <v-card
+      <v-list
         v-if="isWordMeaningOpen"
         :key="results[0]?.meaning[0]?.word"
         :class="isWordMeaningOpen ? 'tarteel-meaning-overflow' : 'fixed-height'"
       >
-        <v-card-item v-for="(item, index) in results[0]?.meaning">
-          <v-card-title class="ml-2 count-key-item">
+        <v-list-item
+          v-for="(item, index) in results[0]?.meaning"
+          @click="emit('meaningItemClick', item)"
+          :key="index"
+        >
+          <v-list-item-title class="ml-2 count-key-item">
             {{ item.word }}
-          </v-card-title>
+          </v-list-item-title>
 
-          <v-card-text class="mb-n5">{{ item.meaning }}</v-card-text>
-          <span class="text-caption count-key-item">{{ item.dictionary }}</span>
+          {{ item.meaning }}
+          <v-list-item-subtitle class="text-caption count-key-item">{{
+            item.dictionary
+          }}</v-list-item-subtitle>
 
           <v-divider
             v-if="index < results[0]?.meaning.length - 1"
@@ -46,8 +52,8 @@
             length="50%"
             class="mt-7"
           />
-        </v-card-item>
-      </v-card>
+        </v-list-item>
+      </v-list>
     </v-slide-y-transition>
   </div>
 </template>
@@ -63,7 +69,7 @@ import {
 
 const store = useStore()
 const { highlight } = useInputFiltering()
-const emit = defineEmits(["update:isWordMeaningOpen"])
+const emit = defineEmits(["update:isWordMeaningOpen", "meaningItemClick"])
 const props = defineProps({
   word: {
     type: String,
@@ -137,8 +143,8 @@ watch(
   max-width: 100%;
 }
 
-.tarteel-meaning-overflow {
+/* .tarteel-meaning-overflow {
   height: calc(50vh - 100px);
   overflow: auto;
-}
+} */
 </style>

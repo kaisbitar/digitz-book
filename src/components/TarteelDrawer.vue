@@ -8,9 +8,12 @@
       <v-card elevation="2" class="mb-1">
         <v-toolbar>
           <v-toolbar-title>ترتيل</v-toolbar-title>
-          <v-btn icon @click="handleClose">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
+          <AppToggleBtn
+            isActive
+            activeIcon="mdi-menu-open"
+            size="default"
+            @toggle="handleClose"
+          />
         </v-toolbar>
         <TarteelList
           :items="storedSearches"

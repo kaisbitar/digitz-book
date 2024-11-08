@@ -20,9 +20,8 @@
         :key="btn.icon"
         :class="btn.class"
         :icon="btn.icon"
-        :elevation="0"
+        :elevation="1"
         size="small"
-        variant="tonal"
         clickable
         :tabindex="btn.tabindex"
         @click="btn.action"

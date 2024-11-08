@@ -64,7 +64,7 @@ const countData = computed(() => ({
     value: parseInt(props.item.verseNumberToQuran),
     color: "verse-number-to-quran",
   },
-  عدة: {
+  مرقوم: {
     value: props.item.verseText.split(" ").length,
     color: "word-count",
   },

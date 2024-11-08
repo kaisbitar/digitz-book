@@ -30,9 +30,12 @@
         size="default"
         @toggle="toggleDetailView"
       />
-      <v-btn icon @click="localDrawer = false">
-        <v-icon>mdi-close</v-icon>
-      </v-btn>
+      <AppToggleBtn
+        isActive
+        activeIcon="mdi-menu-open"
+        size="default"
+        @toggle="localDrawer = false"
+      />
     </v-toolbar>
 
     <Table
