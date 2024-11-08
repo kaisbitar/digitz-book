@@ -1,7 +1,7 @@
 <template>
   <Table
     v-if="!isMobileView"
-    class="verses-overview"
+    class="verses-overview mt-1"
     activeItemClass="active-verse-table"
     :tableHeight="'calc(100vh - 64px - 48px - 110px)'"
     :tableData="paginatedItems"
@@ -101,6 +101,11 @@ const versesHeaders = ref([
   {
     title: "مصحف",
     key: "verseNumberToQuran",
+    width: "20px",
+  },
+  {
+    title: "مرقوم",
+    key: "verseValue",
     width: "20px",
   },
 ])

@@ -1,6 +1,7 @@
 <template>
   <v-navigation-drawer
-    v-model="store.tarteelDrawer"
+    :model-value="drawerState"
+    @update:model-value="updateDrawerState"
     location="left"
     width="250"
   >
@@ -145,6 +146,12 @@ const scrollToTop = async () => {
 const handleClose = async () => {
   await nextTick()
   store.setTarteelDrawer(false)
+}
+
+const drawerState = computed(() => store.getTarteelDrawer)
+
+const updateDrawerState = (value) => {
+  store.setTarteelDrawer(value)
 }
 
 onMounted(() => {})

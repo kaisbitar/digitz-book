@@ -1,6 +1,8 @@
-import { useStore } from "../stores/appStore"
+import { useDataStore } from "../stores/dataStore"
 
 export function useCounting() {
+  const dataStore = useDataStore()
+  const QuranLetters = computed(() => dataStore.getQuranLetterCounts)
   const countVerseWords = (verseText) => {
     if (verseText === "") return 0
     return verseText.split(" ").length
@@ -24,9 +26,33 @@ export function useCounting() {
     return count
   }
 
+  const calculateWordValue = (word) => {
+    // Create ordered array of letters by frequency
+    const letterRanking = Object.entries(QuranLetters.value)
+      .sort(([, a], [, b]) => b - a)
+      .reduce((acc, [letter, _], index) => {
+        acc[letter] = index + 1
+        return acc
+      }, {})
+
+    return word
+      .split("")
+      .reduce((sum, letter) => sum + (letterRanking[letter] || 0), 0)
+  }
+
+  const calculateVerseValue = (verseText) => {
+    if (!verseText) return 0
+
+    return verseText
+      .split(" ")
+      .reduce((sum, word) => sum + calculateWordValue(word), 0)
+  }
+
   return {
     countWordMatch,
     countVerseWords,
     countVerseLetters,
+    calculateWordValue,
+    calculateVerseValue,
   }
 }

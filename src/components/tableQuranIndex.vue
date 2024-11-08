@@ -1,11 +1,13 @@
 <template>
   <v-navigation-drawer
-    v-model="localDrawer"
+    :model-value="drawerState"
+    @update:model-value="updateDrawerState"
     :width="isDetailView ? 550 : 270"
     :location="'left'"
   >
     <v-toolbar dark>
       <AppToggleBtn
+        v-if="!isInputVisible"
         :isActive="isInputVisible"
         btnText="ترتيل السور"
         inActiveIcon="mdi-magnify"
@@ -14,16 +16,19 @@
         @toggle="isInputVisible = !isInputVisible"
       />
       <AppInputField
-        class="flex-grow-1 mt-n3 pr-2"
+        class="flex-grow-1 mx-2"
         v-if="isInputVisible"
+        :modelValue="search"
         :fieldInput="search"
         :fieldPlaceHolder="'السور'"
         :dataToShow="indexData.length - 1"
         :type="'QuranCount'"
+        @close="isInputVisible = false"
         @update:fieldInput="updateSearchValue"
       />
-      <v-spacer></v-spacer>
+      <v-spacer v-if="!isInputVisible"></v-spacer>
       <AppToggleBtn
+        v-if="!isInputVisible"
         :isActive="isDetailView"
         inActiveIcon="mdi-list-box-outline"
         activeIcon="mdi-list-box"
@@ -31,10 +36,11 @@
         @toggle="toggleDetailView"
       />
       <AppToggleBtn
+        v-if="!isInputVisible"
         isActive
         activeIcon="mdi-menu-open"
         size="default"
-        @toggle="localDrawer = false"
+        @toggle="store.setIndexDrawer(false)"
       />
     </v-toolbar>
 
@@ -70,29 +76,14 @@ const store = useStore()
 const dataStore = useDataStore()
 const display = useDisplay()
 
-const props = defineProps({
-  drawer: {
-    type: Boolean,
-    required: true,
-  },
-})
-
-const emit = defineEmits(["update:drawer"])
-
-const localDrawer = ref(props.drawer)
 const isInputVisible = ref(false)
 const isDetailView = ref(false)
 
-watch(
-  () => props.drawer,
-  (newValue) => {
-    localDrawer.value = newValue
-  }
-)
+const drawerState = computed(() => store.getIndexDrawer)
 
-watch(localDrawer, (newValue) => {
-  emit("update:drawer", newValue)
-})
+const updateDrawerState = (value) => {
+  store.setIndexDrawer(value)
+}
 
 const indexData = computed(() => dataStore.getQuranIndex)
 const indexHeaders = ref([
@@ -118,7 +109,7 @@ const handleSelectedSura = (sura) => {
     router.push({ name: "sura" })
   }
   if (isMobile.value) {
-    localDrawer.value = false
+    store.setIndexDrawer(false)
   }
   if (sura.fileName === targetedFileName.value) return
 

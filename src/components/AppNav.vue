@@ -24,6 +24,7 @@
       size="default"
       @toggle="isInputVisible = !isInputVisible"
     />
+
     <v-spacer></v-spacer>
     <AppToggleBtn
       v-if="!(isMobile && isInputVisible)"
@@ -31,7 +32,7 @@
       :badgeContent="tarteelBadgeContent"
       btnText="تراتيل"
       :btnVariant="getButtonVariant('tarteel')"
-      :isActive="openDrawers.tarteel"
+      :isActive="tarteelDrawerState"
       inActiveIcon="mdi-database-search-outline"
       activeIcon="mdi-database-search"
       size="default"
@@ -42,7 +43,7 @@
       class="mx-2 mx-sm-4"
       btnText="السور"
       :btnVariant="getButtonVariant('index')"
-      :isActive="openDrawers.index"
+      :isActive="indexDrawerState"
       inActiveIcon="mdi-book-open-outline"
       activeIcon="mdi-book-open"
       size="default"
@@ -52,7 +53,7 @@
   </v-app-bar>
   <v-divider></v-divider>
 
-  <TableQuranIndex v-model:drawer="indexDrawer" />
+  <TableQuranIndex />
 
   <AppNavDrawer
     v-model="drawer"
@@ -107,21 +108,22 @@ const getButtonVariant = (drawerName) => {
 
 const store = useStore()
 
+const tarteelDrawerState = computed(() => store.getTarteelDrawer)
+const indexDrawerState = computed(() => store.getIndexDrawer)
+
 const toggleDrawer = (drawerName) => {
   if (drawerName === "tarteel") {
-    store.setTarteelDrawer(!store.tarteelDrawer)
+    openDrawers.value.tarteel = !tarteelDrawerState.value
+    store.setTarteelDrawer(!tarteelDrawerState.value)
     return
   }
-  openDrawers.value[drawerName] = !openDrawers.value[drawerName]
   if (drawerName === "index") {
-    indexDrawer.value = openDrawers.value.index
+    openDrawers.value.index = !indexDrawerState.value
+    console.log(indexDrawerState.value)
+    store.setIndexDrawer(!indexDrawerState.value)
     return
   }
 }
-
-watch(indexDrawer, (newValue) => {
-  openDrawers.value.index = newValue
-})
 
 watch(router.currentRoute, async () => {
   if (router.currentRoute.value.name === "tarteel") {
