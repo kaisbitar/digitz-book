@@ -1,20 +1,17 @@
 <template>
-  <!-- <div
-    v-if="ratl && ratl.verses"
-    class="d-flex flex-column h-100 pa-0 pt-4 px-4"
-  > -->
-  <template class="d-flex align-center pt-4 pb-4 px-4">
+  <div v-if="ratl" class="d-flex pt-4 pb-4 px-4">
     <TarteelHeader
-      :word="ratl.word"
-      :verses-count="ratl.verses.length"
-      :occurrence-count="ratl.count"
+      class=""
+      :word="wordData.word"
+      :verses-count="wordData.versesCount"
+      :occurrence-count="wordData.count"
       @update:isWordMeaningOpen="isWordMeaningOpen = $event"
     />
     <v-btn
       v-if="!isWordMeaningOpen"
       icon="mdi-pencil-outline"
       elevation="1"
-      class="mr-auto"
+      class="mr-auto d-block"
       @click="isUserNoteOpen = true"
     />
     <v-btn
@@ -24,49 +21,53 @@
       class="mr-auto"
       @click="isWordMeaningOpen = false"
     />
-  </template>
-
-  <v-divider class="mx-auto" width="100%"></v-divider>
-
-  <WordMeaning
-    :word="ratl.word"
-    class="px-4"
-    :isWordMeaningOpen="isWordMeaningOpen"
-    :class="isWordMeaningOpen ? 'tarteel-meaning-overflow' : 'fixed-height'"
-    @update:isWordMeaningOpen="isWordMeaningOpen = $event"
-    @click="isWordMeaningOpen = true"
-    @meaningItemClick="isUserNoteOpen = true"
-  />
-
-  <UserNote v-model="isUserNoteOpen" :word="ratl.word" :verses="ratl.verses" />
-
-  <div
-    class="tarteel-container tarteel-board-overflow"
-    @scroll="handleInfiniteScroll"
-  >
-    <VerseCardItem
-      v-for="(verse, index) in paginatedItems"
-      :item="verse"
-      :key="verse.originalIndex"
-      :index="index"
-      :textToHighlight="ratl.word"
-      :active="parseInt(targetedVerseIndex) === verse.verseNumberToQuran"
-      :class="{
-        'active-verse-text':
-          parseInt(targetedVerseIndex) === verse.verseNumberToQuran,
-      }"
-      @click="handleSelectedVerse(verse, ratl.word)"
-    />
-    <div class="mt-5 mb-3 text-center">صدق الله العظيم</div>
   </div>
-  <!-- </div> -->
 
-  <!-- <template v-else>
+  <template v-if="ratl">
+    <v-divider class="mx-auto" width="100%"></v-divider>
+
+    <WordMeaning
+      :word="wordData.word"
+      class="px-4"
+      :isWordMeaningOpen="isWordMeaningOpen"
+      :class="isWordMeaningOpen ? 'tarteel-meaning-overflow' : 'fixed-height'"
+      @update:isWordMeaningOpen="isWordMeaningOpen = $event"
+      @click="isWordMeaningOpen = true"
+      @meaningItemClick="isUserNoteOpen = true"
+    />
+
+    <UserNote
+      v-model="isUserNoteOpen"
+      :word="wordData.word"
+      :verses="wordData.verses"
+    />
+
+    <div
+      class="tarteel-container tarteel-board-overflow"
+      @scroll="handleInfiniteScroll"
+    >
+      <VerseCardItem
+        v-for="(verse, index) in paginatedItems"
+        :item="verse"
+        :key="verse.originalIndex"
+        :index="index"
+        :textToHighlight="wordData.word"
+        :active="parseInt(targetedVerseIndex) === verse.verseNumberToQuran"
+        :class="{
+          'active-verse-text':
+            parseInt(targetedVerseIndex) === verse.verseNumberToQuran,
+        }"
+        @click="handleSelectedVerse(verse, wordData.word)"
+      />
+      <div class="mt-5 mb-3 text-center">صدق الله العظيم</div>
+    </div>
+  </template>
+  <template v-else>
     <NoData
       text="ورتل القرآن ترتيلا.."
       icon="mdi-book-open-page-variant-outline"
     />
-  </template> -->
+  </template>
 </template>
 
 <script setup>
@@ -86,8 +87,25 @@ const notesStore = useNotesStore()
 const isUserNoteOpen = ref(false)
 const isWordMeaningOpen = ref(false)
 
-const searchedTarteels = computed(() => tarteelStore.getStoredTarteels)
 const ratl = computed(() => tarteelStore.getSelectedRatl)
+
+const wordData = computed(() => {
+  if (!ratl.value)
+    return {
+      word: "",
+      versesCount: 0,
+      count: 0,
+      verses: [],
+    }
+
+  return {
+    word: ratl.value.word || "",
+    versesCount: ratl.value.verses?.length || 0,
+    count: ratl.value.count || 0,
+    verses: ratl.value.verses || [],
+  }
+})
+
 const targetedVerseIndex = computed(() => store.getTarget?.verseNumberToQuran)
 
 const { paginatedItems, handleInfiniteScroll, isLoading } =
@@ -120,27 +138,9 @@ watch(
   }
 )
 
-watch(
-  () => searchedTarteels.value,
-  () => {
-    handleScrolling()
-  }
-)
-
 onMounted(async () => {
   await nextTick()
   handleScrolling()
-
-  // if (ratl.value?.word) {
-  //   try {
-  //     const note = await notesStore.getNoteForWord(ratl.value.word)
-  //     if (note) {
-  //       // Do something with the note, maybe show it
-  //     }
-  //   } catch (error) {
-  //     console.error("Failed to load note:", error)
-  //   }
-  // }
 })
 </script>
 
