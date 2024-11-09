@@ -7,6 +7,7 @@
     :hasError="inputHasError"
     :hasSuccess="inputHasSuccess"
     :loading="isLoading"
+    :autoFocus="false"
     @update:modelValue="handleInput($event)"
     @clear="handleClear"
     @focus="onFocus"
@@ -18,6 +19,8 @@
       :tarteel="tarteel"
       :currentWordsList="currentWordsList"
       :totalWordsCount="totalWordsCount"
+      :suggestions="suggestions"
+      :hasSuggestions="hasSuggestions"
       :currentLetter="currentLetter"
       :checkedItems="checkedItems"
       :isLoading="isLoading"
@@ -57,12 +60,15 @@ const {
   currentWordsList,
   totalWordsCount,
   checkedItems,
+  suggestions,
+  hasSuggestions,
   handleInputChange,
   toggleMenu,
   clearInput,
   updateFilteredList,
   storeTarteels,
   updateCheckedItems,
+  applySuggestion,
 } = useAutoComplete(dataStore, tarteelStore)
 
 const inputHasError = ref(false)

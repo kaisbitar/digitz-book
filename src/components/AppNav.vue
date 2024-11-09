@@ -83,9 +83,8 @@ const display = useDisplay()
 const activeRoute = computed(() => router.currentRoute.value.name)
 
 const isInputVisible = ref(false)
-const isRail = ref(true)
-const drawer = ref(true)
-const indexDrawer = ref(false)
+const isRail = ref(false)
+const drawer = ref(false)
 
 const tarteelBadgeContent = computed(() => {
   return String(
@@ -125,12 +124,12 @@ const toggleDrawer = (drawerName) => {
   }
 }
 
-watch(router.currentRoute, async () => {
-  if (router.currentRoute.value.name === "tarteel") {
-    await nextTick()
-    store.setTarteelDrawer(true)
-  }
-})
+// watch(router.currentRoute, async () => {
+//   if (router.currentRoute.value.name === "tarteel") {
+//     await nextTick()
+//     store.setTarteelDrawer(true)
+//   }
+// })
 
 const isMobile = computed(() => {
   return display.smAndDown.value

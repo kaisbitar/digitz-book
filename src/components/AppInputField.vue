@@ -8,7 +8,7 @@
       :error="hasError"
       density="compact"
       prepend-inner-icon="mdi-magnify"
-      autofocus
+      :autofocus="autoFocus"
       hide-details
       variant="underlined"
       @click:clear="handleClear"
@@ -55,6 +55,10 @@ const props = defineProps({
   hasSuccess: {
     type: Boolean,
     default: false,
+  },
+  autoFocus: {
+    type: Boolean,
+    default: true,
   },
 })
 

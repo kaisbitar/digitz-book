@@ -67,7 +67,8 @@ const getCharVariations = (char: string): string[] => {
     آ: ["آ", "ء", "ا"],
     ه: ["ه", "ة"],
     ت: ["ت", "ة"],
-    ى: ["ى", "ي"],
+    ة: ["ت", "ة"],
+    ى: ["ى", "ي", "ئ", "ء"],
     و: ["و", "ؤ"],
     ي: ["ي", "ئ", "ى", "ء"],
     إ: ["ا", "أ", "إ", "آ", "ٱ"],
@@ -88,7 +89,18 @@ const generateSearchRegex = (search: string): RegExp => {
   return new RegExp(searchRegex, "g")
 }
 
-// Helper function to score a word based on its similarity to the search term
+const generateStrictSearchRegex = (search: string): RegExp => {
+  const allowedExtras = '[يوا]'  
+  const searchRegex = search
+    .split("")
+    .map((char) => {
+      const variations = getCharVariations(char).join("")
+      return `[${variations}](?:${allowedExtras}*?)`
+    })
+    .join("")
+  return new RegExp(searchRegex, "g")
+}
+
 const scoreWord = (word: string, search: string): number => {
   if (word.startsWith(search)) return 2
   if (word.includes(search)) return 1
@@ -225,16 +237,4 @@ export function countDistinctWords(
   return distinctWords.size
 }
 
-// Generate regex pattern with possible variations
-const generateStrictSearchRegex = (search: string): RegExp => {
-  const allowedExtras = '[يوا]'  // Only these letters are allowed as additions
-  const searchRegex = search
-    .split("")
-    .map((char) => {
-      const variations = getCharVariations(char).join("")
-      // Allow each character to be optional (?) but maintain sequence
-      return `[${variations}](?:${allowedExtras}*?)`
-    })
-    .join("")
-  return new RegExp(searchRegex, "g")
-}
+
