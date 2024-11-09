@@ -61,6 +61,16 @@
               <v-icon start icon="mdi-google" class="mr-2"></v-icon>
               {{ authStore.loading ? "Signing in..." : "Continue with Google" }}
             </v-btn>
+
+            <v-btn
+              color="warning"
+              variant="text"
+              size="small"
+              @click="handleReset"
+              class="mt-4"
+            >
+              مشكلة بتسجيل الدخول؟ انقر هنا لإصلاحه
+            </v-btn>
           </v-form>
         </v-card>
       </v-col>
@@ -79,6 +89,7 @@ const router = useRouter()
 const email = ref("")
 const password = ref("")
 const error = ref("")
+const showResetButton = ref(false)
 
 const handleSubmit = async () => {
   error.value = ""
@@ -102,6 +113,21 @@ const handleGoogleLogin = async () => {
     if (error) throw error
   } catch (error) {
     console.error("Google sign-in error:", error)
+  }
+}
+
+// Show reset button after a failed login attempt
+const handleLoginError = () => {
+  showResetButton.value = true
+}
+
+const handleReset = async () => {
+  try {
+    await authStore.forceRefresh()
+  } catch (error) {
+    console.error("Reset error:", error)
+    // As a last resort, redirect to login with a clean slate
+    window.location.href = "/login"
   }
 }
 </script>

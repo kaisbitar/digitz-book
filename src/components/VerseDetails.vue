@@ -31,12 +31,10 @@
     </v-row>
     <v-row>
       <v-col cols="12" md="6">
-        <v-btn
-          v-if="isWordMeaningOpen"
-          icon="mdi-close"
-          elevation="0"
-          class="mr-auto d-block"
-          @click="isWordMeaningOpen = false"
+        <WordMeaningHeader
+          :word="currentWord"
+          :isWordMeaningOpen="isWordMeaningOpen"
+          @close="isWordMeaningOpen = false"
         />
         <WordMeaning
           :word="currentWord"
