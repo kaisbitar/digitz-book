@@ -1,5 +1,5 @@
-import { ref, computed, watchEffect, onUnmounted } from "vue"
-import { filterWords } from "@/utils/autoWordFilter"
+import { ref, computed } from "vue"
+import { filterWords } from "@/utils/wordFilter"
 
 function debounce(func, wait) {
   let timeout
@@ -21,17 +21,33 @@ export function useAutoComplete(dataStore, tarteelStore) {
   const currentLetter = ref("")
   const filteredList = ref([])
   const checkedItems = ref([])
+  const suggestions = ref([])
 
   const currentWordsList = computed(() => filteredList.value)
   const totalWordsCount = computed(() => currentWordsList.value.length)
+  const hasSuggestions = computed(() => suggestions.value.length > 0)
 
   const updateFilteredWords = (word) => {
     const filteredResults = filterWords(word, dataStore.getOneQuranFile)
+
+    if (filteredResults.suggestions) {
+      suggestions.value = filteredResults.suggestions
+      filteredList.value = []
+      return
+    }
+
+    suggestions.value = []
     filteredList.value = filteredResults.results.map((item) => ({
       word: item.word,
       count: item.count,
       verses: item.verses,
     }))
+  }
+
+  const applySuggestion = (suggestedWord) => {
+    tarteel.value = suggestedWord
+    suggestions.value = []
+    return handleInputChange(suggestedWord)
   }
 
   const updateFilteredVerses = (sentence) => {
@@ -122,11 +138,14 @@ export function useAutoComplete(dataStore, tarteelStore) {
     currentWordsList,
     totalWordsCount,
     checkedItems,
+    suggestions,
+    hasSuggestions,
     handleInputChange,
     toggleMenu,
     clearInput,
     updateFilteredList,
     storeTarteels,
     updateCheckedItems,
+    applySuggestion,
   }
 }

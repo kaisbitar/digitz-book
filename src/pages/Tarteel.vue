@@ -1,66 +1,22 @@
 <template>
-  <div v-if="ratl" class="d-flex pt-4 pb-4 px-4">
-    <TarteelHeader
-      class=""
-      :word="wordData.word"
-      :verses-count="wordData.versesCount"
-      :occurrence-count="wordData.count"
-      @update:isWordMeaningOpen="isWordMeaningOpen = $event"
-    />
-    <v-btn
-      v-if="!isWordMeaningOpen"
-      icon="mdi-pencil-outline"
-      elevation="1"
-      class="mr-auto d-block"
-      @click="isUserNoteOpen = true"
-    />
-    <v-btn
-      v-if="isWordMeaningOpen"
-      icon="mdi-close"
-      elevation="1"
-      class="mr-auto"
-      @click="isWordMeaningOpen = false"
-    />
-  </div>
-
   <template v-if="ratl">
-    <v-divider class="mx-auto" width="100%"></v-divider>
-
-    <WordMeaning
-      :word="wordData.word"
-      class="px-4"
+    <TarteelOverview :selectedTarteel="selectedTarteel" />
+    <TarteelDetail
+      :ratl="ratl"
       :isWordMeaningOpen="isWordMeaningOpen"
-      :class="isWordMeaningOpen ? 'tarteel-meaning-overflow' : 'fixed-height'"
+      :isUserNoteOpen="isUserNoteOpen"
+      :paginatedItems="paginatedItems"
+      :targetedVerseIndex="targetedVerseIndex"
+      :handleInfiniteScroll="handleInfiniteScroll"
       @update:isWordMeaningOpen="isWordMeaningOpen = $event"
-      @click="isWordMeaningOpen = true"
-      @meaningItemClick="isUserNoteOpen = true"
+      @update:isUserNoteOpen="isUserNoteOpen = $event"
+      @verseSelected="({ verse, word }) => handleSelectedVerse(verse, word)"
     />
-
     <UserNote
       v-model="isUserNoteOpen"
-      :word="wordData.word"
-      :verses="wordData.verses"
+      :word="ratlData.word"
+      :verses="ratlData.verses"
     />
-
-    <div
-      class="tarteel-container tarteel-board-overflow"
-      @scroll="handleInfiniteScroll"
-    >
-      <VerseCardItem
-        v-for="(verse, index) in paginatedItems"
-        :item="verse"
-        :key="verse.originalIndex"
-        :index="index"
-        :textToHighlight="wordData.word"
-        :active="parseInt(targetedVerseIndex) === verse.verseNumberToQuran"
-        :class="{
-          'active-verse-text':
-            parseInt(targetedVerseIndex) === verse.verseNumberToQuran,
-        }"
-        @click="handleSelectedVerse(verse, wordData.word)"
-      />
-      <div class="mt-5 mb-3 text-center">صدق الله العظيم</div>
-    </div>
   </template>
   <template v-else>
     <NoData
@@ -88,8 +44,11 @@ const isUserNoteOpen = ref(false)
 const isWordMeaningOpen = ref(false)
 
 const ratl = computed(() => tarteelStore.getSelectedRatl)
+const selectedTarteel = computed(
+  () => tarteelStore.getStoredTarteels[tarteelStore.getSelectedTarteelIndex]
+)
 
-const wordData = computed(() => {
+const ratlData = computed(() => {
   if (!ratl.value)
     return {
       word: "",

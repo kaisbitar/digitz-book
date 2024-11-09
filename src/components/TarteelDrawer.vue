@@ -16,7 +16,7 @@
             @toggle="handleClose"
           />
         </v-toolbar>
-        <TarteelList
+        <TarteelDrawerList
           :items="storedSearches"
           :selectedItem="selectedTarteelIndex"
           @selecteItem="handleSelectedSearch"
@@ -24,7 +24,7 @@
         />
       </v-card>
       <div class="ratls-container tarteelDrawerRef">
-        <TarteelList
+        <TarteelDrawerList
           v-if="selectedRatls?.length > 1"
           :items="selectedRatls"
           :selectedItem="selectedRatlIndex"
@@ -37,9 +37,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from "vue"
 import { useRouter } from "vue-router"
-import { useWindow } from "@/mixins/window"
 import { useTarteelStore } from "@/stores/tarteelStore"
 import { useStore } from "@/stores/appStore"
 import { useDisplay } from "vuetify"
@@ -108,7 +106,6 @@ const handleSelectedSearch = (index) => {
   navigateToTarteel()
   if (selectedTarteelIndex.value !== index) {
     updateSelectedSearch(index)
-    // scrollToTop()
   }
 }
 
@@ -128,19 +125,11 @@ const handleSelectedRatl = (index) => {
 const deleteTarteel = (index) => {
   tarteelStore.removeTarteelItem(index)
   handleSelectedSearch(index)
-  // scrollToTop()
 }
 
 const deleteRatl = (index) => {
   tarteelStore.removeRatl(index)
   updateSelectedRatl(index)
-}
-
-const tarteelDrawerRef = ref(null)
-const scrollToTop = async () => {
-  // await nextTick()
-  // if (!tarteelDrawerRef.value) return
-  // tarteelDrawerRef.value.scrollTop = 0
 }
 
 const handleClose = async () => {

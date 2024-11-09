@@ -27,14 +27,6 @@
         offset-y="0"
         inline
       ></v-badge>
-      <!-- <v-badge
-        :content="`${item.count} ${getCoutingTypeLabel(item.coutingType)}`"
-        :color="item.coutingType"
-        class="word-count"
-        offset-x="5"
-        offset-y="0"
-        inline
-      ></v-badge> -->
       <v-btn
         icon="mdi-close"
         variant="text"
