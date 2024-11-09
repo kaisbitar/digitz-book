@@ -44,6 +44,23 @@
             <v-alert v-if="error" type="error" class="mt-3">
               {{ error }}
             </v-alert>
+
+            <v-divider class="my-4">
+              <v-chip variant="text">or</v-chip>
+            </v-divider>
+
+            <v-btn
+              block
+              variant="outlined"
+              color="primary"
+              :loading="authStore.loading"
+              :disabled="authStore.loading"
+              @click="handleGoogleLogin"
+              class="mb-4"
+            >
+              <v-icon start icon="mdi-google" class="mr-2"></v-icon>
+              {{ authStore.loading ? "Signing in..." : "Continue with Google" }}
+            </v-btn>
           </v-form>
         </v-card>
       </v-col>
@@ -78,4 +95,15 @@ const handleSubmit = async () => {
   // Redirect after successful login
   router.push("/tafsiri")
 }
+
+const handleGoogleLogin = async () => {
+  try {
+    const { error } = await authStore.signInWithProvider("google")
+    if (error) throw error
+  } catch (error) {
+    console.error("Google sign-in error:", error)
+  }
+}
 </script>
+
+<style scoped></style>
