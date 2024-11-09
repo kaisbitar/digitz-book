@@ -181,5 +181,38 @@ export const useAuthStore = defineStore("auth", {
       const notesStore = useNotesStore()
       await notesStore.loadUserNotes()
     },
+
+    async signInWithProvider(provider) {
+      this.loading = true
+      try {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider,
+          options: {
+            redirectTo: `${window.location.origin}/auth/callback`,
+          },
+        })
+        if (error) throw error
+        return { data, error: null }
+      } catch (error) {
+        console.error("Provider sign-in error:", error)
+        return { data: null, error }
+      } finally {
+        this.loading = false
+      }
+    },
+
+    async handleAuthCallback() {
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.getSession()
+      if (error) throw error
+
+      if (session) {
+        this.user = session.user
+        console.log("Session user:", this.user)
+        await this.initializeUserSettings()
+      }
+    },
   },
 })

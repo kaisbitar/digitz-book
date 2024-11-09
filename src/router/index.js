@@ -49,6 +49,21 @@ const routes = [
     component: () => import("@/components/Profile/UserProfile.vue"),
     meta: { requiresAuth: true },
   },
+  {
+    path: "/auth/callback",
+    name: "AuthCallback",
+    component: () => import("@/views/AuthCallback.vue"),
+    beforeEnter: async (to, from, next) => {
+      const authStore = useAuthStore()
+      try {
+        await authStore.handleAuthCallback()
+        next("/tafsiri")
+      } catch (error) {
+        console.error("Auth callback error:", error)
+        next("/login")
+      }
+    },
+  },
 ]
 
 const router = createRouter({

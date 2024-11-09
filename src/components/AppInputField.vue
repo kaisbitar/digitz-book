@@ -18,7 +18,7 @@
       @focus="$emit('focus')"
     >
       <template v-slot:append-inner>
-        <v-icon class="close-btn" icon="mdi-close" @click="$emit('close')" />
+        <!-- <v-icon class="close-btn" icon="mdi-close" @click="$emit('close')" /> -->
         <slot name="append-input-items"></slot>
       </template>
     </v-text-field>
