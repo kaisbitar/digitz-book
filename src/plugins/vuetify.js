@@ -91,6 +91,8 @@ export default createVuetify({
           "on-surface": "#424242", // Dark gray
           highlight: "#FFC400", // Amber
           "secondary-highlight": "#64B5F6", // Light blue
+          "active-row": "#f2f1f1",
+          "count-key-item": "#747474",
           "on-highlight": "#212121", // Very dark gray
           "verse-count": "#651FFFD9", // Vivid deep purple with 85% opacity
           "word-count": "#2979FFD9", // Vivid blue with 85% opacity
