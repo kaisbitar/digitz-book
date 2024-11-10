@@ -27,7 +27,7 @@ import { useInputFiltering } from "@/mixins/inputFiltering"
 import { useCounting } from "@/mixins/counting"
 
 const { highlight } = useInputFiltering()
-const { calculateVerseValue } = useCounting()
+const { calculateValue } = useCounting()
 
 const props = defineProps({
   item: Object,
@@ -68,7 +68,7 @@ const countData = computed(() => ({
     color: "verse-number-to-quran",
   },
   مرقوم: {
-    value: calculateVerseValue(props.item.verseText),
+    value: calculateValue(props.item.verseText),
     color: "word-count",
   },
 }))

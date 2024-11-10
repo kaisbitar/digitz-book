@@ -1,16 +1,14 @@
-import { useDataStore } from "../stores/dataStore"
-
-// Add new calculation variations mapping
 const calculationVariations = {
-  ا: ["ا", "أ", "إ", "آ", "ٱ", "ء"],
+  ا: ["ا", "أ", "إ", "آ", "ء"],
   آ: ["ا"],
   إ: ["ا"],
   أ: ["ا"],
   ء: ["ا"],
   و: ["و", "ؤ"],
   ؤ: ["و"],
-  ى: ["ى", "ي"],
   ي: ["ي", "ى", "ئ"],
+  ى: ["ي"],
+  ئ: ["ي"],
   ه: ["ه", "ة"],
   ة: ["ه"],
 }
@@ -19,29 +17,65 @@ const getCalculationVariations = (char) => {
   return calculationVariations[char] || [char]
 }
 
-export function useCounting() {
-  const dataStore = useDataStore()
-  const QuranLetters = computed(() => dataStore.getQuranLetterCounts)
+const fixedLetterValues = {
+  ا: 1, // 56762
+  ل: 2, // 38102
+  ن: 3, // 27268
+  م: 4, // 26735
+  و: 5, // 25676
+  ي: 6, // 23151
+  ه: 7, // 17194
+  ر: 8, // 12403
+  ب: 9, // 11491
+  ت: 10, // 10520
+  ك: 11, // 10497
+  ع: 12, // 9405
+  ف: 13, // 8747
+  ق: 14, // 7034
+  س: 15, // 6010
+  د: 16, // 5991
+  ذ: 17, // 4932
+  ح: 18, // 4140
+  ج: 19, // 3317
+  خ: 20, // 2497
+  ش: 21, // 2124
+  ص: 22, // 2074
+  ض: 23, // 1686
+  ز: 24, // 1599
+  ث: 25, // 1414
+  ط: 26, // 1273
+  غ: 27, // 1221
+  ظ: 28, // 853
+}
 
-  const calculateWordValue = (word) => {
-    const letterRanking = Object.entries(QuranLetters.value)
-      .sort(([, a], [, b]) => b - a)
-      .reduce((acc, [letter, _], index) => {
-        acc[letter] = index + 1
-        return acc
-      }, {})
+export const calculateValue = (text) => {
+  if (!text) return 0
 
-    return word.split("").reduce((sum, letter) => {
-      const variations = getCalculationVariations(letter)
-      const lowestRank = Math.min(
-        ...variations.map(
-          (variant) => letterRanking[variant] || Number.MAX_VALUE
-        )
-      )
-      return sum + (lowestRank || 0)
+  if (text.includes(" ")) {
+    return text.split(" ").reduce((total, word) => {
+      return total + calculateSingleWordValue(word)
     }, 0)
   }
 
+  return calculateSingleWordValue(text)
+}
+
+const calculateSingleWordValue = (word) => {
+  return word.split("").reduce((sum, letter) => {
+    const variations = getCalculationVariations(letter)
+
+    for (const variant of variations) {
+      if (fixedLetterValues[variant]) {
+        return sum + fixedLetterValues[variant]
+      }
+    }
+
+    console.warn(`No value found for letter: ${letter}`)
+    return sum
+  }, 0)
+}
+
+export function useCounting() {
   const countVerseWords = (verseText) => {
     if (verseText === "") return 0
     return verseText.split(" ").length
@@ -66,20 +100,11 @@ export function useCounting() {
     return count
   }
 
-  const calculateVerseValue = (verseText) => {
-    if (!verseText) return 0
-
-    return verseText
-      .split(" ")
-      .reduce((sum, word) => sum + calculateWordValue(word), 0)
-  }
-
   return {
     countWordMatch,
     countVerseWords,
     countVerseLetters,
-    calculateWordValue,
-    calculateVerseValue,
-    getCalculationVariations, // Export the helper function if needed elsewhere
+    calculateValue,
+    getCalculationVariations,
   }
 }
