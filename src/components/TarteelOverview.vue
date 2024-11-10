@@ -4,20 +4,37 @@
       <v-col cols="12">
         <v-card variant="flat">
           <v-card-item>
-            <v-row align="center">
-              <v-col cols="auto">
-                <v-avatar size="48">
+            <v-row align="center" justify="space-between">
+              <v-col cols="auto" class="d-flex align-center">
+                <v-avatar size="48" class="me-3">
                   <v-icon icon="mdi-database-search-outline" size="24" />
                 </v-avatar>
+                <div>
+                  <v-card-title class="pa-0">
+                    <span>ترتيل</span> "{{ selectedTarteel.inputText }}"
+                  </v-card-title>
+                  <div class="text-body-2">
+                    {{ selectedTarteel.results.length || 0 }}
+                    <span class="text-caption count-key-item">رتل</span>
+                  </div>
+                </div>
               </v-col>
-              <v-col>
-                <v-card-title
-                  ><span>ترتيل</span> "{{
-                    selectedTarteel.inputText
-                  }}"</v-card-title
+              <v-col cols="5">
+                <AutoBoard
+                  v-if="showAutoBoard"
+                  :placeholder="'أدخل رتلا'"
+                  :showLetterChart="false"
+                  :isAddingToExisting="true"
+                />
+                <v-btn
+                  v-else
+                  prepend-icon="mdi-plus"
+                  color="primary"
+                  variant="tonal"
+                  @click="handleNewSearch"
                 >
-                {{ selectedTarteel.results.length || 0 }}
-                <span class="text-caption count-key-item"> رتل </span>
+                  بحث جديد
+                </v-btn>
               </v-col>
             </v-row>
           </v-card-item>
@@ -87,6 +104,11 @@ watch(currentView, () => overviewScroll())
 onMounted(() => {
   overviewScroll()
 })
+
+const showAutoBoard = ref(false)
+const handleNewSearch = () => {
+  showAutoBoard.value = true
+}
 </script>
 
 <style scoped>

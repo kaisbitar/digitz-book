@@ -117,7 +117,16 @@ export function useAutoComplete(dataStore, tarteelStore) {
     filteredList.value = newItems
   }
 
-  const storeTarteels = (items) => {
+  const storeTarteels = (items, isAddingToExisting) => {
+    if (isAddingToExisting) {
+      tarteelStore.addToExistingTarteel({
+        inputText: tarteel.value,
+        results: items,
+      })
+      tarteelStore.addToTarteelHistory(tarteel.value)
+      return
+    }
+
     tarteelStore.setStoredTarteels({
       inputText: tarteel.value,
       results: items,

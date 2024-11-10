@@ -3,7 +3,7 @@
     <v-text-field
       v-bind="$attrs"
       :model-value="modelValue"
-      :label="`ترتيل ${fieldPlaceHolder}`"
+      :label="`${fieldPlaceHolder}`"
       :color="hasSuccess ? 'success' : 'primary'"
       :error="hasError"
       density="compact"
