@@ -36,6 +36,7 @@
           :ratl="ratl"
           :index="index"
           @select="handleRatlSelect"
+          @deleteRatl="deleteRatl"
         />
       </v-col>
     </v-row>
@@ -48,6 +49,7 @@ import { useRoute } from "vue-router"
 import { useTarteelStore } from "@/stores/tarteelStore"
 import WordCardItem from "./WordCardItem.vue"
 import { useWindow } from "@/mixins/window"
+import { useStore } from "@/stores/appStore"
 
 const route = useRoute()
 const currentView = computed(() => route.query.view)
@@ -61,11 +63,18 @@ const props = defineProps({
 })
 const emit = defineEmits(["ratl-selected"])
 const tarteelStore = useTarteelStore()
-
+const store = useStore()
 const handleRatlSelect = (ratl, index) => {
   tarteelStore.setSelectedRatl(ratl)
   tarteelStore.setSelectedRatlIndex(index)
   emit("ratl-selected")
+}
+
+const deleteRatl = (index) => {
+  tarteelStore.removeRatl(index)
+  tarteelStore.setSelectedRatlIndex(index)
+  tarteelStore.setSelectedRatl(props.selectedTarteel.results[index])
+  store.setTarget(props.selectedTarteel.results[index].verses[0])
 }
 
 const overviewScroll = async () => {

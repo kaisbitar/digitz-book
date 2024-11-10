@@ -13,7 +13,7 @@
     </span>
 
     <span class="text-h4 mr-3 count-key-item"
-      >{{ calculateWordValue(word) }}
+      >{{ calculateValue(word) }}
       <span class="text-caption mr-n1 count-key-item">مرقوم</span>
     </span>
   </div>
@@ -22,7 +22,7 @@
 <script setup>
 import { useCounting } from "@/mixins/counting"
 
-const { calculateWordValue } = useCounting()
+const { calculateValue } = useCounting()
 
 defineProps({
   word: {

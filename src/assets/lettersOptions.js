@@ -17,7 +17,8 @@ export const lettersOptions = () => {
         const category = w.globals.labels[dataPointIndex]
         return `
           <div class="custom-tooltip d-flex">
-            <div class="tipInfo tipInfo2 text-sm-h3 text-h4 pa-5">${category} ${value}<span class="text-caption">مرة</span></div>
+            <div class="text-h2  text-h4 pa-1">${dataPointIndex + 1}</div>
+            <div class="text-h2 font-weight-bold  text-sm-h3 text-h4 pa-5">${category} <span class="text-caption">${value} مرة</span></div>
           </div>
         `
       },
@@ -46,13 +47,13 @@ export const lettersOptions = () => {
       },
     },
     dataLabels: {
-      enabled: true,
+      enabled: false,
       offsetY: -30,
       background: {
         enabled: true,
         foreColor: "#616161",
         color: "#000",
-        padding: 4,
+        padding: 3,
         borderRadius: 2,
         borderWidth: 1,
         borderColor: "#616161",
