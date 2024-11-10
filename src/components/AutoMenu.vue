@@ -39,7 +39,7 @@
       >
         <LettersChart
           class="opacity-transition"
-          v-if="!showAutoVerseList && !showAutoWordsList"
+          v-if="!showAutoVerseList && !showAutoWordsList && showLetterChart"
           :letter="currentLetter"
         />
       </v-lazy>
@@ -74,6 +74,7 @@ const props = defineProps({
   checkedItems: Array,
   suggestions: Array,
   hasSuggestions: Boolean,
+  showLetterChart: Boolean,
 })
 
 const emit = defineEmits([

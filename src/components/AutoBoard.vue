@@ -1,7 +1,7 @@
 <template>
   <AppInputField
     :modelValue="tarteel"
-    :fieldPlaceHolder="'القرآن'"
+    :fieldPlaceHolder="placeholder"
     :dataToShow="`${totalWordsCount} كلمة`"
     :type="'word-count'"
     :hasError="inputHasError"
@@ -24,6 +24,7 @@
       :currentLetter="currentLetter"
       :checkedItems="checkedItems"
       :isLoading="isLoading"
+      :showLetterChart="showLetterChart"
       @update:menu="menu = $event"
       @update:isLoading="isLoading = $event"
       @update:items="updateFilteredList"
@@ -75,6 +76,20 @@ const inputHasError = ref(false)
 const inputHasSuccess = ref(false)
 const isLoading = ref(false)
 
+const props = defineProps({
+  placeholder: {
+    type: String,
+    default: "القرآن",
+  },
+  showLetterChart: {
+    type: Boolean,
+    default: true,
+  },
+  isAddingToExisting: {
+    type: Boolean,
+    default: false,
+  },
+})
 const emit = defineEmits(["update:isInputVisible", "submitTarteel"])
 
 const handleInput = async (value) => {
@@ -89,7 +104,8 @@ const handleTarteel = () => {
   if (tarteel.value === "" || currentWordsList.value.length === 0) return
 
   storeTarteels(
-    checkedItems.value.length > 0 ? checkedItems.value : currentWordsList.value
+    checkedItems.value.length > 0 ? checkedItems.value : currentWordsList.value,
+    props.isAddingToExisting
   )
 
   updateCheckedItems([])

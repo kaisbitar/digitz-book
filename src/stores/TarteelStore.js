@@ -94,5 +94,29 @@ export const useTarteelStore = defineStore("tarteel", {
         this.selectedRatl = null
       }
     },
+    addToExistingTarteel(newSearch) {
+      const currentTarteel = this.storedTarteels[this.selectedTarteelIndex]
+
+      // Convert the current tarteel to array format if it's not already
+      if (!Array.isArray(currentTarteel.searches)) {
+        // Initialize the searches array with the original search
+        currentTarteel.searches = [
+          {
+            inputText: currentTarteel.inputText,
+            results: currentTarteel.results,
+          },
+        ]
+      }
+
+      // Add the new search
+      currentTarteel.searches.push({
+        inputText: newSearch.inputText,
+        results: newSearch.results,
+      })
+
+      // Update the store
+      this.storedTarteels[this.selectedTarteelIndex] = currentTarteel
+      console.log("storedTarteels", this.storedTarteels)
+    },
   },
 })
