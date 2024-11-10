@@ -57,7 +57,7 @@ defineEmits(["selecteItem", "deleteItem"])
 
 const getCoutingTypeLabel = (coutingType) => {
   if (coutingType === "word-count") {
-    return "رتل"
+    return "مشتق"
   }
   if (coutingType === "verse-count") {
     return "آية"

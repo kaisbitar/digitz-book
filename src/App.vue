@@ -39,11 +39,6 @@ html {
   position: relative;
 }
 
-.sura-board-overflow {
-  height: calc(100vh - 170px);
-  overflow: auto;
-}
-
 .sura-chart-overflow {
   height: calc(100vh - 100px);
   overflow: auto;
@@ -108,7 +103,8 @@ html {
 .active-verse-table,
 .active-verse-text,
 .active-index-item,
-.active-tarteel-item {
+.active-tarteel-item,
+.active-word-card-item {
   background: rgb(var(--v-theme-active-row), 100%) !important;
   .verse-card-item-text {
     // text-shadow: 0px 0px 3px rgb(var(--v-theme-on-active-row), 0);
