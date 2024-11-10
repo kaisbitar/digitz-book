@@ -23,7 +23,7 @@
           @deleteItem="deleteTarteel"
         />
       </v-card>
-      <div class="ratls-container tarteelDrawerRef">
+      <!-- <div class="ratls-container tarteelDrawerRef">
         <TarteelDrawerList
           v-if="selectedRatls?.length > 1"
           :items="selectedRatls"
@@ -31,7 +31,7 @@
           @selecteItem="handleSelectedRatl"
           @deleteItem="deleteRatl"
         />
-      </div>
+      </div> -->
     </div>
   </v-navigation-drawer>
 </template>

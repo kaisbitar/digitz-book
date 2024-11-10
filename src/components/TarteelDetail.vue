@@ -1,61 +1,69 @@
 <template>
-  <div v-if="ratl" class="d-flex pt-4 pb-4 px-4">
-    <TarteelHeader
-      class=""
-      :word="word"
-      :verses-count="versesCount"
-      :occurrence-count="count"
-      @update:isWordMeaningOpen="$emit('update:isWordMeaningOpen', $event)"
-    />
-    <v-btn
-      v-if="!isWordMeaningOpen"
-      icon="mdi-pencil-outline"
-      elevation="1"
-      class="mr-auto d-block"
-      @click="$emit('update:isUserNoteOpen', true)"
-    />
-    <v-btn
-      v-if="isWordMeaningOpen"
-      icon="mdi-close"
-      elevation="1"
-      class="mr-auto"
-      @click="$emit('update:isWordMeaningOpen', false)"
-    />
-  </div>
-
-  <template v-if="ratl">
-    <v-divider class="mx-auto" width="100%"></v-divider>
-
-    <WordMeaning
-      :word="word"
-      class="px-4"
-      :isWordMeaningOpen="isWordMeaningOpen"
-      :class="isWordMeaningOpen ? 'tarteel-meaning-overflow' : 'fixed-height'"
-      @update:isWordMeaningOpen="$emit('update:isWordMeaningOpen', $event)"
-      @click="$emit('update:isWordMeaningOpen', true)"
-      @meaningItemClick="$emit('update:isUserNoteOpen', true)"
-    />
-
-    <div
-      class="tarteel-container tarteel-board-overflow"
-      @scroll="handleInfiniteScroll"
-    >
-      <VerseCardItem
-        v-for="(verse, index) in paginatedItems"
-        :item="verse"
-        :key="verse.originalIndex"
-        :index="index"
-        :textToHighlight="word"
-        :active="parseInt(targetedVerseIndex) === verse.verseNumberToQuran"
-        :class="{
-          'active-verse-text':
-            parseInt(targetedVerseIndex) === verse.verseNumberToQuran,
-        }"
-        @click="handleSelectedVerse(verse)"
+  <div>
+    <div v-if="ratl" class="d-flex pt-4 pb-4 px-4">
+      <v-btn
+        v-if="!isWordMeaningOpen"
+        icon="mdi-pencil-outline"
+        elevation="1"
+        class="ml-auto d-block"
+        @click="$emit('update:isUserNoteOpen', true)"
       />
-      <div class="mt-5 mb-3 text-center">صدق الله العظيم</div>
+      <TarteelHeader
+        :word="word"
+        :verses-count="versesCount"
+        :occurrence-count="count"
+        @update:isWordMeaningOpen="$emit('update:isWordMeaningOpen', $event)"
+      />
+      <v-btn
+        icon="mdi-arrow-left"
+        variant="text"
+        class="mr-auto d-block"
+        @click="$emit('back-to-overview')"
+      />
+
+      <v-btn
+        v-if="isWordMeaningOpen"
+        icon="mdi-close"
+        elevation="1"
+        class="mr-auto"
+        @click="$emit('update:isWordMeaningOpen', false)"
+      />
     </div>
-  </template>
+
+    <template v-if="ratl">
+      <v-divider class="mx-auto" width="100%"></v-divider>
+
+      <WordMeaning
+        :word="word"
+        class="px-4"
+        :isWordMeaningOpen="isWordMeaningOpen"
+        :class="isWordMeaningOpen ? 'tarteel-meaning-overflow' : 'fixed-height'"
+        @update:isWordMeaningOpen="$emit('update:isWordMeaningOpen', $event)"
+        @click="$emit('update:isWordMeaningOpen', true)"
+        @meaningItemClick="$emit('update:isUserNoteOpen', true)"
+      />
+
+      <div
+        class="tarteel-container tarteel-board-overflow"
+        @scroll="handleInfiniteScroll"
+      >
+        <VerseCardItem
+          v-for="(verse, index) in paginatedItems"
+          :item="verse"
+          :key="verse.originalIndex"
+          :index="index"
+          :textToHighlight="word"
+          :active="parseInt(targetedVerseIndex) === verse.verseNumberToQuran"
+          :class="{
+            'active-verse-text':
+              parseInt(targetedVerseIndex) === verse.verseNumberToQuran,
+          }"
+          @click="handleSelectedVerse(verse)"
+        />
+        <div class="mt-5 mb-3 text-center">صدق الله العظيم</div>
+      </div>
+    </template>
+  </div>
 </template>
 
 <script setup>
@@ -92,6 +100,7 @@ const emit = defineEmits([
   "update:isWordMeaningOpen",
   "update:isUserNoteOpen",
   "verseSelected",
+  "back-to-overview",
 ])
 
 // Computed properties from ratl

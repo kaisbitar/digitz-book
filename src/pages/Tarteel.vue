@@ -1,13 +1,19 @@
 <template>
   <template v-if="ratl">
-    <TarteelOverview :selectedTarteel="selectedTarteel" />
+    <TarteelOverview
+      v-show="!isDetailView"
+      :selectedTarteel="selectedTarteel"
+      @ratl-selected="showDetail"
+    />
     <TarteelDetail
+      v-show="isDetailView"
       :ratl="ratl"
       :isWordMeaningOpen="isWordMeaningOpen"
       :isUserNoteOpen="isUserNoteOpen"
       :paginatedItems="paginatedItems"
       :targetedVerseIndex="targetedVerseIndex"
       :handleInfiniteScroll="handleInfiniteScroll"
+      @back-to-overview="showOverview"
       @update:isWordMeaningOpen="isWordMeaningOpen = $event"
       @update:isUserNoteOpen="isUserNoteOpen = $event"
       @verseSelected="({ verse, word }) => handleSelectedVerse(verse, word)"
@@ -29,7 +35,7 @@
 <script setup>
 import { ref, computed, onMounted, nextTick } from "vue"
 import { useStore } from "@/stores/appStore"
-import { useRouter } from "vue-router"
+import { useRouter, useRoute } from "vue-router"
 import { useTarteelStore } from "@/stores/tarteelStore"
 import { useWindow } from "@/mixins/window"
 import { useIndexedPagination } from "@/hooks/useIndexedPagination"
@@ -40,6 +46,11 @@ const router = useRouter()
 const store = useStore()
 const notesStore = useNotesStore()
 
+const route = useRoute()
+
+const isDetailView = computed(() => {
+  return route.query.view === "detail"
+})
 const isUserNoteOpen = ref(false)
 const isWordMeaningOpen = ref(false)
 
@@ -101,6 +112,14 @@ onMounted(async () => {
   await nextTick()
   handleScrolling()
 })
+
+const showDetail = () => {
+  router.push({ query: { ...route.query, view: "detail" } })
+}
+
+const showOverview = () => {
+  router.push({ query: { ...route.query, view: "overview" } })
+}
 </script>
 
 <style scoped>
