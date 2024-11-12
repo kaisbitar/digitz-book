@@ -4,7 +4,7 @@
       <v-btn
         v-if="!isWordMeaningOpen"
         icon="mdi-pencil-outline"
-        elevation="1"
+        variant="tonal"
         class="ml-auto d-block"
         @click="$emit('update:isUserNoteOpen', true)"
       />
@@ -16,7 +16,8 @@
       />
       <v-btn
         icon="mdi-arrow-left"
-        variant="text"
+        variant="tonal"
+        size="small"
         class="mr-auto d-block"
         @click="$emit('back-to-overview')"
       />
@@ -24,7 +25,8 @@
       <v-btn
         v-if="isWordMeaningOpen"
         icon="mdi-close"
-        elevation="1"
+        variant="tonal"
+        size="small"
         class="mr-auto"
         @click="$emit('update:isWordMeaningOpen', false)"
       />

@@ -50,9 +50,4 @@ onMounted(async () => {
 })
 </script>
 
-<style scoped>
-.sura-board-overflow {
-  height: calc(100vh - 170px);
-  overflow: auto;
-}
-</style>
+<style></style>

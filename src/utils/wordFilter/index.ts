@@ -20,7 +20,6 @@ export function filterWords(
   const formattedResults = formatResults(sortedResults)
 
   if (formattedResults.results.length === 0) {
-    console.log(getSuggestions(searchTerm, oneQuranFile))
     return {
       ...formattedResults,
       suggestions: getSuggestions(searchTerm, oneQuranFile)

@@ -65,6 +65,11 @@ const routes = [
     },
   },
   {
+    path: "/duality",
+    name: "duality-test",
+    component: () => import("@/components/DualityTest.vue"),
+  },
+  {
     path: "/tarteel",
     children: [
       {

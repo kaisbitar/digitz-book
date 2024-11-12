@@ -2,56 +2,31 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12">
-        <v-card variant="flat">
-          <v-card-item>
-            <v-row align="center" justify="space-between">
-              <v-col cols="auto" class="d-flex align-center">
-                <v-avatar size="48" class="me-3">
-                  <v-icon icon="mdi-database-search-outline" size="24" />
-                </v-avatar>
-                <div>
-                  <v-card-title class="pa-0">
-                    <span>ترتيل</span> "{{ selectedTarteel.inputText }}"
-                  </v-card-title>
-                  <div class="text-body-2">
-                    {{ selectedTarteel.results.length || 0 }}
-                    <span class="text-caption count-key-item">رتل</span>
-                  </div>
-                </div>
-              </v-col>
-              <v-col cols="5">
-                <AutoBoard
-                  v-if="showAutoBoard"
-                  :placeholder="'أدخل رتلا'"
-                  :showLetterChart="false"
-                  :isAddingToExisting="true"
-                />
-                <v-btn
-                  v-else
-                  prepend-icon="mdi-plus"
-                  color="primary"
-                  variant="tonal"
-                  @click="handleNewSearch"
-                >
-                  بحث جديد
-                </v-btn>
-              </v-col>
-            </v-row>
-          </v-card-item>
-        </v-card>
+        <TarteelOverviewHeader :selectedTarteel="selectedTarteel" />
       </v-col>
     </v-row>
 
     <v-row>
       <v-col cols="12" class="tarteel-overview-overflow">
-        <WordCardItem
-          v-for="(ratl, index) in selectedTarteel.results"
-          :class="{
-            'active-word-card-item': tarteelStore.selectedRatlIndex === index,
-          }"
-          :key="index"
-          :ratl="ratl"
-          :index="index"
+        <!-- Original search -->
+        <TarteelSearchResults
+          :search="selectedTarteel"
+          :searchIndex="0"
+          :selectedRatlIndex="tarteelStore.selectedRatlIndex"
+          :selectedSearchIndex="tarteelStore.selectedSearchIndex"
+          :isOriginal="true"
+          @select="handleRatlSelect"
+          @deleteRatl="deleteRatl"
+        />
+
+        <!-- Additional searches -->
+        <TarteelSearchResults
+          v-for="(search, index) in selectedTarteel.searches?.slice(1) || []"
+          :key="`search-${index}`"
+          :search="search"
+          :searchIndex="index + 1"
+          :selectedRatlIndex="tarteelStore.selectedRatlIndex"
+          :selectedSearchIndex="tarteelStore.selectedSearchIndex"
           @select="handleRatlSelect"
           @deleteRatl="deleteRatl"
         />
@@ -67,6 +42,8 @@ import { useTarteelStore } from "@/stores/tarteelStore"
 import WordCardItem from "./WordCardItem.vue"
 import { useWindow } from "@/mixins/window"
 import { useStore } from "@/stores/appStore"
+import TarteelOverviewHeader from "./TarteelOverviewHeader.vue"
+import TarteelSearchResults from "./TarteelSearchResults.vue"
 
 const route = useRoute()
 const currentView = computed(() => route.query.view)
@@ -81,17 +58,26 @@ const props = defineProps({
 const emit = defineEmits(["ratl-selected"])
 const tarteelStore = useTarteelStore()
 const store = useStore()
-const handleRatlSelect = (ratl, index) => {
+
+const handleRatlSelect = (ratl, index, searchIndex = 0) => {
   tarteelStore.setSelectedRatl(ratl)
   tarteelStore.setSelectedRatlIndex(index)
+  tarteelStore.setSelectedSearchIndex(searchIndex)
   emit("ratl-selected")
 }
 
-const deleteRatl = (index) => {
-  tarteelStore.removeRatl(index)
+const deleteRatl = (index, searchIndex = 0) => {
+  tarteelStore.removeRatl(index, searchIndex)
   tarteelStore.setSelectedRatlIndex(index)
-  tarteelStore.setSelectedRatl(props.selectedTarteel.results[index])
-  store.setTarget(props.selectedTarteel.results[index].verses[0])
+  tarteelStore.setSelectedSearchIndex(searchIndex)
+
+  const currentSearch =
+    searchIndex === 0
+      ? props.selectedTarteel.results
+      : props.selectedTarteel.searches[searchIndex].results
+
+  tarteelStore.setSelectedRatl(currentSearch[index])
+  store.setTarget(currentSearch[index].verses[0])
 }
 
 const overviewScroll = async () => {
@@ -104,16 +90,16 @@ watch(currentView, () => overviewScroll())
 onMounted(() => {
   overviewScroll()
 })
-
-const showAutoBoard = ref(false)
-const handleNewSearch = () => {
-  showAutoBoard.value = true
-}
 </script>
 
 <style scoped>
 .tarteel-overview-overflow {
   height: calc(100vh - 170px);
   overflow: auto;
+}
+
+.additional-search {
+  border-top: 1px solid var(--v-border-color);
+  padding-top: 1rem;
 }
 </style>
