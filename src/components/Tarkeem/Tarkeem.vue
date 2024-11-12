@@ -1,27 +1,10 @@
 <template>
   <v-container>
     <v-card>
-      <v-card-title class="d-flex align-center justify-space-between">
-        <div class="d-flex align-center">
-          {{
-            analysisType === "exact"
-              ? "تحليل الثنائيات الحرفية المتساوية"
-              : analysisType === "duality"
-              ? "تحليل الثنائيات الحرفية المتتابعة"
-              : analysisType === "nineteen"
-              ? "تحليل القسمة على 19"
-              : "تحليل القسمة على الأعداد"
-          }}
-        </div>
-        <div class="d-flex align-center">
-          <v-btn-toggle v-model="analysisType" mandatory class="me-2">
-            <v-btn value="exact" size="small"> متساوية </v-btn>
-            <v-btn value="duality" size="small"> متتابعة </v-btn>
-            <v-btn value="nineteen" size="small"> 19 </v-btn>
-            <v-btn value="divisibility" size="small"> الأعداد </v-btn>
-          </v-btn-toggle>
-        </div>
-      </v-card-title>
+      <AnalysisHeader
+        :analysis-type="analysisType"
+        @update:type="analysisType = $event"
+      />
 
       <v-card-text>
         <v-data-table
@@ -29,9 +12,11 @@
           :items="tableData"
           hover
           class="elevation-1"
-          :height="600"
+          :height="560"
         >
-          <!-- ... existing item template ... -->
+          <template v-slot:item.verseText="{ item }">
+            <VerseTextDisplay :item="item" />
+          </template>
         </v-data-table>
       </v-card-text>
     </v-card>
@@ -39,14 +24,24 @@
 </template>
 
 <script setup>
+import { ref, computed, watch, onMounted } from "vue"
+import { useDataStore } from "@/stores/dataStore"
 import {
-  analyzeQuranDuality,
+  analyzeDuality,
   analyzeExactSequences,
   analyzeGoldenRatio,
   analyzeNumberDivisibility,
 } from "@/utils/dualityUtils"
 
-// ... existing imports and setup ...
+// Core state
+const dataStore = useDataStore()
+const analyzedVerses = ref([])
+const analysisType = ref("exact")
+
+// Computed properties
+const showDivisibilityColumns = computed(() =>
+  ["nineteen", "divisibility"].includes(analysisType.value)
+)
 
 const getHeaders = computed(() => {
   const baseHeaders = [
@@ -65,10 +60,7 @@ const getHeaders = computed(() => {
     },
   ]
 
-  if (
-    analysisType.value === "nineteen" ||
-    analysisType.value === "divisibility"
-  ) {
+  if (showDivisibilityColumns.value) {
     baseHeaders.push(
       {
         title: "مجموع الحروف",
@@ -88,23 +80,6 @@ const getHeaders = computed(() => {
   return baseHeaders
 })
 
-// Update watch handler
-watch(analysisType, async (newType) => {
-  const quranFile = dataStore.getOneQuranFile
-  if (quranFile) {
-    analyzedVerses.value =
-      newType === "exact"
-        ? analyzeExactSequences(quranFile)
-        : newType === "duality"
-        ? analyzeQuranDuality(quranFile)
-        : newType === "nineteen"
-        ? analyzeGoldenRatio(quranFile)
-        : analyzeNumberDivisibility(quranFile)
-    console.log("Analyzed Verses:", analyzedVerses.value)
-  }
-})
-
-// Update tableData computed
 const tableData = computed(() => {
   if (!analyzedVerses.value?.length) return []
 
@@ -125,5 +100,32 @@ const tableData = computed(() => {
         factor: pattern.factor,
       }))
     )
+})
+
+// Watchers and lifecycle hooks
+watch(analysisType, async (newType) => {
+  const quranFile = dataStore.getOneQuranFile
+  if (!quranFile) return
+
+  const analysisMap = {
+    exact: analyzeExactSequences,
+    duality: analyzeDuality,
+    nineteen: analyzeGoldenRatio,
+    divisibility: analyzeNumberDivisibility,
+  }
+
+  analyzedVerses.value = analysisMap[newType](quranFile)
+})
+
+onMounted(async () => {
+  try {
+    await dataStore.getQuranData()
+    const quranFile = dataStore.getOneQuranFile
+    if (quranFile) {
+      analyzedVerses.value = analyzeExactSequences(quranFile)
+    }
+  } catch (error) {
+    console.error("Error loading data:", error)
+  }
 })
 </script>

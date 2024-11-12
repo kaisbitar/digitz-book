@@ -1,33 +1,40 @@
-export const analyzeQuranDuality = (quranFile) => {
-  return quranFile.map((verse) => {
+export const analyzeDuality = (quranFile) => {
+  const firstFiftyVerses = quranFile.slice(0, 50)
+
+  return firstFiftyVerses.map((verse) => {
     const words = verse.verseText.split(" ")
     const patterns = []
 
-    for (let i = 0; i < words.length; i++) {
-      for (let len = 2; len <= words.length - i; len++) {
-        const firstSequence = words.slice(i, i + len).join(" ")
-        const firstLetterCount = countLetters(firstSequence)
+    for (let start = 0; start < words.length; start++) {
+      for (
+        let firstLength = 2;
+        firstLength <= words.length - start;
+        firstLength++
+      ) {
+        const firstSequence = words.slice(start, start + firstLength).join(" ")
+        const firstCount = countLetters(firstSequence)
 
-        const remainingStart = i + len
+        const secondStart = start + firstLength
 
-        const remainingWords = words.length - remainingStart
-        for (let secondLen = 2; secondLen <= remainingWords; secondLen++) {
+        for (
+          let secondLength = 2;
+          secondLength <= words.length - secondStart;
+          secondLength++
+        ) {
           const secondSequence = words
-            .slice(remainingStart, remainingStart + secondLen)
+            .slice(secondStart, secondStart + secondLength)
             .join(" ")
-          const secondLetterCount = countLetters(secondSequence)
+          const secondCount = countLetters(secondSequence)
 
-          const difference = secondLetterCount - firstLetterCount
-
-          if (Math.abs(difference) <= 1) {
+          if (secondCount === firstCount) {
             patterns.push({
               firstSequence,
               secondSequence,
-              firstIndices: [i, i + len - 1],
-              secondIndices: [remainingStart, remainingStart + secondLen - 1],
-              letterCount: firstLetterCount,
-              secondLetterCount: secondLetterCount,
-              difference: difference,
+              firstIndices: [start, start + firstLength - 1],
+              secondIndices: [secondStart, secondStart + secondLength - 1],
+              letterCount: firstCount,
+              secondLetterCount: secondCount,
+              difference: 0,
             })
           }
         }

@@ -67,7 +67,7 @@ const routes = [
   {
     path: "/duality",
     name: "duality-test",
-    component: () => import("@/components/DualityTest.vue"),
+    component: () => import("@/components/Tarkeem/Tarkeem.vue"),
   },
   {
     path: "/tarteel",
