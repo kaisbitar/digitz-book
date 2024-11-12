@@ -5,6 +5,7 @@
         v-if="!isWordMeaningOpen"
         icon="mdi-pencil-outline"
         variant="tonal"
+        size="small"
         class="ml-auto d-block"
         @click="$emit('update:isUserNoteOpen', true)"
       />
