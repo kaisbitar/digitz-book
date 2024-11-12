@@ -7,10 +7,17 @@
   >
     <v-card-text>
       <v-row align="center">
-        <v-col cols="4">
+        <v-col cols="11">
           <div class="text-h6">{{ ratl.word }}</div>
         </v-col>
-        <v-btn @click.stop="$emit('deleteRatl', index)">Delete</v-btn>
+
+        <v-col cols="1">
+          <v-btn
+            @click.stop="$emit('deleteRatl', index)"
+            icon="mdi-close"
+            variant="text"
+          ></v-btn>
+        </v-col>
       </v-row>
 
       <span class="text-caption ml-4 count-value-item">

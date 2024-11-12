@@ -102,9 +102,9 @@ const targetNumberToQuran = computed(() => {
   return store.getTarget.verseNumberToQuran
 })
 
-watch(targetNumberToQuran, () => {
-  scrollToActiveVerse()
-})
+// watch(targetNumberToQuran, () => {
+//   scrollToActiveVerse()
+// })
 
 const onVerseSelected = (verse) => {
   setTargetVerse(verse)
@@ -145,6 +145,7 @@ const handleClickUp = () => navigateVerses("up")
 const handleClickDown = () => navigateVerses("down")
 
 const navigateVerses = (direction) => {
+  scrollToActiveVerse()
   if (!filteredVerses.value.length) {
     return
   }
