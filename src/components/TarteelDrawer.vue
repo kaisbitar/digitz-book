@@ -3,7 +3,7 @@
     :model-value="drawerState"
     @update:model-value="updateDrawerState"
     location="left"
-    width="250"
+    width="270"
   >
     <div class="d-flex flex-column fill-height">
       <v-card elevation="2" class="mb-1">
@@ -16,22 +16,23 @@
             @toggle="handleClose"
           />
         </v-toolbar>
-        <TarteelDrawerList
+        <TarteelDrawerFolder
           :items="storedSearches"
           :selectedItem="selectedTarteelIndex"
+          :itemIcon="'mdi-database-search-outline'"
           @selecteItem="handleSelectedSearch"
           @deleteItem="deleteTarteel"
         />
       </v-card>
-      <!-- <div class="ratls-container tarteelDrawerRef">
+      <div class="ratls-container tarteelDrawerRef">
         <TarteelDrawerList
-          v-if="selectedRatls?.length > 1"
           :items="selectedRatls"
           :selectedItem="selectedRatlIndex"
+          :itemIcon="'mdi-file-outline'"
           @selecteItem="handleSelectedRatl"
           @deleteItem="deleteRatl"
         />
-      </div> -->
+      </div>
     </div>
   </v-navigation-drawer>
 </template>
@@ -43,6 +44,7 @@ import { useStore } from "@/stores/appStore"
 import { useDisplay } from "vuetify"
 
 const router = useRouter()
+const route = useRoute()
 const display = useDisplay()
 const store = useStore()
 
@@ -90,10 +92,9 @@ const navigateToTarteel = () => {
 
 const updateSelectedSearch = (index) => {
   if (storedSearches.value.length === 0) return
-  tarteelStore.setSearchedTarteel(index)
-  tarteelStore.setSelectedRatlIndex(0)
-  tarteelStore.setSelectedRatl(selectedSearch.value.results[0])
+  tarteelStore.setSelectedTarteelIndex(index)
   store.setTarget(selectedSearch.value.results[0].verses[0])
+  updateSelectedRatl(0)
 }
 
 const updateSelectedRatl = (index) => {
@@ -104,17 +105,19 @@ const updateSelectedRatl = (index) => {
 
 const handleSelectedSearch = (index) => {
   navigateToTarteel()
-  if (selectedTarteelIndex.value !== index) {
-    updateSelectedSearch(index)
-  }
+  if (selectedTarteelIndex.value === index) return
+  updateSelectedSearch(index)
 }
 
 const isMobile = computed(() => {
   return display.mobile.value
 })
 
-const handleSelectedRatl = (index) => {
+const handleSelectedRatl = async (index) => {
   navigateToTarteel()
+  await nextTick()
+  router.push({ name: "tarteel", query: { view: "overview" } })
+
   if (isMobile.value) {
     store.setTarteelDrawer(false)
   }

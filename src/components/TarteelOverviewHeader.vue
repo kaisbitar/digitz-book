@@ -8,7 +8,7 @@
           </v-avatar>
           <div>
             <v-card-title class="pa-0">
-              <span>ترتيل</span> "{{ selectedTarteel.inputText }}"
+              "{{ selectedTarteel.inputText }}"
             </v-card-title>
             <div class="text-body-2">
               {{ selectedTarteel.results.length || 0 }}

@@ -10,14 +10,14 @@
     @click="$emit('selecteItem', index)"
   >
     <template v-slot:prepend>
-      <v-list-item-title class="ps-6">
+      <v-list-item-title>
         <v-icon :icon="itemIcon" size="20" class="me-2 count-key-item" />
         {{ item.word }}
       </v-list-item-title>
+      <!-- <span class="text-caption ms-2"> {{ item.count }} آية </span> -->
     </template>
 
     <template v-slot:append>
-      <!-- <span class="text-caption ms-2"> {{ item.count }} </span> -->
       <v-badge
         :content="item.count"
         :color="item.coutingType"
@@ -26,14 +26,6 @@
         offset-y="0"
         inline
       ></v-badge>
-      <!-- <v-badge
-        :content="`${getCoutingTypeLabel(item.coutingType)}`"
-        :color="item.coutingType"
-        class="word-count"
-        offset-x="5"
-        offset-y="0"
-        inline
-      ></v-badge> -->
       <v-btn
         icon="mdi-close"
         variant="text"

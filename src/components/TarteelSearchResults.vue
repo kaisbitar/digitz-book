@@ -8,19 +8,28 @@
       {{ isOriginal ? "البحث الأصلي:" : "بحث إضافي:" }} "{{ search.inputText }}"
     </v-chip>
 
-    <WordCardItem
-      v-for="(ratl, index) in search.results"
-      :key="`${isOriginal ? 'original' : 'additional'}-${searchIndex}-${index}`"
-      :class="{
-        'active-word-card-item':
-          selectedRatlIndex === index && selectedSearchIndex === searchIndex,
-      }"
-      :ratl="ratl"
-      :index="index"
-      :searchIndex="searchIndex"
-      @select="(ratl, index) => $emit('select', ratl, index, searchIndex)"
-      @deleteRatl="(index) => $emit('deleteRatl', index, searchIndex)"
-    />
+    <v-row dense>
+      <v-col
+        v-for="(ratl, index) in search.results"
+        :key="`${
+          isOriginal ? 'original' : 'additional'
+        }-${searchIndex}-${index}`"
+        cols="12"
+        sm="6"
+        md="4"
+        lg="4"
+      >
+        <WordCardItem
+          :class="{
+            'active-word-card-item': selectedRatlIndex === index,
+          }"
+          :ratl="ratl"
+          :index="index"
+          @select="(ratl, index) => $emit('select', ratl, index, searchIndex)"
+          @deleteRatl="(index) => $emit('deleteRatl', index, searchIndex)"
+        />
+      </v-col>
+    </v-row>
   </div>
 </template>
 
@@ -38,7 +47,7 @@ defineProps({
     type: Number,
     required: true,
   },
-  selectedSearchIndex: {
+  selectedTarteelIndex: {
     type: Number,
     required: true,
   },

@@ -2,14 +2,9 @@
   <v-toolbar density="compact" elevation="1" class="mb-1">
     <v-toolbar-title>{{ word }}</v-toolbar-title>
     <v-spacer></v-spacer>
-    <v-btn
-      density="compact"
-      class="mr-2"
-      @click="handleSearch"
-      :loading="isSearching"
-    >
+    <v-btn density="compact" class="mr-2" @click="handleSearch">
       <v-icon>mdi-magnify</v-icon>
-      <span class="ml-2">رتل {{ word }}</span>
+      <span class="ml-2">رتل {{ wordRoot }}</span>
     </v-btn>
     <v-btn
       v-if="isWordMeaningOpen"
@@ -21,19 +16,17 @@
 </template>
 
 <script setup>
-import { ref } from "vue"
 import { useRouter } from "vue-router"
+import { useSearchTarteel } from "@/hooks/useSearchTarteel"
+import { filterWords } from "@/utils/wordFilter"
 import { useDataStore } from "@/stores/dataStore"
-import { useTarteelStore } from "@/stores/tarteelStore"
-import { useQuranSearch } from "@/hooks/useQuranSearch"
+import { fetchWordRootData } from "@/utils/dictionaryUtils"
 
 const router = useRouter()
 const dataStore = useDataStore()
-const tarteelStore = useTarteelStore()
-const { searchWord } = useQuranSearch(dataStore, tarteelStore)
+const { setTarteel } = useSearchTarteel()
 
-const isSearching = ref(false)
-
+const wordRoot = ref("")
 const props = defineProps({
   word: {
     type: String,
@@ -46,18 +39,26 @@ const props = defineProps({
 })
 
 const handleSearch = async () => {
-  isSearching.value = true
-  try {
-    const hasResults = await searchWord(props.word)
-    if (hasResults) {
-      router.push({ name: "tarteel" })
-    }
-  } finally {
-    isSearching.value = false
-  }
+  const tarteel = await filterWords(wordRoot.value, dataStore.getOneQuranFile)
+  await setTarteel(tarteel.results, wordRoot.value)
+  router.push({ name: "tarteel" })
 }
 
+watch(
+  () => props.word,
+  async (newWord) => {
+    if (newWord) {
+      const root = await fetchWordRootData(newWord)
+      wordRoot.value = root
+    }
+  }
+)
+
 defineEmits(["close"])
+onMounted(async () => {
+  const root = await fetchWordRootData(props.word)
+  wordRoot.value = root
+})
 </script>
 
 <style scoped></style>

@@ -5,28 +5,26 @@
         <TarteelOverviewHeader :selectedTarteel="selectedTarteel" />
       </v-col>
     </v-row>
-
+    <!-- {{ selectedTarteel }} -->
     <v-row>
       <v-col cols="12" class="tarteel-overview-overflow">
-        <!-- Original search -->
         <TarteelSearchResults
           :search="selectedTarteel"
           :searchIndex="0"
-          :selectedRatlIndex="tarteelStore.selectedRatlIndex"
-          :selectedSearchIndex="tarteelStore.selectedSearchIndex"
+          :selectedRatlIndex="selectedRatlIndex"
+          :selectedTarteelIndex="selectedTarteelIndex"
           :isOriginal="true"
           @select="handleRatlSelect"
           @deleteRatl="deleteRatl"
         />
 
-        <!-- Additional searches -->
         <TarteelSearchResults
           v-for="(search, index) in selectedTarteel.searches?.slice(1) || []"
           :key="`search-${index}`"
           :search="search"
           :searchIndex="index + 1"
-          :selectedRatlIndex="tarteelStore.selectedRatlIndex"
-          :selectedSearchIndex="tarteelStore.selectedSearchIndex"
+          :selectedRatlIndex="selectedRatlIndex"
+          :selectedTarteelIndex="selectedTarteelIndex"
           @select="handleRatlSelect"
           @deleteRatl="deleteRatl"
         />
@@ -39,14 +37,14 @@
 import { watch, nextTick, computed, onMounted } from "vue"
 import { useRoute } from "vue-router"
 import { useTarteelStore } from "@/stores/tarteelStore"
-import WordCardItem from "./WordCardItem.vue"
 import { useWindow } from "@/mixins/window"
 import { useStore } from "@/stores/appStore"
 import TarteelOverviewHeader from "./TarteelOverviewHeader.vue"
 import TarteelSearchResults from "./TarteelSearchResults.vue"
 
 const route = useRoute()
-const currentView = computed(() => route.query.view)
+const store = useStore()
+const tarteelStore = useTarteelStore()
 const { scrollToActiveItem } = useWindow()
 
 const props = defineProps({
@@ -56,28 +54,25 @@ const props = defineProps({
   },
 })
 const emit = defineEmits(["ratl-selected"])
-const tarteelStore = useTarteelStore()
-const store = useStore()
+
+const currentView = computed(() => route.query.view)
+const selectedTarteelIndex = computed(() => tarteelStore.selectedTarteelIndex)
+const selectedRatlIndex = computed(() => tarteelStore.selectedRatlIndex)
 
 const handleRatlSelect = (ratl, index, searchIndex = 0) => {
   tarteelStore.setSelectedRatl(ratl)
   tarteelStore.setSelectedRatlIndex(index)
-  tarteelStore.setSelectedSearchIndex(searchIndex)
+  store.setTarget(ratl.verses[0])
   emit("ratl-selected")
 }
 
 const deleteRatl = (index, searchIndex = 0) => {
+  if (props.selectedTarteel.results.length === 0) {
+    return
+  }
   tarteelStore.removeRatl(index, searchIndex)
   tarteelStore.setSelectedRatlIndex(index)
-  tarteelStore.setSelectedSearchIndex(searchIndex)
-
-  const currentSearch =
-    searchIndex === 0
-      ? props.selectedTarteel.results
-      : props.selectedTarteel.searches[searchIndex].results
-
-  tarteelStore.setSelectedRatl(currentSearch[index])
-  store.setTarget(currentSearch[index].verses[0])
+  tarteelStore.setSelectedTarteelIndex(searchIndex)
 }
 
 const overviewScroll = async () => {
@@ -86,6 +81,10 @@ const overviewScroll = async () => {
 }
 
 watch(currentView, () => overviewScroll())
+watch(selectedRatlIndex, async () => {
+  await nextTick()
+  overviewScroll()
+})
 
 onMounted(() => {
   overviewScroll()

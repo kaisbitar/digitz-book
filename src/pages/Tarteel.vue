@@ -43,10 +43,9 @@ import { useNotesStore } from "@/stores/notesStore"
 
 const tarteelStore = useTarteelStore()
 const router = useRouter()
+const route = useRoute()
 const store = useStore()
 const notesStore = useNotesStore()
-
-const route = useRoute()
 
 const isDetailView = computed(() => {
   return route.query.view === "detail"

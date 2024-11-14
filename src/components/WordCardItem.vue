@@ -1,46 +1,42 @@
 <template>
   <v-card
-    class="mb-2"
-    variant="outlined"
+    class="pa-4 text-right"
+    border
+    rounded
     hover
     @click="$emit('select', ratl, index)"
+    @mouseover="showDelete = true"
+    @mouseleave="showDelete = false"
   >
-    <v-card-text>
-      <v-row align="center">
-        <v-col cols="11">
-          <div class="text-h6">{{ ratl.word }}</div>
-        </v-col>
+    <v-btn
+      icon="mdi-close"
+      size="x-small"
+      variant="tonal"
+      class="float-left"
+      v-show="showDelete"
+      @click.stop="$emit('deleteRatl', index)"
+    />
+    <div class="d-flex align-center mb-2">
+      <v-icon icon="mdi-file-outline" size="20" class="pe-2 count-key-item" />
+      <span class="text-h6">{{ ratl.word }}</span>
+    </div>
 
-        <v-col cols="1">
-          <v-btn
-            @click.stop="$emit('deleteRatl', index)"
-            icon="mdi-close"
-            variant="text"
-          ></v-btn>
-        </v-col>
-      </v-row>
-
-      <span class="text-caption ml-4 count-value-item">
-        {{ ratl.count }}
-        <span class="text-caption count-key-item">مرة</span>
-      </span>
-
-      {{ ratl.verses.length }}
-      <span class="text-caption count-key-item ml-4">آية</span>
-
-      <span class="text-caption mr-1 count-value-item">
-        {{ calculateValue(ratl.word) }}
-        <span class="text-caption count-key-item">مرقوم</span>
-      </span>
-    </v-card-text>
+    <template v-for="(item, i) in cardStats" :key="i">
+      <div>
+        <span>{{ item.value }}</span>
+        <small class="ms-2 count-key-item">{{ item.label }}</small>
+      </div>
+    </template>
+    <slot name="actions"></slot>
   </v-card>
 </template>
 
 <script setup>
+import { computed, ref } from "vue"
 import { useCounting } from "@/mixins/counting"
 const { calculateValue } = useCounting()
 
-defineProps({
+const props = defineProps({
   ratl: {
     type: Object,
     required: true,
@@ -51,5 +47,16 @@ defineProps({
   },
 })
 
+const cardStats = computed(() => [
+  { value: props.ratl.verses.length, label: "آية" },
+  { value: props.ratl.uniqueSuraCount, label: "سورة" },
+  { value: props.ratl.word.length, label: "حروف" },
+  { value: calculateValue(props.ratl.word), label: "مرقوم" },
+])
+
+const showDelete = ref(false)
+
 defineEmits(["select", "deleteRatl"])
 </script>
+
+<style scoped></style>
