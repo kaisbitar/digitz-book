@@ -84,7 +84,6 @@ onMounted(async () => {
   font-size: 19px;
   line-height: 1.8;
   overflow-y: auto;
-  max-width: 600px;
 }
 
 .verse-container {

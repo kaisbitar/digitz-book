@@ -32,16 +32,23 @@ export const sortResults = (
 
 export const formatResults = (sortedResults: SortedResultItem[]): FilterResult => {
     return {
-        results: sortedResults.map(({ word, count, verses }) => ({
-          word,
-          count,
-          verses: Object.entries(verses || []).map(
-            ([key, { fileName, verseIndex, verseNumberToQuran, verseText }]) => ({
-              fileName,
-              verseIndex,
-              verseNumberToQuran,
-              verseText
-            })
-        ),
-      })),
+        results: sortedResults.map(({ word, count, verses }) => {
+          const uniqueSuraCount = new Set(
+            Object.values(verses || {}).map(verse => verse.fileName)
+          ).size
+
+          return {
+            word,
+            count,
+            uniqueSuraCount: uniqueSuraCount,
+            verses: Object.entries(verses || []).map(
+              ([key, { fileName, verseIndex, verseNumberToQuran, verseText }]) => ({
+                fileName,
+                verseIndex,
+                verseNumberToQuran,
+                verseText
+              })
+          ),
+        }
+      })
     }} 

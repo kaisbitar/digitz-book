@@ -7,7 +7,6 @@ export const useTarteelStore = defineStore("tarteel", {
     tarteelHistory: [],
     selectedRatl: null,
     selectedRatlIndex: null,
-    selectedSearchIndex: 0,
   }),
 
   persist: {
@@ -40,9 +39,9 @@ export const useTarteelStore = defineStore("tarteel", {
   actions: {
     setStoredTarteels(results) {
       this.storedTarteels.push(results)
-      this.setSearchedTarteel(this.storedTarteels.length - 1)
+      this.setSelectedTarteelIndex(this.storedTarteels.length - 1)
     },
-    setSearchedTarteel(index) {
+    setSelectedTarteelIndex(index) {
       if (index >= 0 && index < this.storedTarteels.length) {
         this.selectedTarteelIndex = index
       } else {
@@ -76,10 +75,10 @@ export const useTarteelStore = defineStore("tarteel", {
         return
       }
       if (index > 0) {
-        this.setSearchedTarteel(index - 1)
+        this.setSelectedTarteelIndex(index - 1)
         return
       }
-      this.setSearchedTarteel(0)
+      this.setSelectedTarteelIndex(0)
     },
     setSelectedRatl(ratl) {
       this.selectedRatl = ratl
@@ -118,10 +117,6 @@ export const useTarteelStore = defineStore("tarteel", {
 
       // Update the store
       this.storedTarteels[this.selectedTarteelIndex] = currentTarteel
-      console.log("storedTarteels", this.storedTarteels)
-    },
-    setSelectedSearchIndex(index) {
-      this.selectedSearchIndex = index
     },
   },
 })

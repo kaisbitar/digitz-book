@@ -1,6 +1,6 @@
 import { ref, computed } from "vue"
 import { filterWords } from "@/utils/wordFilter"
-
+import { useSearchTarteel } from "@/hooks/useSearchTarteel"
 function debounce(func, wait) {
   let timeout
   return function executedFunction(...args) {
@@ -27,20 +27,20 @@ export function useAutoComplete(dataStore, tarteelStore) {
   const totalWordsCount = computed(() => currentWordsList.value.length)
   const hasSuggestions = computed(() => suggestions.value.length > 0)
 
-  const updateFilteredWords = (word) => {
-    const filteredResults = filterWords(word, dataStore.getOneQuranFile)
+  const { setTarteel } = useSearchTarteel()
 
-    if (filteredResults.suggestions) {
-      suggestions.value = filteredResults.suggestions
+  const updateFilteredWords = (word) => {
+    const wordSearchResults = filterWords(word, dataStore.getOneQuranFile)
+
+    if (wordSearchResults.suggestions) {
+      suggestions.value = wordSearchResults.suggestions
       filteredList.value = []
       return
     }
 
     suggestions.value = []
-    filteredList.value = filteredResults.results.map((item) => ({
-      word: item.word,
-      count: item.count,
-      verses: item.verses,
+    filteredList.value = wordSearchResults.results.map((item) => ({
+      ...item,
     }))
   }
 
@@ -53,7 +53,7 @@ export function useAutoComplete(dataStore, tarteelStore) {
   const updateFilteredVerses = (sentence) => {
     filteredList.value = []
 
-    const filteredResults = dataStore.getOneQuranFile.filter((verse) => {
+    const filteredVerses = dataStore.getOneQuranFile.filter((verse) => {
       if (verse.verseText.includes(sentence)) {
         return {
           ...verse,
@@ -61,13 +61,13 @@ export function useAutoComplete(dataStore, tarteelStore) {
       }
     })
 
-    if (filteredResults.length === 0) return (filteredList.value = [])
+    if (filteredVerses.length === 0) return (filteredList.value = [])
 
     filteredList.value = [
       {
         word: sentence,
-        count: filteredResults.length,
-        verses: filteredResults,
+        count: filteredVerses.length,
+        verses: filteredVerses,
       },
     ]
   }
@@ -118,22 +118,15 @@ export function useAutoComplete(dataStore, tarteelStore) {
   }
 
   const storeTarteels = (items, isAddingToExisting) => {
-    if (isAddingToExisting) {
-      tarteelStore.addToExistingTarteel({
-        inputText: tarteel.value,
-        results: items,
-      })
-      tarteelStore.addToTarteelHistory(tarteel.value)
-      return
-    }
-
-    tarteelStore.setStoredTarteels({
-      inputText: tarteel.value,
-      results: items,
-    })
-    tarteelStore.setSelectedRatlIndex(0)
-    tarteelStore.setSelectedRatl(items[0])
-    tarteelStore.addToTarteelHistory(tarteel.value)
+    setTarteel(items, tarteel.value)
+    //   if (isAddingToExisting) {
+    //     tarteelStore.addToExistingTarteel({
+    //       inputText: tarteel.value,
+    //       results: items,
+    //     })
+    //     tarteelStore.addToTarteelHistory(tarteel.value)
+    //     return
+    //   }
   }
 
   const updateCheckedItems = (newItems) => {
