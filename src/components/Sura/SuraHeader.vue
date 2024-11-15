@@ -7,7 +7,6 @@
 </template>
 
 <script setup>
-import AppMetaData from "./AppMetaData.vue"
 import { computed, onMounted, ref } from "vue"
 import { useDataStore } from "@/stores/dataStore"
 import { useStore } from "@/stores/appStore"

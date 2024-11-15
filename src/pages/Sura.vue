@@ -26,7 +26,6 @@ import { useDataStore } from "@/stores/dataStore"
 import { useRouter } from "vue-router"
 import { getMushafChartOptions } from "@/assets/mushafChartOptions"
 import { prepareSuraData, prepareMushafData } from "@/utils/suraUtils"
-import SuraBoard from "@/components/SuraBoard.vue"
 
 const router = useRouter()
 const props = defineProps(["suraInputText"])
