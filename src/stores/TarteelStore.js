@@ -21,15 +21,8 @@ export const useTarteelStore = defineStore("tarteel", {
 
   getters: {
     getSelectedTarteelIndex: (state) => state.selectedTarteelIndex,
-    getSelectedTarteel: (state) => {
-      if (
-        state.selectedTarteelIndex !== null &&
-        state.storedTarteels.length > 0
-      ) {
-        return state.storedTarteels[state.selectedTarteelIndex]
-      }
-      return null
-    },
+    getSelectedTarteel: (state) =>
+      state.storedTarteels[state.selectedTarteelIndex],
     getTarteelHistory: (state) => state.tarteelHistory,
     getStoredTarteels: (state) => state.storedTarteels,
     getSelectedRatl: (state) => state.selectedRatl,
@@ -38,16 +31,18 @@ export const useTarteelStore = defineStore("tarteel", {
 
   actions: {
     setStoredTarteels(results) {
+      if (this.storedTarteels.length === 0) {
+        this.selectedTarteelIndex = 0
+        this.storedTarteels.push(results)
+        return
+      }
+      this.selectedTarteelIndex++
       this.storedTarteels.push(results)
-      this.setSelectedTarteelIndex(this.storedTarteels.length - 1)
     },
     setSelectedTarteelIndex(index) {
-      if (index >= 0 && index < this.storedTarteels.length) {
-        this.selectedTarteelIndex = index
-      } else {
-        this.selectedTarteelIndex = this.storedTarteels.length > 0 ? 0 : null
-      }
+      this.selectedTarteelIndex = index
     },
+
     addToTarteelHistory(tarteelTerm) {
       if (!this.tarteelHistory.includes(tarteelTerm)) {
         this.tarteelHistory.unshift(tarteelTerm)
@@ -56,14 +51,6 @@ export const useTarteelStore = defineStore("tarteel", {
     },
     clearTarteelHistory() {
       this.tarteelHistory = []
-    },
-    initializeStore() {
-      if (
-        this.storedTarteels.length > 0 &&
-        this.selectedTarteelIndex === null
-      ) {
-        this.selectedTarteelIndex = 0
-      }
     },
 
     removeTarteelItem(index) {
@@ -86,37 +73,8 @@ export const useTarteelStore = defineStore("tarteel", {
     setSelectedRatlIndex(index) {
       this.selectedRatlIndex = index
     },
-    removeRatl(index, searchIndex = 0) {
-      if (searchIndex === 0) {
-        this.storedTarteels[this.selectedTarteelIndex].results.splice(index, 1)
-      } else {
-        this.storedTarteels[this.selectedTarteelIndex].searches[
-          searchIndex
-        ].results.splice(index, 1)
-      }
-    },
-    addToExistingTarteel(newSearch) {
-      const currentTarteel = this.storedTarteels[this.selectedTarteelIndex]
-
-      // Convert the current tarteel to array format if it's not already
-      if (!Array.isArray(currentTarteel.searches)) {
-        // Initialize the searches array with the original search
-        currentTarteel.searches = [
-          {
-            inputText: currentTarteel.inputText,
-            results: currentTarteel.results,
-          },
-        ]
-      }
-
-      // Add the new search
-      currentTarteel.searches.push({
-        inputText: newSearch.inputText,
-        results: newSearch.results,
-      })
-
-      // Update the store
-      this.storedTarteels[this.selectedTarteelIndex] = currentTarteel
+    removeRatl(index) {
+      this.storedTarteels[this.selectedTarteelIndex].results.splice(index, 1)
     },
   },
 })

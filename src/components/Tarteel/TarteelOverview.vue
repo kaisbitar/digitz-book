@@ -2,29 +2,18 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12">
-        <TarteelOverviewHeader :selectedTarteel="selectedTarteel" />
+        <TarteelOverviewHeader :selectedTarteel="currentTarteel" />
       </v-col>
     </v-row>
-    <!-- {{ selectedTarteel }} -->
+
     <v-row>
       <v-col cols="12" class="tarteel-overview-overflow">
         <TarteelSearchResults
-          :search="selectedTarteel"
+          :search="currentTarteel"
           :searchIndex="0"
           :selectedRatlIndex="selectedRatlIndex"
           :selectedTarteelIndex="selectedTarteelIndex"
           :isOriginal="true"
-          @select="handleRatlSelect"
-          @deleteRatl="deleteRatl"
-        />
-
-        <TarteelSearchResults
-          v-for="(search, index) in selectedTarteel.searches?.slice(1) || []"
-          :key="`search-${index}`"
-          :search="search"
-          :searchIndex="index + 1"
-          :selectedRatlIndex="selectedRatlIndex"
-          :selectedTarteelIndex="selectedTarteelIndex"
           @select="handleRatlSelect"
           @deleteRatl="deleteRatl"
         />
@@ -59,20 +48,22 @@ const currentView = computed(() => route.query.view)
 const selectedTarteelIndex = computed(() => tarteelStore.selectedTarteelIndex)
 const selectedRatlIndex = computed(() => tarteelStore.selectedRatlIndex)
 
-const handleRatlSelect = (ratl, index, searchIndex = 0) => {
+const currentTarteel = computed(() => {
+  if (!props.selectedTarteel) return { results: [] }
+  return props.selectedTarteel
+})
+
+const handleRatlSelect = (ratl, index) => {
   tarteelStore.setSelectedRatl(ratl)
   tarteelStore.setSelectedRatlIndex(index)
+
   store.setTarget(ratl.verses[0])
   emit("ratl-selected")
 }
 
-const deleteRatl = (index, searchIndex = 0) => {
-  if (props.selectedTarteel.results.length === 0) {
-    return
-  }
-  tarteelStore.removeRatl(index, searchIndex)
+const deleteRatl = (index, childIndex = null) => {
+  tarteelStore.removeRatl(index, childIndex)
   tarteelStore.setSelectedRatlIndex(index)
-  tarteelStore.setSelectedTarteelIndex(searchIndex)
 }
 
 const overviewScroll = async () => {

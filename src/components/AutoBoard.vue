@@ -49,7 +49,7 @@ import { useDataStore } from "@/stores/dataStore"
 import { useTarteelStore } from "@/stores/tarteelStore"
 import { useAutoComplete } from "@/hooks/useAutoComplete"
 import { useRouter } from "vue-router"
-import AppInputField from "./AppInputField.vue"
+import AppInputField from "./App/AppInputField.vue"
 
 const dataStore = useDataStore()
 const tarteelStore = useTarteelStore()

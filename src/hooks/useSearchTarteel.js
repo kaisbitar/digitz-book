@@ -10,12 +10,9 @@ export function useSearchTarteel() {
       inputText: word,
       results: tarteel,
     })
-
-    if (tarteel.length > 0) {
-      tarteelStore.setSelectedRatlIndex(0)
-      tarteelStore.setSelectedRatl(tarteel[0])
-      tarteelStore.addToTarteelHistory(word)
-    }
+    tarteelStore.setSelectedRatlIndex(0)
+    tarteelStore.setSelectedRatl(tarteel[0])
+    tarteelStore.addToTarteelHistory(word)
   }
 
   return {

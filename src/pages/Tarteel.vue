@@ -54,9 +54,9 @@ const isUserNoteOpen = ref(false)
 const isWordMeaningOpen = ref(false)
 
 const ratl = computed(() => tarteelStore.getSelectedRatl)
-const selectedTarteel = computed(
-  () => tarteelStore.getStoredTarteels[tarteelStore.getSelectedTarteelIndex]
-)
+const selectedTarteel = computed(() => {
+  return tarteelStore.getStoredTarteels[tarteelStore.selectedTarteelIndex]
+})
 
 const ratlData = computed(() => {
   if (!ratl.value)
