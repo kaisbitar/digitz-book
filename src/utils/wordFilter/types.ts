@@ -11,6 +11,7 @@ export interface ResultItem {
 }
 
 export interface VerseEntry {
+  suraName: any
   count: number
   verseId: number
   fileName: string

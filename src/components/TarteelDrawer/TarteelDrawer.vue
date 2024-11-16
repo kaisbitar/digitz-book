@@ -17,7 +17,10 @@
           />
         </v-toolbar>
 
-        <TarteelDrawerFolder :items="storedTarteels" />
+        <TarteelDrawerFolder
+          @select-item="handleSelectItem"
+          @delete-item="handleDeleteItem"
+        />
       </v-card>
 
       <div class="ratls-container tarteelDrawerRef">
@@ -30,7 +33,6 @@
 <script setup>
 import { useTarteelStore } from "@/stores/tarteelStore"
 import { useStore } from "@/stores/appStore"
-import { sassFalse } from "sass"
 
 const store = useStore()
 
@@ -40,12 +42,10 @@ const storedTarteels = computed(() => {
   return tarteelStore?.getStoredTarteels
 })
 
-const selectedTarteelIndex = computed(
-  () => tarteelStore?.getSelectedTarteelIndex
-)
-
-const selectedSearch = computed(
-  () => storedTarteels?.value[selectedTarteelIndex.value]
+const selectedSearch = computed(() =>
+  storedTarteels.value?.find(
+    (tarteel) => tarteel.id === tarteelStore.getSelectedTarteelId
+  )
 )
 
 const selectedRatls = computed(() => {
@@ -67,6 +67,14 @@ const drawerState = computed(() => store.getTarteelDrawer)
 
 const updateDrawerState = (value) => {
   store.setTarteelDrawer(value)
+}
+
+const handleSelectItem = (item) => {
+  tarteelStore.setSelectedTarteelId(item.id)
+}
+
+const handleDeleteItem = (item) => {
+  tarteelStore.removeTarteelItem(item.id)
 }
 
 onMounted(() => {})

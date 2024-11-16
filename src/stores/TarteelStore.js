@@ -3,7 +3,7 @@ import { defineStore } from "pinia"
 export const useTarteelStore = defineStore("tarteel", {
   state: () => ({
     storedTarteels: [],
-    selectedTarteelIndex: null,
+    selectedTarteelId: null,
     tarteelHistory: [],
     selectedRatl: null,
     selectedRatlIndex: null,
@@ -20,27 +20,53 @@ export const useTarteelStore = defineStore("tarteel", {
   },
 
   getters: {
-    getSelectedTarteelIndex: (state) => state.selectedTarteelIndex,
+    getSelectedTarteelId: (state) => state.selectedTarteelId,
     getSelectedTarteel: (state) =>
-      state.storedTarteels[state.selectedTarteelIndex],
+      state.storedTarteels.find((t) => t.id === state.selectedTarteelId),
     getTarteelHistory: (state) => state.tarteelHistory,
     getStoredTarteels: (state) => state.storedTarteels,
     getSelectedRatl: (state) => state.selectedRatl,
     getSelectedRatlIndex: (state) => state.selectedRatlIndex,
+    getTarteelTree: (state) => {
+      const buildTree = (parentId) => {
+        return state.storedTarteels
+          .filter((t) => t.parentId === parentId)
+          .map((tarteel) => ({
+            ...tarteel,
+            children: buildTree(tarteel.id),
+          }))
+      }
+
+      return buildTree(null)
+    },
   },
 
   actions: {
     setStoredTarteels(results) {
       if (this.storedTarteels.length === 0) {
-        this.selectedTarteelIndex = 0
-        this.storedTarteels.push(results)
+        const rootTarteel = {
+          id: Date.now(),
+          parentId: null,
+          inputText: results.inputText,
+          results: results.results,
+        }
+        this.storedTarteels.push(rootTarteel)
+        this.selectedTarteelId = rootTarteel.id
         return
       }
-      this.selectedTarteelIndex++
-      this.storedTarteels.push(results)
+
+      const newTarteel = {
+        id: Date.now(),
+        parentId: this.getSelectedTarteel.id,
+        inputText: results.inputText,
+        results: results.results,
+      }
+
+      this.storedTarteels.push(newTarteel)
+      this.selectedTarteelId = newTarteel.id
     },
-    setSelectedTarteelIndex(index) {
-      this.selectedTarteelIndex = index
+    setSelectedTarteelId(id) {
+      this.selectedTarteelId = id
     },
 
     addToTarteelHistory(tarteelTerm) {
@@ -53,19 +79,39 @@ export const useTarteelStore = defineStore("tarteel", {
       this.tarteelHistory = []
     },
 
-    removeTarteelItem(index) {
-      this.storedTarteels.splice(index, 1)
+    removeTarteelItem(id) {
+      const index = this.storedTarteels.findIndex((t) => t.id === id)
+      if (index === -1) return
+
+      const removeRecursively = (targetId) => {
+        const children = this.storedTarteels.filter(
+          (t) => t.parentId === targetId
+        )
+        children.forEach((child) => removeRecursively(child.id))
+
+        const itemIndex = this.storedTarteels.findIndex(
+          (t) => t.id === targetId
+        )
+        if (itemIndex !== -1) {
+          this.storedTarteels.splice(itemIndex, 1)
+        }
+      }
+
+      removeRecursively(id)
+
       if (this.storedTarteels.length === 0) {
-        this.selectedTarteelIndex = null
+        this.selectedTarteelId = null
         this.selectedRatlIndex = null
         this.selectedRatl = null
         return
       }
-      if (index > 0) {
-        this.setSelectedTarteelIndex(index - 1)
-        return
+
+      const parentId = this.storedTarteels.find((t) => t.id === id)?.parentId
+      if (parentId) {
+        this.setSelectedTarteelId(parentId)
+      } else {
+        this.setSelectedTarteelId(this.storedTarteels[0].id)
       }
-      this.setSelectedTarteelIndex(0)
     },
     setSelectedRatl(ratl) {
       this.selectedRatl = ratl
@@ -74,7 +120,7 @@ export const useTarteelStore = defineStore("tarteel", {
       this.selectedRatlIndex = index
     },
     removeRatl(index) {
-      this.storedTarteels[this.selectedTarteelIndex].results.splice(index, 1)
+      this.storedTarteels[this.selectedTarteelId].results.splice(index, 1)
     },
   },
 })

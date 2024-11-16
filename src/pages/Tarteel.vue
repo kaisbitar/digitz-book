@@ -55,7 +55,9 @@ const isWordMeaningOpen = ref(false)
 
 const ratl = computed(() => tarteelStore.getSelectedRatl)
 const selectedTarteel = computed(() => {
-  return tarteelStore.getStoredTarteels[tarteelStore.selectedTarteelIndex]
+  return tarteelStore.getStoredTarteels.find(
+    (tarteel) => tarteel.id === tarteelStore.getSelectedTarteelId
+  )
 })
 
 const ratlData = computed(() => {

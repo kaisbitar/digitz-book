@@ -3,32 +3,34 @@
     v-for="(item, index) in items"
     :key="index"
     :value="index"
-    color="grey"
+    :color="selectedRatlIndex === index ? 'primary' : 'grey'"
     :class="{
       'active-tarteel-item': selectedRatlIndex === index,
     }"
     @click="handleSelectedRatl(index)"
   >
     <template v-slot:prepend>
-      <v-list-item-title class="ps-6">
+      <v-list-item-title>
         <v-icon
-          :icon="'mdi-file-outline'"
+          :icon="selectedRatlIndex === index ? 'mdi-file' : 'mdi-file-outline'"
           size="20"
-          class="me-2 count-key-item"
+          class="mx-2 count-key-item"
         />
         {{ item.word }}
+        <span class="text-caption text-grey"> (</span>{{ item.count || 0 }}
+        <span class="text-caption text-grey">آية) </span>
       </v-list-item-title>
     </template>
 
     <template v-slot:append>
-      <v-badge
+      <!-- <v-badge
         :content="item.count"
         :color="item.coutingType"
         class="word-count"
         offset-x="5"
         offset-y="0"
         inline
-      ></v-badge>
+      ></v-badge> -->
       <v-btn
         icon="mdi-close"
         variant="text"
@@ -85,8 +87,9 @@ const navigateToTarteel = () => {
 
 const updateSelectedRatl = (index) => {
   tarteelStore.setSelectedRatlIndex(index)
-  const selectedSearch =
-    tarteelStore.getStoredTarteels[tarteelStore.getSelectedTarteelIndex]
+  const selectedSearch = tarteelStore.getStoredTarteels.find(
+    (tarteel) => tarteel.id === tarteelStore.getSelectedTarteelId
+  )
   tarteelStore.setSelectedRatl(selectedSearch.results[index])
   store.setTarget(selectedSearch.results[index].verses[0])
 }

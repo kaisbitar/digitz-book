@@ -37,10 +37,15 @@ export const formatResults = (sortedResults: SortedResultItem[]): FilterResult =
             Object.values(verses || {}).map(verse => verse.fileName)
           ).size
 
+          const suras = new Set(
+          Object.values(verses || {}).map(verse => verse.fileName.replace(/[0-9]/g, ""))
+          )
+
           return {
             word,
             count,
             uniqueSuraCount: uniqueSuraCount,
+            suras: Array.from(suras),
             verses: Object.entries(verses || []).map(
               ([key, { fileName, verseIndex, verseNumberToQuran, verseText }]) => ({
                 fileName,

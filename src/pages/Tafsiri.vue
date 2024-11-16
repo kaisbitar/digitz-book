@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="tafsiri-board-overflow">
     <v-row>
       <v-col cols="12">
         <v-card>
@@ -120,5 +120,10 @@ watch(editDialog, (isOpen) => {
 <style scoped>
 .cursor-pointer {
   cursor: pointer;
+}
+
+.tafsiri-board-overflow {
+  height: calc(100vh - 230px);
+  overflow: auto;
 }
 </style>
