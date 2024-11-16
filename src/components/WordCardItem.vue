@@ -17,7 +17,8 @@
     />
     <div class="d-flex align-center mb-2">
       <v-icon
-        :icon="selectedRatlIndex === index ? 'mdi-file' : 'mdi-file-outline'"
+        icon="mdi-file-outline"
+        :color="selectedRatlIndex === index ? 'primary' : 'grey'"
         size="20"
         class="pe-2 count-key-item"
       />

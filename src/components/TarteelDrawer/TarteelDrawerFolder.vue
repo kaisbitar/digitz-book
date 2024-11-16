@@ -1,7 +1,7 @@
 <template>
   <div :class="{ 'pr-4': itemHasChildren }">
     <div v-for="item in tarteelTree">
-      <!-- <div class="count-key-item position-absolute map-line" v-if="!root"></div> -->
+      <div class="count-key-item position-absolute map-line" v-if="!root"></div>
       <v-list-item
         :key="item.id"
         :active="selectedTarteelId === item.id"
@@ -10,11 +10,8 @@
         <v-list-item-title>
           <v-icon
             class="me-2 count-key-item"
-            :icon="
-              selectedTarteelId === item.id
-                ? 'mdi-database-search'
-                : 'mdi-database-search-outline'
-            "
+            icon="mdi-database-search-outline"
+            :color="selectedTarteelId === item.id ? 'primary' : 'grey'"
             size="20"
           />
           {{ item.inputText }}
@@ -82,10 +79,10 @@ defineOptions({ inheritAttrs: false })
 
 <style scoped>
 .map-line {
-  height: 21px;
+  height: 19px;
   border-right: 0.1px solid #878787;
-  /* top: 0; */
-  /* right: 24px; */
+  margin-top: 0px;
+  margin-right: 9px;
   width: 7px;
   border-bottom: 0.1px solid #878787;
 }

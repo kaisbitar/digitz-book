@@ -12,7 +12,8 @@
     <template v-slot:prepend>
       <v-list-item-title>
         <v-icon
-          :icon="selectedRatlIndex === index ? 'mdi-file' : 'mdi-file-outline'"
+          icon="mdi-file-outline"
+          :color="selectedRatlIndex === index ? 'primary' : 'grey'"
           size="20"
           class="mx-2 count-key-item"
         />
