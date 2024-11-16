@@ -1,13 +1,11 @@
 <template>
-  <div :class="{ 'pr-4': itemHasChildren }">
+  <div :class="{ 'px-4': itemHasChildren }">
     <div v-for="item in tarteelTree">
       <div class="count-key-item position-absolute map-line" v-if="!root"></div>
-      <v-list-item
-        :key="item.id"
-        :active="selectedTarteelId === item.id"
-        @click="$emit('selectItem', item)"
-      >
-        <v-list-item-title>
+      <v-list-item :key="item.id" @click="$emit('selectItem', item)">
+        <v-list-item-title
+          :class="selectedTarteelId === item.id ? 'active-folder' : ''"
+        >
           <v-icon
             class="me-2 count-key-item"
             icon="mdi-database-search-outline"
@@ -88,5 +86,8 @@ defineOptions({ inheritAttrs: false })
 }
 .v-list-item-title {
   font-size: 14px;
+}
+.active-folder {
+  background-color: rgb(var(--v-theme-active-row));
 }
 </style>

@@ -82,7 +82,7 @@ html {
   color: rgb(var(--v-theme-on-highlight));
   background: rgb(var(--v-theme-highlight)) !important;
   // font-weight: bold;
-  padding: 2px;
+  // padding: 2px;
 }
 
 .count-key-item,
