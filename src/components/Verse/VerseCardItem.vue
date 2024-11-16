@@ -7,7 +7,9 @@
   >
     <v-card-subtitle class="verse-card-item-title mb-2">
       <v-badge :content="index + 1" offset-x="-10" offset-y="-8"> </v-badge>
-      <span class="mr-10">{{ suraNumber }} {{ suraName }}</span>
+      <span class="mr-10"
+        >{{ suraNumber }} {{ suraName }} - آية {{ item.verseIndex }}</span
+      >
     </v-card-subtitle>
 
     <v-card-text
@@ -51,7 +53,7 @@ const handleClick = () => {
 }
 
 const indexData = computed(() => ({
-  رقم: { value: props.item.verseIndex, color: "verse-count" },
+  // رقم: { value: props.item.verseIndex, color: "verse-count" },
   كلمة: {
     value: props.item.verseText.split(" ").length,
     color: "word-count",
