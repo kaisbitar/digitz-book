@@ -12,7 +12,6 @@
           :search="currentTarteel"
           :searchIndex="0"
           :selectedRatlIndex="selectedRatlIndex"
-          :selectedTarteelIndex="selectedTarteelIndex"
           :isOriginal="true"
           @select="handleRatlSelect"
           @deleteRatl="deleteRatl"
@@ -45,7 +44,6 @@ const props = defineProps({
 const emit = defineEmits(["ratl-selected"])
 
 const currentView = computed(() => route.query.view)
-const selectedTarteelIndex = computed(() => tarteelStore.selectedTarteelIndex)
 const selectedRatlIndex = computed(() => tarteelStore.selectedRatlIndex)
 
 const currentTarteel = computed(() => {

@@ -25,6 +25,7 @@
           }"
           :ratl="ratl"
           :index="index"
+          :selectedRatlIndex="selectedRatlIndex"
           @select="(ratl, index) => $emit('select', ratl, index, searchIndex)"
           @deleteRatl="(index) => $emit('deleteRatl', index, searchIndex)"
         />
@@ -44,10 +45,6 @@ defineProps({
     required: true,
   },
   selectedRatlIndex: {
-    type: Number,
-    required: true,
-  },
-  selectedTarteelIndex: {
     type: Number,
     required: true,
   },
