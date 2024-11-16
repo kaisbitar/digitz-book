@@ -9,7 +9,7 @@
         class="ml-auto d-block"
         @click="$emit('update:isUserNoteOpen', true)"
       />
-      <TarteelHeader
+      <TarteelWordDetailHeader
         :word="word"
         :verses-count="versesCount"
         :occurrence-count="count"

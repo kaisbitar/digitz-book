@@ -1,18 +1,15 @@
 <template>
   <template v-if="ratl">
-    <TarteelOverview
-      v-show="!isDetailView"
+    <component
+      :is="currentView"
       :selectedTarteel="selectedTarteel"
-      @ratl-selected="showDetail"
-    />
-    <TarteelDetail
-      v-show="isDetailView"
       :ratl="ratl"
       :isWordMeaningOpen="isWordMeaningOpen"
       :isUserNoteOpen="isUserNoteOpen"
       :paginatedItems="paginatedItems"
       :targetedVerseIndex="targetedVerseIndex"
       :handleInfiniteScroll="handleInfiniteScroll"
+      @ratl-selected="showDetail"
       @back-to-overview="showOverview"
       @update:isWordMeaningOpen="isWordMeaningOpen = $event"
       @update:isUserNoteOpen="isUserNoteOpen = $event"
@@ -40,6 +37,9 @@ import { useTarteelStore } from "@/stores/tarteelStore"
 import { useWindow } from "@/mixins/window"
 import { useIndexedPagination } from "@/hooks/useIndexedPagination"
 import { useNotesStore } from "@/stores/notesStore"
+import TarteelWordsOverview from "@/components/Tarteel/TarteelWordsOverview.vue"
+import TarteelWordsList from "@/components/Tarteel/TarteelWordsList.vue"
+import TarteelWordDetail from "@/components/Tarteel/TarteelWordDetail.vue"
 
 const tarteelStore = useTarteelStore()
 const router = useRouter()
@@ -47,9 +47,23 @@ const route = useRoute()
 const store = useStore()
 const notesStore = useNotesStore()
 
-const isDetailView = computed(() => {
-  return route.query.view === "detail"
+const VIEW_TYPES = {
+  OVERVIEW: "overview",
+  LIST: "list",
+  DETAIL: "detail",
+}
+
+const currentView = computed(() => {
+  const view = route.query.view || VIEW_TYPES.LIST
+  return {
+    [VIEW_TYPES.OVERVIEW]: TarteelWordsOverview,
+    [VIEW_TYPES.LIST]: TarteelWordsList,
+    [VIEW_TYPES.DETAIL]: TarteelWordDetail,
+  }[view]
 })
+
+const currentViewType = computed(() => route.query.view || VIEW_TYPES.LIST)
+
 const isUserNoteOpen = ref(false)
 const isWordMeaningOpen = ref(false)
 
@@ -115,11 +129,15 @@ onMounted(async () => {
 })
 
 const showDetail = () => {
-  router.push({ query: { ...route.query, view: "detail" } })
+  router.push({ query: { ...route.query, view: VIEW_TYPES.DETAIL } })
 }
 
 const showOverview = () => {
-  router.push({ query: { ...route.query, view: "overview" } })
+  router.push({ query: { ...route.query, view: VIEW_TYPES.OVERVIEW } })
+}
+
+const showList = () => {
+  router.push({ query: { ...route.query, view: VIEW_TYPES.LIST } })
 }
 </script>
 

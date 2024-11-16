@@ -2,14 +2,14 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12">
-        <TarteelOverviewHeader :selectedTarteel="currentTarteel" />
+        <TarteelOverviewHeader :selectedTarteel="selectedTarteel" />
       </v-col>
     </v-row>
 
     <v-row>
       <v-col cols="12" class="tarteel-overview-overflow">
-        <TarteelSearchResults
-          :search="currentTarteel"
+        <TarteelWordsResults
+          :search="selectedTarteel"
           :searchIndex="0"
           :selectedRatlIndex="selectedRatlIndex"
           :isOriginal="true"
@@ -27,8 +27,6 @@ import { useRoute } from "vue-router"
 import { useTarteelStore } from "@/stores/tarteelStore"
 import { useWindow } from "@/mixins/window"
 import { useStore } from "@/stores/appStore"
-import TarteelOverviewHeader from "./TarteelOverviewHeader.vue"
-import TarteelSearchResults from "./TarteelSearchResults.vue"
 
 const route = useRoute()
 const store = useStore()
@@ -46,10 +44,10 @@ const emit = defineEmits(["ratl-selected"])
 const currentView = computed(() => route.query.view)
 const selectedRatlIndex = computed(() => tarteelStore.selectedRatlIndex)
 
-const currentTarteel = computed(() => {
-  if (!props.selectedTarteel) return { results: [] }
-  return props.selectedTarteel
-})
+// const currentTarteel = computed(() => {
+//   if (!props.selectedTarteel) return { results: [] }
+//   return props.selectedTarteel
+// })
 
 const handleRatlSelect = (ratl, index) => {
   tarteelStore.setSelectedRatl(ratl)
