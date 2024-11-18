@@ -127,7 +127,7 @@ const handleClickDown = () => {
 }
 
 const goBack = () => {
-  router.push("/tarteel")
+  router.push({ path: "/tarteel", query: { view: "detail" } })
 }
 
 const inputNavigation = [

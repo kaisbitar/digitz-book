@@ -62,7 +62,9 @@
 import { ref, nextTick, computed } from "vue"
 import { useWindow } from "@/mixins/window"
 import { useStore } from "@/stores/appStore"
+import { useRouter } from "vue-router"
 
+const router = useRouter()
 const store = useStore()
 const props = defineProps({
   tabs: Array,
@@ -102,10 +104,6 @@ const targetNumberToQuran = computed(() => {
   return store.getTarget.verseNumberToQuran
 })
 
-// watch(targetNumberToQuran, () => {
-//   scrollToActiveVerse()
-// })
-
 const onVerseSelected = (verse) => {
   setTargetVerse(verse)
   emit("verseSelected", verse)
@@ -125,15 +123,15 @@ const VersesOverviewRef = ref(null)
 const { scrollToActiveItem } = useWindow()
 
 const scrollToActiveVerse = () => {
-  nextTick(() => {
-    if (activeTab.value === "suraText" && suraTextRef.value) {
-      scrollToActiveItem(".active-verse-text", ".sura-text-container")
-      return
-    }
-    if (activeTab.value === "versesTab" && VersesOverviewRef.value) {
-      VersesOverviewRef.value.tablesScroll()
-    }
-  })
+  // nextTick(() => {
+  if (activeTab.value === "suraText" && suraTextRef.value) {
+    scrollToActiveItem(".active-verse-text", ".sura-text-container")
+    return
+  }
+  if (activeTab.value === "versesTab" && VersesOverviewRef.value) {
+    VersesOverviewRef.value.tablesScroll()
+  }
+  // })
 }
 
 const updateActiveTab = (value) => {
@@ -141,10 +139,24 @@ const updateActiveTab = (value) => {
 }
 
 const currentIndex = ref(0)
-const handleClickUp = () => navigateVerses("up")
-const handleClickDown = () => navigateVerses("down")
-
-const navigateVerses = (direction) => {
+const handleClickUp = () => {
+  setVerse("up")
+  setRoute()
+}
+const handleClickDown = () => {
+  setVerse("down")
+  setRoute()
+}
+const setRoute = () => {
+  const query = { ...router.currentRoute.value.query }
+  router.push({
+    path: `/sura/${props.versesBasics[currentIndex.value].suraNumber}/${
+      filteredVerses.value[currentIndex.value].verseIndex
+    }`,
+    query,
+  })
+}
+const setVerse = (direction) => {
   scrollToActiveVerse()
   if (!filteredVerses.value.length) {
     return
@@ -173,7 +185,8 @@ const onEnter = (value) => {
     setTargetVerse(props.versesBasics[0])
     return
   }
-  navigateVerses("down")
+  setVerse("down")
+  setRoute()
 }
 
 const onInput = (value) => {
@@ -181,26 +194,28 @@ const onInput = (value) => {
   searchBtnText.value = value || `ترتيل ${props.suraName}`
   currentIndex.value = -1
   setTimeout(() => {
-    navigateVerses("down")
+    setVerse("down")
+    setRoute()
   }, 100)
 }
 
 const handleLanding = async () => {
-  if (targetTarteel.value) {
-    inputText.value = targetTarteel.value
-    searchBtnText.value = inputText.value
-
-    await nextTick()
-    filteredVerses.value.map((verse, index) => {
-      if (verse.verseNumberToQuran == targetNumberToQuran.value) {
-        currentIndex.value = index
-      }
-    })
-
-    setTimeout(() => {
-      isInputVisible.value = true
-    }, 1000)
+  if (!targetTarteel.value) {
+    return
   }
+  inputText.value = targetTarteel.value
+  searchBtnText.value = inputText.value
+
+  await nextTick()
+  filteredVerses.value.map((verse, index) => {
+    if (verse.verseNumberToQuran == targetNumberToQuran.value) {
+      currentIndex.value = index
+    }
+  })
+
+  setTimeout(() => {
+    isInputVisible.value = true
+  }, 1000)
 }
 
 onMounted(() => {

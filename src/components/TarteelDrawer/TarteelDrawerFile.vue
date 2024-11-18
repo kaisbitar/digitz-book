@@ -24,14 +24,6 @@
     </template>
 
     <template v-slot:append>
-      <!-- <v-badge
-        :content="item.count"
-        :color="item.coutingType"
-        class="word-count"
-        offset-x="5"
-        offset-y="0"
-        inline
-      ></v-badge> -->
       <v-btn
         icon="mdi-close"
         variant="text"
@@ -70,7 +62,7 @@ const selectedRatlIndex = computed(() => tarteelStore.getSelectedRatlIndex)
 const handleSelectedRatl = async (index) => {
   navigateToTarteel()
   await nextTick()
-  router.push({ name: "tarteel", query: { view: "list" } })
+  router.push({ name: "tarteel", query: { view: "detail" } })
 
   if (isMobile.value) {
     store.setTarteelDrawer(false)

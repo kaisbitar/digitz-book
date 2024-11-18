@@ -1,7 +1,7 @@
 <template>
   <v-card
     hover
-    class="mx-sm-4 mx-0 px-4 pt-4 pb-4 mt-2 mb-2 verse-card-item"
+    class="px-4 pt-4 pb-4 mt-2 mb-2 verse-card-item"
     @click="handleClick"
     variant="outlined"
   >
@@ -53,7 +53,6 @@ const handleClick = () => {
 }
 
 const indexData = computed(() => ({
-  // رقم: { value: props.item.verseIndex, color: "verse-count" },
   كلمة: {
     value: props.item.verseText.split(" ").length,
     color: "word-count",
