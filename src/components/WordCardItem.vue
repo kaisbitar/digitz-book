@@ -31,7 +31,7 @@
         <small class="ms-2 count-key-item">{{ item.label }}</small>
       </div>
     </template>
-    <div v-show="showDelete" class="text-caption mt-4">
+    <div class="text-caption mt-4">
       {{ ratl.suras.join(", ") }}
     </div>
   </v-card>

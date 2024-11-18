@@ -17,10 +17,7 @@
           />
         </v-toolbar>
 
-        <TarteelDrawerFolder
-          @select-item="handleSelectItem"
-          @delete-item="handleDeleteItem"
-        />
+        <TarteelDrawerFolder />
       </v-card>
 
       <div class="ratls-container tarteelDrawerRef">
@@ -67,14 +64,6 @@ const drawerState = computed(() => store.getTarteelDrawer)
 
 const updateDrawerState = (value) => {
   store.setTarteelDrawer(value)
-}
-
-const handleSelectItem = (item) => {
-  tarteelStore.setSelectedTarteelId(item.id)
-}
-
-const handleDeleteItem = (item) => {
-  tarteelStore.removeTarteelItem(item.id)
 }
 
 onMounted(() => {})

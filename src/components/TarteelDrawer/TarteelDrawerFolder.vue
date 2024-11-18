@@ -2,7 +2,7 @@
   <div :class="{ 'px-4': itemHasChildren }">
     <div v-for="item in tarteelTree">
       <div class="count-key-item position-absolute map-line" v-if="!root"></div>
-      <v-list-item :key="item.id" @click="$emit('selectItem', item)">
+      <v-list-item :key="item.id" @click="handleSelectItem(item)">
         <v-list-item-title
           :class="selectedTarteelId === item.id ? 'active-folder' : ''"
         >
@@ -22,18 +22,18 @@
           <v-icon
             size="x-small"
             icon="mdi-close"
-            @click.stop="$emit('deleteItem', item)"
+            @click.stop="handleDeleteItem(item)"
           />
         </template>
       </v-list-item>
 
-      <tarteel-drawer-folder
+      <TarteelDrawerFolder
         v-if="hasChildren(item)"
         :itemHasChildren="hasChildren(item)"
         :items="item.children"
         :root="false"
-        @select-item="$emit('selectItem', $event)"
-        @delete-item="$emit('deleteItem', $event)"
+        @select-item="handleSelectItem"
+        @delete-item="handleDeleteItem"
       />
     </div>
   </div>
@@ -42,7 +42,9 @@
 <script setup>
 import { computed } from "vue"
 import { useTarteelStore } from "@/stores/tarteelStore"
+import { useRouter } from "vue-router"
 
+const router = useRouter()
 const tarteelStore = useTarteelStore()
 
 const props = defineProps({
@@ -60,8 +62,14 @@ const props = defineProps({
   },
 })
 
-defineEmits(["selectItem", "deleteItem"])
+const handleSelectItem = (item) => {
+  tarteelStore.setSelectedTarteelId(item.id)
+  router.push({ name: "tarteel", query: { view: "list" } })
+}
 
+const handleDeleteItem = (item) => {
+  tarteelStore.removeTarteelItem(item.id)
+}
 const tarteelTree = computed(() => {
   // Use items prop if provided (for nested levels), otherwise use store tree
   return props.items?.length ? props.items : tarteelStore.getTarteelTree

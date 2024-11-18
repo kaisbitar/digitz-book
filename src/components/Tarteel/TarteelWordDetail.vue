@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="ratl" class="d-flex pt-4 pb-4 px-4">
+    <div v-if="ratl" class="d-flex pt-4 pb-4 px-2">
       <v-btn
         v-if="!isWordMeaningOpen"
         icon="mdi-pencil-outline"
@@ -38,7 +38,7 @@
 
       <WordMeaning
         :word="word"
-        class="px-4"
+        class="px-3"
         :isWordMeaningOpen="isWordMeaningOpen"
         :class="isWordMeaningOpen ? 'tarteel-meaning-overflow' : 'fixed-height'"
         @update:isWordMeaningOpen="$emit('update:isWordMeaningOpen', $event)"
@@ -47,7 +47,7 @@
       />
 
       <div
-        class="tarteel-container tarteel-board-overflow"
+        class="tarteel-container tarteel-board-overflow px-3"
         @scroll="handleInfiniteScroll"
       >
         <VerseCardItem

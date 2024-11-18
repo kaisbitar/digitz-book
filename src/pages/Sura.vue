@@ -1,5 +1,5 @@
 <template>
-  <template class="d-flex flex-column h-100 pa-0 pt-4 px-4">
+  <template class="d-flex flex-column h-100 pa-0 pt-4 px-3">
     <SuraBoard
       v-if="!showVerseDetails"
       :tabs="tabs"
@@ -79,23 +79,16 @@ const handleVerseSelectedOnTable = (verse) => {
   if (query.tarteel) {
     verse.tarteel = query.tarteel
   }
+
   store.setTarget({
     ...verse,
   })
+
   router.push({
     path: `/sura/${verse.suraNumber}/${verse.verseIndex}`,
     query: { ...router.currentRoute.value.query, detail: "true" },
   })
 }
-
-watch(targetVerseIndex, (newVal) => {
-  const query = { ...router.currentRoute.value.query }
-
-  router.push({
-    path: `/sura/${suraNumber.value}/${newVal}`,
-    query,
-  })
-})
 
 const handleGoBack = () => {
   const query = { ...router.currentRoute.value.query }
