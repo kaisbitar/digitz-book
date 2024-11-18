@@ -8,7 +8,7 @@
 import { createRouter, createWebHistory } from "vue-router/auto"
 import { setupLayouts } from "virtual:generated-layouts"
 import { useAuthStore } from "@/stores/authStore"
-
+import { processSuraNavigation } from "./utils"
 const routes = [
   {
     path: "/",
@@ -17,9 +17,17 @@ const routes = [
   },
   ,
   {
-    path: "/sura",
+    path: "/sura/:suraNumber?/:verseIndex?",
     name: "sura",
     component: () => import("@/pages/Sura"),
+    beforeEnter: async (to, from, next) => {
+      if (!to.params.suraNumber) {
+        next()
+        return
+      }
+      await processSuraNavigation(to)
+      next()
+    },
   },
   {
     path: "/tarteel",

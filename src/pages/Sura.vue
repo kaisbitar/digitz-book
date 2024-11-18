@@ -9,12 +9,11 @@
       :chartFreqSeries="chartFreqSeries"
       @verseSelected="handleVerseSelectedOnTable"
     />
-
     <VerseDetails
       v-if="showVerseDetails"
       :title="suraName"
       :inputText="targetTarteel"
-      @go-back="showVerseDetails = !showVerseDetails"
+      @go-back="handleGoBack"
     />
   </template>
 </template>
@@ -41,13 +40,13 @@ const letterSeries = ref([{ data: [] }])
 const versesSeries = ref([{ data: [] }])
 const wordsSeries = ref([{ data: [] }])
 const suraDetails = ref({})
-const showVerseDetails = ref(false)
 
-const fileName = computed(() => store.getTarget?.fileName || "001الفاتحة")
-const suraNumber = computed(() => parseInt(store.getTarget?.suraNumber))
-const suraName = computed(() => store.getTarget?.suraName)
-const targetedVerseText = computed(() => store.getTarget)
-const targetTarteel = computed(() => store.getTarget?.tarteel || "")
+const target = computed(() => store.getTarget)
+const fileName = computed(() => target.value?.fileName || "001الفاتحة")
+const suraNumber = computed(() => parseInt(target.value?.suraNumber))
+const suraName = computed(() => target.value?.suraName)
+const targetTarteel = computed(() => target.value?.tarteel || "")
+const targetVerseIndex = computed(() => target.value?.verseIndex)
 
 const tableQuranIndex = computed(() => dataStore.getQuranIndex)
 const suraKeyValues = computed(
@@ -64,10 +63,6 @@ const chartFreqSeries = computed(() =>
 const oneQuranFile = computed(() => dataStore.getOneQuranFile)
 const allVersesWithTashkeel = computed(() => dataStore.getAllVersesWithTashkeel)
 
-const handleVerseSelectedOnTable = (verse) => {
-  showVerseDetails.value = true
-}
-
 const setSuraBasics = () => {
   startIndex.value = suraKeyValues.value.verseNumberToQuran - 1
   endIndex.value = suraKeyValues.value.numberOfVerses + startIndex.value
@@ -76,6 +71,49 @@ const setSuraBasics = () => {
 const fetchSuraDetails = async () => {
   // suraDetails.value = await store.getSuraDetails()
 }
+
+const showVerseDetails = computed(() => router.currentRoute.value.query.detail)
+
+const handleVerseSelectedOnTable = (verse) => {
+  const query = { ...router.currentRoute.value.query }
+  if (query.tarteel) {
+    verse.tarteel = query.tarteel
+  }
+  store.setTarget({
+    ...verse,
+  })
+  router.push({
+    path: `/sura/${verse.suraNumber}/${verse.verseIndex}`,
+    query: { ...router.currentRoute.value.query, detail: "true" },
+  })
+}
+
+watch(targetVerseIndex, (newVal) => {
+  const query = { ...router.currentRoute.value.query }
+
+  router.push({
+    path: `/sura/${suraNumber.value}/${newVal}`,
+    query,
+  })
+})
+
+const handleGoBack = () => {
+  const query = { ...router.currentRoute.value.query }
+  delete query.detail
+  router.push({ query })
+}
+
+const isMobileView = computed(() => store.getVersesMobileView)
+
+const tabs = computed(() => [
+  { title: "نص", name: "suraText", icon: "mdi-text-box-outline" },
+  {
+    title: "تفصيل",
+    name: "versesTab",
+    icon: isMobileView.value ? "mdi-format-list-bulleted" : "mdi-view-list",
+  },
+  { title: "تواتر", name: "frequency", icon: "mdi-chart-bar" },
+])
 
 const prepareData = () => {
   setSuraBasics()
@@ -107,22 +145,6 @@ const prepareData = () => {
     endIndex.value
   )
 }
-
-const goBack = () => {
-  router.back()
-}
-
-const isMobileView = computed(() => store.getVersesMobileView)
-
-const tabs = computed(() => [
-  { title: "نص", name: "suraText", icon: "mdi-text-box-outline" },
-  {
-    title: "تفصيل",
-    name: "versesTab",
-    icon: isMobileView.value ? "mdi-format-list-bulleted" : "mdi-view-list",
-  },
-  { title: "تواتر", name: "frequency", icon: "mdi-chart-bar" },
-])
 
 watch(fileName, prepareData)
 
