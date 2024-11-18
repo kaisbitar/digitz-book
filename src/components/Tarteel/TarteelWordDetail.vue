@@ -20,7 +20,7 @@
         variant="tonal"
         size="small"
         class="mr-auto d-block"
-        @click="$emit('back-to-overview')"
+        @click="$emit('back-to-list')"
       />
 
       <v-btn
@@ -103,7 +103,7 @@ const emit = defineEmits([
   "update:isWordMeaningOpen",
   "update:isUserNoteOpen",
   "verseSelected",
-  "back-to-overview",
+  "back-to-list",
 ])
 
 // Computed properties from ratl

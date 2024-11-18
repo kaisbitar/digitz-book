@@ -70,7 +70,7 @@ const selectedRatlIndex = computed(() => tarteelStore.getSelectedRatlIndex)
 const handleSelectedRatl = async (index) => {
   navigateToTarteel()
   await nextTick()
-  router.push({ name: "tarteel", query: { view: "overview" } })
+  router.push({ name: "tarteel", query: { view: "list" } })
 
   if (isMobile.value) {
     store.setTarteelDrawer(false)

@@ -127,7 +127,7 @@ const handleClickDown = () => {
 }
 
 const goBack = () => {
-  router.back()
+  router.push("/tarteel")
 }
 
 const inputNavigation = [

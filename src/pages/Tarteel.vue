@@ -11,6 +11,7 @@
       :handleInfiniteScroll="handleInfiniteScroll"
       @ratl-selected="showDetail"
       @back-to-overview="showOverview"
+      @back-to-list="showList"
       @update:isWordMeaningOpen="isWordMeaningOpen = $event"
       @update:isUserNoteOpen="isUserNoteOpen = $event"
       @verseSelected="({ verse, word }) => handleSelectedVerse(verse, word)"
@@ -100,14 +101,22 @@ const { paginatedItems, handleInfiniteScroll, isLoading } =
   )
 
 const handleSelectedVerse = (verse, tarteel) => {
+  const query = {
+    ...router.currentRoute.value.query,
+    tarteel,
+  }
+  delete query.view
+
   store.setTarget({
-    fileName: verse.fileName,
-    verseIndex: verse.verseIndex,
-    verseNumberToQuran: verse.verseNumberToQuran.toString(),
-    verseText: verse.verseText,
+    ...verse,
     tarteel,
   })
-  router.push("sura")
+  router.push({
+    path: `/sura/${verse.fileName.replace(/[ء-٩]/g, "").replace(/\s/g, "")}/${
+      verse.verseIndex
+    }`,
+    query,
+  })
 }
 
 const { scrollToActiveItem } = useWindow()
