@@ -17,7 +17,7 @@
           />
         </v-toolbar>
 
-        <TarteelDrawerFolder />
+        <!-- <TarteelDrawerFolder /> -->
       </v-card>
 
       <div class="ratls-container tarteelDrawerRef">

@@ -26,14 +26,16 @@
     </div>
 
     <template v-for="(item, i) in cardStats" :key="i">
-      <div>
+      <div class="mb-2">
         <span>{{ item.value }}</span>
         <small class="ms-2 count-key-item">{{ item.label }}</small>
       </div>
     </template>
-    <div class="text-caption mt-4">
-      {{ ratl.suras.join(", ") }}
-    </div>
+    <template v-for="surah in ratl.suras" :key="surah">
+      <v-chip class="text-caption ml-1 mt-1" color="secondary">
+        {{ surah }}
+      </v-chip>
+    </template>
   </v-card>
 </template>
 

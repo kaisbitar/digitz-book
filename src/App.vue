@@ -57,12 +57,12 @@ html {
 .text-h4,
 .text-h6,
 .text-h3,
+.text-h1,
 .text-sm-h4,
 .text-sm-h5,
 .text-sm-h3,
 .text-h4 {
   font-family: $body-font-family !important;
-  font-family: unset;
 }
 
 .v-table--density-default {

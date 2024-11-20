@@ -1,4 +1,5 @@
 <template>
+  <TarteelTabs />
   <template v-if="ratl">
     <component
       :is="currentView"
@@ -38,9 +39,9 @@ import { useTarteelStore } from "@/stores/tarteelStore"
 import { useWindow } from "@/mixins/window"
 import { useIndexedPagination } from "@/hooks/useIndexedPagination"
 import { useNotesStore } from "@/stores/notesStore"
-import TarteelWordsOverview from "@/components/Tarteel/TarteelWordsOverview.vue"
-import TarteelWordsList from "@/components/Tarteel/TarteelWordsList.vue"
-import TarteelWordDetail from "@/components/Tarteel/TarteelWordDetail.vue"
+import WordsOverview from "@/components/Tarteel/WordsOverview.vue"
+import WordsList from "@/components/Tarteel/WordsList.vue"
+import WordVerses from "@/components/Tarteel/WordVerses.vue"
 
 const tarteelStore = useTarteelStore()
 const router = useRouter()
@@ -57,9 +58,9 @@ const VIEW_TYPES = {
 const currentView = computed(() => {
   const view = route.query.view || VIEW_TYPES.LIST
   return {
-    [VIEW_TYPES.OVERVIEW]: TarteelWordsOverview,
-    [VIEW_TYPES.LIST]: TarteelWordsList,
-    [VIEW_TYPES.DETAIL]: TarteelWordDetail,
+    [VIEW_TYPES.OVERVIEW]: WordsOverview,
+    [VIEW_TYPES.LIST]: WordsList,
+    [VIEW_TYPES.DETAIL]: WordVerses,
   }[view]
 })
 
