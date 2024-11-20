@@ -1,5 +1,5 @@
 <template>
-  <div :class="{ 'px-4': itemHasChildren }">
+  <div :class="{ 'px-2': itemHasChildren }">
     <div v-for="item in tarteelTree">
       <div class="count-key-item position-absolute map-line" v-if="!root"></div>
       <v-list-item :key="item.id" @click="handleSelectItem(item)">
@@ -7,13 +7,14 @@
           :class="selectedTarteelId === item.id ? 'active-folder' : ''"
         >
           <v-icon
-            class="me-2 count-key-item"
+            class="me-1 count-key-item"
             icon="mdi-database-search-outline"
             :color="selectedTarteelId === item.id ? 'primary' : 'grey'"
             size="20"
           />
-          {{ item.inputText }}
-          <span class="text-caption text-grey"> (</span
+          <span class="font-weight-bold">{{ item.inputText + "ـ" }}</span>
+
+          <span class="text-caption text-grey mr-1"> (</span
           >{{ item.results?.length || 0 }}
           <span class="text-caption text-grey">مشتق) </span>
         </v-list-item-title>
@@ -64,7 +65,7 @@ const props = defineProps({
 
 const handleSelectItem = (item) => {
   tarteelStore.setSelectedTarteelId(item.id)
-  router.push({ name: "tarteel", query: { view: "list" } })
+  router.push({ name: "tarteel", query: { view: "overview" } })
 }
 
 const handleDeleteItem = (item) => {

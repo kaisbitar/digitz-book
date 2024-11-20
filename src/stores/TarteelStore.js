@@ -81,37 +81,9 @@ export const useTarteelStore = defineStore("tarteel", {
 
     removeTarteelItem(id) {
       const index = this.storedTarteels.findIndex((t) => t.id === id)
-      if (index === -1) return
-
-      const removeRecursively = (targetId) => {
-        const children = this.storedTarteels.filter(
-          (t) => t.parentId === targetId
-        )
-        children.forEach((child) => removeRecursively(child.id))
-
-        const itemIndex = this.storedTarteels.findIndex(
-          (t) => t.id === targetId
-        )
-        if (itemIndex !== -1) {
-          this.storedTarteels.splice(itemIndex, 1)
-        }
-      }
-
-      removeRecursively(id)
-
-      if (this.storedTarteels.length === 0) {
-        this.selectedTarteelId = null
-        this.selectedRatlIndex = null
-        this.selectedRatl = null
-        return
-      }
-
-      const parentId = this.storedTarteels.find((t) => t.id === id)?.parentId
-      if (parentId) {
-        this.setSelectedTarteelId(parentId)
-      } else {
-        this.setSelectedTarteelId(this.storedTarteels[0].id)
-      }
+      if (index !== -1) this.storedTarteels.splice(index, 1)
+      if (this.selectedTarteelId === id)
+        this.selectedTarteelId = this.storedTarteels[0]?.id || null
     },
     setSelectedRatl(ratl) {
       this.selectedRatl = ratl

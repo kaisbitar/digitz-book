@@ -1,23 +1,18 @@
 <template>
-  <v-container fluid>
-    <v-row>
-      <v-col cols="12">
-        <TarteelOverviewHeader :selectedTarteel="selectedTarteel" />
-      </v-col>
-    </v-row>
+  <v-container>
+    <WordsListHeader :selectedTarteel="selectedTarteel" />
 
-    <v-row>
-      <v-col cols="12" class="tarteel-overview-overflow">
-        <TarteelWordsResults
-          :search="selectedTarteel"
-          :searchIndex="0"
-          :selectedRatlIndex="selectedRatlIndex"
-          :isOriginal="true"
-          @select="handleRatlSelect"
-          @deleteRatl="deleteRatl"
-        />
-      </v-col>
-    </v-row>
+    <v-divider class="mx-auto" width="100%"></v-divider>
+
+    <WordsListResults
+      class="tarteel-overview-overflow pt-4"
+      :search="selectedTarteel"
+      :searchIndex="0"
+      :selectedRatlIndex="selectedRatlIndex"
+      :isOriginal="true"
+      @select="handleRatlSelect"
+      @deleteRatl="deleteRatl"
+    />
   </v-container>
 </template>
 
