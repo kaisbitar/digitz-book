@@ -8,13 +8,15 @@
     :hasSuccess="inputHasSuccess"
     :loading="isLoading"
     :autoFocus="false"
+    rounded="lg"
+    variant="outlined"
+    base-color="count-key-item"
     @update:modelValue="handleInput($event)"
     @clear="handleClear"
     @focus="onFocus"
     @keydown:enter="handleTarteel"
   >
     <AutoMenu
-      class="mt-4"
       :menu="menu"
       :tarteel="tarteel"
       :currentWordsList="currentWordsList"

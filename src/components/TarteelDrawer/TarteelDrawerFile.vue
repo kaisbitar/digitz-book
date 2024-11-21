@@ -68,7 +68,9 @@ const handleSelectedRatl = async (index) => {
     store.setTarteelDrawer(false)
   }
 
-  if (selectedRatlIndex.value === index) return
+  if (selectedRatlIndex.value === index) {
+    router.push({ name: "tarteel", query: { view: "detail" } })
+  }
   updateSelectedRatl(index)
 }
 

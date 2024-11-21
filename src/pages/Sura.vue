@@ -1,5 +1,6 @@
 <template>
-  <template class="d-flex flex-column h-100 pa-0 pt-4 px-3">
+  <!-- <template class="d-flex flex-column h-100 pa-0 pt-2 px-3"> -->
+  <v-container>
     <SuraBoard
       v-if="!showVerseDetails"
       :tabs="tabs"
@@ -9,13 +10,14 @@
       :chartFreqSeries="chartFreqSeries"
       @verseSelected="handleVerseSelectedOnTable"
     />
-    <VerseDetails
-      v-if="showVerseDetails"
-      :title="suraName"
-      :inputText="targetTarteel"
-      @go-back="handleGoBack"
-    />
-  </template>
+  </v-container>
+  <VerseDetails
+    v-if="showVerseDetails"
+    :title="suraName"
+    :inputText="targetTarteel"
+    @go-back="handleGoBack"
+  />
+  <!-- </template> -->
 </template>
 
 <script setup>

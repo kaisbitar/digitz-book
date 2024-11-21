@@ -2,29 +2,20 @@
   <div class="d-flex mb-2">
     <span class="text-h4 ml-4">{{ word }}</span>
 
-    <span class="text-h4 mr-3 count-key-item">
-      {{ versesCount }}
-      <span class="text-caption mr-n1 count-key-item">آية</span>
-    </span>
-
-    <span class="text-h4 mr-3 count-key-item">
-      {{ occurrenceCount }}
-      <span class="text-caption mr-n1 count-key-item">مرة</span>
-    </span>
-
-    <span class="text-h4 mr-3 count-key-item"
-      >{{ calculateValue(word) }}
-      <span class="text-caption mr-n1 count-key-item">مرقوم</span>
-    </span>
+    <template v-for="(item, index) in counts" :key="index">
+      <div class="text-h4">
+        <span class="count-key-item">{{ item.count }}</span>
+        <span class="text-caption ml-3 mr-1">{{ item.label }}</span>
+      </div>
+    </template>
   </div>
 </template>
 
 <script setup>
 import { useCounting } from "@/mixins/counting"
-
 const { calculateValue } = useCounting()
 
-defineProps({
+const props = defineProps({
   word: {
     type: String,
     required: true,
@@ -38,6 +29,12 @@ defineProps({
     required: true,
   },
 })
+
+const counts = computed(() => [
+  { count: props.versesCount, label: "آية" },
+  { count: props.occurrenceCount, label: "مرة" },
+  { count: calculateValue(props.word), label: "مرقوم" },
+])
 
 defineEmits(["update:expanded"])
 </script>

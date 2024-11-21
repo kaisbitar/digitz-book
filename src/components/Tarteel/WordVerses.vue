@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div v-if="ratl" class="d-flex pt-4 pb-4 px-2">
+  <v-container>
+    <div class="d-flex mb-4 px-2">
       <v-btn
         v-if="!isWordMeaningOpen"
         icon="mdi-pencil-outline"
@@ -33,40 +33,38 @@
       />
     </div>
 
-    <template v-if="ratl">
-      <v-divider class="mx-auto" width="100%"></v-divider>
+    <v-divider class="mx-auto" width="100%"></v-divider>
 
-      <WordMeaning
-        :word="word"
-        class="px-3"
-        :isWordMeaningOpen="isWordMeaningOpen"
-        :class="isWordMeaningOpen ? 'tarteel-meaning-overflow' : 'fixed-height'"
-        @update:isWordMeaningOpen="$emit('update:isWordMeaningOpen', $event)"
-        @click="$emit('update:isWordMeaningOpen', true)"
-        @meaningItemClick="$emit('update:isUserNoteOpen', true)"
+    <WordMeaning
+      class="px-sm-3"
+      :word="word"
+      :isWordMeaningOpen="isWordMeaningOpen"
+      :class="isWordMeaningOpen ? 'tarteel-meaning-overflow' : 'fixed-height'"
+      @update:isWordMeaningOpen="$emit('update:isWordMeaningOpen', $event)"
+      @click="$emit('update:isWordMeaningOpen', true)"
+      @meaningItemClick="$emit('update:isUserNoteOpen', true)"
+    />
+
+    <div
+      class="tarteel-container tarteel-board-overflow px-sm-4"
+      @scroll="handleInfiniteScroll"
+    >
+      <VerseCardItem
+        v-for="(verse, index) in paginatedItems"
+        :item="verse"
+        :key="verse.originalIndex"
+        :index="index"
+        :textToHighlight="word"
+        :active="parseInt(targetedVerseIndex) === verse.verseNumberToQuran"
+        :class="{
+          'active-verse-text':
+            parseInt(targetedVerseIndex) === verse.verseNumberToQuran,
+        }"
+        @click="handleSelectedVerse(verse)"
       />
-
-      <div
-        class="tarteel-container tarteel-board-overflow px-3"
-        @scroll="handleInfiniteScroll"
-      >
-        <VerseCardItem
-          v-for="(verse, index) in paginatedItems"
-          :item="verse"
-          :key="verse.originalIndex"
-          :index="index"
-          :textToHighlight="word"
-          :active="parseInt(targetedVerseIndex) === verse.verseNumberToQuran"
-          :class="{
-            'active-verse-text':
-              parseInt(targetedVerseIndex) === verse.verseNumberToQuran,
-          }"
-          @click="handleSelectedVerse(verse)"
-        />
-        <div class="mt-5 mb-3 text-center">صدق الله العظيم</div>
-      </div>
-    </template>
-  </div>
+      <div class="mt-5 mb-3 text-center">صدق الله العظيم</div>
+    </div>
+  </v-container>
 </template>
 
 <script setup>

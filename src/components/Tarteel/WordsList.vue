@@ -1,11 +1,17 @@
 <template>
   <v-container>
     <WordsListHeader :selectedTarteel="selectedTarteel" />
-
     <v-divider class="mx-auto" width="100%"></v-divider>
+    <WordMeaning
+      class="pb-1"
+      :word="selectedTarteel.inputText"
+      :isWordMeaningOpen="isWordMeaningOpen"
+      :class="isWordMeaningOpen ? 'tarteel-meaning-overflow' : ''"
+      @click="isWordMeaningOpen = !isWordMeaningOpen"
+    />
 
     <WordsListResults
-      class="tarteel-overview-overflow pt-4"
+      class="tarteel-overview-overflow px-sm-4"
       :search="selectedTarteel"
       :searchIndex="0"
       :selectedRatlIndex="selectedRatlIndex"
@@ -35,6 +41,8 @@ const props = defineProps({
   },
 })
 const emit = defineEmits(["ratl-selected"])
+
+const isWordMeaningOpen = ref(false)
 
 const currentView = computed(() => route.query.view)
 const selectedRatlIndex = computed(() => tarteelStore.selectedRatlIndex)
@@ -82,5 +90,9 @@ onMounted(() => {
 .additional-search {
   border-top: 1px solid var(--v-border-color);
   padding-top: 1rem;
+}
+.tarteel-meaning-overflow {
+  height: calc(50vh - 100px);
+  overflow: auto;
 }
 </style>

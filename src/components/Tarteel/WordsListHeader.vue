@@ -1,16 +1,14 @@
 <template>
   <div class="mb-4">
-    <span class="text-h3 font-weight-bold">{{
-      selectedTarteel.inputText
+    <span class="text-h4 font-weight-bold">{{
+      selectedTarteel.inputText + "ـ"
     }}</span>
-    <span class="count-key-item mr-3 text-caption">ومشتقاتها</span>
-    <span class="pa-4 count-key-item">
-      <span class="text-h3">{{ selectedTarteel.results.length }}</span>
-      <span class="ml-3 text-caption">مشتق</span>
-      <span class="text-h3">{{ distinctSuras.length }}</span>
-      <span class="ml-3 text-caption">سورة</span>
-      <span class="text-h3"> {{ uniqueVersesCount }}</span>
-      <span class="ml-3 text-caption">آية</span>
+    <span class="mr-3 text-caption">ومشتقاتها</span>
+    <span class="pa-4">
+      <template v-for="(item, index) in counts" :key="index">
+        <span class="text-h4 count-key-item">{{ item.count }}</span>
+        <span class="ml-3 mr-1 text-caption">{{ item.label }}</span>
+      </template>
     </span>
   </div>
 </template>
@@ -23,10 +21,10 @@ const props = defineProps({
   },
 })
 
-const distinctSuras = computed(() => {
+const distinctSurasCount = computed(() => {
   return [
     ...new Set(props.selectedTarteel.results.flatMap((result) => result.suras)),
-  ].sort()
+  ].sort().length
 })
 
 const uniqueVersesCount = computed(() => {
@@ -40,4 +38,10 @@ const uniqueVersesCount = computed(() => {
 
   return uniqueVerses.size
 })
+
+const counts = computed(() => [
+  { count: props.selectedTarteel.results.length, label: "مشتق" },
+  { count: distinctSurasCount, label: "سورة" },
+  { count: uniqueVersesCount.value, label: "آية" },
+])
 </script>

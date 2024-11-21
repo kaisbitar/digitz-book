@@ -10,7 +10,6 @@
       prepend-inner-icon="mdi-magnify"
       :autofocus="autoFocus"
       hide-details
-      variant="underlined"
       @click:clear="handleClear"
       @update:model-value="handleInput"
       @keydown.enter.prevent="$emit('keydown:enter', modelValue)"
@@ -30,7 +29,8 @@
 
 <script setup>
 import { useTheme } from "vuetify"
-
+const theme = useTheme()
+console.log(theme.current.value.colors)
 const props = defineProps({
   modelValue: {
     type: String,
@@ -70,8 +70,6 @@ const emit = defineEmits([
   "keydown:backspace",
   "close",
 ])
-
-const theme = useTheme()
 
 const handleClear = () => {
   emit("clear")

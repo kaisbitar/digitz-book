@@ -6,6 +6,7 @@
     hover
     @click="$emit('select', ratl, index)"
     @mouseover="showDelete = true"
+    @mouseleave="showDelete = false"
   >
     <v-btn
       icon="mdi-close"
@@ -22,20 +23,25 @@
         size="20"
         class="pe-2 count-key-item"
       />
-      <span class="text-h6">{{ ratl.word }}</span>
+      <div class="text-h6 mr-1" color="primary">
+        {{ ratl.word }}
+      </div>
     </div>
 
-    <template v-for="(item, i) in cardStats" :key="i">
-      <div class="mb-2">
-        <span>{{ item.value }}</span>
-        <small class="ms-2 count-key-item">{{ item.label }}</small>
+    <div v-for="(item, i) in cardStats" :key="i" class="d-flex">
+      <span class="ml-2 text-caption">{{ item.label }}</span>
+      <div class="count-key-item font-weight-bold">
+        {{ item.value }}
       </div>
-    </template>
-    <template v-for="surah in ratl.suras" :key="surah">
-      <v-chip class="text-caption ml-1 mt-1" color="secondary">
-        {{ surah }}
-      </v-chip>
-    </template>
+    </div>
+
+    <div class="d-flex flex-wrap mt-2 overflow-y-auto" style="height: 50px">
+      <template v-for="surah in ratl.suras" :key="surah">
+        <v-chip class="text-caption ml-1 mt-1" color="secondary">
+          {{ surah }}
+        </v-chip>
+      </template>
+    </div>
   </v-card>
 </template>
 
