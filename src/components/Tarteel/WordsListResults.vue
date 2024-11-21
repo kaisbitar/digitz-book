@@ -1,12 +1,12 @@
 <template>
   <div :class="['mb-4', { 'additional-search': !isOriginal }]">
-    <v-chip
+    <!-- <v-chip
       :color="isOriginal ? 'primary' : 'secondary'"
       class="mb-2"
       size="small"
     >
       {{ isOriginal ? "البحث الأصلي:" : "بحث إضافي:" }} "{{ search.inputText }}"
-    </v-chip>
+    </v-chip> -->
 
     <v-row dense>
       <v-col

@@ -6,6 +6,7 @@
     :fieldPlaceHolder="placeholderText"
     :hasError="hasError"
     :hasSuccess="hasSuccess"
+    variant="underlined"
     @update:modelValue="onInput"
     @keydown:enter="onEnter"
   >

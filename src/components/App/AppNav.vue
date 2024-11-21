@@ -1,5 +1,10 @@
 <template>
-  <v-app-bar :elevation="0" density="compact" class="border-b" location="top">
+  <v-app-bar
+    :elevation="0"
+    density="comfortable"
+    class="border-b"
+    location="top"
+  >
     <v-app-bar-nav-icon
       @click="toggleRailAppNavDrawer"
       class="ml-2"
@@ -9,11 +14,13 @@
       الكتاب المرقوم
     </v-app-bar-title>
     <v-container v-if="isInputVisible" class="pt-6" max-width="900">
-      <AutoBoard
-        v-if="isInputVisible"
-        @update:isInputVisible="isInputVisible = $event"
-        @submitTarteel="isMobile ? (isInputVisible = false) : null"
-      />
+      <div class="mb-2">
+        <AutoBoard
+          v-if="isInputVisible"
+          @update:isInputVisible="isInputVisible = $event"
+          @submitTarteel="isMobile ? (isInputVisible = false) : null"
+        />
+      </div>
     </v-container>
     <AppToggleBtn
       v-if="!isInputVisible"
