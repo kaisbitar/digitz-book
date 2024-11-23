@@ -1,6 +1,6 @@
 <template>
-  <v-container>
-    <WordsListHeader :selectedTarteel="selectedTarteel" />
+  <div>
+    <WordsListHeader :selectedTarteel="selectedTarteel" class="mb-4" />
     <v-divider class="mx-auto" width="100%"></v-divider>
     <WordMeaning
       class="pb-1"
@@ -19,7 +19,7 @@
       @select="handleRatlSelect"
       @deleteRatl="deleteRatl"
     />
-  </v-container>
+  </div>
 </template>
 
 <script setup>
@@ -46,11 +46,6 @@ const isWordMeaningOpen = ref(false)
 
 const currentView = computed(() => route.query.view)
 const selectedRatlIndex = computed(() => tarteelStore.selectedRatlIndex)
-
-// const currentTarteel = computed(() => {
-//   if (!props.selectedTarteel) return { results: [] }
-//   return props.selectedTarteel
-// })
 
 const handleRatlSelect = (ratl, index) => {
   tarteelStore.setSelectedRatl(ratl)

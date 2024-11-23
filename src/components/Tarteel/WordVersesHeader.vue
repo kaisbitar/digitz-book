@@ -1,13 +1,7 @@
 <template>
-  <div class="d-flex mb-2">
+  <div>
     <span class="text-h4 ml-4">{{ word }}</span>
-
-    <template v-for="(item, index) in counts" :key="index">
-      <div class="text-h4">
-        <span class="count-key-item">{{ item.count }}</span>
-        <span class="text-caption ml-3 mr-1">{{ item.label }}</span>
-      </div>
-    </template>
+    <AppHeaderMetrics :metrics="counts" />
   </div>
 </template>
 
@@ -31,9 +25,9 @@ const props = defineProps({
 })
 
 const counts = computed(() => [
-  { count: props.versesCount, label: "آية" },
-  { count: props.occurrenceCount, label: "مرة" },
-  { count: calculateValue(props.word), label: "مرقوم" },
+  { value: props.versesCount, label: "آية" },
+  { value: props.occurrenceCount, label: "مرة" },
+  { value: calculateValue(props.word), label: "مرقوم" },
 ])
 
 defineEmits(["update:expanded"])

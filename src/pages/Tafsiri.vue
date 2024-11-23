@@ -1,5 +1,5 @@
 <template>
-  <v-container class="tafsiri-board-overflow">
+  <v-container max-width="1200">
     <v-row>
       <v-col cols="12">
         <v-card>

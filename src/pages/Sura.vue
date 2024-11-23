@@ -1,6 +1,5 @@
 <template>
-  <!-- <template class="d-flex flex-column h-100 pa-0 pt-2 px-3"> -->
-  <v-container>
+  <v-container max-width="1200">
     <SuraBoard
       v-if="!showVerseDetails"
       :tabs="tabs"
@@ -10,14 +9,13 @@
       :chartFreqSeries="chartFreqSeries"
       @verseSelected="handleVerseSelectedOnTable"
     />
+    <VerseDetails
+      v-if="showVerseDetails"
+      :title="suraName"
+      :inputText="targetTarteel"
+      @go-back="handleGoBack"
+    />
   </v-container>
-  <VerseDetails
-    v-if="showVerseDetails"
-    :title="suraName"
-    :inputText="targetTarteel"
-    @go-back="handleGoBack"
-  />
-  <!-- </template> -->
 </template>
 
 <script setup>
@@ -105,8 +103,13 @@ const tabs = computed(() => [
   {
     title: "تفصيل",
     name: "versesTab",
-    icon: isMobileView.value ? "mdi-format-list-bulleted" : "mdi-view-list",
+    icon: "mdi-view-list",
   },
+  // {
+  //   title: "جدول",
+  //   name: "versesTab",
+  //   icon: "mdi-table",
+  // },
   { title: "تواتر", name: "frequency", icon: "mdi-chart-bar" },
 ])
 

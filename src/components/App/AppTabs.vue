@@ -1,20 +1,15 @@
 <template>
-  <v-tabs v-model="computedTab" show-arrows centered>
-    <v-tab
-      v-for="(item, index) in tabs"
-      :key="index"
-      :value="item.name"
-      class="text-caption"
+  <v-card class="pa-2">
+    <v-tabs
+      v-model="computedTab"
+      :direction="$vuetify.display.xs ? 'vertical' : 'horizontal'"
     >
-      <v-icon
-        v-if="item.icon"
-        :icon="item.icon"
-        size="small"
-        :class="$vuetify.display.smAndUp ? 'ml-2' : ''"
-      ></v-icon>
-      <span :class="{ 'd-none d-sm-inline': item.icon }">{{ item.title }}</span>
-    </v-tab>
-  </v-tabs>
+      <v-tab v-for="(item, index) in tabs" :key="index" :value="item.name">
+        <v-icon v-if="item.icon" :icon="item.icon"></v-icon>
+        <span>{{ item.title }}</span>
+      </v-tab>
+    </v-tabs>
+  </v-card>
 </template>
 
 <script setup>

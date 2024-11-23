@@ -6,19 +6,19 @@
     width="270"
   >
     <div class="d-flex flex-column fill-height">
-      <v-card elevation="2" class="mb-1">
-        <v-toolbar>
-          <v-toolbar-title>ترتيل</v-toolbar-title>
-          <AppToggleBtn
-            isActive
-            activeIcon="mdi-menu-open"
-            size="default"
-            @toggle="handleClose"
-          />
-        </v-toolbar>
+      <!-- <v-card class="mb-1"> -->
+      <v-toolbar>
+        <v-toolbar-title>ترتيل</v-toolbar-title>
+        <AppToggleBtn
+          isActive
+          activeIcon="mdi-menu-open"
+          size="default"
+          @toggle="handleClose"
+        />
+      </v-toolbar>
 
-        <!-- <TarteelDrawerFolder /> -->
-      </v-card>
+      <!-- <TarteelDrawerFolder /> -->
+      <!-- </v-card> -->
 
       <div class="ratls-container tarteelDrawerRef">
         <TarteelDrawerFile :items="selectedRatls" />

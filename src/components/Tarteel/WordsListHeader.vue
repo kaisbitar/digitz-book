@@ -1,15 +1,10 @@
 <template>
-  <div class="mb-4">
-    <span class="text-h4 font-weight-bold">{{
-      selectedTarteel.inputText + "ـ"
-    }}</span>
-    <span class="mr-3 text-caption">ومشتقاتها</span>
-    <span class="pa-4">
-      <template v-for="(item, index) in counts" :key="index">
-        <span class="text-h4 count-key-item">{{ item.count }}</span>
-        <span class="ml-3 mr-1 text-caption">{{ item.label }}</span>
-      </template>
+  <div>
+    <span class="text-h4 font-weight-bold"
+      >{{ selectedTarteel.inputText + "ـ" }}
+      <span class="ml-6 text-caption">ومشتقاتها</span>
     </span>
+    <AppHeaderMetrics :metrics="formattedCounts" />
   </div>
 </template>
 
@@ -39,9 +34,9 @@ const uniqueVersesCount = computed(() => {
   return uniqueVerses.size
 })
 
-const counts = computed(() => [
-  { count: props.selectedTarteel.results.length, label: "مشتق" },
-  { count: distinctSurasCount, label: "سورة" },
-  { count: uniqueVersesCount.value, label: "آية" },
+const formattedCounts = computed(() => [
+  { value: props.selectedTarteel.results.length, label: "مشتق" },
+  { value: distinctSurasCount.value, label: "سورة" },
+  { value: uniqueVersesCount.value, label: "آية" },
 ])
 </script>

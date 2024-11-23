@@ -28,19 +28,21 @@
       </div>
     </div>
 
-    <div v-for="(item, i) in cardStats" :key="i" class="d-flex">
-      <span class="ml-2 text-caption">{{ item.label }}</span>
-      <div class="count-key-item font-weight-bold">
-        {{ item.value }}
-      </div>
-    </div>
-
     <div class="d-flex flex-wrap mt-2 overflow-y-auto" style="height: 50px">
-      <template v-for="surah in ratl.suras" :key="surah">
-        <v-chip class="text-caption ml-1 mt-1" color="secondary">
-          {{ surah }}
-        </v-chip>
-      </template>
+      <div v-for="(item, i) in cardStats" :key="i">
+        <span class="ml-2 text-caption">{{ item.label }}</span>
+        <div class="count-key-item font-weight-bold">
+          {{ item.value }}
+        </div>
+      </div>
+
+      <div class="d-flex flex-wrap mt-2 overflow-y-auto" style="height: 50px">
+        <template v-for="surah in ratl.suras" :key="surah">
+          <v-chip class="text-caption ml-1 mt-1" color="secondary">
+            {{ surah }}
+          </v-chip>
+        </template>
+      </div>
     </div>
   </v-card>
 </template>
