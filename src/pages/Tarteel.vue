@@ -1,34 +1,36 @@
 <template>
   <TarteelTabs />
-  <template v-if="ratl">
-    <component
-      :is="currentView"
-      :selectedTarteel="selectedTarteel"
-      :ratl="ratl"
-      :isWordMeaningOpen="isWordMeaningOpen"
-      :isUserNoteOpen="isUserNoteOpen"
-      :paginatedItems="paginatedItems"
-      :targetedVerseIndex="targetedVerseIndex"
-      :handleInfiniteScroll="handleInfiniteScroll"
-      @ratl-selected="showDetail"
-      @back-to-overview="showOverview"
-      @back-to-list="showList"
-      @update:isWordMeaningOpen="isWordMeaningOpen = $event"
-      @update:isUserNoteOpen="isUserNoteOpen = $event"
-      @verseSelected="({ verse, word }) => handleSelectedVerse(verse, word)"
-    />
-    <UserNote
-      v-model="isUserNoteOpen"
-      :word="ratlData.word"
-      :verses="ratlData.verses"
-    />
-  </template>
-  <template v-else>
-    <NoData
-      text="ورتل القرآن ترتيلا.."
-      icon="mdi-book-open-page-variant-outline"
-    />
-  </template>
+  <v-container max-width="1200">
+    <template v-if="ratl">
+      <component
+        :is="currentView"
+        :selectedTarteel="selectedTarteel"
+        :ratl="ratl"
+        :isWordMeaningOpen="isWordMeaningOpen"
+        :isUserNoteOpen="isUserNoteOpen"
+        :paginatedItems="paginatedItems"
+        :targetedVerseIndex="targetedVerseIndex"
+        :handleInfiniteScroll="handleInfiniteScroll"
+        @ratl-selected="showDetail"
+        @back-to-overview="showOverview"
+        @back-to-list="showList"
+        @update:isWordMeaningOpen="isWordMeaningOpen = $event"
+        @update:isUserNoteOpen="isUserNoteOpen = $event"
+        @verseSelected="({ verse, word }) => handleSelectedVerse(verse, word)"
+      />
+      <UserNote
+        v-model="isUserNoteOpen"
+        :word="ratlData.word"
+        :verses="ratlData.verses"
+      />
+    </template>
+    <template v-else>
+      <NoData
+        text="ورتل القرآن ترتيلا.."
+        icon="mdi-book-open-page-variant-outline"
+      />
+    </template>
+  </v-container>
 </template>
 
 <script setup>

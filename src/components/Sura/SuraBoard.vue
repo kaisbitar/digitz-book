@@ -1,33 +1,34 @@
 <template>
-  <div :style="{ height: isInputVisible ? '0px' : '59px' }">
-    <v-slide-x-transition mode="out-in">
-      <SuraHeader v-if="!isInputVisible" class="flex-wrap mb-4" />
-    </v-slide-x-transition>
-  </div>
-  <SuraToolbar
+  <SuraHeader
+    class="flex-wrap mb-4"
+    :isToolbarExpanded="isToolbarExpanded"
+    :isInputVisible="isInputVisible"
+    @expandedToggle="isToolbarExpanded = !isToolbarExpanded"
+    @searchToggle="isInputVisible = !isInputVisible"
+  />
+  <v-divider class="mt-5"></v-divider>
+
+  <AppTabs
+    v-if="isToolbarExpanded"
+    class="mb-3"
     :tabs="tabs"
     :activeTab="activeTab"
+    @click="isToolbarExpanded = false"
+    @update:activeTab="updateActiveTab"
+  />
+
+  <SuraInputField
+    v-if="isInputVisible"
     :search="inputText"
-    :searchBtnText="searchBtnText"
     :placeholderText="`سورة ${suraName}`"
-    :isInputVisible="isInputVisible"
-    :badgeIsActive="!!inputText"
     :badgeContent="badgeContent"
     :inputIndex="inputIndex"
-    @update:activeTab="updateActiveTab"
     @update:search="onInput"
-    @searchToggle="onSearchToggle"
     @enter="onEnter"
     @navigate-up="handleClickUp"
     @navigate-down="handleClickDown"
-  >
-    <template #additional-actions>
-      <AppFilterActions
-        v-if="activeTab === 'versesTab'"
-        v-show="!$vuetify.display.xs"
-      />
-    </template>
-  </SuraToolbar>
+    @clear="isInputVisible = false"
+  />
 
   <v-window v-model="activeTab">
     <v-window-item value="suraText" @before-enter="scrollToActiveVerse">
@@ -39,7 +40,9 @@
     </v-window-item>
 
     <v-window-item value="versesTab" @before-enter="scrollToActiveVerse">
+      <AppTableToggle class="table-toggle-container" />
       <VersesOverview
+        class="px-sm-3"
         ref="VersesOverviewRef"
         :verses="versesBasics"
         :versesInputText="inputText"
@@ -79,6 +82,7 @@ const emit = defineEmits(["verseSelected"])
 const searchBtnText = ref(`ترتيل ${props.suraName}`)
 const isInputVisible = ref(false)
 const inputText = ref("")
+const isToolbarExpanded = ref(false)
 
 const filteredVerses = computed(() => {
   if (!inputText.value) return []
@@ -91,7 +95,7 @@ const filteredVerses = computed(() => {
 })
 
 const badgeContent = computed(() => {
-  return filteredVerses.value.length ? `${filteredVerses.value.length}` : ""
+  return filteredVerses.value.length ? `${filteredVerses.value.length}` : "0"
 })
 
 const inputIndex = computed(() => {
@@ -109,10 +113,6 @@ const onVerseSelected = (verse) => {
   emit("verseSelected", verse)
 }
 
-const onSearchToggle = (value) => {
-  isInputVisible.value = value
-}
-
 const activeTab = computed({
   get: () => store.getActiveSuraTab,
   set: (value) => store.setActiveSuraTab(value),
@@ -123,7 +123,6 @@ const VersesOverviewRef = ref(null)
 const { scrollToActiveItem } = useWindow()
 
 const scrollToActiveVerse = () => {
-  // nextTick(() => {
   if (activeTab.value === "suraText" && suraTextRef.value) {
     scrollToActiveItem(".active-verse-text", ".sura-text-container")
     return
@@ -131,10 +130,10 @@ const scrollToActiveVerse = () => {
   if (activeTab.value === "versesTab" && VersesOverviewRef.value) {
     VersesOverviewRef.value.tablesScroll()
   }
-  // })
 }
 
 const updateActiveTab = (value) => {
+  console.log(value)
   store.setActiveSuraTab(value)
 }
 
@@ -213,9 +212,7 @@ const handleLanding = async () => {
     }
   })
 
-  setTimeout(() => {
-    isInputVisible.value = true
-  }, 1000)
+  isInputVisible.value = true
 }
 
 onMounted(() => {
@@ -231,4 +228,11 @@ const setTargetVerse = (verse) => {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.table-toggle-container {
+  position: absolute;
+  left: 03px;
+  top: 4px;
+  z-index: 100;
+}
+</style>

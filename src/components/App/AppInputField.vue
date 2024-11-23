@@ -17,7 +17,10 @@
       @focus="$emit('focus')"
     >
       <template v-slot:append-inner>
-        <!-- <v-icon class="close-btn" icon="mdi-close" @click="$emit('close')" /> -->
+        <slot name="append-inner-input-items"></slot>
+      </template>
+
+      <template v-slot:append>
         <slot name="append-input-items"></slot>
       </template>
     </v-text-field>
@@ -28,9 +31,6 @@
 </template>
 
 <script setup>
-import { useTheme } from "vuetify"
-const theme = useTheme()
-console.log(theme.current.value.colors)
 const props = defineProps({
   modelValue: {
     type: String,

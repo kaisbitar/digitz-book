@@ -3,9 +3,9 @@
     <AppNav v-if="activeRoute !== 'home'" />
     <v-main class="flex-grow-1">
       <router-view v-slot="{ Component }">
-        <!-- <v-expand-transition> -->
+        <!-- <v-container max-width="1200" class="pt-0 px-0"> -->
         <component :is="Component" />
-        <!-- </v-expand-transition> -->
+        <!-- </v-container> -->
       </router-view>
     </v-main>
   </div>
