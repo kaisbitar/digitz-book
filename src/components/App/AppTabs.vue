@@ -1,11 +1,8 @@
 <template>
-  <v-card class="pa-2">
-    <v-tabs
-      v-model="computedTab"
-      :direction="$vuetify.display.xs ? 'vertical' : 'horizontal'"
-    >
+  <v-card>
+    <v-tabs grow align-tabs="center" mobile v-model="computedTab">
       <v-tab v-for="(item, index) in tabs" :key="index" :value="item.name">
-        <v-icon v-if="item.icon" :icon="item.icon"></v-icon>
+        <v-icon class="ml-2" v-if="item.icon" :icon="item.icon"></v-icon>
         <span>{{ item.title }}</span>
       </v-tab>
     </v-tabs>

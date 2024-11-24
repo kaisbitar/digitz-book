@@ -1,6 +1,6 @@
 <template>
   <v-card
-    class="pa-4 text-right"
+    class="px-4 py-2 text-right"
     border
     rounded
     hover
@@ -8,41 +8,49 @@
     @mouseover="showDelete = true"
     @mouseleave="showDelete = false"
   >
-    <v-btn
-      icon="mdi-close"
-      size="x-small"
-      variant="tonal"
-      class="float-left"
-      v-show="showDelete"
-      @click.stop="$emit('deleteRatl', index)"
-    />
-    <div class="d-flex align-center mb-2">
+    <div class="text-h6">
+      <v-btn
+        icon="mdi-close"
+        size="x-small"
+        variant="tonal"
+        class="float-left"
+        v-show="showDelete"
+        @click.stop="$emit('deleteRatl', index)"
+      />
       <v-icon
         icon="mdi-file-outline"
         :color="selectedRatlIndex === index ? 'primary' : 'grey'"
         size="20"
         class="pe-2 count-key-item"
       />
-      <div class="text-h6 mr-1" color="primary">
-        {{ ratl.word }}
-      </div>
+      {{ ratl.word }}
     </div>
 
-    <div class="d-flex flex-wrap mt-2 overflow-y-auto" style="height: 50px">
-      <div v-for="(item, i) in cardStats" :key="i">
-        <span class="ml-2 text-caption">{{ item.label }}</span>
-        <div class="count-key-item font-weight-bold">
+    <div class="d-flex text-center mt-2 pl-5">
+      <template v-for="(item, i) in cardStats" :key="i">
+        <div class="text-caption" style="width: 70px">
+          {{ item.label }}
+        </div>
+      </template>
+    </div>
+
+    <div class="d-flex text-center mb-3 pl-5">
+      <template v-for="(item, i) in cardStats" :key="i">
+        <div class="count-key-item font-weight-bold" style="width: 70px">
           {{ item.value }}
         </div>
-      </div>
+      </template>
+    </div>
 
-      <div class="d-flex flex-wrap mt-2 overflow-y-auto" style="height: 50px">
-        <template v-for="surah in ratl.suras" :key="surah">
-          <v-chip class="text-caption ml-1 mt-1" color="secondary">
-            {{ surah }}
-          </v-chip>
-        </template>
-      </div>
+    <div
+      class="d-flex flex-wrap mt-2 mb-2 overflow-y-auto"
+      style="height: 70px"
+    >
+      <template v-for="surah in ratl.suras" :key="surah">
+        <v-chip class="text-caption ml-1 mt-1" color="secondary">
+          {{ surah }}
+        </v-chip>
+      </template>
     </div>
   </v-card>
 </template>

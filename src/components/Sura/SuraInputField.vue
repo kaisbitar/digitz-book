@@ -1,15 +1,6 @@
 <template>
   <v-card class="d-flex">
-    <v-col cols="auto" class="mr-auto">
-      <v-btn
-        icon="mdi-arrow-left"
-        variant="tonal"
-        size="small"
-        clickable
-        @click="goBack()"
-      ></v-btn>
-    </v-col>
-    <v-col :cols="$vuetify.display.smAndUp ? 8 : 12">
+    <v-col :cols="$vuetify.display.smAndUp ? 7 : 11" class="pl-0">
       <AppInputField
         v-model="localSearch"
         :fieldPlaceHolder="placeholderText"
@@ -39,6 +30,15 @@
         </template>
       </AppInputField>
     </v-col>
+    <div class="mr-auto mt-3 ml-3">
+      <v-btn
+        icon="mdi-arrow-left"
+        variant="tonal"
+        size="small"
+        clickable
+        @click="goBack()"
+      ></v-btn>
+    </div>
   </v-card>
 </template>
 
@@ -129,11 +129,6 @@ const inputNavigation = computed(() => [
     icon: "mdi-close",
     class: "ml-1",
     action: onClear,
-  },
-  {
-    icon: "mdi-arrow-left",
-    class: "mx-0",
-    action: goBack,
   },
 ])
 </script>
