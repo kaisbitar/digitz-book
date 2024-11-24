@@ -10,11 +10,6 @@ defineProps({
   metrics: {
     type: Array,
     required: true,
-    // Expected format: [{ value: number|string, label: string }]
-  },
-  containerClass: {
-    type: String,
-    default: "",
   },
 })
 </script>

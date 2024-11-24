@@ -1,6 +1,6 @@
 <template>
   <TarteelTabs />
-  <v-container max-width="1200">
+  <v-container max-width="1200" class="px-sm-4 px-2">
     <template v-if="ratl">
       <component
         :is="currentView"

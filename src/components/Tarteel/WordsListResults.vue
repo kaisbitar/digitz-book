@@ -1,37 +1,25 @@
 <template>
-  <div :class="['mb-4', { 'additional-search': !isOriginal }]">
-    <!-- <v-chip
-      :color="isOriginal ? 'primary' : 'secondary'"
-      class="mb-2"
-      size="small"
+  <v-row dense>
+    <v-col
+      v-for="(ratl, index) in search.results"
+      :key="index"
+      cols="12"
+      sm="6"
+      md="4"
+      lg="4"
     >
-      {{ isOriginal ? "البحث الأصلي:" : "بحث إضافي:" }} "{{ search.inputText }}"
-    </v-chip> -->
-
-    <v-row dense>
-      <v-col
-        v-for="(ratl, index) in search.results"
-        :key="`${
-          isOriginal ? 'original' : 'additional'
-        }-${searchIndex}-${index}`"
-        cols="12"
-        sm="6"
-        md="4"
-        lg="4"
-      >
-        <WordCardItem
-          :class="{
-            'active-word-card-item': selectedRatlIndex === index,
-          }"
-          :ratl="ratl"
-          :index="index"
-          :selectedRatlIndex="selectedRatlIndex"
-          @select="(ratl, index) => $emit('select', ratl, index, searchIndex)"
-          @deleteRatl="(index) => $emit('deleteRatl', index, searchIndex)"
-        />
-      </v-col>
-    </v-row>
-  </div>
+      <WordCardItem
+        :class="{
+          'active-word-card-item': selectedRatlIndex === index,
+        }"
+        :ratl="ratl"
+        :index="index"
+        :selectedRatlIndex="selectedRatlIndex"
+        @select="(ratl, index) => $emit('select', ratl, index, searchIndex)"
+        @deleteRatl="(index) => $emit('deleteRatl', index, searchIndex)"
+      />
+    </v-col>
+  </v-row>
 </template>
 
 <script setup>

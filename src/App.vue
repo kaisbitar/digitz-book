@@ -39,11 +39,6 @@ html {
   position: relative;
 }
 
-.sura-board-overflow {
-  height: calc(100vh - 170px);
-  overflow: auto;
-}
-
 .sura-chart-overflow {
   height: calc(100vh - 100px);
   overflow: auto;

@@ -10,10 +10,9 @@
 
   <AppTabs
     v-if="isToolbarExpanded"
-    class="mb-3"
+    class="mb-1"
     :tabs="tabs"
     :activeTab="activeTab"
-    @click="isToolbarExpanded = false"
     @update:activeTab="updateActiveTab"
   />
 
@@ -62,10 +61,10 @@
 </template>
 
 <script setup>
-import { ref, nextTick, computed } from "vue"
 import { useWindow } from "@/mixins/window"
 import { useStore } from "@/stores/appStore"
 import { useRouter } from "vue-router"
+import { useHideOnScroll } from "@/hooks/useHideOnScroll"
 
 const router = useRouter()
 const store = useStore()
@@ -83,6 +82,7 @@ const searchBtnText = ref(`ترتيل ${props.suraName}`)
 const isInputVisible = ref(false)
 const inputText = ref("")
 const isToolbarExpanded = ref(false)
+const isHeaderVisible = useHideOnScroll()
 
 const filteredVerses = computed(() => {
   if (!inputText.value) return []
@@ -229,6 +229,11 @@ const setTargetVerse = (verse) => {
 </script>
 
 <style scoped>
+.sura-board-overflow {
+  height: calc(100vh - 180px);
+  overflow: auto;
+}
+
 .table-toggle-container {
   position: absolute;
   left: 03px;
