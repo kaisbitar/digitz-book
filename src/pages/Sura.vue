@@ -99,18 +99,30 @@ const handleGoBack = () => {
 const isMobileView = computed(() => store.getVersesMobileView)
 
 const tabs = computed(() => [
-  { title: "نص", name: "suraText", icon: "mdi-text-box-outline" },
+  {
+    title: "نص",
+    name: "suraText",
+    icon: "mdi-text-box-outline",
+    activeIcon: "mdi-text-box",
+  },
   {
     title: "تفصيل",
     name: "versesTab",
-    icon: "mdi-view-list",
+    icon: "mdi-view-list-outline",
+    activeIcon: "mdi-view-list",
   },
   // {
   //   title: "جدول",
   //   name: "versesTab",
   //   icon: "mdi-table",
+  //   activeIcon: "mdi-table-outline",
   // },
-  { title: "تواتر", name: "frequency", icon: "mdi-chart-bar" },
+  {
+    title: "تواتر",
+    name: "frequency",
+    icon: "mdi-chart-line",
+    activeIcon: "mdi-chart-areaspline",
+  },
 ])
 
 const prepareData = () => {

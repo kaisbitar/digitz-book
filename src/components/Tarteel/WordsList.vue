@@ -11,7 +11,6 @@
     <WordsListResults
       class="tarteel-overview-overflow px-sm-4 mt-1"
       :search="selectedTarteel"
-      :searchIndex="0"
       :selectedRatlIndex="selectedRatlIndex"
       :isOriginal="true"
       @select="handleRatlSelect"

@@ -15,8 +15,8 @@
         :ratl="ratl"
         :index="index"
         :selectedRatlIndex="selectedRatlIndex"
-        @select="(ratl, index) => $emit('select', ratl, index, searchIndex)"
-        @deleteRatl="(index) => $emit('deleteRatl', index, searchIndex)"
+        @select="(ratl, index) => $emit('select', ratl, index)"
+        @deleteRatl="(index) => $emit('deleteRatl', index)"
       />
     </v-col>
   </v-row>
@@ -26,10 +26,6 @@
 defineProps({
   search: {
     type: Object,
-    required: true,
-  },
-  searchIndex: {
-    type: Number,
     required: true,
   },
   selectedRatlIndex: {

@@ -2,7 +2,11 @@
   <v-card>
     <v-tabs grow align-tabs="center" mobile v-model="computedTab">
       <v-tab v-for="(item, index) in tabs" :key="index" :value="item.name">
-        <v-icon class="ml-2" v-if="item.icon" :icon="item.icon"></v-icon>
+        <v-icon
+          class="ml-2"
+          v-if="item.icon"
+          :icon="computedTab === item.name ? item.activeIcon : item.icon"
+        ></v-icon>
         <span>{{ item.title }}</span>
       </v-tab>
     </v-tabs>
@@ -10,8 +14,6 @@
 </template>
 
 <script setup>
-import { computed } from "vue"
-
 const props = defineProps({
   tabs: {
     type: Array,
