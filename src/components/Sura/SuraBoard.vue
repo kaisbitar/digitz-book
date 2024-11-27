@@ -81,7 +81,7 @@ const emit = defineEmits(["verseSelected"])
 const searchBtnText = ref(`ترتيل ${props.suraName}`)
 const isInputVisible = ref(false)
 const inputText = ref("")
-const isToolbarExpanded = ref(false)
+const isToolbarExpanded = ref(true)
 const isHeaderVisible = useHideOnScroll()
 
 const filteredVerses = computed(() => {
@@ -133,7 +133,6 @@ const scrollToActiveVerse = () => {
 }
 
 const updateActiveTab = (value) => {
-  console.log(value)
   store.setActiveSuraTab(value)
 }
 
