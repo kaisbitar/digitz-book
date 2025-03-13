@@ -11,7 +11,7 @@
       v-if="!(isMobile && isInputVisible)"
     />
     <v-app-bar-title class="mr-0" style="max-width: 140px" v-if="!isMobile">
-      الكتاب المرقوم
+      رُسُلْ
     </v-app-bar-title>
     <v-container v-if="isInputVisible" class="pt-6" max-width="900">
       <div class="mb-2">

@@ -28,7 +28,7 @@
           </v-card-text>
 
           <template v-else>
-            <v-list>
+            <v-list class="tafsiri-board-overflow">
               <v-list-item
                 v-for="note in notesStore.notes"
                 :key="note.id"
@@ -123,7 +123,7 @@ watch(editDialog, (isOpen) => {
 }
 
 .tafsiri-board-overflow {
-  height: calc(100vh - 230px);
+  height: calc(100vh - 150px);
   overflow: auto;
 }
 </style>
