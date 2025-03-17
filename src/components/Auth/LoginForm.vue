@@ -59,7 +59,20 @@
               class="mb-4"
             >
               <v-icon start icon="mdi-google" class="mr-2"></v-icon>
-              {{ authStore.loading ? "Signing in..." : "Continue with Google" }}
+              {{ authStore.loading ? "Signing in..." : " Google" }}
+            </v-btn>
+
+            <v-btn
+              block
+              variant="outlined"
+              color="primary"
+              :loading="authStore.loading"
+              :disabled="authStore.loading"
+              @click="handleFacebookLogin"
+              class="mb-4"
+            >
+              <v-icon start icon="mdi-facebook" class="mr-2"></v-icon>
+              {{ authStore.loading ? "Signing in..." : " Facebook" }}
             </v-btn>
 
             <v-btn
@@ -69,7 +82,7 @@
               @click="handleReset"
               class="mt-4"
             >
-              مشكلة بتسجيل الدخول؟ انقر هنا لإصلاحه
+              مشكلة بتسجيل الدخول؟ انقر هنا
             </v-btn>
           </v-form>
         </v-card>
@@ -103,16 +116,26 @@ const handleSubmit = async () => {
     return
   }
 
-  // Redirect after successful login
   router.push("/tafsiri")
 }
 
 const handleGoogleLogin = async () => {
   try {
-    const { error } = await authStore.signInWithProvider("google")
+    const { error } = await authStore.signInWithProvider("google", {
+      redirectTo: `${window.location.origin}/auth/callback`,
+    })
     if (error) throw error
   } catch (error) {
     console.error("Google sign-in error:", error)
+  }
+}
+
+const handleFacebookLogin = async () => {
+  try {
+    const { error } = await authStore.signInWithProvider("facebook")
+    if (error) throw error
+  } catch (error) {
+    console.error("Facebook sign-in error:", error)
   }
 }
 
