@@ -3,7 +3,6 @@
     :modelValue="menu"
     :close-on-content-click="false"
     :max-height="'auto'"
-    width="auto"
     location="bottom"
     activator="parent"
     @update:modelValue="$emit('update:menu', $event)"
@@ -14,7 +13,6 @@
       </p>
       <AutoWordList
         v-if="showAutoWordsList"
-        class="w-100"
         :items="currentWordsList"
         :checked-items="checkedItems"
         :height="$vuetify.display.xs ? 300 : 'auto'"
@@ -25,7 +23,6 @@
 
       <AutoVerseList
         v-if="showAutoVerseList"
-        class="w-100"
         :items="currentWordsList"
         :checked-items="checkedItems"
         @update:currentWordsList="emit('update:items', $event)"

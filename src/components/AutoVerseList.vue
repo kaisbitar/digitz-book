@@ -21,10 +21,6 @@ const props = defineProps({
     type: Array,
     required: true,
   },
-  height: {
-    type: [Number, String],
-    default: 490,
-  },
 })
 const targetedVerseIndex = computed(() => store.getTarget?.verseNumberToQuran)
 const { paginatedItems, handleInfiniteScroll, isLoading } =
@@ -40,13 +36,13 @@ const handleVerseClick = (verse) => {
 </script>
 
 <style scoped>
-/* .auto-verse-list {
-  padding-top: 0 !important;
-  max-height: 500px;
-} */
+.sura-board-overflow {
+  height: calc(100vh - 120px);
+  overflow: auto;
+}
 @media (max-width: 768px) {
   .sura-board-overflow {
-    height: calc(100vh - 450px);
+    height: calc(100vh - 250px);
     overflow: auto;
   }
 }
