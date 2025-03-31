@@ -45,7 +45,7 @@
               {{ error }}
             </v-alert>
 
-            <v-divider class="my-4">
+            <!--    <v-divider class="my-4">
               <v-chip variant="text">or</v-chip>
             </v-divider>
 
@@ -73,7 +73,7 @@
             >
               <v-icon start icon="mdi-facebook" class="mr-2"></v-icon>
               {{ authStore.loading ? "Signing in..." : " Facebook" }}
-            </v-btn>
+            </v-btn> -->
 
             <v-btn
               color="warning"
@@ -113,6 +113,7 @@ const handleSubmit = async () => {
 
   if (authError) {
     error.value = authError.message
+    console.log(authError)
     return
   }
 
@@ -122,12 +123,15 @@ const handleSubmit = async () => {
 const handleGoogleLogin = async () => {
   try {
     const { error } = await authStore.signInWithProvider("google", {
-      redirectTo: `${window.location.origin}/auth/callback`,
+      redirectTo: "https://rusul.net/auth/callback",
     })
+    window.location.href = "https://rusul.net/auth/callback"
+
     if (error) throw error
   } catch (error) {
     console.error("Google sign-in error:", error)
   }
+  window.location.href = "/auth/callback"
 }
 
 const handleFacebookLogin = async () => {
