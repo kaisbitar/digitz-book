@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex justify-space-between">
-    <v-btn
+    <!-- <v-btn
       class="float-end"
       @click="toggleToolbar"
       icon
@@ -10,7 +10,7 @@
       <v-icon>{{
         isToolbarExpanded ? "mdi-chevron-up" : "mdi-chevron-down"
       }}</v-icon>
-    </v-btn>
+    </v-btn> -->
     <div>
       <span class="text-h4 ml-1">{{ suraNumber }}</span>
       <span class="text-h4 ml-4">{{ target.suraName }}</span>

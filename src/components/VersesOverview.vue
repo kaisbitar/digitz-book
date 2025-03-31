@@ -3,7 +3,7 @@
     v-if="!isMobileView"
     class="verses-overview mt-1"
     activeItemClass="active-verse-table"
-    :tableHeight="'calc(100vh - 64px - 48px - 110px)'"
+    :tableHeight="'calc(100vh - 64px - 48px - 150px)'"
     :tableData="paginatedItems"
     :tableHeaders="versesHeaders"
     :tableInputText="versesInputText"
