@@ -20,8 +20,4 @@ defineProps({
 })
 </script>
 
-<style scoped>
-/* .count-key-item {
-  font-weight: bold;
-} */
-</style>
+<style scoped></style>

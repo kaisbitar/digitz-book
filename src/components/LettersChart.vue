@@ -1,6 +1,8 @@
 <template>
   <v-card variant="plain">
+    <!-- {{ spiritualLetters }} -->
     <v-card-text v-if="selectedLetter" class="text-center letters-container">
+      {{ selectedLetter.index + 1 }}
       <span class="text-h2 font-weight-bold ml-4">{{
         selectedLetter.letter
       }}</span>
@@ -25,7 +27,22 @@ import { computed, ref, onMounted, watch, nextTick } from "vue"
 import lettersOptions from "@/assets/lettersOptions"
 
 const props = defineProps(["letter"])
-
+const spiritualLetters = [
+  "الم",
+  "الر",
+  "المر",
+  "كهيعص",
+  "ص",
+  "ن",
+  "المص",
+  "ق",
+  "يس",
+  "طسم",
+  "طه",
+  "حم",
+  " حم، عسق",
+  "طس",
+]
 const chartOptions = computed(() => {
   const baseOptions = lettersOptions()
   if (selectedLetter.value) {
@@ -77,11 +94,15 @@ const showTooltipForLetter = () => {
   const letterIndex = letters.value.categories.findIndex(
     (cat) => cat === props.letter
   )
-  if (letterIndex === -1) return
+  if (letterIndex === -1) {
+    selectedLetter.value = null
+    return
+  }
 
   selectedLetter.value = {
     letter: letters.value.categories[letterIndex],
     count: letters.value.series[0].data[letterIndex].y,
+    index: letterIndex,
   }
   selectDataPoint(letterIndex)
 }
@@ -89,11 +110,13 @@ const showTooltipForLetter = () => {
 watch(
   () => props.letter,
   (newLetter) => {
-    if (newLetter) {
-      nextTick(() => {
-        showTooltipForLetter()
-      })
+    if (!newLetter) {
+      selectedLetter.value = null
+      return
     }
+    nextTick(() => {
+      showTooltipForLetter()
+    })
   }
 )
 

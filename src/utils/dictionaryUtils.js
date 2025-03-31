@@ -45,7 +45,11 @@ export const fetchWordData = async (word) => {
 }
 
 export const fetchWordRootData = async (word) => {
-  if (word.startsWith("ال")) return word
+  // if (word.startsWith("ال")) return word
+  if (word.length <= 3) return word
+  if (word.length === 4 && word.endsWith("ا")) {
+    return word.slice(0, -1)
+  }
   try {
     const wordRootsApi = import.meta.env.VITE_WORD_ROOTS_API_URL
     const root = await fetchWordRoot(wordRootsApi, word)

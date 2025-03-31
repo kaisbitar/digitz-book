@@ -44,6 +44,46 @@
             <v-alert v-if="error" type="error" class="mt-3">
               {{ error }}
             </v-alert>
+
+            <!--    <v-divider class="my-4">
+              <v-chip variant="text">or</v-chip>
+            </v-divider>
+
+            <v-btn
+              block
+              variant="outlined"
+              color="primary"
+              :loading="authStore.loading"
+              :disabled="authStore.loading"
+              @click="handleGoogleLogin"
+              class="mb-4"
+            >
+              <v-icon start icon="mdi-google" class="mr-2"></v-icon>
+              {{ authStore.loading ? "Signing in..." : " Google" }}
+            </v-btn>
+
+            <v-btn
+              block
+              variant="outlined"
+              color="primary"
+              :loading="authStore.loading"
+              :disabled="authStore.loading"
+              @click="handleFacebookLogin"
+              class="mb-4"
+            >
+              <v-icon start icon="mdi-facebook" class="mr-2"></v-icon>
+              {{ authStore.loading ? "Signing in..." : " Facebook" }}
+            </v-btn> -->
+
+            <v-btn
+              color="warning"
+              variant="text"
+              size="small"
+              @click="handleReset"
+              class="mt-4"
+            >
+              مشكلة بتسجيل الدخول؟ انقر هنا
+            </v-btn>
           </v-form>
         </v-card>
       </v-col>
@@ -62,6 +102,7 @@ const router = useRouter()
 const email = ref("")
 const password = ref("")
 const error = ref("")
+const showResetButton = ref(false)
 
 const handleSubmit = async () => {
   error.value = ""
@@ -72,10 +113,50 @@ const handleSubmit = async () => {
 
   if (authError) {
     error.value = authError.message
+    console.log(authError)
     return
   }
 
-  // Redirect after successful login
   router.push("/tafsiri")
 }
+
+const handleGoogleLogin = async () => {
+  try {
+    const { error } = await authStore.signInWithProvider("google", {
+      redirectTo: "https://rusul.net/auth/callback",
+    })
+    window.location.href = "https://rusul.net/auth/callback"
+
+    if (error) throw error
+  } catch (error) {
+    console.error("Google sign-in error:", error)
+  }
+  window.location.href = "/auth/callback"
+}
+
+const handleFacebookLogin = async () => {
+  try {
+    const { error } = await authStore.signInWithProvider("facebook")
+    if (error) throw error
+  } catch (error) {
+    console.error("Facebook sign-in error:", error)
+  }
+}
+
+// Show reset button after a failed login attempt
+const handleLoginError = () => {
+  showResetButton.value = true
+}
+
+const handleReset = async () => {
+  try {
+    await authStore.forceRefresh()
+  } catch (error) {
+    console.error("Reset error:", error)
+    // As a last resort, redirect to login with a clean slate
+    window.location.href = "/login"
+  }
+}
 </script>
+
+<style scoped></style>

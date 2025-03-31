@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container max-width="1200">
     <v-row>
       <v-col cols="12">
         <v-card>
@@ -28,7 +28,7 @@
           </v-card-text>
 
           <template v-else>
-            <v-list>
+            <v-list class="tafsiri-board-overflow">
               <v-list-item
                 v-for="note in notesStore.notes"
                 :key="note.id"
@@ -120,5 +120,10 @@ watch(editDialog, (isOpen) => {
 <style scoped>
 .cursor-pointer {
   cursor: pointer;
+}
+
+.tafsiri-board-overflow {
+  height: calc(100vh - 150px);
+  overflow: auto;
 }
 </style>

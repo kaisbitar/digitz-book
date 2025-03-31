@@ -11,7 +11,7 @@
       <v-main>
         <v-container fluid class="fill-height pa-0">
           <v-row no-gutters style="height: 100%">
-            <v-col cols="3" class="border-r bg-white">
+            <v-col cols="6" class="border-r bg-white">
               <v-card flat>
                 <WordMeaning
                   :word="word"
@@ -23,9 +23,9 @@
             </v-col>
 
             <v-col cols="6" class="border-l bg-white">
-              <v-list>
-                <v-list-subheader>الملاحظات السابقة</v-list-subheader>
-                <v-list-item
+              <v-card class="pa-4">
+                <v-card-subtitle>الملاحظات السابقة</v-card-subtitle>
+                <v-card-item
                   v-for="note in previousNotes"
                   :key="note.id"
                   :subtitle="note.note"
@@ -34,31 +34,31 @@
                   <template v-slot:title>
                     {{ formatDate(note.created_at) }}
                   </template>
-                </v-list-item>
-              </v-list>
-
-              <v-textarea
-                v-model="noteText"
-                label="أضف ملاحظتك"
-                rows="4"
-                auto-grow
-                :loading="loading"
-              ></v-textarea>
-
-              <v-btn
-                color="primary"
-                block
-                @click="saveNote"
-                :loading="loading"
-                class="mb-2"
-              >
-                {{ noteText ? "تحديث" : "حفظ" }}
-              </v-btn>
+                </v-card-item>
+                <v-textarea
+                  v-model="noteText"
+                  label="أضف ملاحظتك"
+                  rows="4"
+                  auto-grow
+                  :loading="loading"
+                ></v-textarea>
+                <v-col cols="4">
+                  <v-btn
+                    color="primary"
+                    block
+                    @click="saveNote"
+                    :loading="loading"
+                    class="mb-2"
+                  >
+                    {{ noteText ? "تحديث" : "حفظ" }}
+                  </v-btn>
+                </v-col>
+              </v-card>
             </v-col>
 
-            <v-col cols="3">
+            <!-- <v-col cols="3">
               <UserChat :word="word" />
-            </v-col>
+            </v-col> -->
           </v-row>
         </v-container>
       </v-main>

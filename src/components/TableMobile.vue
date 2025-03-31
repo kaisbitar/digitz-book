@@ -1,5 +1,5 @@
 <template>
-  <div ref="tableMobileRef" class="sura-board-overflow">
+  <div class="sura-board-overflow">
     <v-item-group v-for="(item, index) in data" :key="item.verseNumberToQuran">
       <v-item v-slot="{ isSelected, selectedClass, toggle }">
         <VerseCardItem
@@ -50,4 +50,4 @@ onMounted(async () => {
 })
 </script>
 
-<style scoped></style>
+<style></style>

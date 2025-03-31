@@ -1,26 +1,32 @@
 <template>
   <AppInputField
     :modelValue="tarteel"
-    :fieldPlaceHolder="'القرآن'"
+    :fieldPlaceHolder="placeholder"
     :dataToShow="`${totalWordsCount} كلمة`"
     :type="'word-count'"
     :hasError="inputHasError"
     :hasSuccess="inputHasSuccess"
     :loading="isLoading"
+    :autoFocus="false"
+    rounded="lg"
+    variant="outlined"
+    base-color="count-key-item"
     @update:modelValue="handleInput($event)"
     @clear="handleClear"
     @focus="onFocus"
     @keydown:enter="handleTarteel"
   >
     <AutoMenu
-      class="mt-4"
       :menu="menu"
       :tarteel="tarteel"
       :currentWordsList="currentWordsList"
       :totalWordsCount="totalWordsCount"
+      :suggestions="suggestions"
+      :hasSuggestions="hasSuggestions"
       :currentLetter="currentLetter"
       :checkedItems="checkedItems"
       :isLoading="isLoading"
+      :showLetterChart="showLetterChart"
       @update:menu="menu = $event"
       @update:isLoading="isLoading = $event"
       @update:items="updateFilteredList"
@@ -45,7 +51,7 @@ import { useDataStore } from "@/stores/dataStore"
 import { useTarteelStore } from "@/stores/tarteelStore"
 import { useAutoComplete } from "@/hooks/useAutoComplete"
 import { useRouter } from "vue-router"
-import AppInputField from "./AppInputField.vue"
+import AppInputField from "./App/AppInputField.vue"
 
 const dataStore = useDataStore()
 const tarteelStore = useTarteelStore()
@@ -57,18 +63,35 @@ const {
   currentWordsList,
   totalWordsCount,
   checkedItems,
+  suggestions,
+  hasSuggestions,
   handleInputChange,
   toggleMenu,
   clearInput,
   updateFilteredList,
   storeTarteels,
   updateCheckedItems,
+  applySuggestion,
 } = useAutoComplete(dataStore, tarteelStore)
 
 const inputHasError = ref(false)
 const inputHasSuccess = ref(false)
 const isLoading = ref(false)
 
+const props = defineProps({
+  placeholder: {
+    type: String,
+    default: "القرآن",
+  },
+  showLetterChart: {
+    type: Boolean,
+    default: true,
+  },
+  isAddingToExisting: {
+    type: Boolean,
+    default: false,
+  },
+})
 const emit = defineEmits(["update:isInputVisible", "submitTarteel"])
 
 const handleInput = async (value) => {
@@ -83,7 +106,8 @@ const handleTarteel = () => {
   if (tarteel.value === "" || currentWordsList.value.length === 0) return
 
   storeTarteels(
-    checkedItems.value.length > 0 ? checkedItems.value : currentWordsList.value
+    checkedItems.value.length > 0 ? checkedItems.value : currentWordsList.value,
+    props.isAddingToExisting
   )
 
   updateCheckedItems([])

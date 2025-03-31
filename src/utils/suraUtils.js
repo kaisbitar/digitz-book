@@ -1,6 +1,6 @@
 import { useCounting } from "@/mixins/counting"
 
-const { calculateWordValue } = useCounting()
+const { calculateValue } = useCounting()
 
 export const prepareSuraData = ({
   oneQuranFile,
@@ -120,7 +120,7 @@ export const buildVerseObject = (item) => ({
   numberOfWords: item.verseText.split(" ").length.toString(),
   numberOfLetters: item.verseText.replace(/ /g, "").length.toString(),
   verseNumberToQuran: item.verseNumberToQuran.toString(),
-  verseValue: calculateWordValue(item.verseText),
+  verseValue: calculateValue(item.verseText),
 })
 
 const getMushafSeries = (fieldPlaceHolder, tableQuranIndex) => {

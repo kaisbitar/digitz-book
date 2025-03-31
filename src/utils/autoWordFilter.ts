@@ -13,6 +13,7 @@ interface ResultItem {
       fileName: string
       verseIndex: number
       verseNumberToQuran: number
+      verseText: string
     }
   }
 }
@@ -32,6 +33,7 @@ interface SortedResultItem {
       fileName: string
       verseIndex: number
       verseNumberToQuran: number
+      verseText: string
     }
   }
 }
@@ -65,9 +67,12 @@ const getCharVariations = (char: string): string[] => {
     آ: ["آ", "ء", "ا"],
     ه: ["ه", "ة"],
     ت: ["ت", "ة"],
-    ى: ["ى", "ي"],
+    ة: ["ت", "ة"],
+    ى: ["ى", "ي", "ئ", "ء"],
     و: ["و", "ؤ"],
     ي: ["ي", "ئ", "ى", "ء"],
+    إ: ["ا", "أ", "إ", "آ", "ٱ"],
+    ء: ["ء", "ئ", "ؤ"],
   }
   return variations[char] || [char]
 }
@@ -84,7 +89,18 @@ const generateSearchRegex = (search: string): RegExp => {
   return new RegExp(searchRegex, "g")
 }
 
-// Helper function to score a word based on its similarity to the search term
+const generateStrictSearchRegex = (search: string): RegExp => {
+  const allowedExtras = '[يوا]'  
+  const searchRegex = search
+    .split("")
+    .map((char) => {
+      const variations = getCharVariations(char).join("")
+      return `[${variations}](?:${allowedExtras}*?)`
+    })
+    .join("")
+  return new RegExp(searchRegex, "g")
+}
+
 const scoreWord = (word: string, search: string): number => {
   if (word.startsWith(search)) return 2
   if (word.includes(search)) return 1
@@ -99,40 +115,46 @@ const processVerse = (
 ): void => {
   const { verseText, fileName, verseIndex, verseNumberToQuran } = verseObj
 
+  const createVerseEntry = () => ({
+    count: 1,
+    verseId: verseNumberToQuran,
+    fileName,
+    verseIndex,
+    verseNumberToQuran,
+    verseText,
+  })
+
+  const createNewWordResult = (score: number) => ({
+    count: 1,
+    score,
+    verses: {
+      [verseNumberToQuran]: createVerseEntry()
+    }
+  })
+
+  const updateExistingWord = (word: string, score: number) => {
+    results[word].count++
+    results[word].score = Math.max(results[word].score, score)
+    
+    if (!results[word].verses[verseNumberToQuran]) {
+      results[word].verses[verseNumberToQuran] = createVerseEntry()
+      return
+    }
+    
+    results[word].verses[verseNumberToQuran].count++
+  }
+
   const words = verseText.split(/\s+/)
   words.forEach((word) => {
-    if (searchRegex.test(word)) {
-      const score = scoreWord(word, searchTerm)
-      if (results[word]) {
-        results[word].count++
-        results[word].score = Math.max(results[word].score, score)
-        if (results[word].verses[verseText]) {
-          results[word].verses[verseText].count++
-        } else {
-          results[word].verses[verseText] = {
-            count: 1,
-            verseId: verseNumberToQuran,
-            fileName,
-            verseIndex,
-            verseNumberToQuran,
-          }
-        }
-      } else {
-        results[word] = {
-          count: 1,
-          score,
-          verses: {
-            [verseText]: {
-              count: 1,
-              verseId: verseNumberToQuran,
-              fileName,
-              verseIndex,
-              verseNumberToQuran,
-            },
-          },
-        }
-      }
+    if (!searchRegex.test(word)) return
+
+    const score = scoreWord(word, searchTerm)
+    if (!results[word]) {
+      results[word] = createNewWordResult(score)
+      return
     }
+
+    updateExistingWord(word, score)
   })
 }
 
@@ -168,16 +190,16 @@ const sortResults = (
 
 const formatResults = (sortedResults: SortedResultItem[]): FilterResult => {
   return {
-    results: sortedResults.map(({ word, count, verses }) => ({
-      word,
-      count,
-      verses: Object.entries(verses || []).map(
-        ([verseText, { fileName, verseIndex, verseNumberToQuran }]) => ({
-          fileName,
-          verseIndex,
-          verseNumberToQuran,
-          verseText,
-        })
+      results: sortedResults.map(({ word, count, verses }) => ({
+        word,
+        count,
+        verses: Object.entries(verses || []).map(
+          ([key, { fileName, verseIndex, verseNumberToQuran, verseText }]) => ({
+            fileName,
+            verseIndex,
+            verseNumberToQuran,
+            verseText
+          })
       ),
     })),
   }
@@ -187,7 +209,7 @@ export function filterWords(
   searchTerm: string,
   oneQuranFile: VerseObject[]
 ): FilterResult {
-  const searchRegex = generateSearchRegex(searchTerm)
+  const searchRegex = generateStrictSearchRegex(searchTerm)
   const results: Results = {}
 
   oneQuranFile.forEach((verseObj) => {
@@ -214,3 +236,5 @@ export function countDistinctWords(
 
   return distinctWords.size
 }
+
+

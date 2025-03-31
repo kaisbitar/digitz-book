@@ -70,12 +70,23 @@ export const useAuthStore = defineStore("auth", {
     },
 
     async signOut() {
-      const { error } = await supabase.auth.signOut()
-      if (!error) {
+      try {
+        // Clear all browser data first
+        await this.clearBrowserData()
+
+        // Then sign out from Supabase
+        const { error } = await supabase.auth.signOut()
+        if (error) throw error
+
+        // Clear user state
         this.user = null
         this.userSettings = null
+
+        return { error: null }
+      } catch (error) {
+        console.error("Sign out error:", error)
+        return { error }
       }
-      return { error }
     },
 
     async loadUserSettings() {
@@ -180,6 +191,72 @@ export const useAuthStore = defineStore("auth", {
       // Load user's notes after successful login
       const notesStore = useNotesStore()
       await notesStore.loadUserNotes()
+    },
+
+    async signInWithProvider(provider) {
+      this.loading = true
+      try {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider,
+          options: {
+            redirectTo: `${window.location.origin}/auth/callback`,
+          },
+        })
+        if (error) throw error
+        return { data, error: null }
+      } catch (error) {
+        console.error("Provider sign-in error:", error)
+        return { data: null, error }
+      } finally {
+        this.loading = false
+      }
+    },
+
+    async handleAuthCallback() {
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.getSession()
+      if (error) throw error
+
+      if (session) {
+        this.user = session.user
+        console.log("Session user:", this.user)
+        await this.initializeUserSettings()
+      }
+    },
+
+    async clearBrowserData() {
+      try {
+        // Clear localStorage
+        localStorage.clear()
+
+        // Clear sessionStorage
+        sessionStorage.clear()
+
+        // Clear Supabase cache
+        await supabase.auth.clearSession()
+
+        // Reset store state
+        this.$reset()
+
+        // Clear IndexedDB (if you're using it)
+        const databases = await window.indexedDB.databases()
+        databases.forEach((db) => {
+          window.indexedDB.deleteDatabase(db.name)
+        })
+
+        return { error: null }
+      } catch (error) {
+        console.error("Error clearing browser data:", error)
+        return { error }
+      }
+    },
+
+    // Add a force refresh method
+    async forceRefresh() {
+      await this.clearBrowserData()
+      window.location.reload(true) // Force reload from server
     },
   },
 })

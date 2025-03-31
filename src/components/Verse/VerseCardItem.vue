@@ -1,13 +1,15 @@
 <template>
   <v-card
     hover
-    class="mx-sm-4 mx-0 px-4 pt-4 pb-4 mt-2 mb-2 verse-card-item"
+    class="px-4 pt-4 pb-4 mt-2 mb-2 verse-card-item"
     @click="handleClick"
     variant="outlined"
   >
     <v-card-subtitle class="verse-card-item-title mb-2">
       <v-badge :content="index + 1" offset-x="-10" offset-y="-8"> </v-badge>
-      <span class="mr-10">{{ suraNumber }} {{ suraName }}</span>
+      <span class="mr-10"
+        >{{ suraNumber }} {{ suraName }} - آية {{ item.verseIndex }}</span
+      >
     </v-card-subtitle>
 
     <v-card-text
@@ -27,7 +29,7 @@ import { useInputFiltering } from "@/mixins/inputFiltering"
 import { useCounting } from "@/mixins/counting"
 
 const { highlight } = useInputFiltering()
-const { calculateVerseValue } = useCounting()
+const { calculateValue } = useCounting()
 
 const props = defineProps({
   item: Object,
@@ -51,7 +53,6 @@ const handleClick = () => {
 }
 
 const indexData = computed(() => ({
-  رقم: { value: props.item.verseIndex, color: "verse-count" },
   كلمة: {
     value: props.item.verseText.split(" ").length,
     color: "word-count",
@@ -68,7 +69,7 @@ const countData = computed(() => ({
     color: "verse-number-to-quran",
   },
   مرقوم: {
-    value: calculateVerseValue(props.item.verseText),
+    value: calculateValue(props.item.verseText),
     color: "word-count",
   },
 }))
