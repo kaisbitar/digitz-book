@@ -1,19 +1,26 @@
 <template>
-  <v-app-bar :elevation="0" density="compact" class="border-b" location="top">
+  <v-app-bar
+    :elevation="0"
+    density="comfortable"
+    class="border-b"
+    location="top"
+  >
     <v-app-bar-nav-icon
       @click="toggleRailAppNavDrawer"
       class="ml-2"
       v-if="!(isMobile && isInputVisible)"
     />
     <v-app-bar-title class="mr-0" style="max-width: 140px" v-if="!isMobile">
-      الكتاب المرقوم
+      رُسُلْ
     </v-app-bar-title>
     <v-container v-if="isInputVisible" class="pt-6" max-width="900">
-      <AutoBoard
-        v-if="isInputVisible"
-        @update:isInputVisible="isInputVisible = $event"
-        @submitTarteel="isMobile ? (isInputVisible = false) : null"
-      />
+      <div class="mb-2">
+        <AutoBoard
+          v-if="isInputVisible"
+          @update:isInputVisible="isInputVisible = $event"
+          @submitTarteel="isMobile ? (isInputVisible = false) : null"
+        />
+      </div>
     </v-container>
     <AppToggleBtn
       v-if="!isInputVisible"
@@ -83,9 +90,8 @@ const display = useDisplay()
 const activeRoute = computed(() => router.currentRoute.value.name)
 
 const isInputVisible = ref(false)
-const isRail = ref(true)
-const drawer = ref(true)
-const indexDrawer = ref(false)
+const isRail = ref(false)
+const drawer = ref(false)
 
 const tarteelBadgeContent = computed(() => {
   return String(
@@ -125,12 +131,12 @@ const toggleDrawer = (drawerName) => {
   }
 }
 
-watch(router.currentRoute, async () => {
-  if (router.currentRoute.value.name === "tarteel") {
-    await nextTick()
-    store.setTarteelDrawer(true)
-  }
-})
+// watch(router.currentRoute, async () => {
+//   if (router.currentRoute.value.name === "tarteel") {
+//     await nextTick()
+//     store.setTarteelDrawer(true)
+//   }
+// })
 
 const isMobile = computed(() => {
   return display.smAndDown.value

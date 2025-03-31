@@ -39,11 +39,6 @@ html {
   position: relative;
 }
 
-.sura-board-overflow {
-  height: calc(100vh - 170px);
-  overflow: auto;
-}
-
 .sura-chart-overflow {
   height: calc(100vh - 100px);
   overflow: auto;
@@ -57,12 +52,12 @@ html {
 .text-h4,
 .text-h6,
 .text-h3,
+.text-h1,
 .text-sm-h4,
 .text-sm-h5,
 .text-sm-h3,
 .text-h4 {
   font-family: $body-font-family !important;
-  font-family: unset;
 }
 
 .v-table--density-default {
@@ -82,7 +77,7 @@ html {
   color: rgb(var(--v-theme-on-highlight));
   background: rgb(var(--v-theme-highlight)) !important;
   // font-weight: bold;
-  padding: 2px;
+  // padding: 2px;
 }
 
 .count-key-item,
@@ -108,7 +103,8 @@ html {
 .active-verse-table,
 .active-verse-text,
 .active-index-item,
-.active-tarteel-item {
+.active-tarteel-item,
+.active-word-card-item {
   background: rgb(var(--v-theme-active-row), 100%) !important;
   .verse-card-item-text {
     // text-shadow: 0px 0px 3px rgb(var(--v-theme-on-active-row), 0);

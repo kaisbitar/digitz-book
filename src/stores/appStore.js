@@ -61,13 +61,13 @@ export const useStore = defineStore("Quran", {
     setTarget(target) {
       if (target.fileName !== "000المصحف") {
         this.target = {
+          tarteel: target.tarteel,
           suraNumber: target.fileName.replace(/[ء-٩]/g, "").replace(/\s/g, ""),
           suraName: target.fileName.replace(/[0-9]/g, ""),
           fileName: target.fileName,
           verseIndex: target.verseIndex,
           verseNumberToQuran: target.verseNumberToQuran,
           verseText: target.verseText,
-          tarteel: target.tarteel,
           numberOfLetters: target.verseText.replace(/ /g, "").length,
           numberOfWords: target.verseText.split(" ").length,
           verseValue: target.verseValue,

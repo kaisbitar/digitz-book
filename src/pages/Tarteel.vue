@@ -1,93 +1,100 @@
 <template>
-  <!-- <div
-    v-if="ratl && ratl.verses"
-    class="d-flex flex-column h-100 pa-0 pt-4 px-4"
-  > -->
-  <template class="d-flex align-center pt-4 pb-4 px-4">
-    <TarteelHeader
-      :word="ratl.word"
-      :verses-count="ratl.verses.length"
-      :occurrence-count="ratl.count"
-      @update:isWordMeaningOpen="isWordMeaningOpen = $event"
-    />
-    <v-btn
-      v-if="!isWordMeaningOpen"
-      icon="mdi-pencil-outline"
-      elevation="1"
-      class="mr-auto"
-      @click="isUserNoteOpen = true"
-    />
-    <v-btn
-      v-if="isWordMeaningOpen"
-      icon="mdi-close"
-      elevation="1"
-      class="mr-auto"
-      @click="isWordMeaningOpen = false"
-    />
-  </template>
-
-  <v-divider class="mx-auto" width="100%"></v-divider>
-
-  <WordMeaning
-    :word="ratl.word"
-    class="px-4"
-    :isWordMeaningOpen="isWordMeaningOpen"
-    :class="isWordMeaningOpen ? 'tarteel-meaning-overflow' : 'fixed-height'"
-    @update:isWordMeaningOpen="isWordMeaningOpen = $event"
-    @click="isWordMeaningOpen = true"
-    @meaningItemClick="isUserNoteOpen = true"
-  />
-
-  <UserNote v-model="isUserNoteOpen" :word="ratl.word" :verses="ratl.verses" />
-
-  <div
-    class="tarteel-container tarteel-board-overflow"
-    @scroll="handleInfiniteScroll"
-  >
-    <VerseCardItem
-      v-for="(verse, index) in paginatedItems"
-      :item="verse"
-      :key="verse.originalIndex"
-      :index="index"
-      :textToHighlight="ratl.word"
-      :active="parseInt(targetedVerseIndex) === verse.verseNumberToQuran"
-      :class="{
-        'active-verse-text':
-          parseInt(targetedVerseIndex) === verse.verseNumberToQuran,
-      }"
-      @click="handleSelectedVerse(verse, ratl.word)"
-    />
-    <div class="mt-5 mb-3 text-center">صدق الله العظيم</div>
-  </div>
-  <!-- </div> -->
-
-  <!-- <template v-else>
-    <NoData
-      text="ورتل القرآن ترتيلا.."
-      icon="mdi-book-open-page-variant-outline"
-    />
-  </template> -->
+  <TarteelTabs />
+  <v-container max-width="1200" class="px-sm-4 px-2">
+    <template v-if="ratl">
+      <component
+        :is="currentView"
+        :selectedTarteel="selectedTarteel"
+        :ratl="ratl"
+        :isWordMeaningOpen="isWordMeaningOpen"
+        :isUserNoteOpen="isUserNoteOpen"
+        :paginatedItems="paginatedItems"
+        :targetedVerseIndex="targetedVerseIndex"
+        :handleInfiniteScroll="handleInfiniteScroll"
+        @ratl-selected="showDetail"
+        @back-to-overview="showOverview"
+        @back-to-list="showList"
+        @update:isWordMeaningOpen="isWordMeaningOpen = $event"
+        @update:isUserNoteOpen="isUserNoteOpen = $event"
+        @verseSelected="({ verse, word }) => handleSelectedVerse(verse, word)"
+      />
+      <UserNote
+        v-model="isUserNoteOpen"
+        :word="ratlData.word"
+        :verses="ratlData.verses"
+      />
+    </template>
+    <template v-else>
+      <NoData
+        text="ورتل القرآن ترتيلا.."
+        icon="mdi-book-open-page-variant-outline"
+      />
+    </template>
+  </v-container>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, nextTick } from "vue"
 import { useStore } from "@/stores/appStore"
-import { useRouter } from "vue-router"
+import { useRouter, useRoute } from "vue-router"
 import { useTarteelStore } from "@/stores/tarteelStore"
 import { useWindow } from "@/mixins/window"
 import { useIndexedPagination } from "@/hooks/useIndexedPagination"
 import { useNotesStore } from "@/stores/notesStore"
+import WordsOverview from "@/components/Tarteel/WordsOverview.vue"
+import WordsList from "@/components/Tarteel/WordsList.vue"
+import WordVerses from "@/components/Tarteel/WordVerses.vue"
 
 const tarteelStore = useTarteelStore()
 const router = useRouter()
+const route = useRoute()
 const store = useStore()
 const notesStore = useNotesStore()
+
+const VIEW_TYPES = {
+  OVERVIEW: "overview",
+  LIST: "list",
+  DETAIL: "detail",
+}
+
+const currentView = computed(() => {
+  const view = route.query.view || VIEW_TYPES.LIST
+  return {
+    [VIEW_TYPES.OVERVIEW]: WordsOverview,
+    [VIEW_TYPES.LIST]: WordsList,
+    [VIEW_TYPES.DETAIL]: WordVerses,
+  }[view]
+})
+
+const currentViewType = computed(() => route.query.view || VIEW_TYPES.LIST)
 
 const isUserNoteOpen = ref(false)
 const isWordMeaningOpen = ref(false)
 
-const searchedTarteels = computed(() => tarteelStore.getStoredTarteels)
 const ratl = computed(() => tarteelStore.getSelectedRatl)
+const selectedTarteel = computed(() => {
+  return tarteelStore.getStoredTarteels.find(
+    (tarteel) => tarteel.id === tarteelStore.getSelectedTarteelId
+  )
+})
+
+const ratlData = computed(() => {
+  if (!ratl.value)
+    return {
+      word: "",
+      versesCount: 0,
+      count: 0,
+      verses: [],
+    }
+
+  return {
+    word: ratl.value.word || "",
+    versesCount: ratl.value.verses?.length || 0,
+    count: ratl.value.count || 0,
+    verses: ratl.value.verses || [],
+  }
+})
+
 const targetedVerseIndex = computed(() => store.getTarget?.verseNumberToQuran)
 
 const { paginatedItems, handleInfiniteScroll, isLoading } =
@@ -97,14 +104,22 @@ const { paginatedItems, handleInfiniteScroll, isLoading } =
   )
 
 const handleSelectedVerse = (verse, tarteel) => {
+  const query = {
+    ...router.currentRoute.value.query,
+    tarteel,
+  }
+  delete query.view
+
   store.setTarget({
-    fileName: verse.fileName,
-    verseIndex: verse.verseIndex,
-    verseNumberToQuran: verse.verseNumberToQuran.toString(),
-    verseText: verse.verseText,
+    ...verse,
     tarteel,
   })
-  router.push("sura")
+  router.push({
+    path: `/sura/${verse.fileName.replace(/[ء-٩]/g, "").replace(/\s/g, "")}/${
+      verse.verseIndex
+    }`,
+    query,
+  })
 }
 
 const { scrollToActiveItem } = useWindow()
@@ -120,28 +135,22 @@ watch(
   }
 )
 
-watch(
-  () => searchedTarteels.value,
-  () => {
-    handleScrolling()
-  }
-)
-
 onMounted(async () => {
   await nextTick()
   handleScrolling()
-
-  // if (ratl.value?.word) {
-  //   try {
-  //     const note = await notesStore.getNoteForWord(ratl.value.word)
-  //     if (note) {
-  //       // Do something with the note, maybe show it
-  //     }
-  //   } catch (error) {
-  //     console.error("Failed to load note:", error)
-  //   }
-  // }
 })
+
+const showDetail = () => {
+  router.push({ query: { ...route.query, view: VIEW_TYPES.DETAIL } })
+}
+
+const showOverview = () => {
+  router.push({ query: { ...route.query, view: VIEW_TYPES.OVERVIEW } })
+}
+
+const showList = () => {
+  router.push({ query: { ...route.query, view: VIEW_TYPES.LIST } })
+}
 </script>
 
 <style scoped>

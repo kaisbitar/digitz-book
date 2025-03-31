@@ -59,16 +59,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch, nextTick } from "vue"
+import { ref, onMounted, computed, watch } from "vue"
 import { useStore } from "@/stores/appStore"
-import { useInputFiltering } from "@/mixins/inputFiltering"
-import {
-  fetchWordRootData,
-  fetchWordMeaningData,
-} from "@/utils/dictionaryUtils.js"
+import { fetchWordData } from "@/utils/dictionaryUtils.js"
 
 const store = useStore()
-const { highlight } = useInputFiltering()
+
 const emit = defineEmits(["update:isWordMeaningOpen", "meaningItemClick"])
 const props = defineProps({
   word: {
@@ -95,24 +91,10 @@ const results = computed(() => {
   return [{ meaning: [] }]
 })
 
-const storedMeaning = computed(() => ({
-  get: (word) => store.getWordMeaning(word),
-  has: (word) => !!store.getWordMeaning(word),
-}))
-
 const fetchMeanings = async () => {
   try {
     loading.value = true
-    if (storedMeaning.value.has(props.word)) {
-      return
-    }
-    const wordRoot = await fetchWordRootData(props.word)
-    await nextTick()
-    const extractedMeaning = await fetchWordMeaningData(props.word, wordRoot)
-
-    if (extractedMeaning && extractedMeaning[0]?.meaning?.length > 0) {
-      store.setWordMeaning(props.word, extractedMeaning[0].meaning)
-    }
+    return await fetchWordData(props.word)
   } finally {
     loading.value = false
   }
@@ -142,9 +124,4 @@ watch(
   text-overflow: ellipsis;
   max-width: 100%;
 }
-
-/* .tarteel-meaning-overflow {
-  height: calc(50vh - 100px);
-  overflow: auto;
-} */
 </style>

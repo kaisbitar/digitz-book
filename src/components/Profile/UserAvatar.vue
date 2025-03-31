@@ -8,9 +8,14 @@
         icon
         class="px-2"
       >
-        <v-avatar size="32">
-          <v-icon v-if="!authStore.userSettings?.display_name">
-            mdi-account-outline
+        <v-avatar size="24">
+          <v-img
+            v-if="authStore.user?.user_metadata?.avatar_url"
+            :src="authStore.user.user_metadata.avatar_url"
+            alt="صورة المستخدم"
+          />
+          <v-icon v-else-if="!authStore.userSettings?.display_name">
+            mdi-account-circle
           </v-icon>
           <span v-else>
             {{ getInitials(authStore.userSettings.display_name) }}
@@ -34,13 +39,6 @@
           </template>
           <v-list-item-title>الملف الشخصي</v-list-item-title>
         </v-list-item>
-
-        <!-- <v-list-item :to="{ name: 'SettingsTest' }">
-          <template v-slot:prepend>
-            <v-icon>mdi-cog</v-icon>
-          </template>
-          <v-list-item-title>الإعدادات</v-list-item-title>
-        </v-list-item> -->
 
         <v-divider></v-divider>
 

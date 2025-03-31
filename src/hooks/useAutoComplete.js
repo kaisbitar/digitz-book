@@ -1,6 +1,6 @@
-import { ref, computed, watchEffect, onUnmounted } from "vue"
-import { filterWords } from "@/utils/autoWordFilter"
-
+import { ref, computed } from "vue"
+import { filterWords } from "@/utils/wordFilter"
+import { useSearchTarteel } from "@/hooks/useSearchTarteel"
 function debounce(func, wait) {
   let timeout
   return function executedFunction(...args) {
@@ -21,23 +21,39 @@ export function useAutoComplete(dataStore, tarteelStore) {
   const currentLetter = ref("")
   const filteredList = ref([])
   const checkedItems = ref([])
+  const suggestions = ref([])
 
   const currentWordsList = computed(() => filteredList.value)
   const totalWordsCount = computed(() => currentWordsList.value.length)
+  const hasSuggestions = computed(() => suggestions.value.length > 0)
+
+  const { setTarteel } = useSearchTarteel()
 
   const updateFilteredWords = (word) => {
-    const filteredResults = filterWords(word, dataStore.getOneQuranFile)
-    filteredList.value = filteredResults.results.map((item) => ({
-      word: item.word,
-      count: item.count,
-      verses: item.verses,
+    const wordSearchResults = filterWords(word, dataStore.getOneQuranFile)
+
+    if (wordSearchResults.suggestions) {
+      suggestions.value = wordSearchResults.suggestions
+      filteredList.value = []
+      return
+    }
+
+    suggestions.value = []
+    filteredList.value = wordSearchResults.results.map((item) => ({
+      ...item,
     }))
+  }
+
+  const applySuggestion = (suggestedWord) => {
+    tarteel.value = suggestedWord
+    suggestions.value = []
+    return handleInputChange(suggestedWord)
   }
 
   const updateFilteredVerses = (sentence) => {
     filteredList.value = []
 
-    const filteredResults = dataStore.getOneQuranFile.filter((verse) => {
+    const filteredVerses = dataStore.getOneQuranFile.filter((verse) => {
       if (verse.verseText.includes(sentence)) {
         return {
           ...verse,
@@ -45,13 +61,13 @@ export function useAutoComplete(dataStore, tarteelStore) {
       }
     })
 
-    if (filteredResults.length === 0) return (filteredList.value = [])
+    if (filteredVerses.length === 0) return (filteredList.value = [])
 
     filteredList.value = [
       {
         word: sentence,
-        count: filteredResults.length,
-        verses: filteredResults,
+        count: filteredVerses.length,
+        verses: filteredVerses,
       },
     ]
   }
@@ -102,13 +118,7 @@ export function useAutoComplete(dataStore, tarteelStore) {
   }
 
   const storeTarteels = (items) => {
-    tarteelStore.setStoredTarteels({
-      inputText: tarteel.value,
-      results: items,
-    })
-    tarteelStore.setSelectedRatlIndex(0)
-    tarteelStore.setSelectedRatl(items[0])
-    tarteelStore.addToTarteelHistory(tarteel.value)
+    setTarteel(items, tarteel.value)
   }
 
   const updateCheckedItems = (newItems) => {
@@ -122,11 +132,14 @@ export function useAutoComplete(dataStore, tarteelStore) {
     currentWordsList,
     totalWordsCount,
     checkedItems,
+    suggestions,
+    hasSuggestions,
     handleInputChange,
     toggleMenu,
     clearInput,
     updateFilteredList,
     storeTarteels,
     updateCheckedItems,
+    applySuggestion,
   }
 }

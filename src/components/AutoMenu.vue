@@ -9,6 +9,9 @@
     @update:modelValue="$emit('update:menu', $event)"
   >
     <v-sheet>
+      <p v-if="hasSuggestions">
+        {{ suggestions }}
+      </p>
       <AutoWordList
         v-if="showAutoWordsList"
         class="w-100"
@@ -36,7 +39,7 @@
       >
         <LettersChart
           class="opacity-transition"
-          v-if="!showAutoVerseList && !showAutoWordsList"
+          v-if="!showAutoVerseList && !showAutoWordsList && showLetterChart"
           :letter="currentLetter"
         />
       </v-lazy>
@@ -69,6 +72,9 @@ const props = defineProps({
   totalWordsCount: Number,
   currentLetter: String,
   checkedItems: Array,
+  suggestions: Array,
+  hasSuggestions: Boolean,
+  showLetterChart: Boolean,
 })
 
 const emit = defineEmits([
