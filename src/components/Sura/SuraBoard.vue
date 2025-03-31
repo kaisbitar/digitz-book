@@ -29,7 +29,10 @@
     @clear="isInputVisible = false"
   />
 
-  <v-window v-model="activeTab">
+  <v-window
+    v-model="activeTab"
+    :class="isInputVisible ? 'input-visible' : 'not-input-visible'"
+  >
     <v-window-item value="suraText" @before-enter="scrollToActiveVerse">
       <SuraText
         ref="suraTextRef"
@@ -228,8 +231,14 @@ const setTargetVerse = (verse) => {
 </script>
 
 <style scoped>
+.input-visible {
+  --content-height: calc(90vh - 180px);
+}
+.not-input-visible {
+  --content-height: calc(90vh - 110px);
+}
 .sura-board-overflow {
-  height: calc(100vh - 180px);
+  height: var(--content-height);
   overflow: auto;
 }
 
