@@ -83,7 +83,7 @@ export const getChartOptions = (length) => {
       // tickPlacement: "between",
       title: {
         show: true,
-        text: "التواتر",
+        text: "تواتر الآيات",
         offsetY: 5,
         style: {
           fontSize: "18px",

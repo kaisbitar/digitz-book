@@ -61,7 +61,7 @@ const setTargetedVerse = (verse, index) => {
   const verseNumberToQuran = dataStore.oneQuranFile.find(
     (verse) =>
       verse.fileName === target.value.fileName &&
-      verse.verseIndex === target.value.verseIndex
+      verse.verseIndex === parseInt(target.value.verseIndex)
   ).verseNumberToQuran
   store.setTarget({
     ...store.getTarget,
@@ -69,6 +69,7 @@ const setTargetedVerse = (verse, index) => {
     verseText: verse,
     verseNumberToQuran,
   })
+  store.setActiveSuraTab("versesTab")
 }
 
 onMounted(async () => {
@@ -97,7 +98,7 @@ onMounted(async () => {
 }
 
 .dimmed-verse {
-  opacity: 0.5;
+  opacity: 0.8;
   padding: 12px 0px 12px 0px;
 }
 
@@ -105,6 +106,6 @@ onMounted(async () => {
   // padding: 2px 4px;
   background-color: rgb(var(--v-theme-active-row)) !important;
   border-radius: 4px;
-  padding: 4px 0px 8px 8px;
+  padding: 8px 0px 8px 0px;
 }
 </style>
