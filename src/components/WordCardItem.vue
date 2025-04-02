@@ -5,7 +5,7 @@
     rounded
     hover
     @click="$emit('select', ratl, index)"
-    @mouseover="showDelete = true"
+    @mouseover="showDelete = false"
     @mouseleave="showDelete = false"
   >
     <div class="text-h6">
