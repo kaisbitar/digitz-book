@@ -65,7 +65,7 @@ const changeType = (type) => {
 
 const handleClick = (dataPointIndex) => {
   store.setTarget(displayVerse.value)
-  store.setActiveSuraTab("versesTab")
+  // store.setActiveSuraTab("versesTab")
 }
 watch(target, () => {
   displayVerse.value = target.value

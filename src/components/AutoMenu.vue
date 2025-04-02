@@ -43,7 +43,8 @@
       <AppTarteelBtn
         v-if="showAutoWordsList"
         variant="outlined"
-        :checked-items="currentWordsList"
+        :all-items="currentWordsList"
+        :checked-items="checkedItems"
         @submit="emit('submitTarteel')"
       />
       <AppTarteelBtn

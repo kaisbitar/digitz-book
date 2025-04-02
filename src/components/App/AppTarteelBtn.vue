@@ -31,6 +31,10 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  allItems: {
+    type: Array,
+    default: () => [],
+  },
   isDisabled: {
     type: Boolean,
     default: false,
@@ -47,7 +51,11 @@ const props = defineProps({
 
 const emit = defineEmits(["submit"])
 
-const checkedItemsCount = computed(() => props.checkedItems.length)
+const checkedItemsCount = computed(() =>
+  props.checkedItems.length > 0
+    ? props.checkedItems.length
+    : props.allItems.length
+)
 
 const onSubmit = () => {
   emit("submit")
