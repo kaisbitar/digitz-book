@@ -106,16 +106,6 @@ html {
 .active-tarteel-item,
 .active-word-card-item {
   background: rgb(var(--v-theme-active-row), 100%) !important;
-  .verse-card-item-text {
-    // text-shadow: 0px 0px 3px rgb(var(--v-theme-on-active-row), 0);
-    // text-shadow: 0px 0px 5px rgb(var(--v-theme-on-highlight), 0.3);
-  }
-  .verse-card-item-title {
-    // text-shadow: 0px 0px 1px rgb(var(--v-theme-on-highlight), 15%);
-    // text-shadow: 0px 0px 5px rgb(var(--v-theme-on-highlight), 0.3);
-
-    color: inherit;
-  }
 }
 
 .v-card {

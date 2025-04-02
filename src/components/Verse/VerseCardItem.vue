@@ -5,12 +5,25 @@
     @click="handleClick"
     variant="outlined"
   >
-    <v-card-subtitle class="verse-card-item-title mb-2">
-      <v-badge :content="index + 1" offset-x="-10" offset-y="-8"> </v-badge>
-      <span class="mr-10"
-        >{{ suraNumber }} {{ suraName }} - آية {{ item.verseIndex }}</span
+    <div class="d-flex mb-2">
+      <v-card-subtitle class="verse-card-item-title">
+        <v-badge :content="index + 1" offset-x="-10" offset-y="-8"> </v-badge>
+        <span class="mr-10"
+          >{{ suraNumber }} {{ suraName }} - آية {{ item.verseIndex }}</span
+        >
+      </v-card-subtitle>
+      <v-btn
+        @click.stop.prevent="copyVerseText"
+        size="small"
+        class="mr-auto"
+        :color="isCopied ? 'success' : undefined"
       >
-    </v-card-subtitle>
+        <v-icon class="ml-1" size="small">
+          {{ isCopied ? "mdi-check" : "mdi-content-copy" }}</v-icon
+        >
+        {{ isCopied ? "تم النسخ" : "انسخ الآية" }}
+      </v-btn>
+    </div>
 
     <v-card-text
       class="verse-card-item-text pa-1 mb-3"
@@ -50,6 +63,16 @@ const suraName = computed(() => props.item.fileName.replace(/[0-9]/g, ""))
 
 const handleClick = () => {
   emit("verseClicked")
+}
+
+const isCopied = ref(false)
+
+const copyVerseText = () => {
+  navigator.clipboard.writeText(props.item.verseText)
+  isCopied.value = true
+  setTimeout(() => {
+    isCopied.value = false
+  }, 1000) // Reset after 2 seconds
 }
 
 const indexData = computed(() => ({
