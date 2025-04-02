@@ -67,6 +67,6 @@ const getInitials = (name) => {
 
 const handleLogout = async () => {
   await authStore.signOut()
-  router.push({ name: "Home" })
+  router.push({ name: "Login" })
 }
 </script>

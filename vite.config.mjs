@@ -48,7 +48,7 @@ export default defineConfig({
   ],
   define: {
     "process.env": {
-      VITE_APP_BASE_URL: "http://localhost:8080/",
+      VITE_APP_BASE_URL: "http://localhost:8000/app",
       VITE_APP_APP_KEY: "base64:PP5kH0laaZMs6HUqchPSnEw/lb2ueJ68KFVa0DRUTic=",
     },
   },
