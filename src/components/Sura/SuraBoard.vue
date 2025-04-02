@@ -32,6 +32,7 @@
   <v-window
     v-model="activeTab"
     :class="isInputVisible ? 'input-visible' : 'not-input-visible'"
+    :touch="false"
   >
     <v-window-item value="suraText" @before-enter="scrollToActiveVerse">
       <SuraText

@@ -229,7 +229,7 @@ export const useAuthStore = defineStore("auth", {
     async clearBrowserData() {
       try {
         // Clear localStorage
-        localStorage.clear()
+        // localStorage.clear()
 
         // Clear sessionStorage
         sessionStorage.clear()
