@@ -21,7 +21,7 @@
         <v-icon class="ml-1" size="small">
           {{ isCopied ? "mdi-check" : "mdi-content-copy" }}</v-icon
         >
-        {{ isCopied ? "تم النسخ" : "انسخ الآية" }}
+        {{ isCopied ? "تم النسخ" : "نسخ" }}
       </v-btn>
     </div>
 
@@ -68,11 +68,19 @@ const handleClick = () => {
 const isCopied = ref(false)
 
 const copyVerseText = () => {
-  navigator.clipboard.writeText(props.item.verseText)
+  const textToCopy =
+    props.item.verseText +
+    "\n" +
+    "(" +
+    props.item.fileName.replace(/[0-9]/g, "") +
+    ": " +
+    props.item.verseIndex +
+    ")"
+  navigator.clipboard.writeText(textToCopy)
   isCopied.value = true
   setTimeout(() => {
     isCopied.value = false
-  }, 1000) // Reset after 2 seconds
+  }, 1000)
 }
 
 const indexData = computed(() => ({
