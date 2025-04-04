@@ -1,12 +1,12 @@
 <template>
-  <v-row dense>
+  <v-row dense style="align-content: start">
     <v-col
       v-for="(ratl, index) in search.results"
       :key="index"
-      cols="12"
       sm="6"
       md="4"
       lg="4"
+      style="max-height: 200px"
     >
       <WordCardItem
         :class="{
@@ -40,3 +40,9 @@ defineProps({
 
 defineEmits(["select", "deleteRatl"])
 </script>
+
+<style scoped>
+:deep(.v-card) {
+  height: 100%;
+}
+</style>
