@@ -5,7 +5,7 @@ import {
   fetchAllVersesWithTashkeel,
 } from "../api/api.js"
 import { countLettersInQuran } from "@/utils/letterUtils"
-import { countDistinctWords } from "@/utils/autoWordFilter"
+import { countDistinctWords } from "@/utils/wordFilter"
 
 export const useDataStore = defineStore("data", {
   state: () => ({
@@ -78,6 +78,7 @@ export const useDataStore = defineStore("data", {
       this.setVersesForCounting(versesForCounting)
 
       this.QuranLetterCounts = countLettersInQuran(versesForCounting.join(" "))
+      console.log(versesForCounting)
       this.totalWordsCount = countDistinctWords(versesForCounting)
     },
 

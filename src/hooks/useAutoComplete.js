@@ -1,6 +1,8 @@
 import { ref, computed } from "vue"
 import { filterWords } from "@/utils/wordFilter"
 import { useSearchTarteel } from "@/hooks/useSearchTarteel"
+import { fetchWordRootData } from "@/utils/dictionaryUtils.js"
+
 function debounce(func, wait) {
   let timeout
   return function executedFunction(...args) {
@@ -31,7 +33,6 @@ export function useAutoComplete(dataStore, tarteelStore) {
 
   const updateFilteredWords = (word) => {
     const wordSearchResults = filterWords(word, dataStore.getOneQuranFile)
-
     if (wordSearchResults.suggestions) {
       suggestions.value = wordSearchResults.suggestions
       filteredList.value = []
@@ -42,12 +43,6 @@ export function useAutoComplete(dataStore, tarteelStore) {
     filteredList.value = wordSearchResults.results.map((item) => ({
       ...item,
     }))
-  }
-
-  const applySuggestion = (suggestedWord) => {
-    tarteel.value = suggestedWord
-    suggestions.value = []
-    return handleInputChange(suggestedWord)
   }
 
   const updateFilteredVerses = (sentence) => {
@@ -86,8 +81,16 @@ export function useAutoComplete(dataStore, tarteelStore) {
     currentLetter.value = value[value.length - 1]
     toggleMenu()
 
+    // Only fetch root data if input length > 3
+
     const results = await debouncedSearch(value)
     return results
+  }
+
+  const applySuggestion = (suggestedWord) => {
+    tarteel.value = suggestedWord
+    suggestions.value = []
+    return handleInputChange(suggestedWord)
   }
 
   const debouncedSearch = debounce(async (value) => {
@@ -96,9 +99,10 @@ export function useAutoComplete(dataStore, tarteelStore) {
       tarteel.value = value
       return true
     }
+    const wordRoot = value.length > 3 ? await fetchWordRootData(value) : null
 
     if (!value.includes(" ")) {
-      await updateFilteredWords(value)
+      await updateFilteredWords(wordRoot || value)
       return filteredList.value.length > 0
     }
 
