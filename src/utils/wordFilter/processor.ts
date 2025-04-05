@@ -21,6 +21,7 @@ export const processVerse = (
       verseIndex,
       verseNumberToQuran,
       verseText,
+      suraName: fileName.replace(/[0-9]/g, "")
     })
   
     const createNewWordResult = (score: number) => ({
