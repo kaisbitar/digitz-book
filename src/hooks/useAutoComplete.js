@@ -31,8 +31,13 @@ export function useAutoComplete(dataStore, tarteelStore) {
 
   const { setTarteel } = useSearchTarteel()
 
-  const updateFilteredWords = (word) => {
-    const wordSearchResults = filterWords(word, dataStore.getOneQuranFile)
+  const updateFilteredWords = async (word) => {
+    const wordRoot = word.length > 3 ? await fetchWordRootData(word) : null
+    const wordSearchResults = filterWords(
+      word,
+      dataStore.getOneQuranFile,
+      wordRoot
+    )
     if (wordSearchResults.suggestions) {
       suggestions.value = wordSearchResults.suggestions
       filteredList.value = []
@@ -81,8 +86,6 @@ export function useAutoComplete(dataStore, tarteelStore) {
     currentLetter.value = value[value.length - 1]
     toggleMenu()
 
-    // Only fetch root data if input length > 3
-
     const results = await debouncedSearch(value)
     return results
   }
@@ -99,10 +102,9 @@ export function useAutoComplete(dataStore, tarteelStore) {
       tarteel.value = value
       return true
     }
-    const wordRoot = value.length > 3 ? await fetchWordRootData(value) : null
 
     if (!value.includes(" ")) {
-      await updateFilteredWords(wordRoot || value)
+      await updateFilteredWords(value)
       return filteredList.value.length > 0
     }
 

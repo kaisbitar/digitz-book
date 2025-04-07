@@ -7,7 +7,8 @@ import { getSuggestions } from './suggestions'
 
 export function filterWords(
   searchTerm: string,
-  oneQuranFile: VerseObject[]
+  oneQuranFile: VerseObject[],
+  root?: string
 ): FilterResult {
   const searchRegex = generateStrictSearchRegex(searchTerm)
   const results: Results = {}
@@ -15,8 +16,15 @@ export function filterWords(
   oneQuranFile.forEach((verseObj) => {
     processVerse(verseObj, searchTerm, searchRegex, results)
   })
-  
-  const sortedResults = sortResults(results, searchTerm)
+
+  if (root && root !== searchTerm) {
+    const rootRegex = generateStrictSearchRegex(root)
+    oneQuranFile.forEach((verseObj) => {
+      processVerse(verseObj, root, rootRegex, results)
+    })
+  }
+
+  const sortedResults = sortResults(results, searchTerm, root)
   const formattedResults = formatResults(sortedResults)
 
   if (formattedResults.results.length === 0) {
@@ -25,7 +33,6 @@ export function filterWords(
       suggestions: getSuggestions(searchTerm, oneQuranFile)
     }
   }
-
 
   return formattedResults
 }
