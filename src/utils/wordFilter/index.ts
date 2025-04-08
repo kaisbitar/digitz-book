@@ -2,7 +2,7 @@ export * from './types'
 import { VerseObject, FilterResult, Results } from './types'
 import { generateStrictSearchRegex } from './regexGenerators'
 import { processVerse } from './processor'
-import { sortResults, formatResults } from './results'
+import { groupResults, formatResults } from './results'
 import { getSuggestions } from './suggestions'
 
 export function filterWords(
@@ -24,8 +24,8 @@ export function filterWords(
     })
   }
 
-  const sortedResults = sortResults(results, searchTerm, root)
-  const formattedResults = formatResults(sortedResults)
+  const groupedResults = groupResults(results, searchTerm, root)
+  const formattedResults = formatResults(groupedResults)
 
   if (formattedResults.results.length === 0) {
     return {

@@ -1,41 +1,98 @@
 import { Results, SortedResultItem, FilterResult } from './types'
 
-export const sortResults = (
+export const groupResults = (
   results: Results,
   searchTerm: string,
   root?: string
 ): SortedResultItem[] => {
-    return Object.entries(results)
-    .map(([word, { count, score, verses }]) => ({ word, count, score, verses }))
-    .sort((a, b) => {
-      // Prioritize exact matches with either searchTerm or root
-      const aIsExactMatch = a.word === searchTerm || a.word === root
-      const bIsExactMatch = b.word === searchTerm || b.word === root
-      if (aIsExactMatch && !bIsExactMatch) return -1
-      if (bIsExactMatch && !aIsExactMatch) return 1
+  const exactMatches: SortedResultItem[] = []
+  const rootMatches: SortedResultItem[] = []
+  const derivativeMatches: SortedResultItem[] = []
+  const otherMatches: SortedResultItem[] = []
 
-      // Prioritize words starting with either searchTerm or root
-      const aStartsWith = a.word.startsWith(searchTerm) || (root ? a.word.startsWith(root) : false)
-      const bStartsWith = b.word.startsWith(searchTerm) || (root ? b.word.startsWith(root) : false)
-      if (aStartsWith && !bStartsWith) return -1
-      if (bStartsWith && !aStartsWith) return 1
-
-      // For words that both start with searchTerm or root, sort by length
-      if (aStartsWith && bStartsWith) {
-        return a.word.length - b.word.length
+  // Helper function to check if word has 3 letters in same order
+  const hasThreeLettersInOrder = (word: string, target: string): boolean => {
+    let targetIndex = 0
+    let matchCount = 0
+    
+    for (let i = 0; i < word.length && targetIndex < target.length; i++) {
+      if (word[i] === target[targetIndex]) {
+        matchCount++
+        targetIndex++
+        if (matchCount === 3) return true
       }
+    }
+    return false
+  }
 
-      // For other words, use natural sort
-      return a.word.localeCompare(b.word, "ar", {
-        numeric: true,
-        sensitivity: "base",
-      })
+  // Helper function to check if words share same letters
+  const hasSameLetters = (word: string, target: string): boolean => {
+    const wordLetters = word.split('').sort().join('')
+    const targetLetters = target.split('').sort().join('')
+    return wordLetters === targetLetters
+  }
+
+  Object.entries(results).forEach(([word, { count, score, verses }]) => {
+    let group: 'exact' | 'root' | 'derivative' | 'other' = 'other'
+
+    // 1. Exact matches
+    if (word === searchTerm || word === root) {
+      group = 'exact'
+      exactMatches.push({ word, count, score, verses, group })
+      return
+    }
+
+    // 2. Words sharing 3 letters with search term in same order
+    if (hasThreeLettersInOrder(word, searchTerm)) {
+      group = 'root'
+      rootMatches.push({ word, count, score, verses, group })
+      return
+    }
+
+    // 3. Words sharing 3 letters with root in same order
+    if (root && hasThreeLettersInOrder(word, root)) {
+      group = 'root'
+      rootMatches.push({ word, count, score, verses, group })
+      return
+    }
+
+    // 4. Words with same letters but different order
+    if (hasSameLetters(word, searchTerm) || (root && hasSameLetters(word, root))) {
+      group = 'derivative'
+      derivativeMatches.push({ word, count, score, verses, group })
+      return
+    }
+
+    // 5. Other matches
+    otherMatches.push({ word, count, score, verses, group })
+  })
+
+  // Sort each group
+  const sortByLength = (a: SortedResultItem, b: SortedResultItem) => 
+    a.word.length - b.word.length
+
+  exactMatches.sort(sortByLength)
+  rootMatches.sort(sortByLength)
+  derivativeMatches.sort(sortByLength)
+  otherMatches.sort((a, b) => 
+    a.word.localeCompare(b.word, "ar", {
+      numeric: true,
+      sensitivity: "base",
     })
+  )
+
+  // Combine all groups in order
+  return [
+    ...exactMatches,
+    ...rootMatches,
+    ...derivativeMatches,
+    ...otherMatches
+  ]
 }
 
 export const formatResults = (sortedResults: SortedResultItem[]): FilterResult => {
     return {
-        results: sortedResults.map(({ word, count, verses }) => {
+        results: sortedResults.map(({ word, count, verses, group }) => {
           const uniqueSuraCount = new Set(
             Object.values(verses || {}).map(verse => verse.fileName)
           ).size
@@ -47,6 +104,7 @@ export const formatResults = (sortedResults: SortedResultItem[]): FilterResult =
           return {
             word,
             count,
+            group,
             uniqueSuraCount: uniqueSuraCount,
             suras: Array.from(suras),
             verses: Object.entries(verses || []).map(
@@ -60,3 +118,14 @@ export const formatResults = (sortedResults: SortedResultItem[]): FilterResult =
         }
       })
     }} 
+
+const getGroupTitle = (group) => {
+  const titles = {
+    exact: "مطابقة تامة",
+    searchRoot: "مشابهة للبحث",
+    root: "مشابهة للجذر",
+    derivative: "مشتق",
+    other: "أخرى"
+  }
+  return titles[group] || group
+}
