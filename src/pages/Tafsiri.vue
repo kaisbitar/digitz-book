@@ -4,7 +4,7 @@
       <v-col cols="12">
         <v-card>
           <v-card-title class="text-h4">
-            تفسيري
+            تدبري
             <v-chip class="mr-2" color="primary" size="small">
               {{ notesStore.notes.length }}
             </v-chip>

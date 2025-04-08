@@ -184,7 +184,7 @@ const navigationItems = [
     route: "/tafsiri",
     icon: "mdi-account-outline",
     activeIcon: "mdi-account",
-    label: "تفسيري",
+    label: "تدبري",
   },
 ]
 onMounted(() => {
