@@ -17,7 +17,7 @@
       <v-icon @click="goToPage('tafsiri')" size="100"
         >mdi-account-outline</v-icon
       >
-      <h2 class="text-lg">تفسيري</h2>
+      <h2 class="text-lg">تدبري</h2>
     </v-col>
   </v-row>
 </template>

@@ -2,7 +2,7 @@
   <v-dialog v-model="isOpen" fullscreen>
     <v-layout>
       <v-app-bar density="compact">
-        <v-app-bar-title>تفسيري لـ ({{ word }})</v-app-bar-title>
+        <v-app-bar-title>تدبري لـ ({{ word }})</v-app-bar-title>
         <template v-slot:append>
           <v-btn icon="mdi-close" @click="isOpen = false" />
         </template>
