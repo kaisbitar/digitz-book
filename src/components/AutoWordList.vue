@@ -1,5 +1,24 @@
 <template>
   <v-list class="auto-word-list">
+    <!-- Group Summary Header -->
+    <v-list-item class="group-summary">
+      <div class="d-flex">
+        <v-chip
+          v-for="group in groupedItems"
+          :key="group.group"
+          :color="group.group === 'exact' ? 'primary' : 'default'"
+          variant="outlined"
+          size="small"
+          class="ml-2"
+        >
+          {{ getGroupTitle(group.group) }} ({{ group.items.length }})
+        </v-chip>
+      </div>
+    </v-list-item>
+
+    <v-divider></v-divider>
+
+    <!-- Virtual Scroll List -->
     <v-virtual-scroll
       :items="paginatedItems"
       :height="height"
@@ -7,57 +26,63 @@
       @scroll="handleInfiniteScroll"
     >
       <template v-slot:default="{ item }">
-        <v-hover v-slot="{ isHovering, props }">
-          <v-list-item
-            v-bind="props"
-            :active="isItemChecked(item)"
-            @click="toggleItemCheck(item)"
-            class="py-1"
-          >
-            <template v-slot:prepend>
-              <div class="d-flex align-center" style="width: 57px">
-                <v-checkbox
-                  :model-value="isItemChecked(item)"
-                  @update:model-value="toggleItemCheck(item)"
-                  hide-details
-                  @click.stop
-                ></v-checkbox>
-              </div>
-              <v-list-item-title class="text-right" style="width: 100px">
-                {{ item.word }}
-              </v-list-item-title>
-            </template>
-
-            <div class="d-flex align-center ml-8">
-              <span class="text-body-1" style="width: 50px">{{
-                item.verses.length
-              }}</span>
-              <v-badge
-                :content="`آية`"
-                floating
-                offset-x="9"
-                offset-y="6"
-                color="verse-count"
-              ></v-badge>
+        <v-list-item
+          :active="isItemChecked(item)"
+          @click="toggleItemCheck(item)"
+          class="py-1"
+        >
+          <template v-slot:prepend>
+            <div class="d-flex align-center" style="width: 57px">
+              <v-checkbox
+                :model-value="isItemChecked(item)"
+                @update:model-value="toggleItemCheck(item)"
+                hide-details
+                @click.stop
+              ></v-checkbox>
             </div>
-            <template v-slot:append>
-              <v-btn
-                icon="mdi-close"
-                variant="text"
-                size="small"
-                class="ml-2"
-                @click.stop="removeItem(item)"
-              ></v-btn>
-            </template>
-          </v-list-item>
-        </v-hover>
+            <v-list-item-title class="text-right" style="width: 100px">
+              {{ item.word }}
+            </v-list-item-title>
+            <span style="width: 100px">({{ item.verses.length }} آية)</span>
+          </template>
+
+          <!-- <div class="d-flex align-center ml-8">
+            <span class="text-body-1" style="width: 50px">{{
+              item.verses.length
+            }}</span>
+            <v-badge
+              :content="`آية`"
+              floating
+              offset-x="9"
+              offset-y="6"
+              color="verse-count"
+            ></v-badge>
+          </div> -->
+          <template v-slot:append>
+            <v-chip
+              size="x-small"
+              :color="item.group === 'exact' ? 'primary' : undefined"
+              variant="outlined"
+              class="mr-2"
+            >
+              {{ getGroupTitle(item.group) }}
+            </v-chip>
+            <v-btn
+              icon="mdi-close"
+              variant="text"
+              size="small"
+              class="ml-2"
+              @click.stop="removeItem(item)"
+            ></v-btn>
+          </template>
+        </v-list-item>
       </template>
     </v-virtual-scroll>
   </v-list>
 </template>
 
 <script setup>
-import { defineProps, defineEmits, toRef } from "vue"
+import { defineProps, defineEmits, toRef, computed } from "vue"
 import { useSimplePagination } from "@/hooks/useSimplePagination"
 
 const props = defineProps({
@@ -75,9 +100,34 @@ const props = defineProps({
   },
 })
 
-const { paginatedItems, handleInfiniteScroll, isLoading } = useSimplePagination(
-  toRef(props, "items")
-)
+const itemsRef = toRef(props, "items")
+const { paginatedItems, handleInfiniteScroll } = useSimplePagination(itemsRef)
+
+const groupedItems = computed(() => {
+  const groups = {}
+
+  props.items.forEach((item) => {
+    if (!groups[item.group]) {
+      groups[item.group] = {
+        group: item.group,
+        items: [],
+      }
+    }
+    groups[item.group].items.push(item)
+  })
+
+  return Object.values(groups)
+})
+
+const getGroupTitle = (group) => {
+  const titles = {
+    exact: "مطابقة تامة",
+    root: "مشابهة للجذر",
+    derivative: "مشتق",
+    other: "أخرى",
+  }
+  return titles[group] || group
+}
 
 const emit = defineEmits([
   "update:checkedItems",
@@ -114,5 +164,12 @@ const removeItem = (item) => {
 .auto-word-list {
   padding-top: 0 !important;
   max-height: 500px;
+}
+
+.group-summary {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: white;
 }
 </style>

@@ -31,6 +31,7 @@ export interface SortedResultItem {
   verses: {
     [verse: string]: VerseEntry
   }
+  group: 'exact' | 'root' | 'derivative' | 'other'
 }
 
 export interface FormattedResult {
