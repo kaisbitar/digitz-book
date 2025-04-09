@@ -67,20 +67,6 @@ export const groupResults = (
     otherMatches.push({ word, count, score, verses, group })
   })
 
-  // Sort each group
-  const sortByLength = (a: SortedResultItem, b: SortedResultItem) => 
-    a.word.length - b.word.length
-
-  exactMatches.sort(sortByLength)
-  rootMatches.sort(sortByLength)
-  derivativeMatches.sort(sortByLength)
-  otherMatches.sort((a, b) => 
-    a.word.localeCompare(b.word, "ar", {
-      numeric: true,
-      sensitivity: "base",
-    })
-  )
-
   // Combine all groups in order
   return [
     ...exactMatches,
@@ -118,14 +104,3 @@ export const formatResults = (sortedResults: SortedResultItem[]): FilterResult =
         }
       })
     }} 
-
-const getGroupTitle = (group) => {
-  const titles = {
-    exact: "مطابقة تامة",
-    searchRoot: "مشابهة للبحث",
-    root: "مشابهة للجذر",
-    derivative: "مشتق",
-    other: "أخرى"
-  }
-  return titles[group] || group
-}

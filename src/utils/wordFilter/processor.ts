@@ -55,4 +55,5 @@ export const processVerse = (
       }
   
       updateExistingWord(word, score)
-    })} 
+    })
+  } 

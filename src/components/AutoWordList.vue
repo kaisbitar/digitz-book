@@ -9,14 +9,13 @@
           :color="group.group === 'exact' ? 'primary' : 'default'"
           variant="outlined"
           size="small"
-          class="ml-2"
+          class="ml-2 mt-1"
         >
           {{ getGroupTitle(group.group) }} ({{ group.items.length }})
         </v-chip>
       </div>
+      <v-divider class="mt-2"></v-divider>
     </v-list-item>
-
-    <v-divider></v-divider>
 
     <!-- Virtual Scroll List -->
     <v-virtual-scroll
@@ -46,18 +45,6 @@
             <span style="width: 100px">({{ item.verses.length }} آية)</span>
           </template>
 
-          <!-- <div class="d-flex align-center ml-8">
-            <span class="text-body-1" style="width: 50px">{{
-              item.verses.length
-            }}</span>
-            <v-badge
-              :content="`آية`"
-              floating
-              offset-x="9"
-              offset-y="6"
-              color="verse-count"
-            ></v-badge>
-          </div> -->
           <template v-slot:append>
             <v-chip
               size="x-small"
@@ -122,9 +109,9 @@ const groupedItems = computed(() => {
 const getGroupTitle = (group) => {
   const titles = {
     exact: "مطابقة تامة",
-    root: "مشابهة للجذر",
+    root: "مشابهة ",
     derivative: "مشتق",
-    other: "أخرى",
+    other: "المزيد",
   }
   return titles[group] || group
 }
