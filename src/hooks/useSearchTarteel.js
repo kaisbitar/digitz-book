@@ -1,5 +1,5 @@
 import { useDataStore } from "@/stores/dataStore"
-import { useTarteelStore } from "@/stores/tarteelStore"
+import { useTarteelStore } from "@/stores/TarteelStore"
 
 const dataStore = useDataStore()
 const tarteelStore = useTarteelStore()
