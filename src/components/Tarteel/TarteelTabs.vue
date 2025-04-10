@@ -21,7 +21,9 @@
           size="20"
         />
       </template>
-      <span class="font-weight-bold">{{ item.inputText + "ـ" }}</span>
+      <span :class="{ 'font-weight-bold': selectedTarteelId === item.id }">{{
+        item.inputText + "ـ"
+      }}</span>
 
       <template #append>
         <v-btn
