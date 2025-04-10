@@ -42,7 +42,7 @@
 
 <script setup>
 import { computed, ref, watch } from "vue"
-import { useTarteelStore } from "@/stores/tarteelStore"
+import { useTarteelStore } from "@/stores/TarteelStore"
 import { useRouter } from "vue-router"
 
 const router = useRouter()

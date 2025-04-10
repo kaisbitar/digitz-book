@@ -22,7 +22,7 @@
 <script setup>
 import { watch, nextTick, computed, onMounted } from "vue"
 import { useRoute } from "vue-router"
-import { useTarteelStore } from "@/stores/tarteelStore"
+import { useTarteelStore } from "@/stores/TarteelStore"
 import { useWindow } from "@/mixins/window"
 import { useStore } from "@/stores/appStore"
 
