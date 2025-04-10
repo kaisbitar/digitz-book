@@ -36,7 +36,7 @@
 
 <script setup>
 import { useRouter } from "vue-router"
-import { useTarteelStore } from "@/stores/tarteelStore"
+import { useTarteelStore } from "@/stores/TarteelStore"
 import { useStore } from "@/stores/appStore"
 import { useDisplay } from "vuetify"
 

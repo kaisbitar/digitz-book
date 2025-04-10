@@ -28,7 +28,7 @@
 </template>
 
 <script setup>
-import { useTarteelStore } from "@/stores/tarteelStore"
+import { useTarteelStore } from "@/stores/TarteelStore"
 import { useStore } from "@/stores/appStore"
 
 const store = useStore()

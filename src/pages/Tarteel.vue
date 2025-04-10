@@ -2,6 +2,7 @@
   <TarteelTabs />
   <v-container max-width="1200" class="px-sm-4 px-2">
     <template v-if="ratl">
+      <!-- {{ selectedTarteel.results[0] }} -->
       <component
         :is="currentView"
         :selectedTarteel="selectedTarteel"
@@ -37,7 +38,7 @@
 import { ref, computed, onMounted, nextTick } from "vue"
 import { useStore } from "@/stores/appStore"
 import { useRouter, useRoute } from "vue-router"
-import { useTarteelStore } from "@/stores/tarteelStore"
+import { useTarteelStore } from "@/stores/TarteelStore"
 import { useWindow } from "@/mixins/window"
 import { useIndexedPagination } from "@/hooks/useIndexedPagination"
 import { useNotesStore } from "@/stores/notesStore"
@@ -59,6 +60,13 @@ const VIEW_TYPES = {
 
 const currentView = computed(() => {
   const view = route.query.view || VIEW_TYPES.LIST
+  const hasSingleResult = selectedTarteel.value?.results?.length === 1
+
+  if (hasSingleResult) {
+    tarteelStore.setSelectedRatl(selectedTarteel.value.results[0])
+    return WordVerses
+  }
+
   return {
     [VIEW_TYPES.OVERVIEW]: WordsOverview,
     [VIEW_TYPES.LIST]: WordsList,
