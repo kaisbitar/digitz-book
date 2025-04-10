@@ -64,6 +64,7 @@ const currentView = computed(() => {
 
   if (hasSingleResult) {
     tarteelStore.setSelectedRatl(selectedTarteel.value.results[0])
+    store.setTarget(ratl.value.verses[0])
     return WordVerses
   }
 
