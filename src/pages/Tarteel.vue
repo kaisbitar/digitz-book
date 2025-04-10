@@ -2,7 +2,6 @@
   <TarteelTabs />
   <v-container max-width="1200" class="px-sm-4 px-2">
     <template v-if="ratl">
-      <!-- {{ selectedTarteel.results[0] }} -->
       <component
         :is="currentView"
         :selectedTarteel="selectedTarteel"
