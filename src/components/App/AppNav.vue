@@ -80,7 +80,7 @@
 import { ref, computed, onMounted } from "vue"
 import { useRouter } from "vue-router"
 import { useDisplay } from "vuetify"
-import { useTarteelStore } from "@/stores/tarteelStore"
+import { useTarteelStore } from "@/stores/TarteelStore"
 import { useStore } from "@/stores/appStore"
 import UserAvatar from "@/components/Profile/UserAvatar.vue"
 
