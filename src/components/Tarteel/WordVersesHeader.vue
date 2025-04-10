@@ -12,13 +12,19 @@
       <span class="text-h4 ml-4">{{ word }}</span>
       <AppHeaderMetrics :metrics="counts" />
     </div>
-    <v-btn
-      icon="mdi-arrow-left"
-      variant="tonal"
-      size="small"
-      class="mr-auto d-block"
-      @click="$emit('back-to-list')"
-    />
+
+    <template v-if="selectedTarteel.results.length > 1">
+      <v-btn
+        icon="mdi-arrow-left"
+        variant="tonal"
+        size="small"
+        class="mr-auto d-block"
+        @click="$emit('back-to-list')"
+      />
+    </template>
+    <template v-else>
+      <div class="mr-auto" style="width: 38px"></div>
+    </template>
 
     <v-btn
       v-if="isWordMeaningOpen"
@@ -33,7 +39,10 @@
 
 <script setup>
 import { useCounting } from "@/mixins/counting"
+import { useTarteelStore } from "@/stores/TarteelStore"
+
 const { calculateValue } = useCounting()
+const tarteelStore = useTarteelStore()
 
 const props = defineProps({
   word: {
@@ -57,7 +66,11 @@ const props = defineProps({
 import { useDisplay } from "vuetify"
 
 const display = useDisplay()
-
+const selectedTarteel = computed(() => {
+  return tarteelStore.getStoredTarteels.find(
+    (tarteel) => tarteel.id === tarteelStore.getSelectedTarteelId
+  )
+})
 const counts = computed(() => {
   const allCounts = [
     { value: props.versesCount, label: "آية" },
