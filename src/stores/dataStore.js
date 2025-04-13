@@ -12,7 +12,6 @@ export const useDataStore = defineStore("data", {
     oneQuranFile: [],
     QuranIndex: [],
     allVersesWithTashkeel: [],
-    versesForCounting: [],
     QuranLetterCounts: {},
     totalWordsCount: 0,
   }),
@@ -29,7 +28,6 @@ export const useDataStore = defineStore("data", {
     getOneQuranFile: (state) => state.oneQuranFile,
     getQuranIndex: (state) => state.QuranIndex,
     getAllVersesWithTashkeel: (state) => state.allVersesWithTashkeel,
-    getVersesForCounting: (state) => state.versesForCounting,
     getQuranLetterCounts: (state) => state.QuranLetterCounts,
   },
   actions: {
@@ -42,9 +40,7 @@ export const useDataStore = defineStore("data", {
     setAllVersesWithTashkeel(items) {
       this.allVersesWithTashkeel = items
     },
-    setVersesForCounting(items) {
-      this.versesForCounting = items
-    },
+
     setQuranLetterCounts(items) {
       this.QuranLetterCounts = items
     },
@@ -64,21 +60,12 @@ export const useDataStore = defineStore("data", {
     async fetchAndProcessVerses(appApi) {
       const versesWithTashkeel = await fetchAllVersesWithTashkeel(appApi)
 
-      if (!Array.isArray(versesWithTashkeel)) {
-        console.error("versesWithTashkeel is not an array:", versesWithTashkeel)
-        return
-      }
-
       this.setAllVersesWithTashkeel(versesWithTashkeel)
-      const versesForCounting =
-        this.oneQuranFile.length > 0
-          ? this.oneQuranFile.map((verse) => verse.verseText)
-          : versesWithTashkeel
-
-      this.setVersesForCounting(versesForCounting)
+      const versesForCounting = this.oneQuranFile.map(
+        (verse) => verse.verseText
+      )
 
       this.QuranLetterCounts = countLettersInQuran(versesForCounting.join(" "))
-      console.log(versesForCounting)
       this.totalWordsCount = countDistinctWords(versesForCounting)
     },
 

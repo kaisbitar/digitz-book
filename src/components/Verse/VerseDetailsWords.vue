@@ -5,7 +5,7 @@
     class="word ml-0 mr-1"
     :class="[
       hasMatch(word, inputText) ? 'highlight-match' : '',
-      currentWord === word ? 'bg-secondary-highlight' : '',
+      currentWord === word ? 'border bg-secondary-highlight' : '',
     ]"
     @click="handleWordClick(word)"
   >
@@ -38,6 +38,7 @@ const emit = defineEmits(["update:currentWord"])
 const verseWords = computed(() => props.verse.split(" "))
 
 const hasMatch = (word, input) => {
+  console.log(word, input)
   if (!input) return false
 
   return word.includes(input)
