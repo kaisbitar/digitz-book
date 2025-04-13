@@ -24,7 +24,6 @@
         {{ isCopied ? "تم النسخ" : "نسخ" }}
       </v-btn>
     </div>
-
     <v-card-text
       class="verse-card-item-text pa-1 mb-3"
       v-html="highlight(item.verseText, textToHighlight)"

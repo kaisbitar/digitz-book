@@ -13,18 +13,14 @@ export function useInputFiltering() {
     if (!textToHighlight) return text
     text = text.toString()
 
-    // Normalize text to remove tashkeel, including all diacritics
-    const normalizeArabic = (str) => str.replace(/[\u064B-\u0652\u0670]/g, "")
+    // Insert optional tashkeel matcher between each letter
+    const tashkeelPattern = "[\u064B-\u0652\u0670]*"
+    const pattern =
+      textToHighlight.split("").join(tashkeelPattern) + tashkeelPattern
 
-    const normalizedText = normalizeArabic(text)
-    const normalizedHighlight = normalizeArabic(textToHighlight)
-
-    if (!normalizedHighlight) return text
-    return normalizedText.replace(
-      new RegExp(normalizedHighlight, "gi"),
-      (match) => {
-        return `<span class="highlight-match">${match}</span>`
-      }
+    return text.replace(
+      new RegExp(pattern, "gi"),
+      (match) => `<span class="highlight-match">${match}</span>`
     )
   }
 

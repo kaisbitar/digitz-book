@@ -48,7 +48,7 @@
 
 <script setup>
 import { useDataStore } from "@/stores/dataStore"
-import { useTarteelStore } from "@/stores/tarteelStore"
+import { useTarteelStore } from "@/stores/TarteelStore"
 import { useAutoComplete } from "@/hooks/useAutoComplete"
 import { useRouter } from "vue-router"
 import AppInputField from "./App/AppInputField.vue"
