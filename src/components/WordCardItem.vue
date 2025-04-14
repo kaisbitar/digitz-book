@@ -59,7 +59,7 @@
 import { computed, ref } from "vue"
 import { useCounting } from "@/mixins/counting"
 const { calculateValue } = useCounting()
-import { useTarteelStore } from "@/stores/tarteelStore"
+import { useTarteelStore } from "@/stores/TarteelStore"
 
 const tarteelStore = useTarteelStore()
 

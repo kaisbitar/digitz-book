@@ -50,7 +50,10 @@ const fixedLetterValues = {
 
 export const calculateValue = (text) => {
   if (!text) return 0
-
+  text = text.replace(
+    /[\u064B-\u0652\u0670\u0656-\u065F\u0610-\u061A\u06D6-\u06ED]/g,
+    ""
+  )
   if (text.includes(" ")) {
     return text.split(" ").reduce((total, word) => {
       return total + calculateSingleWordValue(word)
@@ -82,7 +85,14 @@ export function useCounting() {
   }
 
   const countVerseLetters = (verseText) => {
-    return verseText.replace(/ /g, "").length || 0
+    const cleanText = verseText
+      .replace(
+        /[\u064B-\u0652\u0670\u0656-\u065F\u0610-\u061A\u06D6-\u06ED]/g,
+        ""
+      )
+      .replace(/\s+/g, "")
+
+    return cleanText.length || 0
   }
 
   const countWordMatch = (search, data) => {

@@ -61,8 +61,11 @@ export const useDataStore = defineStore("data", {
       const versesWithTashkeel = await fetchAllVersesWithTashkeel(appApi)
 
       this.setAllVersesWithTashkeel(versesWithTashkeel)
-      const versesForCounting = this.oneQuranFile.map(
-        (verse) => verse.verseText
+      const versesForCounting = this.oneQuranFile.map((verse) =>
+        verse.verseText.replace(
+          /[\u064B-\u0652\u0670\u0656-\u065F\u0610-\u061A\u06D6-\u06ED]/g,
+          ""
+        )
       )
 
       this.QuranLetterCounts = countLettersInQuran(versesForCounting.join(" "))
