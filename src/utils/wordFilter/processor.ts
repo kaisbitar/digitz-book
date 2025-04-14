@@ -1,4 +1,4 @@
-import { Results, VerseObject } from './types'
+import { Results, VerseObject, FilterOptions } from './types'
 
 export const scoreWord = (word: string, search: string): number => {
   if (word.startsWith(search)) return 2
@@ -10,7 +10,8 @@ export const processVerse = (
   verseObj: VerseObject,
   searchTerm: string,
   searchRegex: RegExp,
-  results: Results
+  results: Results,
+  options: FilterOptions
 ): void => {
     const { verseText, fileName, verseIndex, verseNumberToQuran } = verseObj
 
@@ -44,7 +45,13 @@ export const processVerse = (
       results[word].verses[verseNumberToQuran].count++
     }
   
-    const words = verseText.split(/\s+/)
+    const words = verseText
+      .split(/\s+/)
+      .map(word => options?.removeTashkeel ? 
+        word.replace(/[\u064B-\u0652\u0670]/g, "") : 
+        word
+      )
+
     words.forEach((word) => {
       if (!searchRegex.test(word)) return
   
@@ -57,3 +64,4 @@ export const processVerse = (
       updateExistingWord(word, score)
     })
   } 
+  

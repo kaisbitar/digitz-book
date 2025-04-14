@@ -36,7 +36,8 @@ export function useAutoComplete(dataStore, tarteelStore) {
     const wordSearchResults = filterWords(
       word,
       dataStore.getOneQuranFile,
-      wordRoot
+      wordRoot,
+      { removeTashkeel: true }
     )
     if (wordSearchResults.suggestions) {
       suggestions.value = wordSearchResults.suggestions

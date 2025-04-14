@@ -56,3 +56,7 @@ export interface VerseObject {
   verseNumberToQuran: number
   verseText: string
 } 
+
+export interface FilterOptions {
+  removeTashkeel?: boolean
+}
