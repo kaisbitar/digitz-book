@@ -38,7 +38,6 @@ const emit = defineEmits(["update:currentWord"])
 const verseWords = computed(() => props.verse.split(" "))
 
 const hasMatch = (word, input) => {
-  console.log(word, input)
   if (!input) return false
 
   return word.includes(input)

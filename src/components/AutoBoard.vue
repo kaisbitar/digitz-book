@@ -33,6 +33,7 @@
       @update:checkedItems="updateCheckedItems"
       @submitTarteel="handleTarteel"
       @update:tashkeel="setTashkeelOption"
+      @update:tarteel="handleInput($event)"
     />
     <template v-slot:append-input-items>
       <v-btn

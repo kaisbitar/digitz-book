@@ -27,7 +27,9 @@ export function useAutoComplete(dataStore, tarteelStore) {
       { removeTashkeel: !includeTashkeel.value }
     )
     if (wordSearchResults.suggestions) {
-      suggestions.value = wordSearchResults.suggestions
+      suggestions.value = wordSearchResults.suggestions.map((suggestion) =>
+        suggestion.replace(/[ًٌٍَُِّْ]/g, "")
+      )
       filteredList.value = []
       return
     }
