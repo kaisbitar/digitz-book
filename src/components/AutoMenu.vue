@@ -19,9 +19,17 @@
           />
         </div>
         <v-divider class="mt-2"></v-divider>
-        <p v-if="hasSuggestions">
-          {{ suggestions }}
-        </p>
+        <div v-if="hasSuggestions" class="suggestions-list">
+          <v-chip
+            v-for="(suggestion, index) in suggestions"
+            :key="index"
+            class="ma-1"
+            variant="outlined"
+            @click="applySuggestion(suggestion)"
+          >
+            {{ suggestion }}
+          </v-chip>
+        </div>
       </v-list-item>
 
       <AutoWordList
@@ -95,6 +103,7 @@ const emit = defineEmits([
   "submitTarteel",
   "remove-item",
   "update:tashkeel",
+  "update:tarteel",
 ])
 
 const showAutoWordsList = ref(false)
@@ -124,6 +133,10 @@ const setMenuState = (newValue) => {
 
 const handleTashkeelChange = () => {
   emit("update:tashkeel", includeTashkeel.value)
+}
+
+const applySuggestion = (suggestion) => {
+  emit("update:tarteel", suggestion)
 }
 
 watch(
