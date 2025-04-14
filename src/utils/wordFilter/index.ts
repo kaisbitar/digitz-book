@@ -1,5 +1,5 @@
 export * from './types'
-import { VerseObject, FilterResult, Results } from './types'
+import { VerseObject, FilterResult, Results, FilterOptions } from './types'
 import { generateStrictSearchRegex } from './regexGenerators'
 import { processVerse } from './processor'
 import { groupResults, formatResults } from './results'
@@ -8,19 +8,20 @@ import { getSuggestions } from './suggestions'
 export function filterWords(
   searchTerm: string,
   oneQuranFile: VerseObject[],
-  root?: string
+  root?: string,
+  options: FilterOptions = { removeTashkeel: false }
 ): FilterResult {
   const searchRegex = generateStrictSearchRegex(searchTerm)
   const results: Results = {}
 
   oneQuranFile.forEach((verseObj) => {
-    processVerse(verseObj, searchTerm, searchRegex, results)
+    processVerse(verseObj, searchTerm, searchRegex, results, options)
   })
 
   if (root && root !== searchTerm) {
     const rootRegex = generateStrictSearchRegex(root)
     oneQuranFile.forEach((verseObj) => {
-      processVerse(verseObj, root, rootRegex, results)
+      processVerse(verseObj, root, rootRegex, results, options)
     })
   }
 
