@@ -2,7 +2,7 @@ import { getCharVariations } from './characterVariations'
 
 export const generateStrictSearchRegex = (search: string): RegExp => {
   const allowedExtras = '[يوا]'
-  const tashkeelPattern = '[\u064B-\u0652\u0670]*'  // Optional tashkeel
+  const tashkeelPattern = '[\u064B-\u0652\u0670\u0656-\u065F\u0610-\u061A\u06D6-\u06ED]*'  // Optional tashkeel
   
   const searchRegex = search
     .split("")

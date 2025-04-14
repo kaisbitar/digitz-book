@@ -1,23 +1,5 @@
 <template>
   <v-list class="auto-word-list">
-    <!-- Group Summary Header -->
-    <v-list-item class="group-summary">
-      <div class="d-flex">
-        <v-chip
-          v-for="group in groupedItems"
-          :key="group.group"
-          :color="group.group === 'exact' ? 'primary' : 'default'"
-          variant="outlined"
-          size="small"
-          class="ml-2 mt-1"
-        >
-          {{ getGroupTitle(group.group) }} ({{ group.items.length }})
-        </v-chip>
-      </div>
-      <v-divider class="mt-2"></v-divider>
-    </v-list-item>
-
-    <!-- Virtual Scroll List -->
     <v-virtual-scroll
       :items="paginatedItems"
       :height="height"
@@ -89,22 +71,6 @@ const props = defineProps({
 
 const itemsRef = toRef(props, "items")
 const { paginatedItems, handleInfiniteScroll } = useSimplePagination(itemsRef)
-
-const groupedItems = computed(() => {
-  const groups = {}
-
-  props.items.forEach((item) => {
-    if (!groups[item.group]) {
-      groups[item.group] = {
-        group: item.group,
-        items: [],
-      }
-    }
-    groups[item.group].items.push(item)
-  })
-
-  return Object.values(groups)
-})
 
 const getGroupTitle = (group) => {
   const titles = {

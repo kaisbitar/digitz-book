@@ -8,9 +8,22 @@
     @update:modelValue="$emit('update:menu', $event)"
   >
     <v-sheet>
-      <p v-if="hasSuggestions">
-        {{ suggestions }}
-      </p>
+      <v-list-item v-if="showAutoWordsList">
+        <div class="d-flex align-center">
+          <v-checkbox
+            v-model="includeTashkeel"
+            label="تشكيل"
+            hide-details
+            class="mr-2"
+            @update:modelValue="handleTashkeelChange"
+          />
+        </div>
+        <v-divider class="mt-2"></v-divider>
+        <p v-if="hasSuggestions">
+          {{ suggestions }}
+        </p>
+      </v-list-item>
+
       <AutoWordList
         v-if="showAutoWordsList"
         :items="currentWordsList"
@@ -81,10 +94,12 @@ const emit = defineEmits([
   "update:checkedItems",
   "submitTarteel",
   "remove-item",
+  "update:tashkeel",
 ])
 
 const showAutoWordsList = ref(false)
 const showAutoVerseList = ref(false)
+const includeTashkeel = ref(true)
 
 const onTarteelSubmit = () => {
   emit(
@@ -105,6 +120,10 @@ const setMenuState = (newValue) => {
   if (newValue.includes(" ")) return updateState(false, true)
 
   return updateState(true, false)
+}
+
+const handleTashkeelChange = () => {
+  emit("update:tashkeel", includeTashkeel.value)
 }
 
 watch(

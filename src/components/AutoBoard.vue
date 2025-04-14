@@ -32,6 +32,7 @@
       @update:items="updateFilteredList"
       @update:checkedItems="updateCheckedItems"
       @submitTarteel="handleTarteel"
+      @update:tashkeel="setTashkeelOption"
     />
     <template v-slot:append-input-items>
       <v-btn
@@ -72,6 +73,7 @@ const {
   storeTarteels,
   updateCheckedItems,
   applySuggestion,
+  setTashkeelOption,
 } = useAutoComplete(dataStore, tarteelStore)
 
 const inputHasError = ref(false)

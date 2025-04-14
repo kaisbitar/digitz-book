@@ -10,6 +10,7 @@ export function useAutoComplete(dataStore, tarteelStore) {
   const filteredList = ref([])
   const checkedItems = ref([])
   const suggestions = ref([])
+  const includeTashkeel = ref(true)
 
   const currentWordsList = computed(() => filteredList.value)
   const totalWordsCount = computed(() => currentWordsList.value.length)
@@ -23,7 +24,7 @@ export function useAutoComplete(dataStore, tarteelStore) {
       word,
       dataStore.getOneQuranFile,
       wordRoot,
-      { removeTashkeel: true }
+      { removeTashkeel: !includeTashkeel.value }
     )
     if (wordSearchResults.suggestions) {
       suggestions.value = wordSearchResults.suggestions
@@ -118,6 +119,13 @@ export function useAutoComplete(dataStore, tarteelStore) {
     checkedItems.value = newItems
   }
 
+  const setTashkeelOption = (value) => {
+    includeTashkeel.value = value
+    if (tarteel.value) {
+      handleInputChange(tarteel.value)
+    }
+  }
+
   function debounce(func, wait) {
     let timeout
     return function executedFunction(...args) {
@@ -148,5 +156,6 @@ export function useAutoComplete(dataStore, tarteelStore) {
     storeTarteels,
     updateCheckedItems,
     applySuggestion,
+    setTashkeelOption,
   }
 }
