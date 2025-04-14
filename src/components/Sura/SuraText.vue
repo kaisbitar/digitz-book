@@ -8,9 +8,9 @@
 
     <div class="verse-container">
       <span
-        v-for="(verse, index) in suraTextArray"
+        v-for="(verse, index) in versesBasics"
         :key="index"
-        @click="setTargetedVerse(verse, index + 1)"
+        @click="setTargetedVerse(verse.verseText, index + 1)"
         :class="{
           'active-verse-text': isTargetedVerse(index),
           'dimmed-verse': !isTargetedVerse(index),
@@ -26,10 +26,13 @@
         <span
           :id="`v${index + 1}`"
           class="verse-content"
-          @click="setTargetedVerse(verse, index + 1)"
+          @click="setTargetedVerse(verse.verseText, index + 1)"
         >
-          <span v-if="inputText" v-html="highlight(verse, inputText)" />
-          <span v-else>{{ verse }}</span>
+          <span
+            v-if="inputText"
+            v-html="highlight(verse.verseText, inputText)"
+          />
+          <span v-else>{{ verse.verseText }}</span>
         </span>
       </span>
     </div>
@@ -50,7 +53,7 @@ const { search, highlight } = useInputFiltering()
 const store = useStore()
 const dataStore = useDataStore()
 
-const props = defineProps(["inputText", "suraTextArray"])
+const props = defineProps(["inputText", "versesBasics"])
 
 const target = computed(() => store.getTarget)
 const isTargetedVerse = computed(
