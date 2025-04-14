@@ -38,7 +38,7 @@
       <SuraText
         ref="suraTextRef"
         :inputText="inputText"
-        :suraTextArray="suraWithTashkeel"
+        :versesBasics="versesBasics"
       />
     </v-window-item>
 
@@ -90,8 +90,14 @@ const isHeaderVisible = useHideOnScroll()
 
 const filteredVerses = computed(() => {
   if (!inputText.value) return []
+
+  const tashkeelPattern = "[\u064B-\u0652\u0670]*"
+  const pattern =
+    inputText.value.split("").join(tashkeelPattern) + tashkeelPattern
+  const regex = new RegExp(pattern, "gi")
+
   return props.versesBasics
-    .filter((verse) => verse.verseText.includes(inputText.value))
+    .filter((verse) => regex.test(verse.verseText))
     .map((verse, index) => ({
       ...verse,
       index: index,
