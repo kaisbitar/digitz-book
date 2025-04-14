@@ -41,7 +41,7 @@ import { useInputFiltering } from "@/mixins/inputFiltering"
 import { useCounting } from "@/mixins/counting"
 
 const { highlight } = useInputFiltering()
-const { calculateValue } = useCounting()
+const { calculateValue, countVerseLetters } = useCounting()
 
 const props = defineProps({
   item: Object,
@@ -91,7 +91,7 @@ const indexData = computed(() => ({
 
 const countData = computed(() => ({
   حرف: {
-    value: props.item.verseText.replace(/ /g, "").length,
+    value: countVerseLetters(props.item.verseText),
     color: "letter-count",
   },
   مصحف: {

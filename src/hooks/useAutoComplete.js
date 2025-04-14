@@ -3,20 +3,6 @@ import { filterWords } from "@/utils/wordFilter"
 import { useSearchTarteel } from "@/hooks/useSearchTarteel"
 import { fetchWordRootData } from "@/utils/dictionaryUtils.js"
 
-function debounce(func, wait) {
-  let timeout
-  return function executedFunction(...args) {
-    return new Promise((resolve) => {
-      const later = async () => {
-        clearTimeout(timeout)
-        resolve(await func(...args))
-      }
-      clearTimeout(timeout)
-      timeout = setTimeout(later, wait)
-    })
-  }
-}
-
 export function useAutoComplete(dataStore, tarteelStore) {
   const tarteel = ref("")
   const menu = ref(false)
@@ -130,6 +116,20 @@ export function useAutoComplete(dataStore, tarteelStore) {
 
   const updateCheckedItems = (newItems) => {
     checkedItems.value = newItems
+  }
+
+  function debounce(func, wait) {
+    let timeout
+    return function executedFunction(...args) {
+      return new Promise((resolve) => {
+        const later = async () => {
+          clearTimeout(timeout)
+          resolve(await func(...args))
+        }
+        clearTimeout(timeout)
+        timeout = setTimeout(later, wait)
+      })
+    }
   }
 
   return {

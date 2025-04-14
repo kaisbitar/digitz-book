@@ -96,6 +96,7 @@ const emit = defineEmits(["update:isInputVisible", "submitTarteel"])
 
 const handleInput = async (value) => {
   const hasResults = await handleInputChange(value)
+  updateCheckedItems([])
 
   inputHasSuccess.value = hasResults
   inputHasError.value = !hasResults
