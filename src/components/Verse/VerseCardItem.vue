@@ -6,7 +6,7 @@
     variant="outlined"
   >
     <div class="d-flex mb-2">
-      <v-card-subtitle class="verse-card-item-title">
+      <v-card-subtitle class="">
         <v-badge :content="index + 1" offset-x="-10" offset-y="-8"> </v-badge>
         <span class="mr-10"
           >{{ suraNumber }} {{ suraName }} - آية {{ item.verseIndex }}</span
@@ -21,12 +21,24 @@
         <v-icon class="ml-1" size="small">
           {{ isCopied ? "mdi-check" : "mdi-content-copy" }}</v-icon
         >
-        {{ isCopied ? "تم النسخ" : "نسخ" }}
+        {{ isCopied ? "تم النسخ" : "" }}
+      </v-btn>
+      <v-btn
+        @click.stop.prevent="toggleTashkeel"
+        size="small"
+        class="mr-2"
+        :color="showTashkeel ? undefined : 'primary'"
+        >وو
+        <!-- <v-icon class="ml-1" size="small">
+          {{
+            showTashkeel ? "mdi-format-text" : "mdi-format-text-variant"
+          }}</v-icon 
+        >-->
       </v-btn>
     </div>
     <v-card-text
       class="verse-card-item-text pa-1 mb-3"
-      v-html="highlight(item.verseText, textToHighlight)"
+      v-html="highlight(displayText, textToHighlight)"
     />
 
     <div class="d-flex flex-row-reverse" :style="{ maxWidth: '1091px' }">
@@ -50,6 +62,16 @@ const props = defineProps({
   active: Boolean,
 })
 const emit = defineEmits(["verseClicked"])
+
+const showTashkeel = ref(true)
+const displayText = computed(() => {
+  if (showTashkeel.value) return props.item.verseText
+  return props.item.verseText.replace(/[\u064B-\u0652\u0670]/g, "")
+})
+
+const toggleTashkeel = () => {
+  showTashkeel.value = !showTashkeel.value
+}
 
 const suraNumber = computed(() => {
   const numberPart = props.item.fileName

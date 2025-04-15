@@ -3,7 +3,7 @@ import { ref, computed, watch } from "vue"
 export function useIndexedPagination(
   itemsRef,
   targetedIndexRef,
-  itemsPerPage = 50
+  itemsPerPage = 10
 ) {
   const currentPage = ref(1)
   const totalItems = ref(0)

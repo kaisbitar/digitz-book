@@ -108,7 +108,7 @@ const emit = defineEmits([
 
 const showAutoWordsList = ref(false)
 const showAutoVerseList = ref(false)
-const includeTashkeel = ref(true)
+const includeTashkeel = ref(false)
 
 const onTarteelSubmit = () => {
   emit(
