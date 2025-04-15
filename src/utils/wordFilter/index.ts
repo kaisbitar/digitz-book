@@ -9,7 +9,7 @@ export function filterWords(
   searchTerm: string,
   oneQuranFile: VerseObject[],
   root?: string,
-  options: FilterOptions = { removeTashkeel: false }
+  options: FilterOptions = { removeTashkeel: true }
 ): FilterResult {
   const searchRegex = generateStrictSearchRegex(searchTerm)
   const results: Results = {}

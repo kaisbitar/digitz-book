@@ -10,7 +10,7 @@ export function useAutoComplete(dataStore, tarteelStore) {
   const filteredList = ref([])
   const checkedItems = ref([])
   const suggestions = ref([])
-  const includeTashkeel = ref(true)
+  const includeTashkeel = ref(false)
 
   const currentWordsList = computed(() => filteredList.value)
   const totalWordsCount = computed(() => currentWordsList.value.length)
