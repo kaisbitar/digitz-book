@@ -35,7 +35,7 @@
       @update:tashkeel="setTashkeelOption"
       @update:tarteel="handleInput($event)"
     />
-    <template v-slot:append-input-items>
+    <template v-slot:append-input-items v-if="showDeleteButton">
       <v-btn
         icon="mdi-close"
         elevation="0"
@@ -84,7 +84,7 @@ const isLoading = ref(false)
 const props = defineProps({
   placeholder: {
     type: String,
-    default: "القرآن",
+    default: "ابحث في القرآن الكريم...",
   },
   showLetterChart: {
     type: Boolean,
@@ -93,6 +93,10 @@ const props = defineProps({
   isAddingToExisting: {
     type: Boolean,
     default: false,
+  },
+  showDeleteButton: {
+    type: Boolean,
+    default: true,
   },
 })
 const emit = defineEmits(["update:isInputVisible", "submitTarteel"])

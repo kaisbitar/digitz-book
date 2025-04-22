@@ -2,6 +2,7 @@ import { ref, computed } from "vue"
 import { filterWords } from "@/utils/wordFilter"
 import { useSearchTarteel } from "@/hooks/useSearchTarteel"
 import { fetchWordRootData } from "@/utils/dictionaryUtils.js"
+import { createArabicPattern } from "@/utils/arabicUtils"
 
 export function useAutoComplete(dataStore, tarteelStore) {
   const tarteel = ref("")
@@ -43,8 +44,9 @@ export function useAutoComplete(dataStore, tarteelStore) {
   const updateFilteredVerses = (sentence) => {
     filteredList.value = []
 
+    const pattern = createArabicPattern(sentence)
     const filteredVerses = dataStore.getOneQuranFile.filter((verse) => {
-      if (verse.verseText.includes(sentence)) {
+      if (verse.verseText.match(pattern)) {
         return {
           ...verse,
         }

@@ -191,6 +191,9 @@ onMounted(() => {
   if (!isMobile.value) {
     isInputVisible.value = true
   }
+  if (router.currentRoute.value.name === "home") {
+    isInputVisible.value = false
+  }
 })
 </script>
 
