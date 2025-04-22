@@ -69,6 +69,7 @@ import { useWindow } from "@/mixins/window"
 import { useStore } from "@/stores/appStore"
 import { useRouter } from "vue-router"
 import { useHideOnScroll } from "@/hooks/useHideOnScroll"
+import { createArabicPattern } from "@/utils/arabicUtils"
 
 const router = useRouter()
 const store = useStore()
@@ -91,10 +92,7 @@ const isHeaderVisible = useHideOnScroll()
 const filteredVerses = computed(() => {
   if (!inputText.value) return []
 
-  const tashkeelPattern = "[\u064B-\u0652\u0670]*"
-  const pattern =
-    inputText.value.split("").join(tashkeelPattern) + tashkeelPattern
-  const regex = new RegExp(pattern, "gi")
+  const regex = createArabicPattern(inputText.value)
 
   return props.versesBasics
     .filter((verse) => regex.test(verse.verseText))

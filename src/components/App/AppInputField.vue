@@ -7,7 +7,7 @@
       :color="hasSuccess ? 'success' : 'primary'"
       :error="hasError"
       density="compact"
-      prepend-inner-icon="mdi-magnify"
+      append-inner-icon="mdi-magnify"
       :autofocus="autoFocus"
       hide-details
       @click:clear="handleClear"

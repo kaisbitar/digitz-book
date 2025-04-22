@@ -21,6 +21,10 @@ const props = defineProps({
     type: Array,
     required: true,
   },
+  height: {
+    type: [Number, String],
+    default: 300,
+  },
 })
 const targetedVerseIndex = computed(() => store.getTarget?.verseNumberToQuran)
 const { paginatedItems, handleInfiniteScroll, isLoading } =
@@ -37,12 +41,12 @@ const handleVerseClick = (verse) => {
 
 <style scoped>
 .sura-board-overflow {
-  height: calc(100vh - 120px);
+  height: v-bind('typeof height === "number" ? `${height}px` : height');
   overflow: auto;
 }
 @media (max-width: 768px) {
   .sura-board-overflow {
-    height: calc(100vh - 250px);
+    height: v-bind('typeof height === "number" ? `${height}px` : height');
     overflow: auto;
   }
 }
