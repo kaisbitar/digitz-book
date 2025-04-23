@@ -23,18 +23,13 @@
         >
         {{ isCopied ? "تم النسخ" : "" }}
       </v-btn>
-      <v-btn
+      <!-- <v-btn
         @click.stop.prevent="toggleTashkeel"
         size="small"
         class="mr-2"
         :color="showTashkeel ? undefined : 'primary'"
         >وو
-        <!-- <v-icon class="ml-1" size="small">
-          {{
-            showTashkeel ? "mdi-format-text" : "mdi-format-text-variant"
-          }}</v-icon 
-        >-->
-      </v-btn>
+      </v-btn> -->
     </div>
     <v-card-text
       class="verse-card-item-text pa-1 mb-3"

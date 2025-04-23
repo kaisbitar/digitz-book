@@ -14,6 +14,7 @@ export const useDataStore = defineStore("data", {
     allVersesWithTashkeel: [],
     QuranLetterCounts: {},
     totalWordsCount: 0,
+    dataVersion: null,
   }),
   persist: {
     enabled: true,
@@ -29,6 +30,7 @@ export const useDataStore = defineStore("data", {
     getQuranIndex: (state) => state.QuranIndex,
     getAllVersesWithTashkeel: (state) => state.allVersesWithTashkeel,
     getQuranLetterCounts: (state) => state.QuranLetterCounts,
+    getDataVersion: (state) => state.dataVersion,
   },
   actions: {
     setOneQuranFile(items) {
@@ -40,18 +42,26 @@ export const useDataStore = defineStore("data", {
     setAllVersesWithTashkeel(items) {
       this.allVersesWithTashkeel = items
     },
-
+    setDataVersion(version) {
+      this.dataVersion = version
+    },
     setQuranLetterCounts(items) {
       this.QuranLetterCounts = items
     },
     async getQuranData() {
-      if (this.oneQuranFile.length > 0) return
+      if (
+        this.oneQuranFile.length > 0 &&
+        this.dataVersion === import.meta.env.VITE_QURAN_DATA_VERSION
+      ) {
+        return
+      }
 
       try {
         const appApi = import.meta.env.VITE_APP_API_URL
 
         await this.fetchQuranFileAndIndex(appApi)
         await this.fetchAndProcessVerses(appApi)
+        this.setDataVersion(import.meta.env.VITE_QURAN_DATA_VERSION)
       } catch (error) {
         console.error("Error fetching Quran data:", error)
       }
