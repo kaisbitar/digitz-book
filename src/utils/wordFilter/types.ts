@@ -24,14 +24,14 @@ export interface Results {
   [word: string]: ResultItem
 }
 
+export type GroupType = 'exact' | 'attached' | 'root' | 'phonetic' | 'other'
+
 export interface SortedResultItem {
   word: string
   count: number
   score: number
-  verses: {
-    [verse: string]: VerseEntry
-  }
-  group: 'exact' | 'root' | 'derivative' | 'other'
+  verses: Record<string, any>
+  group: GroupType
 }
 
 export interface FormattedResult {

@@ -32,7 +32,7 @@
         </div>
       </v-list-item>
 
-      <AutoWordList
+      <AutoWordList2
         v-if="showAutoWordsList"
         :items="currentWordsList"
         :checked-items="checkedItems"
@@ -41,6 +41,15 @@
         @update:checked-items="emit('update:checkedItems', $event)"
         @submitTarteel="onTarteelSubmit"
       />
+      <!-- <AutoWordList
+        v-if="showAutoWordsList"
+        :items="currentWordsList"
+        :checked-items="checkedItems"
+        :height="$vuetify.display.xs ? 300 : '250'"
+        @update:currentWordsList="emit('update:items', $event)"
+        @update:checked-items="emit('update:checkedItems', $event)"
+        @submitTarteel="onTarteelSubmit"
+      /> -->
 
       <AutoVerseList
         v-if="showAutoVerseList"
