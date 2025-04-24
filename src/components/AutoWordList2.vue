@@ -1,35 +1,35 @@
 <template>
-  <div class="px-2">
-    <template
-      v-for="groupType in ['exact', 'attached', 'root', 'other']"
-      :key="groupType"
-    >
-      <v-sheet
-        v-if="getGroupItems(groupType).length"
-        class="mb-4"
-        elevation="0"
+  <div
+    v-for="groupType in ['exact', 'attached', 'root', 'other']"
+    :key="groupType"
+    style="max-height: 200px !important; overflow-y: auto; max-width: 800px"
+  >
+    <div v-if="getGroupItems(groupType).length" class="px-2 py-2" elevation="4">
+      <v-divider class="my-2" />
+
+      <div
+        class="position-sticky mb-2 text-grey-darken-1"
+        style="top: 0; background: white; z-index: 1"
       >
-        <div class="text-caption font-weight-medium text-grey-darken-1 mb-1">
-          {{ getGroupTitle(groupType) }} ({{ getGroupItems(groupType).length }})
-        </div>
-        <div class="d-flex flex-wrap">
-          <v-chip
-            v-for="item in getGroupItems(groupType)"
-            :key="item.word"
-            :color="isItemChecked(item) ? 'primary' : undefined"
-            variant="outlined"
-            size="small"
-            class="ma-1"
-            @click="toggleItemCheck(item)"
+        {{ getGroupTitle(groupType) }} ({{ getGroupItems(groupType).length }})
+      </div>
+      <div class="d-flex flex-wrap">
+        <v-chip
+          v-for="item in getGroupItems(groupType)"
+          :key="item.word"
+          :color="isItemChecked(item) ? 'primary' : 'grey-darken-2'"
+          variant="tonal"
+          size="large"
+          class="ma-1"
+          @click="toggleItemCheck(item)"
+        >
+          <span class="ml-1">{{ item.word }}</span>
+          <span class="text-caption text-grey-darken-1"
+            >({{ item.verses.length }})</span
           >
-            <span class="ml-1">{{ item.word }}</span>
-            <span class="text-caption text-grey-darken-1"
-              >({{ item.verses.length }})</span
-            >
-          </v-chip>
-        </div>
-      </v-sheet>
-    </template>
+        </v-chip>
+      </div>
+    </div>
   </div>
 </template>
 
