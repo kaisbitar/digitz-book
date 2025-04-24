@@ -8,9 +8,18 @@
     @update:modelValue="$emit('update:menu', $event)"
   >
     <v-sheet>
-      <v-list-item v-if="showAutoWordsList">
+      <v-list-item
+        v-if="showAutoWordsList"
+        class="position-sticky mb-2"
+        style="top: 0; z-index: 2; background: white"
+      >
         <div class="d-flex align-center">
-          <v-checkbox
+          <AppTarteelBtn
+            v-if="showAutoWordsList"
+            :all-items="currentWordsList"
+            :checked-items="checkedItems"
+            @submit="emit('submitTarteel')"
+          /><v-checkbox
             v-model="includeTashkeel"
             label="تشكيل"
             hide-details
@@ -18,7 +27,6 @@
             @update:modelValue="handleTashkeelChange"
           />
         </div>
-        <v-divider class="mt-2"></v-divider>
         <div v-if="hasSuggestions" class="suggestions-list">
           <v-chip
             v-for="(suggestion, index) in suggestions"
@@ -71,13 +79,7 @@
           :letter="currentLetter"
         />
       </v-lazy>
-      <AppTarteelBtn
-        v-if="showAutoWordsList"
-        variant="outlined"
-        :all-items="currentWordsList"
-        :checked-items="checkedItems"
-        @submit="emit('submitTarteel')"
-      />
+
       <AppTarteelBtn
         v-if="showAutoVerseList"
         variant="outlined"

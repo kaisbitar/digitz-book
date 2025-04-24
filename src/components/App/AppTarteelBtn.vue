@@ -1,13 +1,11 @@
 <template>
   <v-btn
     @click="onSubmit"
-    block
-    size="x-large"
     :disabled="isDisabled"
-    color="primary"
-    variant="outlined"
+    variant="elevated"
+    color="secondary"
   >
-    <span class="">
+    <span>
       ترتيل
       <v-scale-transition>
         <span :key="checkedItemsCount">

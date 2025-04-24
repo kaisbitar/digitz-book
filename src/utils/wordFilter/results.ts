@@ -37,16 +37,47 @@ export const groupResults = (
     'ي'
   ]
 
-  // Helper function to check if a word matches the pattern with prefixes
+  // List of allowed suffixes
+  const allowedSuffixes = [
+    '', // no suffix
+    // Pronouns
+    'ا',
+    'ه',
+    'ها',
+    'هم',
+    'هن',
+    'ك',
+    'كم',
+    'كن',
+    'ي',
+    'نا',
+    // Dual/Plural
+    'ان',
+    'ين',
+    'ون',
+    'ات',
+    // Feminine
+    'ة',
+    'اء',
+    // Verb endings
+    'ت',
+    'وا',
+    'تم',
+    'تن'
+  ]
+
+  // Helper function to check if a word matches the pattern with prefixes and suffixes
   const hasAttachedPattern = (word: string, pattern: string): boolean => {
     const cleanWord = removeTashkeel(word)
     // Remove tashkeel and any leading ال from the pattern
     const cleanPattern = removeAl(removeTashkeel(pattern))
     
-    // Check if the word matches pattern with any of the allowed prefixes
+    // Check if the word matches pattern with any combination of allowed prefixes and suffixes
     return allowedPrefixes.some(prefix => {
-      const prefixedPattern = prefix + cleanPattern
-      return cleanWord === prefixedPattern && prefix !== '' // Exclude exact match
+      return allowedSuffixes.some(suffix => {
+        const modifiedPattern = prefix + cleanPattern + suffix
+        return cleanWord === modifiedPattern && (prefix !== '' || suffix !== '') // Exclude exact match
+      })
     })
   }
 
