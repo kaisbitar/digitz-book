@@ -117,7 +117,7 @@ const handleSelectedVerse = (verse, tarteel) => {
     tarteel,
   }
   delete query.view
-
+  store.setActiveSuraTab("suraText")
   store.setTarget({
     ...verse,
     tarteel,

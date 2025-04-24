@@ -1,9 +1,9 @@
 <template>
   <v-card
     class="px-4 py-2 text-right"
-    border
     rounded
     hover
+    :border="selectedRatlIndex === index ? true : false"
     @click="$emit('select', ratl, index)"
     @mouseover="showDelete = false"
     @mouseleave="showDelete = false"

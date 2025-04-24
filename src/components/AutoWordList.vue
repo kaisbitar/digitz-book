@@ -75,9 +75,9 @@ const { paginatedItems, handleInfiniteScroll } = useSimplePagination(itemsRef)
 const getGroupTitle = (group) => {
   const titles = {
     exact: "مطابقة تامة",
-    root: "مشابهة ",
-    derivative: "مشتق",
-    other: "المزيد",
+    root: "الجذر والمشتقات",
+    attached: "صيغ متصلة",
+    other: "تشابه صوتي",
   }
   return titles[group] || group
 }

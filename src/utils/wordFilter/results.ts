@@ -6,72 +6,82 @@ export const groupResults = (
   root?: string
 ): SortedResultItem[] => {
   const exactMatches: SortedResultItem[] = []
+  const attachedMatches: SortedResultItem[] = []
   const rootMatches: SortedResultItem[] = []
-  const derivativeMatches: SortedResultItem[] = []
   const otherMatches: SortedResultItem[] = []
 
-  // Helper function to check if word has 3 letters in same order
-  const hasThreeLettersInOrder = (word: string, target: string): boolean => {
-    let targetIndex = 0
-    let matchCount = 0
-    
-    for (let i = 0; i < word.length && targetIndex < target.length; i++) {
-      if (word[i] === target[targetIndex]) {
-        matchCount++
-        targetIndex++
-        if (matchCount === 3) return true
-      }
-    }
-    return false
+  // Helper function to remove tashkeel
+  const removeTashkeel = (word: string): string => {
+    return word.replace(/[ًٌٍَُِّْ]/g, '')
   }
 
-  // Helper function to check if words share same letters
-  const hasSameLetters = (word: string, target: string): boolean => {
-    const wordLetters = word.split('').sort().join('')
-    const targetLetters = target.split('').sort().join('')
-    return wordLetters === targetLetters
+  // Helper function to remove ال from the beginning of a word
+  const removeAl = (word: string): string => {
+    return word.replace(/^ال/, '')
+  }
+
+  // List of allowed prefixes including compound ones
+  const allowedPrefixes = [
+    '', // no prefix
+    'ال',
+    'ب',
+    'و',
+    'ف',
+    'بال',
+    'وال',
+    'فال',
+    'لل',
+    'ولل',
+    'ن',
+    'ت',
+    'ي'
+  ]
+
+  // Helper function to check if a word matches the pattern with prefixes
+  const hasAttachedPattern = (word: string, pattern: string): boolean => {
+    const cleanWord = removeTashkeel(word)
+    // Remove tashkeel and any leading ال from the pattern
+    const cleanPattern = removeAl(removeTashkeel(pattern))
+    
+    // Check if the word matches pattern with any of the allowed prefixes
+    return allowedPrefixes.some(prefix => {
+      const prefixedPattern = prefix + cleanPattern
+      return cleanWord === prefixedPattern && prefix !== '' // Exclude exact match
+    })
+  }
+
+  // Helper function to check if a word is an exact match
+  const isExactMatch = (word: string, pattern: string): boolean => {
+    const cleanWord = removeTashkeel(word)
+    const cleanPattern = removeAl(removeTashkeel(pattern))
+    return cleanWord === cleanPattern || cleanWord === 'ال' + cleanPattern
+  }
+
+  // Helper function to check if a word matches the root pattern
+  const hasRootPattern = (word: string, rootPattern: string): boolean => {
+    const cleanWord = removeTashkeel(word)
+    const cleanRoot = removeTashkeel(rootPattern)
+    
+    // Check if the word contains the exact root sequence anywhere
+    return cleanWord.includes(cleanRoot)
   }
 
   Object.entries(results).forEach(([word, { count, score, verses }]) => {
-    let group: 'exact' | 'root' | 'derivative' | 'other' = 'other'
-
-    // 1. Exact matches
-    if (word === searchTerm || word === root) {
-      group = 'exact'
-      exactMatches.push({ word, count, score, verses, group })
-      return
+    if (isExactMatch(word, searchTerm)) {
+      exactMatches.push({ word, count, score, verses, group: 'exact' })
+    } else if (hasAttachedPattern(word, searchTerm)) {
+      attachedMatches.push({ word, count, score, verses, group: 'attached' })
+    } else if (root && hasRootPattern(word, root)) {
+      rootMatches.push({ word, count, score, verses, group: 'root' })
+    } else {
+      otherMatches.push({ word, count, score, verses, group: 'other' })
     }
-
-    // 2. Words sharing 3 letters with search term in same order
-    if (hasThreeLettersInOrder(word, searchTerm)) {
-      group = 'root'
-      rootMatches.push({ word, count, score, verses, group })
-      return
-    }
-
-    // 3. Words sharing 3 letters with root in same order
-    if (root && hasThreeLettersInOrder(word, root)) {
-      group = 'root'
-      rootMatches.push({ word, count, score, verses, group })
-      return
-    }
-
-    // 4. Words with same letters but different order
-    if (hasSameLetters(word, searchTerm) || (root && hasSameLetters(word, root))) {
-      group = 'derivative'
-      derivativeMatches.push({ word, count, score, verses, group })
-      return
-    }
-
-    // 5. Other matches
-    otherMatches.push({ word, count, score, verses, group })
   })
 
-  // Combine all groups in order
   return [
     ...exactMatches,
+    ...attachedMatches,
     ...rootMatches,
-    ...derivativeMatches,
     ...otherMatches
   ]
 }
