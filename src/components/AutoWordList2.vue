@@ -2,18 +2,21 @@
   <div
     v-for="groupType in ['exact', 'attached', 'root', 'other']"
     :key="groupType"
-    style="max-height: 200px !important; overflow-y: auto; max-width: 800px"
   >
-    <div v-if="getGroupItems(groupType).length" class="px-2 py-2" elevation="4">
-      <v-divider class="my-2" />
-
-      <div
+    <v-card
+      v-if="getGroupItems(groupType).length"
+      variant="outlined"
+      class="mb-2"
+    >
+      <v-card-title
         class="position-sticky mb-2 text-grey-darken-1"
-        style="top: 0; background: white; z-index: 1"
+        style="top: 0; background: white; z-index: 1; font-size: 1rem"
       >
         {{ getGroupTitle(groupType) }} ({{ getGroupItems(groupType).length }})
-      </div>
-      <div class="d-flex flex-wrap">
+      </v-card-title>
+      <v-card-text
+        style="max-height: 100px !important; overflow-y: auto; max-width: 800px"
+      >
         <v-chip
           v-for="item in getGroupItems(groupType)"
           :key="item.word"
@@ -28,8 +31,8 @@
             >({{ item.verses.length }})</span
           >
         </v-chip>
-      </div>
-    </div>
+      </v-card-text>
+    </v-card>
   </div>
 </template>
 
