@@ -27,11 +27,11 @@
       :checkedItems="checkedItems"
       :isLoading="isLoading"
       :showLetterChart="showLetterChart"
+      @submitTarteel="handleTarteel"
       @update:menu="menu = $event"
       @update:isLoading="isLoading = $event"
       @update:items="updateFilteredList"
       @update:checkedItems="updateCheckedItems"
-      @submitTarteel="handleTarteel"
       @update:tashkeel="setTashkeelOption"
       @update:tarteel="handleInput($event)"
     />
