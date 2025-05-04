@@ -15,22 +15,22 @@ const routes = [
     name: "home",
     component: () => import("@/pages/Home"),
   },
-  // {
-  //   path: "/internal",
-  //   name: "internal",
-  //   children: [
-  //     {
-  //       path: "stats",
-  //       name: "stats",
-  //       component: () => import("@/components/Internal/Stats.vue"),
-  //     },
-  //     {
-  //       path: "ai-expose",
-  //       name: "ai-expose",
-  //       component: () => import("@/components/Internal/AiExpose.vue"),
-  //     },
-  //   ],
-  // },
+  {
+    path: "/internal",
+    name: "internal",
+    children: [
+      {
+        path: "stats",
+        name: "stats",
+        component: () => import("@/components/Internal/Stats.vue"),
+      },
+      {
+        path: "ai-expose",
+        name: "ai-expose",
+        component: () => import("@/components/Internal/Ai/ai.vue"),
+      },
+    ],
+  },
   {
     path: "/sura/:suraNumber?/:verseIndex?",
     name: "sura",

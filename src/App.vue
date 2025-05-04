@@ -87,8 +87,9 @@ html {
 }
 
 .v-card-text.verse-card-item-text {
-  font-size: 16px;
+  font-size: 18px;
   max-width: 1083px;
+  opacity: 0.9;
 }
 
 .text-caption {

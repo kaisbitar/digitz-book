@@ -10,7 +10,6 @@
       <span
         v-for="(verse, index) in versesBasics"
         :key="index"
-        @click="setTargetedVerse(verse.verseText, index + 1)"
         :class="{
           'active-verse-text': isTargetedVerse(index),
           'dimmed-verse': !isTargetedVerse(index),
@@ -42,7 +41,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, nextTick } from "vue"
+import { ref, computed, onMounted, nextTick, onUnmounted } from "vue"
 import { useStore } from "@/stores/appStore"
 import { useInputFiltering } from "@/mixins/inputFiltering"
 import { useWindow } from "@/mixins/window"
@@ -60,25 +59,59 @@ const isTargetedVerse = computed(
   () => (index) => index + 1 === parseInt(target.value.verseIndex)
 )
 
+const handleKeyNavigation = (event) => {
+  if (!target.value.verseIndex) return
+  if (!["ArrowUp", "ArrowDown", "Enter"].includes(event.key)) return
+
+  if (event.key === "Enter") {
+    store.setActiveSuraTab("versesTab")
+    return
+  }
+
+  const currentIndex = target.value.verseIndex - 1
+  const newIndex =
+    event.key === "ArrowUp"
+      ? Math.max(0, currentIndex - 1)
+      : Math.min(props.versesBasics.length - 1, currentIndex + 1)
+
+  setTargetedVerse(props.versesBasics[newIndex].verseText, newIndex + 1)
+}
+
+onMounted(async () => {
+  scrollToActiveItem(".active-verse-text", ".sura-text-container")
+  await nextTick()
+  window.addEventListener("keydown", handleKeyNavigation)
+})
+
+onUnmounted(() => {
+  window.removeEventListener("keydown", handleKeyNavigation)
+})
+
 const setTargetedVerse = (verse, index) => {
   const verseNumberToQuran = dataStore.oneQuranFile.find(
     (verse) =>
       verse.fileName === target.value.fileName &&
       verse.verseIndex === parseInt(target.value.verseIndex)
   ).verseNumberToQuran
+
+  const isSameVerse = target.value.verseIndex === index
+
   store.setTarget({
     ...store.getTarget,
     verseIndex: index,
     verseText: verse,
     verseNumberToQuran,
   })
-  store.setActiveSuraTab("versesTab")
+
+  if (isSameVerse) {
+    store.setActiveSuraTab("versesTab")
+  }
 }
 
-onMounted(async () => {
-  scrollToActiveItem(".active-verse-text", ".sura-text-container")
-  await nextTick()
-})
+// onMounted(async () => {
+//   scrollToActiveItem(".active-verse-text", ".sura-text-container")
+//   await nextTick()
+// })
 </script>
 
 <style lang="scss" scoped>
