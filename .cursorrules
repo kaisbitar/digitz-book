@@ -1,0 +1,44 @@
+# Tarteel Project Context
+
+## Project Overview
+Tarteel is a Vue.js application for Quranic text analysis and recitation. It provides tools for:
+- Word and verse analysis
+- Frequency charts and statistics
+- Tarteel (recitation) features
+- User authentication and profiles
+- Notes and chat functionality
+
+## Tech Stack
+- **Frontend**: Vue.js 3 with Composition API
+- **UI Framework**: Vuetify
+- **Backend**: Supabase (PostgreSQL + Auth)
+- **Build Tool**: Vite
+- **Styling**: SCSS
+
+## Key Architecture Patterns
+- **Stores**: Pinia stores for state management (appStore, authStore, dataStore, notesStore, TarteelStore)
+- **Components**: Modular Vue components organized by feature
+- **Hooks**: Custom composables for reusable logic
+- **Utils**: Utility functions for Arabic text processing, word filtering, etc.
+
+## Important Conventions
+- Always use early return patterns
+- Follow Vue 3 Composition API patterns
+- Maintain Arabic text handling utilities
+- Follow existing component structure and naming conventions
+-Always use vuetify for design and styling.
+-Always minimal to zero css to achieve tasks
+
+## Key Files to Understand
+- `src/stores/` - State management
+- `src/components/` - UI components organized by feature
+- `src/utils/` - Utility functions for text processing
+- `src/hooks/` - Custom composables
+- `supabase/` - Database schema and migrations
+
+## Common Tasks
+- Arabic text processing and analysis
+- Quranic data visualization
+- User authentication and profile management
+- Real-time data updates
+- Mobile-responsive design 
