@@ -37,7 +37,7 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, toRef, computed } from "vue"
+import { toRef } from "vue"
 import { useSimplePagination } from "@/hooks/useSimplePagination"
 
 const props = defineProps({

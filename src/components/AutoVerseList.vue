@@ -8,7 +8,6 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from "vue"
 import { useIndexedPagination } from "@/hooks/useIndexedPagination"
 import { useStore } from "@/stores/appStore"
 
