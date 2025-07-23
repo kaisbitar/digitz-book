@@ -41,7 +41,7 @@
       </v-list-item>
 
       <v-list-item>
-        <AutoWordList2
+        <AutoWordList
           v-if="showAutoWordsList"
           :items="currentWordsList"
           :checked-items="checkedItems"

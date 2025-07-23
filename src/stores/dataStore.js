@@ -3,6 +3,7 @@ import {
   fetchOneQuranFile,
   fetchtableQuranIndex,
   fetchAllVersesWithTashkeel,
+  fetchAllWordsRoots,
 } from "../api/api.js"
 import { countLettersInQuran } from "@/utils/letterUtils"
 import { countDistinctWords } from "@/utils/wordFilter"
@@ -15,6 +16,7 @@ export const useDataStore = defineStore("data", {
     QuranLetterCounts: {},
     totalWordsCount: 0,
     dataVersion: null,
+    allWordsRoots: [],
   }),
   persist: {
     enabled: true,
@@ -48,6 +50,9 @@ export const useDataStore = defineStore("data", {
     setQuranLetterCounts(items) {
       this.QuranLetterCounts = items
     },
+    setAllWordsRoots(items) {
+      this.allWordsRoots = items
+    },
     async getQuranData() {
       if (
         this.oneQuranFile.length > 0 &&
@@ -61,6 +66,7 @@ export const useDataStore = defineStore("data", {
 
         await this.fetchQuranFileAndIndex(appApi)
         await this.fetchAndProcessVerses(appApi)
+        await this.fetchAllWordsRoots(appApi)
         this.setDataVersion(import.meta.env.VITE_QURAN_DATA_VERSION)
       } catch (error) {
         console.error("Error fetching Quran data:", error)
@@ -90,6 +96,11 @@ export const useDataStore = defineStore("data", {
 
       this.setOneQuranFile(QuranFile)
       this.setQuranIndex(tableIndex)
+    },
+
+    async fetchAllWordsRoots(appApi) {
+      const allWordsRoots = await fetchAllWordsRoots(appApi)
+      this.setAllWordsRoots(allWordsRoots)
     },
   },
 })

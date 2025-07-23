@@ -1,7 +1,10 @@
-import { fetchWordMeaning, fetchWordRoot } from "@/api/api.js"
+import { fetchWordMeaning } from "@/api/api.js"
 import { useStore } from "@/stores/appStore"
+import { useDataStore } from "@/stores/dataStore"
+import { removeTashkeel } from "@/utils/arabicUtils"
 
 const store = useStore()
+const dataStore = useDataStore()
 
 export const extractFromDictionnary = (allData) => {
   const lines = allData.split("\n")
@@ -45,41 +48,27 @@ export const fetchWordData = async (word) => {
 }
 
 export const fetchWordRootData = async (word) => {
-  if (word.startsWith("ال")) word = word.slice(2)
-  if (word.length <= 3) return word
-  if (word.length === 4 && word.endsWith("ا")) {
-    return word.slice(0, -1)
-  }
-  try {
-    const wordRootsApi = import.meta.env.VITE_WORD_ROOTS_API_URL
-    const root = await fetchWordRoot(wordRootsApi, word)
-    if (!root.words[0].root) return word
-    if (root.words[0].root.includes("/")) {
-      const cleanRoot = root.words[0].root.split("/")[0]
-      return cleanRoot
+  const wordRoot = fetchWordRootDataFromStore(word)
+  if (wordRoot) return wordRoot
+  return word
+}
+
+export const fetchWordRootDataFromStore = (word) => {
+  word = removeTashkeel(word)
+  const allWordsRoots = dataStore.allWordsRoots
+  for (const rootObj of allWordsRoots) {
+    if (rootObj.words && rootObj.words.split(" ").includes(word)) {
+      return rootObj.root
     }
-    return root.words[0].root
-  } catch (error) {
-    return word
   }
+  return undefined
 }
 
 export const fetchWordMeaningData = async (word, wordRoot) => {
   const appApi = import.meta.env.VITE_APP_API_URL
   let response = await fetchWordMeaning(appApi, wordRoot)
-  if (response.length === 0) {
-    const modifiedWordRoot = wordRoot.slice(1, -2)
-    response = await fetchWordMeaning(appApi, modifiedWordRoot)
-  }
   const extractedMeaning = extractFromDictionnary(response[0])
 
   store.setWordMeaning({ word, meaning: extractedMeaning })
-  return extractedMeaning // Return the meaning instead of updating component state
-}
-
-const hasThreeLettersInCommon = (word1, word2) => {
-  const commonLetters = [...new Set(word1)].filter((letter) =>
-    word2.includes(letter)
-  )
-  return commonLetters.length >= 2
+  return extractedMeaning
 }
