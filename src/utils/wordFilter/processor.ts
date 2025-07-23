@@ -1,11 +1,5 @@
 import { Results, VerseObject, FilterOptions } from './types'
 
-export const scoreWord = (word: string, search: string): number => {
-  if (word.startsWith(search)) return 2
-  if (word.includes(search)) return 1
-  return 0
-}
-
 export const processVerse = (
   verseObj: VerseObject,
   searchTerm: string,
@@ -25,23 +19,19 @@ export const processVerse = (
       suraName: fileName.replace(/[0-9]/g, "")
     })
   
-    const createNewWordResult = (score: number) => ({
+    const createNewWordResult = () => ({
       count: 1,
-      score,
       verses: {
         [verseNumberToQuran]: createVerseEntry()
       }
     })
   
-    const updateExistingWord = (word: string, score: number) => {
+    const updateExistingWord = (word: string) => {
       results[word].count++
-      results[word].score = Math.max(results[word].score, score)
-      
       if (!results[word].verses[verseNumberToQuran]) {
         results[word].verses[verseNumberToQuran] = createVerseEntry()
         return
       }
-      
       results[word].verses[verseNumberToQuran].count++
     }
   
@@ -54,14 +44,11 @@ export const processVerse = (
 
     words.forEach((word) => {
       if (!searchRegex.test(word)) return
-  
-      const score = scoreWord(word, searchTerm)
       if (!results[word]) {
-        results[word] = createNewWordResult(score)
+        results[word] = createNewWordResult()
         return
       }
-  
-      updateExistingWord(word, score)
+      updateExistingWord(word)
     })
   } 
   

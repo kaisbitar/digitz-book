@@ -43,21 +43,24 @@ export const extractFromDictionnary = (allData) => {
 }
 
 export const fetchWordData = async (word) => {
-  const wordRoot = await fetchWordRootData(word)
+  const wordRoot = await fetchWordRoot(word)
   await fetchWordMeaningData(word, wordRoot)
 }
 
-export const fetchWordRootData = async (word) => {
+export const fetchWordRoot = async (word) => {
   const wordRoot = fetchWordRootDataFromStore(word)
   if (wordRoot) return wordRoot
-  return word
+  return null
 }
 
 export const fetchWordRootDataFromStore = (word) => {
   word = removeTashkeel(word)
   const allWordsRoots = dataStore.allWordsRoots
   for (const rootObj of allWordsRoots) {
-    if (rootObj.words && rootObj.words.split(" ").includes(word)) {
+    if (rootObj.words.split(" ").includes(word)) {
+      return rootObj.root
+    }
+    if (word === rootObj.root) {
       return rootObj.root
     }
   }

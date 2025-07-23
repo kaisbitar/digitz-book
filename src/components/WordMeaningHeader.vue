@@ -20,7 +20,7 @@ import { useRouter } from "vue-router"
 import { useSearchTarteel } from "@/hooks/useSearchTarteel"
 import { filterWords } from "@/utils/wordFilter"
 import { useDataStore } from "@/stores/dataStore"
-import { fetchWordRootData } from "@/utils/dictionaryUtils"
+import { fetchWordRoot } from "@/utils/dictionaryUtils"
 import { removeTashkeel } from "@/utils/arabicUtils"
 const router = useRouter()
 const dataStore = useDataStore()
@@ -48,7 +48,7 @@ watch(
   () => props.word,
   async (newWord) => {
     if (newWord) {
-      const root = await fetchWordRootData(newWord)
+      const root = await fetchWordRoot(newWord)
       wordRoot.value = removeTashkeel(root)
     }
   }
@@ -56,7 +56,7 @@ watch(
 
 defineEmits(["close"])
 onMounted(async () => {
-  const root = await fetchWordRootData(props.word)
+  const root = await fetchWordRoot(props.word)
   wordRoot.value = removeTashkeel(root)
 })
 </script>

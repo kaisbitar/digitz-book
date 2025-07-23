@@ -1,7 +1,7 @@
 import { ref, computed } from "vue"
 import { filterWords } from "@/utils/wordFilter"
 import { useSearchTarteel } from "@/hooks/useSearchTarteel"
-import { fetchWordRootData } from "@/utils/dictionaryUtils.js"
+import { fetchWordRoot } from "@/utils/dictionaryUtils.js"
 import { createArabicPattern } from "@/utils/arabicUtils"
 
 export function useAutoComplete(dataStore, tarteelStore) {
@@ -20,7 +20,7 @@ export function useAutoComplete(dataStore, tarteelStore) {
   const { setTarteel } = useSearchTarteel()
 
   const updateFilteredWords = async (word) => {
-    const wordRoot = word.length >= 3 ? await fetchWordRootData(word) : word
+    const wordRoot = word.length >= 3 ? await fetchWordRoot(word) : null
     const wordSearchResults = filterWords(
       word,
       dataStore.getOneQuranFile,

@@ -4,7 +4,6 @@ export interface CharVariations {
 
 export interface ResultItem {
   count: number
-  score: number
   verses: {
     [verse: string]: VerseEntry
   }
@@ -29,7 +28,6 @@ export type GroupType = 'exact' | 'attached' | 'root' | 'phonetic' | 'other'
 export interface SortedResultItem {
   word: string
   count: number
-  score: number
   verses: Record<string, any>
   group: GroupType
 }
