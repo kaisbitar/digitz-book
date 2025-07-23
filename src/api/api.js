@@ -18,7 +18,6 @@ export function fetchSuraDetails(appApi, fileName) {
 export function fetchWordMeaning(appApi, word) {
   return getData(appApi + `api/scrape/${word}`)
 }
-
 function getData(path) {
   return axios.get(path).then((response) => {
     return response.data
