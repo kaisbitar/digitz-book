@@ -7,7 +7,7 @@
     activator="parent"
     @update:modelValue="$emit('update:menu', $event)"
   >
-    <v-sheet>
+    <v-sheet class="auto-menu">
       <v-list-item
         v-if="showAutoWordsList"
         class="position-sticky mb-2"
@@ -167,5 +167,9 @@ onMounted(() => {})
 <style scoped>
 .opacity-transition {
   transition: opacity 0.3s ease;
+}
+.auto-menu {
+  height: calc(100vh - 70px) !important;
+  overflow: auto;
 }
 </style>

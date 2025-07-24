@@ -14,9 +14,7 @@
       >
         {{ getGroupTitle(groupType) }} ({{ getGroupItems(groupType).length }})
       </v-card-title>
-      <v-card-text
-        style="max-height: 100px !important; overflow-y: auto; max-width: 800px"
-      >
+      <v-card-text style="overflow-y: auto; max-width: 800px">
         <v-chip
           v-for="item in getGroupItems(groupType)"
           :key="item.word"
