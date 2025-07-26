@@ -169,7 +169,8 @@ onMounted(() => {})
   transition: opacity 0.3s ease;
 }
 .auto-menu {
-  height: calc(100vh - 70px) !important;
+  max-height: calc(100vh - 70px) !important;
+  height: auto;
   overflow: auto;
 }
 </style>

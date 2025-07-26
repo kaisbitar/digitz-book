@@ -100,4 +100,7 @@ defineEmits(["selecteItem", "deleteItem"])
 .v-list-item-title {
   font-size: 14px;
 }
+.v-list-item {
+  cursor: default;
+}
 </style>

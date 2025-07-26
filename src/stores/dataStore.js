@@ -66,7 +66,7 @@ export const useDataStore = defineStore("data", {
 
         await this.fetchQuranFileAndIndex(appApi)
         await this.fetchAndProcessVerses(appApi)
-        await this.fetchAllWordsRoots(appApi)
+        await this.fetchRoots(appApi)
         this.setDataVersion(import.meta.env.VITE_QURAN_DATA_VERSION)
       } catch (error) {
         console.error("Error fetching Quran data:", error)
@@ -98,7 +98,7 @@ export const useDataStore = defineStore("data", {
       this.setQuranIndex(tableIndex)
     },
 
-    async fetchAllWordsRoots(appApi) {
+    async fetchRoots(appApi) {
       const allWordsRoots = await fetchAllWordsRoots(appApi)
       this.setAllWordsRoots(allWordsRoots)
     },

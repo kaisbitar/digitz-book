@@ -20,7 +20,7 @@ export function useAutoComplete(dataStore, tarteelStore) {
   const { setTarteel } = useSearchTarteel()
 
   const updateFilteredWords = async (word) => {
-    const wordRoot = word.length >= 3 ? await fetchWordRoot(word) : null
+    const wordRoot = word.length >= 2 ? await fetchWordRoot(word) : null
     const wordSearchResults = filterWords(
       word,
       dataStore.getOneQuranFile,
@@ -34,7 +34,6 @@ export function useAutoComplete(dataStore, tarteelStore) {
       filteredList.value = []
       return
     }
-
     suggestions.value = []
     filteredList.value = wordSearchResults.results.map((item) => ({
       ...item,
