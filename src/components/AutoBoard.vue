@@ -135,4 +135,10 @@ const onFocus = () => {
 }
 </script>
 
-<style scoped></style>
+<style>
+.auto-menu-board .auto-menu {
+  max-height: calc(100vh - 70px) !important;
+  height: auto;
+  overflow: auto;
+}
+</style>
