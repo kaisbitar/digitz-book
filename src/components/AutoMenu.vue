@@ -7,7 +7,7 @@
     activator="parent"
     @update:modelValue="$emit('update:menu', $event)"
   >
-    <v-sheet class="auto-menu">
+    <v-sheet :class="sheetClass">
       <v-list-item
         v-if="showAutoWordsList"
         class="position-sticky mb-2"
@@ -108,6 +108,11 @@ const props = defineProps({
   suggestions: Array,
   hasSuggestions: Boolean,
   showLetterChart: Boolean,
+  context: {
+    type: String,
+    default: "nav", // 'nav' or 'home'
+    validator: (value) => ["nav", "home"].includes(value),
+  },
 })
 
 const emit = defineEmits([
@@ -123,6 +128,11 @@ const emit = defineEmits([
 const showAutoWordsList = ref(false)
 const showAutoVerseList = ref(false)
 const includeTashkeel = ref(false)
+
+// Computed property to determine the sheet class based on context
+const sheetClass = computed(() => {
+  return props.context === "home" ? "auto-menu-home" : "auto-menu-nav"
+})
 
 const onTarteelSubmit = () => {
   emit(

@@ -10,7 +10,11 @@
 
         <div class="search-section">
           <div class="search-container">
-            <AutoBoard :showDeleteButton="false" class="auto-menu-home" />
+            <AutoBoard
+              :showDeleteButton="false"
+              class="auto-menu-home"
+              context="home"
+            />
           </div>
         </div>
 
@@ -241,8 +245,7 @@ const handleRecentActivity = (activity) => {
   background: rgb(var(--v-theme-surface));
 }
 
-.auto-menu-home,
-.auto-menu {
+.auto-menu-home {
   max-height: calc(100vh - 370px) !important;
   height: auto;
   overflow: auto;

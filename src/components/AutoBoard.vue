@@ -27,6 +27,7 @@
       :checkedItems="checkedItems"
       :isLoading="isLoading"
       :showLetterChart="showLetterChart"
+      :context="context"
       @submitTarteel="handleTarteel"
       @update:menu="menu = $event"
       @update:isLoading="isLoading = $event"
@@ -97,6 +98,11 @@ const props = defineProps({
   showDeleteButton: {
     type: Boolean,
     default: true,
+  },
+  context: {
+    type: String,
+    default: "nav",
+    validator: (value) => ["nav", "home"].includes(value),
   },
 })
 const emit = defineEmits(["update:isInputVisible", "submitTarteel"])
