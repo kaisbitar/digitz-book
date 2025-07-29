@@ -204,7 +204,7 @@ onMounted(() => {
   z-index: 2;
 }
 .auto-menu-nav {
-  max-height: calc(100vh - 70px) !important;
+  max-height: calc(100vh - 200px) !important;
   height: auto;
   overflow: auto;
 }
