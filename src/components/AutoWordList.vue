@@ -8,10 +8,7 @@
       variant="outlined"
       class="mb-2"
     >
-      <v-card-title
-        class="position-sticky mb-2 text-grey-darken-1"
-        style="top: 0; background: white; z-index: 1; font-size: 1rem"
-      >
+      <v-card-title class="mb-2 text-grey-darken-1 text-subtitle-1">
         {{ getGroupTitle(groupType) }} ({{ getGroupItems(groupType).length }})
       </v-card-title>
       <v-card-text style="overflow-y: auto; max-width: 800px">

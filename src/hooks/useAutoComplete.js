@@ -39,6 +39,8 @@ export function useAutoComplete(dataStore, tarteelStore) {
     filteredList.value = wordSearchResults.results.map((item) => ({
       ...item,
     }))
+    filteredList.value.wordRoot = wordRoot
+    filteredList.value.word = word
   }
 
   const updateFilteredVerses = (sentence) => {

@@ -56,7 +56,8 @@ html {
 .text-sm-h4,
 .text-sm-h5,
 .text-sm-h3,
-.text-h4 {
+.text-h4,
+.text-subtitle-1 {
   font-family: $body-font-family !important;
 }
 

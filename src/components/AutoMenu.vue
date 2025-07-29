@@ -8,37 +8,19 @@
     @update:modelValue="$emit('update:menu', $event)"
   >
     <v-sheet :class="sheetClass">
-      <v-list-item
+      <AutoMenuHeader
         v-if="showAutoWordsList"
-        class="position-sticky mb-2"
-        style="top: 0; z-index: 2; background: white"
-      >
-        <div class="d-flex align-center">
-          <AppTarteelBtn
-            v-if="showAutoWordsList"
-            :all-items="currentWordsList"
-            :checked-items="checkedItems"
-            @submit="emit('submitTarteel')"
-          /><v-checkbox
-            v-model="includeTashkeel"
-            label="تشكيل"
-            hide-details
-            class="mr-2"
-            @update:modelValue="handleTashkeelChange"
-          />
-        </div>
-        <div v-if="hasSuggestions" class="suggestions-list">
-          <v-chip
-            v-for="(suggestion, index) in suggestions"
-            :key="index"
-            class="ma-1"
-            variant="outlined"
-            @click="applySuggestion(suggestion)"
-          >
-            {{ suggestion }}
-          </v-chip>
-        </div>
-      </v-list-item>
+        :show-auto-words-list="showAutoWordsList"
+        :current-words-list="currentWordsList"
+        :checked-items="checkedItems"
+        :tarteel="tarteel"
+        :total-words-count="totalWordsCount"
+        :has-suggestions="hasSuggestions"
+        :suggestions="suggestions"
+        @submit-tarteel="emit('submitTarteel')"
+        @update:tashkeel="handleTashkeelChange"
+        @apply-suggestion="applySuggestion"
+      />
 
       <v-list-item>
         <AutoWordList
@@ -87,6 +69,7 @@
 
 <script setup>
 import { ref, watch, computed } from "vue"
+import AutoMenuHeader from "./AutoMenuHeader.vue"
 
 const props = defineProps({
   menu: Boolean,
@@ -145,8 +128,9 @@ const setMenuState = (newValue) => {
   return updateState(true, false)
 }
 
-const handleTashkeelChange = () => {
-  emit("update:tashkeel", includeTashkeel.value)
+const handleTashkeelChange = (value) => {
+  includeTashkeel.value = value
+  emit("update:tashkeel", value)
 }
 
 const applySuggestion = (suggestion) => {
