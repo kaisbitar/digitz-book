@@ -21,13 +21,20 @@
           :color="isItemChecked(item) ? 'primary' : 'grey-darken-2'"
           variant="tonal"
           size="large"
-          class="ma-1"
+          class="ma-1 pl-0"
           @click="toggleItemCheck(item)"
         >
           <span class="ml-1">{{ item.word }}</span>
           <span class="text-caption text-grey-darken-1"
             >({{ item.verses.length }})</span
           >
+          <v-btn
+            icon="mdi-close"
+            size="x-small"
+            variant="text"
+            class="mr-1"
+            @click="removeItem(item)"
+          />
         </v-chip>
       </v-card-text>
     </v-card>

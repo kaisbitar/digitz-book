@@ -34,6 +34,7 @@ export function useAutoComplete(dataStore, tarteelStore) {
       filteredList.value = []
       return
     }
+
     suggestions.value = []
     filteredList.value = wordSearchResults.results.map((item) => ({
       ...item,
