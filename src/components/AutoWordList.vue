@@ -61,9 +61,10 @@ const itemsRef = toRef(props, "items")
 const { paginatedItems, handleInfiniteScroll } = useSimplePagination(itemsRef)
 
 const getGroupTitle = (group) => {
+  const root = props.items.wordRoot
   const titles = {
     exact: "مطابقة تامة",
-    root: "الجذر والمشتقات",
+    root: `مشتقات الجذر ${root}`,
     attached: "صيغ متصلة",
     other: "تشابه صوتي",
   }
@@ -89,7 +90,8 @@ const toggleItemCheck = (item) => {
 
 const removeItem = (item) => {
   const newFilteredWords = props.items.filter((word) => word.word !== item.word)
-
+  newFilteredWords.wordRoot = props.items.wordRoot
+  newFilteredWords.word = props.items.word
   emit("update:currentWordsList", newFilteredWords)
 
   if (isItemChecked(item)) {

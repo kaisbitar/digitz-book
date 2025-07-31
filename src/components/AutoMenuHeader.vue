@@ -8,34 +8,21 @@
         @submit="$emit('submitTarteel')"
       />
 
-      <span class="text-caption mr-4">البحث:</span>
       <v-chip
-        :text="currentWordsList.word || tarteel"
-        color="primary"
-        variant="tonal"
+        :text="`البحث: ${currentWordsList.word || tarteel}`"
+        variant="text"
         size="default"
         class="font-weight-bold mr-1"
       />
       <div v-if="currentWordsList.wordRoot" class="d-flex align-center mt-1">
-        <span class="text-caption mr-4">الجذر:</span>
         <v-chip
-          :text="currentWordsList.wordRoot"
-          color="secondary"
-          variant="tonal"
+          :text="`الجذر: ${currentWordsList.wordRoot}`"
+          variant="text"
           size="default"
           class="font-weight-bold mr-1"
         />
       </div>
 
-      <div class="align-center d-none d-lg-flex">
-        <v-chip
-          :text="`${totalWordsCount} كلمة`"
-          color="primary"
-          variant="tonal"
-          size="default"
-          class="font-weight-bold ml-4 mr-4"
-        />
-      </div>
       <v-checkbox
         v-model="includeTashkeel"
         label="تشكيل"
