@@ -4,6 +4,7 @@ import { generateStrictSearchRegex } from './regexGenerators'
 import { processVerse } from './processor'
 import { groupResults, formatResults } from './results'
 import { getSuggestions } from './suggestions'
+import { useDataStore } from "@/stores/dataStore"
 
 export function filterWords(
   searchTerm: string,
@@ -11,21 +12,35 @@ export function filterWords(
   root?: string,
   options: FilterOptions = { removeTashkeel: true }
 ): FilterResult {
-  const searchRegex = generateStrictSearchRegex(searchTerm)
   const results: Results = {}
-
-  oneQuranFile.forEach((verseObj) => {
-    processVerse(verseObj, searchTerm, searchRegex, results, options)
-  })
-
-  if (root && root !== searchTerm) {
-    const rootRegex = generateStrictSearchRegex(root)
-    oneQuranFile.forEach((verseObj) => {
-      processVerse(verseObj, root, rootRegex, results, options)
-    })
+  
+  // Get root derivatives before filtering
+  let rootDerivatives: string[] = []
+  if (root) {
+    const dataStore = useDataStore()
+    const allWordsRoots = dataStore.allWordsRoots
+    
+    if (allWordsRoots) {
+      const rootEntry = Object.values(allWordsRoots).find((entry: any) => entry.root === root) as { root: string; words: string } | undefined
+      if (rootEntry && rootEntry.words) {
+        rootDerivatives = rootEntry.words.split(/\s+/)
+      }
+    }
   }
 
-  const groupedResults = groupResults(results, searchTerm, root)
+  // Create search terms array: searchTerm + root derivatives
+  const searchTerms = [searchTerm, ...rootDerivatives]
+  
+  // Filter words for each search term
+  searchTerms.forEach(term => {
+    const searchRegex = generateStrictSearchRegex(term)
+    
+    oneQuranFile.forEach((verseObj) => {
+      processVerse(verseObj, term, searchRegex, results, options)
+    })
+  })
+
+  const groupedResults = groupResults(results, searchTerm, rootDerivatives)
   const formattedResults = formatResults(groupedResults)
 
   if (formattedResults.results.length === 0) {

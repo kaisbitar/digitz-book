@@ -29,7 +29,10 @@ export function useAutoComplete(dataStore, tarteelStore) {
     )
     if (wordSearchResults.suggestions) {
       suggestions.value = wordSearchResults.suggestions.map((suggestion) =>
-        suggestion.replace(/[ًٌٍَُِّْ]/g, "")
+        suggestion.replace(
+          /[\u064B-\u0652\u0670\u0656-\u065F\u0610-\u061A\u06D6-\u06ED]/g,
+          ""
+        )
       )
       filteredList.value = []
       return

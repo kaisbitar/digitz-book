@@ -1,27 +1,15 @@
 import { Results, SortedResultItem, FilterResult } from './types'
-import { useDataStore } from "@/stores/dataStore"
 
 export const groupResults = (
   results: Results,
   searchTerm: string,
-  root?: string
+  rootDerivatives: string[] = []
 ): SortedResultItem[] => {
   const exactMatches: SortedResultItem[] = []
   const rootDerivativeMatches: SortedResultItem[] = []
   const otherMatches: SortedResultItem[] = []
 
-  const dataStore = useDataStore()
-  const allWordsRoots = dataStore.allWordsRoots
-
-  // Get derivatives for the input root
-  let derivatives: string[] = []
-  if (root && allWordsRoots) {
-    const rootEntry = Object.values(allWordsRoots).find((entry: any) => entry.root === root)
-    if (rootEntry && rootEntry.words) {
-      derivatives = rootEntry.words.split(/\s+/)
-    }
-  }
-  const derivativesSet = new Set(derivatives)
+  const derivativesSet = new Set(rootDerivatives)
 
   // Helper function to check if a word is an exact match
   const isExactMatch = (word: string, pattern: string): boolean => {
