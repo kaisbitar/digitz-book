@@ -6,6 +6,9 @@ import { removeTashkeel } from "@/utils/arabicUtils"
 const store = useStore()
 const dataStore = useDataStore()
 
+// Simple cache to store word roots and avoid repeated expensive lookups
+const rootCache = new Map()
+
 export const extractFromDictionnary = (allData) => {
   const lines = allData.split("\n")
   const results = []
@@ -55,15 +58,34 @@ export const fetchWordRoot = async (word) => {
 
 export const fetchWordRootDataFromStore = (word) => {
   word = removeTashkeel(word)
+  
+  if (rootCache.has(word)) {
+    return rootCache.get(word)
+  }
+
   const allWordsRoots = dataStore.allWordsRoots
+  
+  // Escape regex special characters
+  const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  // Regex to match whole word bounded by start/end of string or spaces
+  const wordRegex = new RegExp(`(?:^| )${escapedWord}(?: |$)`)
+
   for (const rootObj of allWordsRoots) {
-    if (rootObj.words.split(" ").includes(word)) {
+    // Check if the word matches the root itself
+    if (word === rootObj.root) {
+      rootCache.set(word, rootObj.root)
       return rootObj.root
     }
-    if (word === rootObj.root) {
+
+    // Optimization: Check if string includes word first (fast)
+    // before doing the more expensive regex check
+    if (rootObj.words.includes(word) && wordRegex.test(rootObj.words)) {
+      rootCache.set(word, rootObj.root)
       return rootObj.root
     }
   }
+  
+  rootCache.set(word, undefined)
   return undefined
 }
 

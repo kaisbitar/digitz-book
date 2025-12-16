@@ -84,6 +84,11 @@ export function useAutoComplete(dataStore, tarteelStore) {
     toggleMenu()
 
     const results = await debouncedSearch(value)
+
+    // If results is null, it means the search was cancelled by a newer one.
+    // Return true to maintain "success" state while typing.
+    if (results === null) return true
+
     return results
   }
 
@@ -94,19 +99,24 @@ export function useAutoComplete(dataStore, tarteelStore) {
   }
 
   const debouncedSearch = debounce(async (value) => {
-    if (value.length === 0) {
-      currentLetter.value = value
-      tarteel.value = value
-      return true
-    }
+    try {
+      if (value.length === 0) {
+        currentLetter.value = value
+        tarteel.value = value
+        return true
+      }
 
-    if (!value.includes(" ")) {
-      await updateFilteredWords(value)
+      if (!value.includes(" ")) {
+        await updateFilteredWords(value)
+        return filteredList.value.length > 0
+      }
+
+      await updateFilteredVerses(value)
       return filteredList.value.length > 0
+    } catch (error) {
+      console.error("Error in debounced search:", error)
+      return false
     }
-
-    await updateFilteredVerses(value)
-    return filteredList.value.length > 0
   }, 300)
 
   const clearInput = () => {
@@ -137,12 +147,25 @@ export function useAutoComplete(dataStore, tarteelStore) {
 
   function debounce(func, wait) {
     let timeout
+    let prevResolve = null
+
     return function executedFunction(...args) {
+      // If there is a pending promise from a previous call, resolve it with null
+      // to indicate it was cancelled.
+      if (prevResolve) {
+        prevResolve(null)
+      }
+
       return new Promise((resolve) => {
+        prevResolve = resolve
+
         const later = async () => {
-          clearTimeout(timeout)
-          resolve(await func(...args))
+          timeout = null
+          prevResolve = null
+          const result = await func(...args)
+          resolve(result)
         }
+
         clearTimeout(timeout)
         timeout = setTimeout(later, wait)
       })
