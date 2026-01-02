@@ -55,6 +55,21 @@ const routes = [
     component: () => import("@/pages/Tafsiri"),
   },
   {
+    path: "/word-value",
+    name: "word-value",
+    component: () => import("@/pages/WordValue.vue"),
+  },
+  {
+    path: "/sura-analysis/:suraNumber?",
+    name: "sura-analysis",
+    component: () => import("@/pages/SuraAnalysis.vue"),
+  },
+  {
+    path: "/quran-sound",
+    name: "quran-sound",
+    component: () => import("@/pages/QuranSound.vue"),
+  },
+  {
     path: "/login",
     name: "Login",
     component: () => import("@/components/Auth/LoginForm.vue"),
