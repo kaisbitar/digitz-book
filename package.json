@@ -32,7 +32,7 @@
     "eslint-plugin-vue": "^9.27.0",
     "pinia": "^2.1.7",
     "sass": "1.77.6",
-    "supabase": "^1.215.0",
+    "supabase": "^2.72.9",
     "unplugin-auto-import": "^0.17.6",
     "unplugin-fonts": "^1.1.1",
     "unplugin-vue-components": "^0.27.2",
