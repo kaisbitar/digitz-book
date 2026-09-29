@@ -50,13 +50,9 @@ export function useAutoComplete(dataStore, tarteelStore) {
     filteredList.value = []
 
     const pattern = createArabicPattern(sentence)
-    const filteredVerses = dataStore.getOneQuranFile.filter((verse) => {
-      if (verse.verseText.match(pattern)) {
-        return {
-          ...verse,
-        }
-      }
-    })
+    const filteredVerses = dataStore
+      .getOneQuranFile
+      .filter((verse) => pattern.test(verse.verseText))
 
     if (filteredVerses.length === 0) return (filteredList.value = [])
 

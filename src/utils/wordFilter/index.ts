@@ -1,6 +1,6 @@
 export * from './types'
 import { VerseObject, FilterResult, Results, FilterOptions } from './types'
-import { generateStrictSearchRegex } from './regexGenerators'
+import { generateStrictSearchRegex, generateWholeWordRegex } from './regexGenerators'
 import { processVerse } from './processor'
 import { groupResults, formatResults } from './results'
 import { getSuggestions } from './suggestions'
@@ -29,8 +29,16 @@ export function filterWords(
   }
 
   // Compile every term once, then scan the Quran a single time.
-  const uniqueTerms = Array.from(new Set([searchTerm, ...rootDerivatives])).filter(Boolean)
-  const searchRegexes = uniqueTerms.map(generateStrictSearchRegex)
+  // What the user typed may be a partial word, so it matches anywhere in a word.
+  // Root derivatives are complete words, so they must match a whole word;
+  // otherwise short derivatives (e.g. "مال") match inside unrelated words.
+  const uniqueDerivatives = Array.from(new Set(rootDerivatives)).filter(
+    (derivative) => derivative && derivative !== searchTerm
+  )
+  const searchRegexes = [
+    generateStrictSearchRegex(searchTerm),
+    ...uniqueDerivatives.map(generateWholeWordRegex),
+  ]
 
   for (const verseObj of oneQuranFile) {
     processVerse(verseObj, searchRegexes, results, options)

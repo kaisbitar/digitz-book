@@ -1,4 +1,5 @@
 import { ref } from "vue"
+import { createArabicPattern } from "@/utils/arabicUtils"
 
 export function useInputFiltering() {
   const search = ref("")
@@ -11,15 +12,12 @@ export function useInputFiltering() {
   const highlight = (text, textToHighlight) => {
     if (!text) return
     if (!textToHighlight) return text
+    if (!textToHighlight.trim()) return text
     text = text.toString()
 
-    // Insert optional tashkeel matcher between each letter
-    const tashkeelPattern = "[\u064B-\u0652\u0670]*"
-    const pattern =
-      textToHighlight.split("").join(tashkeelPattern) + tashkeelPattern
-
+    // Same matching rules as the search (letter variations + tashkeel)
     return text.replace(
-      new RegExp(pattern, "gi"),
+      createArabicPattern(textToHighlight, "g"),
       (match) => `<span class="highlight-match">${match}</span>`
     )
   }

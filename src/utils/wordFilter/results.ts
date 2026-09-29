@@ -1,4 +1,5 @@
 import { Results, SortedResultItem, FilterResult } from './types'
+import { generateWholeWordRegex } from './regexGenerators'
 
 export const groupResults = (
   results: Results,
@@ -10,10 +11,12 @@ export const groupResults = (
   const otherMatches: SortedResultItem[] = []
 
   const derivativesSet = new Set(rootDerivatives)
+  const exactRegex = generateWholeWordRegex(searchTerm)
 
-  // Helper function to check if a word is an exact match
+  // Exact when the word is the typed word, allowing letter variations
+  // (e.g. typed "بامولهم" is an exact match for the stored "بأمولهم").
   const isExactMatch = (word: string, pattern: string): boolean => {
-    return word === pattern
+    return word === pattern || exactRegex.test(word)
   }
 
   Object.entries(results).forEach(([word, { count, verses }]) => {
