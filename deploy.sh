@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 # Set variables
 REMOTE_USER="kbitar"
@@ -28,8 +29,10 @@ scp -P $REMOTE_PORT -v -o ConnectTimeout=30 $BUILD_FILE $REMOTE_USER@$REMOTE_HOS
 # Execute commands on remote server
 echo "Attempting to execute commands on remote server..."
 ssh -p $REMOTE_PORT -v -o ConnectTimeout=30 $REMOTE_USER@$REMOTE_HOST << EOF || handle_error "Failed to execute commands on remote server"
+    set -e
     cd $REMOTE_PATH
     tar -zxvf $BUILD_FILE
+    test -f dist/index.html || { echo "Extracted build is missing dist/index.html"; exit 1; }
     echo "$SUDO_PASSWORD" | sudo -S rm -rf app-prev
     echo "$SUDO_PASSWORD" | sudo -S mv app app-prev
     echo "$SUDO_PASSWORD" | sudo -S mv dist app
