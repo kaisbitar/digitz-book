@@ -23,8 +23,8 @@ const props = defineProps({
   height: {
     type: [Number, String],
     // Fill the full-screen overlay: viewport minus toolbar (57), container
-    // padding (2 x 16) and the action button (36), with a little slack.
-    default: "calc(100vh - 128px)",
+    // padding (2 x 16) and the sticky header (44), with a little slack.
+    default: "calc(100vh - 136px)",
   },
 })
 const targetedVerseIndex = computed(() => store.getTarget?.verseNumberToQuran)

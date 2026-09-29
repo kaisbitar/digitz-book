@@ -31,8 +31,8 @@
       <v-card-text class="flex-grow-1 overflow-y-auto pa-0">
         <v-container max-width="900">
           <AutoMenuHeader
-            v-if="showAutoWordsList"
-            :show-auto-words-list="showAutoWordsList"
+            v-if="showAutoWordsList || showAutoVerseList"
+            :is-verse-mode="showAutoVerseList"
             :current-words-list="currentWordsList"
             :checked-items="checkedItems"
             :tarteel="tarteel"
@@ -66,16 +66,6 @@
             v-if="!showAutoVerseList && !showAutoWordsList && showLetterChart"
             class="opacity-transition"
             :letter="currentLetter"
-          />
-
-          <AppTarteelBtn
-            v-if="showAutoVerseList"
-            variant="outlined"
-            :checked-items="currentWordsList[0]?.verses"
-            :btn-text="`آية`"
-            :badge-type="'verse-count'"
-            :is-disabled="currentWordsList.length === 0"
-            @submit="emit('submitTarteel')"
           />
         </v-container>
       </v-card-text>
