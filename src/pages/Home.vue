@@ -76,6 +76,30 @@ const interactionOptions = [
     icon: "mdi-account-outline",
     route: "/tafsiri",
   },
+  {
+    id: 4,
+    text: "قيمة الكلمات",
+    icon: "mdi-numeric",
+    route: "/word-value",
+  },
+  {
+    id: 5,
+    text: "تحليل السورة",
+    icon: "mdi-chart-box-outline",
+    route: "/sura-analysis",
+  },
+  {
+    id: 6,
+    text: "صوت القرآن",
+    icon: "mdi-music-note",
+    route: "/quran-sound",
+  },
+  {
+    id: 7,
+    text: "الثنائية",
+    icon: "mdi-chart-timeline-variant",
+    route: "/duality",
+  },
 ]
 
 const recentActivities = ref([
@@ -180,7 +204,7 @@ const handleRecentActivity = (activity) => {
 
 .interaction-options {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
   margin-bottom: 3rem;
 }
@@ -261,7 +285,7 @@ const handleRecentActivity = (activity) => {
   }
 
   .interaction-options {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     padding: 0 1rem;
   }
 }
