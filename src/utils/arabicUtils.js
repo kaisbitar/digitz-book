@@ -1,3 +1,5 @@
+import { generatePhraseRegex } from "@/utils/wordFilter/regexGenerators"
+
 /**
  * Removes tashkeel (diacritics) from Arabic text
  * @param {string} text - The Arabic text with tashkeel
@@ -10,13 +12,13 @@ export const removeTashkeel = (text) => {
 }
 
 /**
- * Creates a regex pattern that matches text with or without tashkeel
+ * Creates a regex that matches text using the same rules as word search:
+ * letter variations (ا/أ/إ/آ, ه/ة, ى/ي ...) and optional tashkeel.
  * @param {string} text - The Arabic text to match
- * @returns {RegExp} - A regex that matches the text with optional tashkeel between characters
+ * @param {string} [flags] - RegExp flags. Omit "g" for .test()/.match() filtering.
+ * @returns {RegExp}
  */
-export const createArabicPattern = (text) => {
+export const createArabicPattern = (text, flags = "") => {
   if (!text) return new RegExp("")
-  const tashkeelPattern = "[\u064B-\u0652\u0670]*"
-  const pattern = text.split("").join(tashkeelPattern) + tashkeelPattern
-  return new RegExp(pattern, "g")
+  return generatePhraseRegex(text, flags)
 }
