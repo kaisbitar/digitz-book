@@ -18,10 +18,10 @@
     </div>
 
     <v-btn
-      icon="mdi-magnify"
+      icon="mdi-arrow-left"
       variant="tonal"
       size="small"
-      @click="onSearchToggle"
+      @click="goBack"
     />
   </div>
 </template>
@@ -30,25 +30,26 @@
 import { computed, ref } from "vue"
 import { useDataStore } from "@/stores/dataStore"
 import { useStore } from "@/stores/appStore"
+import { useRouter } from "vue-router"
 
+const router = useRouter()
 const dataStore = useDataStore()
 const store = useStore()
 
 const props = defineProps({
   title: String,
   showMetaData: Boolean,
-  isInputVisible: Boolean,
   isToolbarExpanded: Boolean,
 })
 
-const emit = defineEmits(["expandedToggle", "searchToggle"])
+const emit = defineEmits(["expandedToggle"])
 
 const toggleToolbar = () => {
   emit("expandedToggle")
 }
 
-const onSearchToggle = () => {
-  emit("searchToggle")
+const goBack = () => {
+  router.back()
 }
 
 const tableQuranIndex = computed(() => dataStore.getQuranIndex)

@@ -2,9 +2,7 @@
   <SuraHeader
     class="flex-wrap mb-4"
     :isToolbarExpanded="isToolbarExpanded"
-    :isInputVisible="isInputVisible"
     @expandedToggle="isToolbarExpanded = !isToolbarExpanded"
-    @searchToggle="isInputVisible = !isInputVisible"
   />
   <v-divider class="mt-5"></v-divider>
 
@@ -17,7 +15,6 @@
   />
 
   <SuraInputField
-    v-if="isInputVisible"
     :search="inputText"
     :placeholderText="`سورة ${suraName}`"
     :badgeContent="badgeContent"
@@ -26,12 +23,11 @@
     @enter="onEnter"
     @navigate-up="handleClickUp"
     @navigate-down="handleClickDown"
-    @clear="isInputVisible = false"
   />
 
   <v-window
     v-model="activeTab"
-    :class="isInputVisible ? 'input-visible' : 'not-input-visible'"
+    class="input-visible"
     :touch="false"
   >
     <v-window-item value="suraText" @before-enter="scrollToActiveVerse">
@@ -84,7 +80,6 @@ const props = defineProps({
 
 const emit = defineEmits(["verseSelected"])
 const searchBtnText = ref(`ترتيل ${props.suraName}`)
-const isInputVisible = ref(false)
 const inputText = ref("")
 const isToolbarExpanded = ref(true)
 const isHeaderVisible = useHideOnScroll()
@@ -218,8 +213,6 @@ const handleLanding = async () => {
       currentIndex.value = index
     }
   })
-
-  isInputVisible.value = true
 }
 
 onMounted(() => {
@@ -238,9 +231,6 @@ const setTargetVerse = (verse) => {
 <style scoped>
 .input-visible {
   --content-height: calc(90vh - 180px);
-}
-.not-input-visible {
-  --content-height: calc(90vh - 110px);
 }
 .sura-board-overflow {
   height: var(--content-height);

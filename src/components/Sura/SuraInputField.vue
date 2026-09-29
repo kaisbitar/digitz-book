@@ -30,21 +30,11 @@
         </template>
       </AppInputField>
     </v-col>
-    <div class="mr-auto mt-3 ml-3">
-      <v-btn
-        icon="mdi-arrow-left"
-        variant="tonal"
-        size="small"
-        clickable
-        @click="goBack()"
-      ></v-btn>
-    </div>
   </v-card>
 </template>
 
 <script setup>
-import { ref, watch } from "vue"
-import { useRouter } from "vue-router"
+import { ref, watch, computed } from "vue"
 
 const props = defineProps({
   search: String,
@@ -58,10 +48,8 @@ const emit = defineEmits([
   "enter",
   "navigate-up",
   "navigate-down",
-  "clear",
 ])
 
-const router = useRouter()
 const localSearch = ref(props.search || "")
 const hasError = ref(false)
 const hasSuccess = ref(false)
@@ -102,16 +90,6 @@ const handleClickDown = () => {
   emit("navigate-down")
 }
 
-const onClear = () => {
-  localSearch.value = ""
-  emit("clear")
-  emit("update:search", "")
-}
-
-const goBack = () => {
-  router.push({ path: "/tarteel", query: { view: "detail" } })
-}
-
 const inputNavigation = computed(() => [
   {
     icon: "mdi-chevron-up",
@@ -124,11 +102,6 @@ const inputNavigation = computed(() => [
     class: "ml-1",
     tabindex: -1,
     action: handleClickDown,
-  },
-  {
-    icon: "mdi-close",
-    class: "ml-1",
-    action: onClear,
   },
 ])
 </script>
