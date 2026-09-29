@@ -13,6 +13,7 @@
     <v-divider class="mx-auto" width="100%"></v-divider>
 
     <WordMeaning
+      v-if="!isVerseSearch"
       class="px-sm-3"
       :word="word"
       :isWordMeaningOpen="isWordMeaningOpen"
@@ -23,7 +24,10 @@
     />
 
     <div
-      class="tarteel-container tarteel-board-overflow px-sm-4"
+      class="tarteel-container px-sm-4"
+      :class="
+        isVerseSearch ? 'tarteel-board-overflow-full' : 'tarteel-board-overflow'
+      "
       @scroll="handleInfiniteScroll"
     >
       <VerseCardItem
@@ -83,6 +87,8 @@ const emit = defineEmits([
 
 // Computed properties from ratl
 const word = computed(() => props.ratl?.word || "")
+// A phrase (contains a space) is a verse search: no dictionary meaning
+const isVerseSearch = computed(() => word.value.trim().includes(" "))
 const versesCount = computed(() => props.ratl?.verses?.length || 0)
 const count = computed(() => props.ratl?.count || 0)
 const verses = computed(() => props.ratl?.verses || [])
@@ -95,6 +101,11 @@ const handleSelectedVerse = (verse) => {
 <style scoped>
 .tarteel-board-overflow {
   height: calc(100vh - 270px);
+  overflow: auto;
+}
+/* Without the meaning card (94px) the verse list gets that space back */
+.tarteel-board-overflow-full {
+  height: calc(100vh - 176px);
   overflow: auto;
 }
 .fixed-height {
