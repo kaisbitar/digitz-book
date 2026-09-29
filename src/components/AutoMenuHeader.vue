@@ -2,7 +2,14 @@
   <v-list-item class="position-sticky menu-header" style="top: 0; z-index: 2">
     <div class="d-flex align-center">
       <AppTarteelBtn
-        v-if="showAutoWordsList"
+        v-if="isVerseMode"
+        :checked-items="currentWordsList[0]?.verses"
+        btn-text="آية"
+        :is-disabled="currentWordsList.length === 0"
+        @submit="$emit('submitTarteel')"
+      />
+      <AppTarteelBtn
+        v-else
         :all-items="currentWordsList"
         :checked-items="checkedItems"
         @submit="$emit('submitTarteel')"
@@ -24,6 +31,7 @@
       </div>
 
       <v-checkbox
+        v-if="!isVerseMode"
         v-model="includeTashkeel"
         label="تشكيل"
         hide-details
@@ -61,9 +69,9 @@ import { ref, watch } from "vue"
 import AppTarteelBtn from "./App/AppTarteelBtn.vue"
 
 const props = defineProps({
-  showAutoWordsList: {
+  isVerseMode: {
     type: Boolean,
-    required: true,
+    default: false,
   },
   currentWordsList: {
     type: Array,

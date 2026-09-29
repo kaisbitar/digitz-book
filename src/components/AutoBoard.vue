@@ -1,24 +1,36 @@
 <template>
-  <AppInputField
-    :modelValue="tarteel"
-    :fieldPlaceHolder="placeholder"
-    :dataToShow="`${totalWordsCount} كلمة`"
-    :type="'word-count'"
-    :hasError="inputHasError"
-    :hasSuccess="inputHasSuccess"
-    :loading="isLoading"
-    :autoFocus="false"
-    rounded="lg"
-    variant="outlined"
-    base-color="count-key-item"
-    @update:modelValue="handleInput($event)"
-    @clear="handleClear"
-    @focus="onFocus"
-    @keydown:enter="handleTarteel"
-  >
+  <div>
+    <!-- Trigger field: opens the full-screen search on focus -->
+    <AppInputField
+      :modelValue="tarteel"
+      :fieldPlaceHolder="placeholder"
+      :hasError="inputHasError"
+      :hasSuccess="inputHasSuccess"
+      :autoFocus="false"
+      readonly
+      rounded="lg"
+      variant="outlined"
+      base-color="count-key-item"
+      @focus="openSearch"
+    >
+      <template v-slot:append-input-items v-if="showDeleteButton">
+        <v-btn
+          icon="mdi-close"
+          elevation="0"
+          clickable
+          class="mx-1"
+          size="x-small"
+          @click.prevent="emit('update:isInputVisible', false)"
+        ></v-btn>
+      </template>
+    </AppInputField>
+
     <AutoMenu
       :menu="menu"
       :tarteel="tarteel"
+      :placeholder="placeholder"
+      :hasError="inputHasError"
+      :hasSuccess="inputHasSuccess"
       :currentWordsList="currentWordsList"
       :totalWordsCount="totalWordsCount"
       :suggestions="suggestions"
@@ -29,24 +41,15 @@
       :showLetterChart="showLetterChart"
       :context="context"
       @submitTarteel="handleTarteel"
-      @update:menu="menu = $event"
+      @update:menu="onMenuUpdate"
       @update:isLoading="isLoading = $event"
       @update:items="updateFilteredList"
       @update:checkedItems="updateCheckedItems"
       @update:tashkeel="setTashkeelOption"
       @update:tarteel="handleInput($event)"
+      @clear="handleClear"
     />
-    <template v-slot:append-input-items v-if="showDeleteButton">
-      <v-btn
-        icon="mdi-close"
-        elevation="0"
-        clickable
-        class="mx-1"
-        size="x-small"
-        @click.prevent="emit('update:isInputVisible', false)"
-      ></v-btn>
-    </template>
-  </AppInputField>
+  </div>
 </template>
 
 <script setup>
@@ -104,8 +107,29 @@ const props = defineProps({
     default: "nav",
     validator: (value) => ["nav", "home"].includes(value),
   },
+  openOnMount: {
+    type: Boolean,
+    default: false,
+  },
 })
-const emit = defineEmits(["update:isInputVisible", "submitTarteel"])
+const emit = defineEmits(["update:isInputVisible", "submitTarteel", "close"])
+
+const onMenuUpdate = (isOpen) => {
+  menu.value = isOpen
+  if (isOpen) return
+  emit("close")
+}
+
+const openSearch = (event) => {
+  // Blur the trigger so focus can move into the overlay's input.
+  event?.target?.blur?.()
+  toggleMenu(true)
+}
+
+onMounted(() => {
+  if (!props.openOnMount) return
+  toggleMenu(true)
+})
 
 const handleInput = async (value) => {
   const hasResults = await handleInputChange(value)
@@ -134,17 +158,7 @@ const handleTarteel = () => {
 
 const handleClear = () => {
   clearInput()
-}
-
-const onFocus = () => {
-  toggleMenu(true)
+  inputHasError.value = false
+  inputHasSuccess.value = false
 }
 </script>
-
-<style>
-.auto-menu-board .auto-menu {
-  max-height: calc(100vh - 70px) !important;
-  height: auto;
-  overflow: auto;
-}
-</style>

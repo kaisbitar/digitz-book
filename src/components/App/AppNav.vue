@@ -17,10 +17,11 @@
       <div class="mb-2">
         <AutoBoard
           v-if="isInputVisible"
-          class="auto-menu-nav"
           context="nav"
+          :openOnMount="isMobile"
           @update:isInputVisible="isInputVisible = $event"
           @submitTarteel="isMobile ? (isInputVisible = false) : null"
+          @close="isMobile ? (isInputVisible = false) : null"
         />
       </div>
     </v-container>
@@ -202,10 +203,5 @@ onMounted(() => {
 <style>
 .tarteel-btn .v-badge__badge {
   z-index: 2;
-}
-.auto-menu-nav {
-  max-height: calc(100vh - 200px) !important;
-  height: auto;
-  overflow: auto;
 }
 </style>

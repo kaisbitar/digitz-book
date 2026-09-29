@@ -1,79 +1,93 @@
 <template>
-  <v-menu
+  <v-dialog
     :modelValue="menu"
-    :close-on-content-click="false"
-    :max-height="'auto'"
-    location="bottom"
-    activator="parent"
-    @update:modelValue="$emit('update:menu', $event)"
+    fullscreen
+    transition="dialog-bottom-transition"
+    @update:modelValue="emit('update:menu', $event)"
+    @after-enter="focusInput"
   >
-    <v-sheet :class="sheetClass">
-      <AutoMenuHeader
-        v-if="showAutoWordsList"
-        :show-auto-words-list="showAutoWordsList"
-        :current-words-list="currentWordsList"
-        :checked-items="checkedItems"
-        :tarteel="tarteel"
-        :total-words-count="totalWordsCount"
-        :has-suggestions="hasSuggestions"
-        :suggestions="suggestions"
-        @submit-tarteel="emit('submitTarteel')"
-        @update:tashkeel="handleTashkeelChange"
-        @apply-suggestion="applySuggestion"
-      />
+    <v-card ref="cardRef" class="d-flex flex-column" height="100%">
+      <v-toolbar density="comfortable" color="surface" class="border-b flex-grow-0">
+        <v-btn icon="mdi-close" @click="emit('update:menu', false)" />
+        <v-container max-width="900" class="py-0">
+          <AppInputField
+            :modelValue="tarteel"
+            :fieldPlaceHolder="placeholder"
+            :hasError="hasError"
+            :hasSuccess="hasSuccess"
+            :loading="isLoading"
+            :autoFocus="true"
+            rounded="lg"
+            variant="outlined"
+            base-color="count-key-item"
+            clearable
+            @update:modelValue="emit('update:tarteel', $event)"
+            @clear="emit('clear')"
+            @keydown:enter="emit('submitTarteel')"
+          />
+        </v-container>
+      </v-toolbar>
 
-      <v-list-item>
-        <AutoWordList
-          v-if="showAutoWordsList"
-          :items="currentWordsList"
-          :checked-items="checkedItems"
-          :height="$vuetify.display.xs ? 300 : '250'"
-          @update:currentWordsList="emit('update:items', $event)"
-          @update:checked-items="emit('update:checkedItems', $event)"
-          @submitTarteel="onTarteelSubmit"
-        />
-      </v-list-item>
-      <AutoVerseList
-        v-if="showAutoVerseList"
-        :items="currentWordsList"
-        :checked-items="checkedItems"
-        :height="$vuetify.display.xs ? 350 : 330"
-        @update:currentWordsList="emit('update:items', $event)"
-        @update:checked-items="emit('update:checkedItems', $event)"
-        @submitTarteel="onTarteelSubmit"
-      />
-      <v-lazy
-        :options="{
-          threshold: 0.5,
-        }"
-      >
-        <LettersChart
-          class="opacity-transition"
-          v-if="!showAutoVerseList && !showAutoWordsList && showLetterChart"
-          :letter="currentLetter"
-        />
-      </v-lazy>
+      <v-card-text class="flex-grow-1 overflow-y-auto pa-0">
+        <v-container max-width="900">
+          <AutoMenuHeader
+            v-if="showAutoWordsList || showAutoVerseList"
+            :is-verse-mode="showAutoVerseList"
+            :current-words-list="currentWordsList"
+            :checked-items="checkedItems"
+            :tarteel="tarteel"
+            :total-words-count="totalWordsCount"
+            :has-suggestions="hasSuggestions"
+            :suggestions="suggestions"
+            @submit-tarteel="emit('submitTarteel')"
+            @update:tashkeel="handleTashkeelChange"
+            @apply-suggestion="applySuggestion"
+          />
 
-      <AppTarteelBtn
-        v-if="showAutoVerseList"
-        variant="outlined"
-        :checked-items="currentWordsList[0]?.verses"
-        :btn-text="`آية`"
-        :badge-type="'verse-count'"
-        :is-disabled="currentWordsList.length === 0"
-        @submit="emit('submitTarteel')"
-      />
-    </v-sheet>
-  </v-menu>
+          <AutoWordList
+            v-if="showAutoWordsList"
+            :items="currentWordsList"
+            :checked-items="checkedItems"
+            @update:currentWordsList="emit('update:items', $event)"
+            @update:checked-items="emit('update:checkedItems', $event)"
+            @submitTarteel="onTarteelSubmit"
+          />
+
+          <AutoVerseList
+            v-if="showAutoVerseList"
+            :items="currentWordsList"
+            :checked-items="checkedItems"
+            @update:currentWordsList="emit('update:items', $event)"
+            @update:checked-items="emit('update:checkedItems', $event)"
+            @submitTarteel="onTarteelSubmit"
+          />
+
+          <LettersChart
+            v-if="!showAutoVerseList && !showAutoWordsList && showLetterChart"
+            class="opacity-transition"
+            :letter="currentLetter"
+          />
+        </v-container>
+      </v-card-text>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script setup>
-import { ref, watch, computed } from "vue"
+import { ref, watch } from "vue"
 import AutoMenuHeader from "./AutoMenuHeader.vue"
+import AppInputField from "./App/AppInputField.vue"
 
 const props = defineProps({
   menu: Boolean,
   tarteel: String,
+  placeholder: {
+    type: String,
+    default: "ابحث في القرآن الكريم...",
+  },
+  hasError: Boolean,
+  hasSuccess: Boolean,
+  isLoading: Boolean,
   currentWordsList: Array,
   totalWordsCount: Number,
   currentLetter: String,
@@ -96,16 +110,19 @@ const emit = defineEmits([
   "remove-item",
   "update:tashkeel",
   "update:tarteel",
+  "clear",
 ])
 
+const cardRef = ref(null)
 const showAutoWordsList = ref(false)
 const showAutoVerseList = ref(false)
 const includeTashkeel = ref(false)
 
-// Computed property to determine the sheet class based on context
-const sheetClass = computed(() => {
-  return props.context === "home" ? "auto-menu-home" : "auto-menu-nav"
-})
+const focusInput = () => {
+  const input = cardRef.value?.$el?.querySelector("input")
+  if (!input) return
+  input.focus({ preventScroll: true })
+}
 
 const onTarteelSubmit = () => {
   emit(
@@ -122,7 +139,7 @@ const setMenuState = (newValue) => {
     showAutoVerseList.value = showVerses
   }
 
-  if (newValue.length <= 1) return updateState()
+  if (!newValue || newValue.length <= 1) return updateState()
   if (newValue.includes(" ")) return updateState(false, true)
 
   return updateState(true, false)
@@ -144,8 +161,6 @@ watch(
   },
   { immediate: true }
 )
-
-onMounted(() => {})
 </script>
 
 <style scoped>
