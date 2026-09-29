@@ -7,6 +7,10 @@ export const useTarteelStore = defineStore("tarteel", {
     tarteelHistory: [],
     selectedRatl: null,
     selectedRatlIndex: null,
+    draftId: null,
+    liveLetter: null,
+    chartVisible: false,
+    searchFocusTick: 0,
   }),
 
   persist: {
@@ -67,6 +71,57 @@ export const useTarteelStore = defineStore("tarteel", {
     },
     setSelectedTarteelId(id) {
       this.selectedTarteelId = id
+    },
+
+    // Live search: while the user types, one draft entry is updated in place.
+    setLiveTarteel({ inputText, results, wordRoot = null }) {
+      const draft = this.storedTarteels.find((t) => t.id === this.draftId)
+      if (draft) {
+        draft.inputText = inputText
+        draft.results = results
+        draft.wordRoot = wordRoot
+      } else {
+        const newDraft = {
+          id: Date.now(),
+          parentId: null,
+          inputText,
+          results,
+          wordRoot,
+        }
+        this.storedTarteels.push(newDraft)
+        this.draftId = newDraft.id
+      }
+      this.selectedTarteelId = this.draftId
+      this.selectedRatl = results[0] ?? null
+      this.selectedRatlIndex = results.length ? 0 : null
+    },
+
+    // The draft becomes a normal history entry
+    commitDraft() {
+      this.draftId = null
+    },
+
+    setLiveLetter(letter) {
+      this.liveLetter = letter
+    },
+
+    // Same as clicking the search box: focus it and show the chart + history
+    requestSearchFocus() {
+      this.searchFocusTick++
+    },
+
+    // True while the search box is focused with zero or one letter typed
+    setChartVisible(value) {
+      this.chartVisible = value
+    },
+
+    discardDraft() {
+      if (!this.draftId) return
+      this.removeTarteelItem(this.draftId)
+      this.draftId = null
+      const selected = this.getSelectedTarteel
+      this.selectedRatl = selected?.results?.[0] ?? null
+      this.selectedRatlIndex = selected ? 0 : null
     },
 
     addToTarteelHistory(tarteelTerm) {

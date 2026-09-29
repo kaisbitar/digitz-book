@@ -6,33 +6,26 @@
     location="top"
   >
     <v-app-bar-nav-icon
-      @click="toggleRailAppNavDrawer"
+      @click="drawer = !drawer"
       class="ml-2"
-      v-if="!(isMobile && isInputVisible)"
+      v-if="isMobile && !isInputVisible"
     />
-    <v-app-bar-title class="mr-0" style="max-width: 140px" v-if="!isMobile">
+    <v-app-bar-title class="mr-16" style="max-width: 140px" v-if="!isMobile">
       رُسُلْ
     </v-app-bar-title>
     <v-container v-if="isInputVisible" class="pt-6" max-width="900">
       <div class="mb-2">
-        <AutoBoard
-          v-if="isInputVisible"
-          context="nav"
-          :openOnMount="isMobile"
-          @update:isInputVisible="isInputVisible = $event"
-          @submitTarteel="isMobile ? (isInputVisible = false) : null"
-          @close="isMobile ? (isInputVisible = false) : null"
-        />
+        <SearchBar :autoFocus="isMobile" />
       </div>
     </v-container>
     <AppToggleBtn
       v-if="!isInputVisible"
-      :isActive="isInputVisible"
+      :isActive="false"
       btnText="ترتيل القرآن"
       inActiveIcon="mdi-magnify"
       activeIcon="mdi-close"
       size="default"
-      @toggle="isInputVisible = !isInputVisible"
+      @toggle="isInputVisible = true"
     />
 
     <v-spacer></v-spacer>
@@ -55,7 +48,8 @@
 
   <AppNavDrawer
     v-model="drawer"
-    :rail="isRail && !isMobile"
+    :rail="!isMobile"
+    :permanent="!isMobile"
     :location="'right'"
     :temporary="isMobile"
     :navigationItems="navigationItems"
@@ -67,19 +61,29 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue"
+import { ref, computed, onMounted, watch } from "vue"
 import { useRouter } from "vue-router"
 import { useDisplay } from "vuetify"
 import { useStore } from "@/stores/appStore"
+import { useTarteelStore } from "@/stores/TarteelStore"
 import UserAvatar from "@/components/Profile/UserAvatar.vue"
+import SearchBar from "@/components/SearchBar.vue"
 
+const tarteelStore = useTarteelStore()
 const router = useRouter()
 const display = useDisplay()
 const activeRoute = computed(() => router.currentRoute.value.name)
 
 const isInputVisible = ref(false)
-const isRail = ref(false)
 const drawer = ref(false)
+
+// On mobile the search box is hidden until asked for
+watch(
+  () => tarteelStore.searchFocusTick,
+  () => {
+    isInputVisible.value = true
+  },
+)
 
 const handleNavigation = (route) => {
   router.push(route)
@@ -110,20 +114,9 @@ const isMobile = computed(() => {
   return display.smAndDown.value
 })
 
-const toggleAppNavDrawer = () => {
-  drawer.value = !drawer.value
-  if (!isMobile.value && drawer.value) {
-    isRail.value = false
-  }
-}
-
-const toggleRailAppNavDrawer = () => {
-  toggleAppNavDrawer()
-  if (!isMobile.value) {
-    isRail.value = !isRail.value
-    drawer.value = true
-  }
-}
+// Desktop: always open as a slim rail that expands on hover.
+// Mobile: hidden until the hamburger opens it.
+watch(isMobile, (mobile) => (drawer.value = !mobile), { immediate: true })
 
 const updateDrawer = (value) => {
   drawer.value = value
@@ -161,6 +154,9 @@ onMounted(() => {
   }
   if (router.currentRoute.value.name === "home") {
     isInputVisible.value = false
+  }
+  if (router.currentRoute.value.query.focus) {
+    isInputVisible.value = true
   }
 })
 </script>

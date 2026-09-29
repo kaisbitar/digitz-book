@@ -23,7 +23,13 @@
       />
     </template>
     <template v-else>
-      <div class="mr-auto" style="width: 38px"></div>
+      <v-btn
+        icon="mdi-arrow-left"
+        variant="tonal"
+        size="small"
+        class="mr-auto d-block"
+        @click="tarteelStore.requestSearchFocus()"
+      />
     </template>
 
     <v-btn

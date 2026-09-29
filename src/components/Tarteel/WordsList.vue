@@ -1,21 +1,24 @@
 <template>
-  <div>
-    <WordsListHeader :selectedTarteel="selectedTarteel" class="mb-4" />
-    <v-divider class="mx-auto" width="100%"></v-divider>
+  <div class="d-flex flex-column words-list-page">
+    <WordsListHeader
+      :selectedTarteel="selectedTarteel"
+      class="mb-4 flex-grow-0"
+    />
+    <v-divider class="mx-auto flex-grow-0" width="100%"></v-divider>
     <WordMeaning
       :word="selectedTarteel.inputText"
       :isWordMeaningOpen="isWordMeaningOpen"
       :class="isWordMeaningOpen ? 'tarteel-meaning-overflow' : ''"
       @click="isWordMeaningOpen = !isWordMeaningOpen"
     />
-    <WordsListResults
-      class="tarteel-overview-overflow px-sm-4 mt-1"
-      :search="selectedTarteel"
-      :selectedRatlIndex="selectedRatlIndex"
-      :isOriginal="true"
-      @select="handleRatlSelect"
-      @deleteRatl="deleteRatl"
-    />
+    <div class="tarteel-overview-overflow px-sm-4 mt-1 flex-grow-1">
+      <AutoWordList
+        :items="listItems"
+        :selected-word="tarteelStore.getSelectedRatl?.word"
+        @select="handleWordSelect"
+        @update:currentWordsList="updateResults"
+      />
+    </div>
   </div>
 </template>
 
@@ -44,7 +47,18 @@ const isWordMeaningOpen = ref(false)
 const currentView = computed(() => route.query.view)
 const selectedRatlIndex = computed(() => tarteelStore.selectedRatlIndex)
 
-const handleRatlSelect = (ratl, index) => {
+// The word list needs the root and search term to label its groups
+const listItems = computed(() => {
+  const items = [...(props.selectedTarteel.results || [])]
+  items.wordRoot = props.selectedTarteel.wordRoot
+  items.word = props.selectedTarteel.inputText
+  return items
+})
+
+const handleWordSelect = (ratl) => {
+  const index = props.selectedTarteel.results.findIndex(
+    (item) => item.word === ratl.word
+  )
   tarteelStore.setSelectedRatl(ratl)
   tarteelStore.setSelectedRatlIndex(index)
 
@@ -52,9 +66,8 @@ const handleRatlSelect = (ratl, index) => {
   emit("ratl-selected")
 }
 
-const deleteRatl = (index, childIndex = null) => {
-  tarteelStore.removeRatl(index, childIndex)
-  tarteelStore.setSelectedRatlIndex(index)
+const updateResults = (newItems) => {
+  props.selectedTarteel.results = [...newItems]
 }
 
 const overviewScroll = async () => {
@@ -74,9 +87,14 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* Fill the space under the app bar; only the word groups scroll */
+.words-list-page {
+  height: calc(100vh - 92px);
+}
+
 .tarteel-overview-overflow {
-  height: calc(85vh - 170px);
-  overflow: auto;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .tarteel-meaning-overflow {
