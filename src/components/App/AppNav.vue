@@ -38,18 +38,6 @@
     <v-spacer></v-spacer>
     <AppToggleBtn
       v-if="!(isMobile && isInputVisible)"
-      class="mx-2 mx-sm-4 tarteel-btn"
-      :badgeContent="tarteelBadgeContent"
-      btnText="تراتيل"
-      :btnVariant="getButtonVariant('tarteel')"
-      :isActive="tarteelDrawerState"
-      inActiveIcon="mdi-database-search-outline"
-      activeIcon="mdi-database-search"
-      size="default"
-      @toggle="toggleDrawer('tarteel')"
-    />
-    <AppToggleBtn
-      v-if="!(isMobile && isInputVisible)"
       class="mx-2 mx-sm-4"
       btnText="السور"
       :btnVariant="getButtonVariant('index')"
@@ -76,18 +64,15 @@
     @navigateTo="handleNavigation"
     @update:modelValue="updateDrawer"
   />
-  <TarteelDrawer />
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from "vue"
 import { useRouter } from "vue-router"
 import { useDisplay } from "vuetify"
-import { useTarteelStore } from "@/stores/TarteelStore"
 import { useStore } from "@/stores/appStore"
 import UserAvatar from "@/components/Profile/UserAvatar.vue"
 
-const tarteelStore = useTarteelStore()
 const router = useRouter()
 const display = useDisplay()
 const activeRoute = computed(() => router.currentRoute.value.name)
@@ -96,19 +81,12 @@ const isInputVisible = ref(false)
 const isRail = ref(false)
 const drawer = ref(false)
 
-const tarteelBadgeContent = computed(() => {
-  return String(
-    tarteelStore.storedTarteels.length ? tarteelStore.storedTarteels.length : ""
-  )
-})
-
 const handleNavigation = (route) => {
   router.push(route)
 }
 
 const openDrawers = ref({
   index: false,
-  tarteel: false,
 })
 
 const getButtonVariant = (drawerName) => {
@@ -117,15 +95,9 @@ const getButtonVariant = (drawerName) => {
 
 const store = useStore()
 
-const tarteelDrawerState = computed(() => store.getTarteelDrawer)
 const indexDrawerState = computed(() => store.getIndexDrawer)
 
 const toggleDrawer = (drawerName) => {
-  if (drawerName === "tarteel") {
-    openDrawers.value.tarteel = !tarteelDrawerState.value
-    store.setTarteelDrawer(!tarteelDrawerState.value)
-    return
-  }
   if (drawerName === "index") {
     openDrawers.value.index = !indexDrawerState.value
     console.log(indexDrawerState.value)
@@ -133,13 +105,6 @@ const toggleDrawer = (drawerName) => {
     return
   }
 }
-
-// watch(router.currentRoute, async () => {
-//   if (router.currentRoute.value.name === "tarteel") {
-//     await nextTick()
-//     store.setTarteelDrawer(true)
-//   }
-// })
 
 const isMobile = computed(() => {
   return display.smAndDown.value
@@ -199,9 +164,3 @@ onMounted(() => {
   }
 })
 </script>
-
-<style>
-.tarteel-btn .v-badge__badge {
-  z-index: 2;
-}
-</style>
