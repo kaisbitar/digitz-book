@@ -17,16 +17,34 @@
             :hasSuccess="hasSuccess"
             :loading="isLoading"
             :autoFocus="true"
+            lang="ar"
+            dir="rtl"
+            inputmode="text"
+            enterkeyhint="search"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+            spellcheck="false"
             rounded="lg"
             variant="outlined"
             base-color="count-key-item"
             clearable
-            @update:modelValue="emit('update:tarteel', $event)"
+            @update:modelValue="onInput"
             @clear="emit('clear')"
             @keydown:enter="emit('submitTarteel')"
           />
         </v-container>
       </v-toolbar>
+
+      <v-snackbar
+        v-model="showLangHint"
+        location="top"
+        :timeout="2500"
+        color="warning"
+        variant="tonal"
+      >
+        بدّل لوحة المفاتيح إلى العربية
+      </v-snackbar>
 
       <v-card-text class="flex-grow-1 overflow-y-auto pa-0">
         <v-container max-width="900">
@@ -117,11 +135,25 @@ const cardRef = ref(null)
 const showAutoWordsList = ref(false)
 const showAutoVerseList = ref(false)
 const includeTashkeel = ref(false)
+const showLangHint = ref(false)
 
 const focusInput = () => {
   const input = cardRef.value?.$el?.querySelector("input")
   if (!input) return
   input.focus({ preventScroll: true })
+}
+
+const NON_ARABIC = /[^\u0600-\u06FF\u0750-\u077F\s]/g
+
+const onInput = (value) => {
+  const text = value ?? ""
+  const cleaned = text.replace(NON_ARABIC, "")
+  if (cleaned === text) return emit("update:tarteel", text)
+
+  showLangHint.value = true
+  const input = cardRef.value?.$el?.querySelector("input")
+  if (input) input.value = cleaned
+  emit("update:tarteel", cleaned)
 }
 
 const onTarteelSubmit = () => {

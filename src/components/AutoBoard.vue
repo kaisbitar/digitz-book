@@ -7,6 +7,7 @@
       :hasError="inputHasError"
       :hasSuccess="inputHasSuccess"
       :autoFocus="false"
+      lang="ar"
       readonly
       rounded="lg"
       variant="outlined"
