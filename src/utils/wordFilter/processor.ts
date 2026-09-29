@@ -40,7 +40,8 @@ export const processVerse = (
     verseEntry.count++
   }
 
-  // Split and normalize each verse exactly once, then test every term.
+  // Split each verse once. Regexes run on the raw word (the dagger-alef mark
+  // must stay visible); the result is keyed by the displayed form of the word.
   const rawWords = verseText.split(WHITESPACE_REGEX)
   for (const rawWord of rawWords) {
     const word = options?.removeTashkeel
@@ -48,7 +49,7 @@ export const processVerse = (
       : rawWord
 
     for (const regex of searchRegexes) {
-      if (!regex.test(word)) continue
+      if (!regex.test(rawWord)) continue
       addMatch(word)
       break
     }
