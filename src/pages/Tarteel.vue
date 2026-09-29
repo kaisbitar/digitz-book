@@ -1,19 +1,22 @@
 <template>
   <v-container max-width="1200" class="px-sm-4 px-2">
     <template v-if="showChartView">
-      <v-row class="mt-2">
-        <v-col v-if="historyItems.length" cols="12" md="5">
-          <SearchHistory
-            :items="historyItems"
-            :selected-id="tarteelStore.getSelectedTarteelId"
-            @select="openHistoryItem"
-            @remove="removeHistoryItem"
-          />
-        </v-col>
-        <v-col cols="12" :md="historyItems.length ? 7 : 12">
-          <LettersChart :letter="liveLetter || ''" />
-        </v-col>
-      </v-row>
+      <!-- Letters chart fills the page as a background; the history card sits on it -->
+      <div class="position-relative chart-history-page">
+        <div class="position-absolute w-100 h-100 chart-layer">
+          <LettersChart :letter="liveLetter || ''" fill />
+        </div>
+        <v-row v-if="historyItems.length" class="position-relative mt-0">
+          <v-col cols="12" md="5">
+            <SearchHistory
+              :items="historyItems"
+              :selected-id="tarteelStore.getSelectedTarteelId"
+              @select="openHistoryItem"
+              @remove="removeHistoryItem"
+            />
+          </v-col>
+        </v-row>
+      </div>
     </template>
     <template v-else-if="ratl">
       <component
@@ -217,6 +220,16 @@ const showList = () => {
 </script>
 
 <style scoped>
+/* Fill the space under the app bar; the chart sits behind the history list */
+.chart-history-page {
+  height: calc(100vh - 92px);
+}
+.chart-layer {
+  top: 0;
+  left: 0;
+  opacity: 0.85;
+  pointer-events: none;
+}
 .tarteel-board-overflow {
   height: calc(100vh - 230px);
   overflow: auto;
