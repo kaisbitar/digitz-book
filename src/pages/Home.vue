@@ -10,11 +10,7 @@
 
         <div class="search-section">
           <div class="search-container">
-            <AutoBoard
-              :showDeleteButton="false"
-              class="auto-menu-home"
-              context="home"
-            />
+            <AutoBoard :showDeleteButton="false" context="home" />
           </div>
         </div>
 
@@ -267,12 +263,6 @@ const handleRecentActivity = (activity) => {
 
 .recent-item:hover {
   background: rgb(var(--v-theme-surface));
-}
-
-.auto-menu-home {
-  max-height: calc(100vh - 370px) !important;
-  height: auto;
-  overflow: auto;
 }
 
 @media (max-width: 768px) {
