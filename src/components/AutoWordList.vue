@@ -15,11 +15,11 @@
         <v-chip
           v-for="item in getGroupItems(groupType)"
           :key="item.word"
-          :color="isItemChecked(item) ? 'primary' : 'grey-darken-2'"
+          :color="item.word === selectedWord ? 'primary' : 'grey-darken-2'"
           variant="tonal"
           size="large"
           class="ma-1 pl-0"
-          @click="toggleItemCheck(item)"
+          @click="emit('select', item)"
         >
           <span class="ml-1">{{ item.word }}</span>
           <span class="text-caption text-grey-darken-1"
@@ -30,7 +30,7 @@
             size="x-small"
             variant="text"
             class="mr-1"
-            @click="removeItem(item)"
+            @click.stop="removeItem(item)"
           />
         </v-chip>
       </v-card-text>
@@ -39,53 +39,28 @@
 </template>
 
 <script setup>
-import { toRef } from "vue"
-import { useSimplePagination } from "@/hooks/useSimplePagination"
-
 const props = defineProps({
   items: {
     type: Array,
     required: true,
   },
-  checkedItems: {
-    type: Array,
-    default: () => [],
-  },
-  height: {
-    type: [Number, String],
-    default: 490,
+  selectedWord: {
+    type: String,
+    default: "",
   },
 })
 
-const itemsRef = toRef(props, "items")
-const { paginatedItems, handleInfiniteScroll } = useSimplePagination(itemsRef)
+const emit = defineEmits(["select", "update:currentWordsList"])
 
 const getGroupTitle = (group) => {
   const root = props.items.wordRoot
   const titles = {
     exact: "مطابقة تامة",
-    root: `مشتقات الجذر ${root}`,
+    root: root ? `مشتقات الجذر ${root}` : "مشتقات",
     attached: "صيغ متصلة",
     other: "تشابه صوتي",
   }
   return titles[group] || group
-}
-
-const emit = defineEmits([
-  "update:checkedItems",
-  "update:currentWordsList",
-  "submitTarteel",
-])
-
-const isItemChecked = (item) =>
-  props.checkedItems.some((checkedItem) => checkedItem.word === item.word)
-
-const toggleItemCheck = (item) => {
-  const newCheckedItems = isItemChecked(item)
-    ? props.checkedItems.filter((checkedItem) => checkedItem.word !== item.word)
-    : [...props.checkedItems, item]
-
-  emit("update:checkedItems", newCheckedItems)
 }
 
 const removeItem = (item) => {
@@ -93,16 +68,9 @@ const removeItem = (item) => {
   newFilteredWords.wordRoot = props.items.wordRoot
   newFilteredWords.word = props.items.word
   emit("update:currentWordsList", newFilteredWords)
-
-  if (isItemChecked(item)) {
-    const newCheckedItems = props.checkedItems.filter(
-      (checkedItem) => checkedItem.word !== item.word
-    )
-    emit("update:checkedItems", newCheckedItems)
-  }
 }
 
 const getGroupItems = (groupType) => {
-  return props.items.filter((item) => item.group === groupType)
+  return props.items.filter((item) => (item.group || "exact") === groupType)
 }
 </script>

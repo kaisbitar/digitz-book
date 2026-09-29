@@ -10,7 +10,17 @@
 
         <div class="search-section">
           <div class="search-container">
-            <AutoBoard :showDeleteButton="false" context="home" />
+            <AppInputField
+              modelValue=""
+              fieldPlaceHolder="ابحث في القرآن الكريم..."
+              :autoFocus="false"
+              lang="ar"
+              readonly
+              rounded="lg"
+              variant="outlined"
+              base-color="count-key-item"
+              @focus="router.push({ name: 'tarteel', query: { focus: '1' } })"
+            />
           </div>
         </div>
 

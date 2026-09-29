@@ -1,5 +1,5 @@
 <template>
-  <v-card variant="plain">
+  <v-card variant="plain" :class="{ 'h-100': fill }">
     <!-- {{ spiritualLetters }} -->
     <v-card-text v-if="selectedLetter" class="text-center letters-container">
       {{ selectedLetter.index + 1 }}
@@ -14,6 +14,7 @@
       ref="chartRef"
       :series="letters.series"
       :options="chartOptions"
+      :height="fill ? '100%' : 'auto'"
       :class="$vuetify.display.xs ? '' : 'px-9'"
     />
   </v-card>
@@ -26,7 +27,11 @@ import { useDataStore } from "@/stores/dataStore"
 import { computed, ref, onMounted, watch, nextTick } from "vue"
 import lettersOptions from "@/assets/lettersOptions"
 
-const props = defineProps(["letter"])
+const props = defineProps({
+  letter: { type: String, default: "" },
+  // Stretch the chart to the height of its parent
+  fill: { type: Boolean, default: false },
+})
 const spiritualLetters = [
   "الم",
   "الر",
@@ -132,8 +137,8 @@ onMounted(async () => {
 .letters-container {
   position: absolute;
   z-index: 4;
-  left: 50%;
-  top: 30%;
+  left: 35%;
+  top: 45%;
   transform: translate(-50%, -50%);
   width: auto;
 }

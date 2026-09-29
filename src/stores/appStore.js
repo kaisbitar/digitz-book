@@ -18,7 +18,6 @@ export const useStore = defineStore("Quran", {
     activeRoute: "search",
     chartFreqType: "words",
     wordMeanings: {},
-    tarteelDrawer: true,
     indexDrawer: false,
     userPreferences: {
       theme: "light",
@@ -42,7 +41,6 @@ export const useStore = defineStore("Quran", {
     getChartFreqType: (state) => state.chartFreqType,
     getWordMeaning: (state) => (word) => state.wordMeanings[word],
     getCurrentTheme: (state) => state.userPreferences.theme,
-    getTarteelDrawer: (state) => state.tarteelDrawer,
     getIndexDrawer: (state) => state.indexDrawer,
   },
   actions: {
@@ -102,9 +100,6 @@ export const useStore = defineStore("Quran", {
     },
     setWordMeaning({ word, meaning }) {
       this.wordMeanings[word] = meaning
-    },
-    setTarteelDrawer(value) {
-      this.tarteelDrawer = value
     },
     setIndexDrawer(value) {
       this.indexDrawer = value

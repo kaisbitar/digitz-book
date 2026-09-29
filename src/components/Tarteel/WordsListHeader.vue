@@ -1,14 +1,27 @@
 <template>
   <div>
-    <span class="text-h4 font-weight-bold"
-      >{{ selectedTarteel.inputText + "ـ" }}
-      <span class="ml-6 text-caption">ومشتقاتها</span>
-    </span>
+    <div class="d-flex align-center">
+      <span class="text-h4 font-weight-bold"
+        >{{ selectedTarteel.inputText + "ـ" }}
+        <span class="ml-6 text-caption">ومشتقاتها</span>
+      </span>
+      <v-btn
+        icon="mdi-arrow-left"
+        variant="tonal"
+        size="small"
+        class="mr-auto"
+        @click="tarteelStore.requestSearchFocus()"
+      />
+    </div>
     <AppHeaderMetrics :metrics="formattedCounts" />
   </div>
 </template>
 
 <script setup>
+import { useTarteelStore } from "@/stores/TarteelStore"
+
+const tarteelStore = useTarteelStore()
+
 const props = defineProps({
   selectedTarteel: {
     type: Object,

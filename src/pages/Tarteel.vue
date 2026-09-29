@@ -1,7 +1,24 @@
 <template>
-  <TarteelTabs />
   <v-container max-width="1200" class="px-sm-4 px-2">
-    <template v-if="ratl">
+    <template v-if="showChartView">
+      <!-- Letters chart fills the page as a background; the history card sits on it -->
+      <div class="position-relative chart-history-page">
+        <div class="position-absolute w-100 h-100 chart-layer">
+          <LettersChart :letter="liveLetter || ''" fill />
+        </div>
+        <v-row v-if="historyItems.length" class="position-relative mt-0">
+          <v-col cols="12" md="5">
+            <SearchHistory
+              :items="historyItems"
+              :selected-id="tarteelStore.getSelectedTarteelId"
+              @select="openHistoryItem"
+              @remove="removeHistoryItem"
+            />
+          </v-col>
+        </v-row>
+      </div>
+    </template>
+    <template v-else-if="ratl">
       <component
         :is="currentView"
         :selectedTarteel="selectedTarteel"
@@ -25,10 +42,22 @@
       />
     </template>
     <template v-else>
-      <NoData
-        text="ورتل القرآن ترتيلا.."
-        icon="mdi-book-open-page-variant-outline"
-      />
+      <v-row justify="center" class="mt-4">
+        <v-col cols="12" md="6">
+          <SearchHistory
+            v-if="historyItems.length"
+            :items="historyItems"
+            :selected-id="tarteelStore.getSelectedTarteelId"
+            @select="openHistoryItem"
+            @remove="removeHistoryItem"
+          />
+          <NoData
+            v-else
+            text="ورتل القرآن ترتيلا.."
+            icon="mdi-book-open-page-variant-outline"
+          />
+        </v-col>
+      </v-row>
     </template>
   </v-container>
 </template>
@@ -44,6 +73,8 @@ import { useNotesStore } from "@/stores/notesStore"
 import WordsOverview from "@/components/Tarteel/WordsOverview.vue"
 import WordsList from "@/components/Tarteel/WordsList.vue"
 import WordVerses from "@/components/Tarteel/WordVerses.vue"
+import SearchHistory from "@/components/SearchHistory.vue"
+import LettersChart from "@/components/LettersChart.vue"
 
 const tarteelStore = useTarteelStore()
 const router = useRouter()
@@ -105,6 +136,33 @@ const ratlData = computed(() => {
 
 const targetedVerseIndex = computed(() => store.getTarget?.verseNumberToQuran)
 
+// Newest search first
+const historyItems = computed(() =>
+  [...tarteelStore.getStoredTarteels].reverse()
+)
+
+const liveLetter = computed(() => tarteelStore.liveLetter)
+const showChartView = computed(
+  () => !!tarteelStore.liveLetter || tarteelStore.chartVisible
+)
+
+const openHistoryItem = (item) => {
+  tarteelStore.setLiveLetter(null)
+  tarteelStore.setChartVisible(false)
+  document.activeElement?.blur?.()
+  tarteelStore.setSelectedTarteelId(item.id)
+  tarteelStore.setSelectedRatlIndex(0)
+  tarteelStore.setSelectedRatl(item.results?.[0] ?? null)
+  router.push({ name: "tarteel", query: { view: "list" } })
+}
+
+const removeHistoryItem = (item) => {
+  tarteelStore.removeTarteelItem(item.id)
+  const selected = tarteelStore.getSelectedTarteel
+  tarteelStore.setSelectedRatl(selected?.results?.[0] ?? null)
+  tarteelStore.setSelectedRatlIndex(selected ? 0 : null)
+}
+
 const { paginatedItems, handleInfiniteScroll, isLoading } =
   useIndexedPagination(
     computed(() => ratl.value?.verses || []),
@@ -162,6 +220,16 @@ const showList = () => {
 </script>
 
 <style scoped>
+/* Fill the space under the app bar; the chart sits behind the history list */
+.chart-history-page {
+  height: calc(100vh - 92px);
+}
+.chart-layer {
+  top: 0;
+  left: 0;
+  opacity: 0.85;
+  pointer-events: none;
+}
 .tarteel-board-overflow {
   height: calc(100vh - 230px);
   overflow: auto;
