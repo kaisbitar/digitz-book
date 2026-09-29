@@ -106,6 +106,14 @@ export function useAutoComplete(dataStore, tarteelStore) {
         return true
       }
 
+      // A single letter only drives the letters chart (AutoMenu hides the
+      // word list for length <= 1), so skip the full-Quran scan entirely.
+      if (value.trim().length <= 1) {
+        filteredList.value = []
+        suggestions.value = []
+        return true
+      }
+
       if (!value.includes(" ")) {
         await updateFilteredWords(value)
         return filteredList.value.length > 0

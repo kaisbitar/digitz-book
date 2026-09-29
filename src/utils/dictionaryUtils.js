@@ -6,8 +6,30 @@ import { removeTashkeel } from "@/utils/arabicUtils"
 const store = useStore()
 const dataStore = useDataStore()
 
-// Simple cache to store word roots and avoid repeated expensive lookups
-const rootCache = new Map()
+// word -> root index, built once per allWordsRoots dataset (O(1) lookups)
+let wordToRootIndex = null
+let indexedRootsSource = null
+
+const getWordToRootIndex = () => {
+  const allWordsRoots = dataStore.allWordsRoots
+  if (wordToRootIndex && indexedRootsSource === allWordsRoots) {
+    return wordToRootIndex
+  }
+
+  const index = new Map()
+  for (const rootObj of allWordsRoots) {
+    if (!rootObj?.root) continue
+    if (!index.has(rootObj.root)) index.set(rootObj.root, rootObj.root)
+    if (!rootObj.words) continue
+    for (const word of rootObj.words.split(/\s+/)) {
+      if (word && !index.has(word)) index.set(word, rootObj.root)
+    }
+  }
+
+  wordToRootIndex = index
+  indexedRootsSource = allWordsRoots
+  return index
+}
 
 export const extractFromDictionnary = (allData) => {
   const lines = allData.split("\n")
@@ -58,35 +80,9 @@ export const fetchWordRoot = async (word) => {
 
 export const fetchWordRootDataFromStore = (word) => {
   word = removeTashkeel(word)
-  
-  if (rootCache.has(word)) {
-    return rootCache.get(word)
-  }
+  if (!word) return undefined
 
-  const allWordsRoots = dataStore.allWordsRoots
-  
-  // Escape regex special characters
-  const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-  // Regex to match whole word bounded by start/end of string or spaces
-  const wordRegex = new RegExp(`(?:^| )${escapedWord}(?: |$)`)
-
-  for (const rootObj of allWordsRoots) {
-    // Check if the word matches the root itself
-    if (word === rootObj.root) {
-      rootCache.set(word, rootObj.root)
-      return rootObj.root
-    }
-
-    // Optimization: Check if string includes word first (fast)
-    // before doing the more expensive regex check
-    if (rootObj.words.includes(word) && wordRegex.test(rootObj.words)) {
-      rootCache.set(word, rootObj.root)
-      return rootObj.root
-    }
-  }
-  
-  rootCache.set(word, undefined)
-  return undefined
+  return getWordToRootIndex().get(word)
 }
 
 export const fetchWordMeaningData = async (word, wordRoot) => {

@@ -14,6 +14,8 @@ export const getSuggestions = (
   for (const verseObj of oneQuranFile) {
     const words = verseObj.verseText.split(/\s+/)
     for (const word of words) {
+      // Reset lastIndex: the suggestion regex uses the "g" flag.
+      suggestionRegex.lastIndex = 0
       if (suggestionRegex.test(word)) {
         suggestions.add(word)
       }

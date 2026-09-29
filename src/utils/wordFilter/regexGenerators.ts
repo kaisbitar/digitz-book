@@ -12,8 +12,10 @@ export const generateStrictSearchRegex = (search: string): RegExp => {
       return `[${variations}]${tashkeelPattern}(?:${allowedExtras}*?)`
     })
     .join("")
-    
-  return new RegExp(searchRegex, "g")
+
+  // No "g" flag: a global regex keeps lastIndex between .test() calls,
+  // which both slows the hot loop and can skip valid matches.
+  return new RegExp(searchRegex)
 }
 
 export const generateSuggestionRegex = (search: string): RegExp => {

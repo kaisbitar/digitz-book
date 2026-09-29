@@ -28,17 +28,13 @@ export function filterWords(
     }
   }
 
-  // Create search terms array: searchTerm + root derivatives
-  const searchTerms = [searchTerm, ...rootDerivatives]
-  
-  // Filter words for each search term
-  searchTerms.forEach(term => {
-    const searchRegex = generateStrictSearchRegex(term)
-    
-    oneQuranFile.forEach((verseObj) => {
-      processVerse(verseObj, term, searchRegex, results, options)
-    })
-  })
+  // Compile every term once, then scan the Quran a single time.
+  const uniqueTerms = Array.from(new Set([searchTerm, ...rootDerivatives])).filter(Boolean)
+  const searchRegexes = uniqueTerms.map(generateStrictSearchRegex)
+
+  for (const verseObj of oneQuranFile) {
+    processVerse(verseObj, searchRegexes, results, options)
+  }
 
   const groupedResults = groupResults(results, searchTerm, rootDerivatives)
   const formattedResults = formatResults(groupedResults)
