@@ -30,6 +30,12 @@
 
       <template v-slot:append>
         <slot name="append-input-items"></slot>
+        <v-btn
+          icon="mdi-close"
+          size="x-small"
+          variant="text"
+          @click="$emit('close')"
+        />
       </template>
     </v-text-field>
     <div class="menu-container">
