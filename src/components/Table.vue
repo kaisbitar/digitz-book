@@ -2,7 +2,7 @@
   <v-data-table
     ref="tableRef"
     :headers="tableHeaders"
-    :items="tableData"
+    :items="filteredTableData"
     loading-text="تنزيل الكتاب.."
     :fixed-header="true"
     :height="tableHeight"
@@ -25,8 +25,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, nextTick, onUnmounted } from "vue"
+import { ref, watch, onMounted, nextTick, onUnmounted, computed } from "vue"
 import { useInputFiltering } from "@/mixins/inputFiltering"
+import { createArabicPattern } from "@/utils/arabicUtils"
 
 interface TableItem {
   [key: string]: any
@@ -55,6 +56,21 @@ const emit = defineEmits<{
 const handleScroll = (event: Event) => {
   emit("scroll", event)
 }
+
+const filteredTableData = computed(() => {
+  if (!search.value || !search.value.trim()) {
+    return props.tableData
+  }
+
+  const pattern = createArabicPattern(search.value)
+  return props.tableData.filter((item) => {
+    // Search in all text fields of the item
+    return Object.values(item).some((value) => {
+      if (value === null || value === undefined) return false
+      return pattern.test(String(value))
+    })
+  })
+})
 
 watch(
   () => props.tableInputText,
