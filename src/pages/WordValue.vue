@@ -320,13 +320,13 @@
                     </v-chip>
                   </template>
                   <template v-slot:item.words="{ item }">
-                    <div class="d-flex flex-wrap gap-1 py-2">
+                    <div class="d-flex flex-wrap gap-2 py-2 pills-container">
                       <v-chip
                         v-for="(word, idx) in item.words.slice(0, 10)"
                         :key="idx"
                         variant="tonal"
                         size="small"
-                        class="ma-1"
+                        class="flex-grow-1"
                       >
                         {{ word.text }}
                         <span class="text-caption text-medium-emphasis mr-1"
@@ -697,5 +697,13 @@ onMounted(() => {
 
 .word-value-table .v-data-table__td {
   font-family: "Almarai", sans-serif;
+}
+
+.pills-container {
+  align-items: center;
+}
+
+.pills-container .v-chip {
+  min-width: 0;
 }
 </style>

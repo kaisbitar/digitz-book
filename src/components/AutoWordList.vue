@@ -11,14 +11,14 @@
       <v-card-title class="mb-2 text-grey-darken-1 text-subtitle-1">
         {{ getGroupTitle(groupType) }} ({{ getGroupItems(groupType).length }})
       </v-card-title>
-      <v-card-text style="overflow-y: auto; max-width: 800px">
+      <v-card-text style="overflow-y: auto; width: 100%; display: flex; flex-wrap: wrap; gap: 12px; align-content: flex-start;">
         <v-chip
           v-for="item in getGroupItems(groupType)"
           :key="item.word"
           :color="item.word === selectedWord ? 'primary' : 'grey-darken-2'"
           variant="tonal"
           size="large"
-          class="ma-1 pl-0"
+          class="pl-0"
           @click="emit('select', item)"
         >
           <span class="ml-1">{{ item.word }}</span>

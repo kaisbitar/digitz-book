@@ -74,7 +74,14 @@ const onInput = async (value) => {
     if (input) input.value = cleaned
   }
 
-  if (!cleaned.trim()) tarteelStore.discardDraft()
+  if (!cleaned.trim()) {
+    tarteelStore.discardDraft()
+    inputHasError.value = false
+    inputHasSuccess.value = false
+    showLiveLetter()
+    showLiveResults()
+    return
+  }
 
   const hasResults = await handleInputChange(cleaned)
   inputHasSuccess.value = hasResults
