@@ -150,10 +150,10 @@ const handleClickDown = () => {
 }
 const setRoute = () => {
   const query = { ...router.currentRoute.value.query }
+  const verse = filteredVerses.value[currentIndex.value]
+  if (!verse) return
   router.push({
-    path: `/sura/${props.versesBasics[currentIndex.value].suraNumber}/${
-      filteredVerses.value[currentIndex.value].verseIndex
-    }`,
+    path: `/sura/${verse.suraNumber}/${verse.verseIndex}`,
     query,
   })
 }

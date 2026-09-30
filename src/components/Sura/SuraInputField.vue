@@ -34,7 +34,7 @@
 </template>
 
 <script setup>
-import { ref, watch, computed } from "vue"
+import { ref, watch, computed, nextTick } from "vue"
 
 const props = defineProps({
   search: String,
@@ -63,9 +63,13 @@ watch(
 
 const onInput = async (value) => {
   localSearch.value = value
-  hasError.value = false
-  hasSuccess.value = false
   emit("update:search", value)
+
+  if (!value.trim()) {
+    hasError.value = false
+    hasSuccess.value = false
+    return
+  }
 
   nextTick(() => {
     if (parseInt(props.badgeContent) > 0) {
