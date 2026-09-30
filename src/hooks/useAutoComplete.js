@@ -56,13 +56,32 @@ export function useAutoComplete(dataStore, tarteelStore) {
 
     if (filteredVerses.length === 0) return (filteredList.value = [])
 
+    // Same shape as a word result so the phrase renders as a pill
+    const suras = [
+      ...new Set(
+        filteredVerses.map((verse) => verse.fileName.replace(/[0-9]/g, ""))
+      ),
+    ]
+
     filteredList.value = [
       {
         word: sentence,
         count: filteredVerses.length,
-        verses: filteredVerses,
+        group: "exact",
+        uniqueSuraCount: suras.length,
+        suras,
+        verses: filteredVerses.map(
+          ({ fileName, verseIndex, verseNumberToQuran, verseText }) => ({
+            fileName,
+            verseIndex,
+            verseNumberToQuran,
+            verseText,
+          })
+        ),
       },
     ]
+    filteredList.value.word = sentence
+    filteredList.value.wordRoot = null
   }
 
   const toggleMenu = (isOpen = true) => {

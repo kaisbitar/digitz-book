@@ -90,13 +90,6 @@ const VIEW_TYPES = {
 
 const currentView = computed(() => {
   const view = route.query.view || VIEW_TYPES.LIST
-  const hasSingleResult = selectedTarteel.value?.results?.length === 1
-
-  if (hasSingleResult) {
-    tarteelStore.setSelectedRatl(selectedTarteel.value.results[0])
-    store.setTarget(ratl.value.verses[0])
-    return WordVerses
-  }
 
   return {
     [VIEW_TYPES.OVERVIEW]: WordsOverview,
