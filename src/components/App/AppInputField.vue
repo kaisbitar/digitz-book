@@ -18,6 +18,14 @@
     >
       <template v-slot:append-inner>
         <slot name="append-inner-input-items"></slot>
+        <v-btn
+          v-if="modelValue"
+          icon="mdi-close"
+          size="x-small"
+          variant="text"
+          class="close-btn"
+          @click="handleClear"
+        />
       </template>
 
       <template v-slot:append>
