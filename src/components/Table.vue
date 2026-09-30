@@ -75,8 +75,9 @@ const filteredTableData = computed(() => {
 watch(
   () => props.tableInputText,
   (newValue) => {
-    search.value = newValue
-  }
+    search.value = newValue || ""
+  },
+  { immediate: true }
 )
 
 onMounted(async () => {

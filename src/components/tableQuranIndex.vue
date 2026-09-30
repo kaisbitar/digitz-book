@@ -19,12 +19,11 @@
         class="flex-grow-1 mx-2"
         v-if="isInputVisible"
         :modelValue="search"
-        :fieldInput="search"
         :fieldPlaceHolder="'السور'"
         :dataToShow="indexData.length - 1"
         :type="'QuranCount'"
         @close="isInputVisible = false"
-        @update:fieldInput="updateSearchValue"
+        @update:modelValue="updateSearchValue"
       />
       <v-spacer v-if="!isInputVisible"></v-spacer>
       <AppToggleBtn
