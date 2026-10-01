@@ -17,7 +17,6 @@
       rounded="lg"
       variant="outlined"
       base-color="count-key-item"
-      clearable
       @update:modelValue="onInput"
       @clear="onClear"
       @keydown:enter="commit"
@@ -27,10 +26,16 @@
       v-model="showLangHint"
       location="top"
       :timeout="2500"
-      color="warning"
-      variant="tonal"
+      color="primary"
+      variant="flat"
+      rounded="pill"
+      min-width="0"
+      elevation="1"
     >
-      بدّل لوحة المفاتيح إلى العربية
+      <div class="d-flex align-center">
+        <v-icon size="18" class="ml-2">mdi-keyboard-outline</v-icon>
+        بدّل لوحة المفاتيح إلى العربية
+      </div>
     </v-snackbar>
   </div>
 </template>
@@ -76,6 +81,7 @@ const onInput = async (value) => {
 
   if (!cleaned.trim()) {
     tarteelStore.discardDraft()
+    clearInput()
     inputHasError.value = false
     inputHasSuccess.value = false
     showLiveLetter()
@@ -158,7 +164,7 @@ watch(
     tarteelStore.setChartVisible(true)
     await nextTick()
     barRef.value?.querySelector("input")?.focus()
-  }
+  },
 )
 
 onMounted(() => {

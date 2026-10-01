@@ -31,6 +31,7 @@
       <template v-slot:append>
         <slot name="append-input-items"></slot>
         <v-btn
+          v-if="closable"
           icon="mdi-close"
           size="x-small"
           variant="text"
@@ -73,6 +74,10 @@ const props = defineProps({
   autoFocus: {
     type: Boolean,
     default: true,
+  },
+  closable: {
+    type: Boolean,
+    default: false,
   },
 })
 

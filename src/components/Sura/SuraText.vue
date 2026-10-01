@@ -53,6 +53,7 @@ const store = useStore()
 const dataStore = useDataStore()
 
 const props = defineProps(["inputText", "versesBasics"])
+const emit = defineEmits(["verseSelected"])
 
 const target = computed(() => store.getTarget)
 const isTargetedVerse = computed(
@@ -104,7 +105,8 @@ const setTargetedVerse = (verse, index) => {
   })
 
   if (isSameVerse) {
-    store.setActiveSuraTab("versesTab")
+    emit("verseSelected", props.versesBasics[index - 1])
+    return
   }
 }
 

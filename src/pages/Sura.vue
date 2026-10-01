@@ -84,8 +84,7 @@ const handleVerseSelectedOnTable = (verse) => {
     ...verse,
   })
 
-  router.push({
-    path: `/sura/${verse.suraNumber}/${verse.verseIndex}`,
+  router.replace({
     query: { ...router.currentRoute.value.query, detail: "true" },
   })
 }
@@ -93,7 +92,7 @@ const handleVerseSelectedOnTable = (verse) => {
 const handleGoBack = () => {
   const query = { ...router.currentRoute.value.query }
   delete query.detail
-  router.push({ query })
+  router.replace({ query })
 }
 
 const isMobileView = computed(() => store.getVersesMobileView)

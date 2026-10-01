@@ -22,6 +22,7 @@
         :fieldPlaceHolder="'السور'"
         :dataToShow="indexData.length - 1"
         :type="'QuranCount'"
+        closable
         @close="isInputVisible = false"
         @update:modelValue="updateSearchValue"
       />

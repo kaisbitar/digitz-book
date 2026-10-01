@@ -35,6 +35,7 @@
         ref="suraTextRef"
         :inputText="inputText"
         :versesBasics="versesBasics"
+        @verseSelected="onVerseSelected"
       />
     </v-window-item>
 

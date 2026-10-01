@@ -1,34 +1,43 @@
 <template>
-  <v-toolbar rounded elevation="2">
-    <v-toolbar-title class="text-center">
-      <v-btn icon @click="goPreviousVerse" size="small" class="mx-2">
-        <v-icon>mdi-chevron-up</v-icon>
+  <div class="d-flex flex-column verse-details-container">
+    <div class="d-flex align-center justify-space-between mb-2">
+      <div class="d-flex align-center">
+        <v-btn icon size="small" variant="text" @click="goPreviousVerse">
+          <v-icon>mdi-chevron-up</v-icon>
+        </v-btn>
+        <span class="text-h6 mx-2">
+          {{ targetVerse.suraName }} - آية {{ targetVerse.verseIndex }}
+        </span>
+        <v-btn icon size="small" variant="text" @click="goNextVerse">
+          <v-icon>mdi-chevron-down</v-icon>
+        </v-btn>
+        <v-chip
+          v-if="inputText"
+          class="mr-3"
+          color="primary"
+          variant="tonal"
+          size="large"
+        >
+          {{ inputText }}
+        </v-chip>
+      </div>
+      <v-btn icon size="small" variant="text" @click="goBack">
+        <v-icon>mdi-close</v-icon>
       </v-btn>
-      {{ targetVerse.suraName }} - آية {{ targetVerse.verseIndex }}
-      <v-btn icon @click="goNextVerse" size="small" class="mx-2">
-        <v-icon>mdi-chevron-down</v-icon>
-      </v-btn>
-    </v-toolbar-title>
-    <span v-html="highlight(inputText, props.inputText)"></span>
+    </div>
+    <v-divider class="mb-3" />
 
-    <v-btn icon @click="goBack" size="small" variant="tonal" class="mr-2">
-      <v-icon>mdi-arrow-left</v-icon>
-    </v-btn>
-  </v-toolbar>
+    <v-card variant="outlined" class="pa-4 mb-4">
+      <VerseDetailsCard
+        :verse="targetVerse"
+        :inputText="inputText"
+        :currentWord="currentWord"
+        @update:currentMeaning="currentMeaning = $event"
+        @update:currentWord="currentWord = $event"
+        @update:loading="isLoading = $event"
+      />
+    </v-card>
 
-  <v-container class="verse-details-container">
-    <v-row>
-      <v-col cols="12">
-        <VerseDetailsCard
-          :verse="targetVerse"
-          :inputText="inputText"
-          :currentWord="currentWord"
-          @update:currentMeaning="currentMeaning = $event"
-          @update:currentWord="currentWord = $event"
-          @update:loading="isLoading = $event"
-        />
-      </v-col>
-    </v-row>
     <v-row>
       <v-col cols="12" md="6">
         <WordMeaningHeader
@@ -45,7 +54,6 @@
           @click="isWordMeaningOpen = !isWordMeaningOpen"
         />
       </v-col>
-
       <v-col cols="12" md="6">
         <Chart
           :series="[{ data: wordsSeries }]"
@@ -54,15 +62,13 @@
         />
       </v-col>
     </v-row>
-  </v-container>
+  </div>
 </template>
 
 <script setup>
 import getChartOptions from "@/assets/frequecyOptions"
-import { useInputFiltering } from "@/mixins/inputFiltering"
 import { useStore } from "@/stores/appStore"
 import { useDataStore } from "@/stores/dataStore"
-const { highlight } = useInputFiltering()
 
 const emit = defineEmits(["go-back"])
 const store = useStore()
