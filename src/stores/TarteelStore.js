@@ -1,5 +1,8 @@
 import { defineStore } from "pinia"
 
+// Not stored in state, so it is not saved to localStorage.
+let restoreVersesOnReturn = false
+
 export const useTarteelStore = defineStore("tarteel", {
   state: () => ({
     storedTarteels: [],
@@ -94,6 +97,7 @@ export const useTarteelStore = defineStore("tarteel", {
       this.selectedTarteelId = this.draftId
       this.selectedRatl = results[0] ?? null
       this.selectedRatlIndex = results.length ? 0 : null
+      restoreVersesOnReturn = false
     },
 
     // The draft becomes a normal history entry
@@ -142,6 +146,14 @@ export const useTarteelStore = defineStore("tarteel", {
     },
     setSelectedRatl(ratl) {
       this.selectedRatl = ratl
+    },
+    rememberOpenedVerse() {
+      restoreVersesOnReturn = true
+    },
+    takeOpenedVerse() {
+      const shouldRestore = restoreVersesOnReturn
+      restoreVersesOnReturn = false
+      return shouldRestore
     },
     setSelectedRatlIndex(index) {
       this.selectedRatlIndex = index

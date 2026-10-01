@@ -163,6 +163,7 @@ const { paginatedItems, handleInfiniteScroll, isLoading } =
   )
 
 const handleSelectedVerse = (verse, tarteel) => {
+  tarteelStore.rememberOpenedVerse()
   const query = {
     ...router.currentRoute.value.query,
     tarteel,

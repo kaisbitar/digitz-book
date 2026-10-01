@@ -6,6 +6,7 @@
     />
     <v-divider class="mx-auto flex-grow-0" width="100%"></v-divider>
     <WordMeaning
+      v-if="!isPhrase"
       :word="selectedTarteel.inputText"
       :isWordMeaningOpen="isWordMeaningOpen"
       :class="isWordMeaningOpen ? 'tarteel-meaning-overflow' : ''"
@@ -15,7 +16,7 @@
     <!-- Pills list - shown when verses are hidden -->
     <div
       v-if="!showVerses"
-      class="tarteel-overview-overflow px-sm-4 mt-1 flex-grow-0"
+      class="tarteel-overview-overflow px-sm-4 mt-1 flex-grow-1 d-flex flex-column"
     >
       <AutoWordList
         :items="listItems"
@@ -31,14 +32,16 @@
         v-if="showVerses && selectedWord"
         class="verses-panel flex-grow-1 d-flex flex-column"
       >
-        <!-- Close button at the top -->
-        <div class="d-flex justify-end pa-2">
-          <v-btn
-            icon
-            size="small"
-            variant="text"
-            @click="showVerses = false"
-          >
+        <div
+          class="verses-toolbar d-flex align-center justify-space-between px-sm-4 py-2"
+        >
+          <v-chip color="primary" variant="tonal" size="large">
+            <span class="ml-1">{{ selectedWord }}</span>
+            <span class="text-caption text-grey-darken-1">
+              ({{ selectedVerseCount }})
+            </span>
+          </v-chip>
+          <v-btn icon size="small" variant="text" @click="showVerses = false">
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </div>
@@ -101,8 +104,14 @@ const props = defineProps({
 const emit = defineEmits(["ratl-selected", "verseSelected"])
 
 const selectedWord = computed(() => tarteelStore.getSelectedRatl?.word || "")
+const selectedVerseCount = computed(
+  () => tarteelStore.getSelectedRatl?.verses?.length || 0,
+)
+const isPhrase = computed(() =>
+  (props.selectedTarteel?.inputText || "").trim().includes(" "),
+)
 const isWordMeaningOpen = ref(false)
-const showVerses = ref(false)
+const showVerses = ref(isPhrase.value)
 
 const currentView = computed(() => route.query.view)
 const selectedRatlIndex = computed(() => tarteelStore.selectedRatlIndex)
@@ -117,13 +126,13 @@ const listItems = computed(() => {
 
 const handleWordSelect = (ratl) => {
   const index = props.selectedTarteel.results.findIndex(
-    (item) => item.word === ratl.word
+    (item) => item.word === ratl.word,
   )
   tarteelStore.setSelectedRatl(ratl)
   tarteelStore.setSelectedRatlIndex(index)
 
   store.setTarget(ratl.verses[0])
-  
+
   // Show verses panel when a pill is clicked
   showVerses.value = true
 }
@@ -141,25 +150,28 @@ const overviewScroll = async () => {
   scrollToActiveItem(".active-word-card-item", ".tarteel-overview-overflow")
 }
 
-watch(currentView, (newView) => {
-  overviewScroll()
-  // When view changes to list and there's a selected word, show verses
-  if (newView === 'list' && tarteelStore.getSelectedRatl?.word) {
-    showVerses.value = true
-  }
-})
+watch(
+  () => props.selectedTarteel?.inputText,
+  () => {
+    showVerses.value = isPhrase.value
+  },
+)
+watch(currentView, () => overviewScroll())
 watch(selectedRatlIndex, async () => {
   await nextTick()
   overviewScroll()
 })
 
-onMounted(() => {
+onMounted(async () => {
   overviewScroll()
-  
-  // If coming back from Sura view and a word was already selected, show verses
-  if (tarteelStore.getSelectedRatl?.word) {
-    showVerses.value = true
-  }
+  if (!tarteelStore.takeOpenedVerse()) return
+
+  showVerses.value = true
+  await nextTick()
+  scrollToActiveItem(
+    ".verses-inline-overflow .active-verse-text",
+    ".verses-inline-overflow",
+  )
 })
 </script>
 
@@ -171,7 +183,6 @@ onMounted(() => {
 
 .tarteel-overview-overflow {
   min-height: 0;
-  max-height: 40vh;
   overflow-y: auto;
 }
 
@@ -179,6 +190,15 @@ onMounted(() => {
 .verses-panel {
   min-height: 0;
   background: white;
+}
+
+.verses-toolbar {
+  position: relative;
+  z-index: 1;
+  margin-top: 10px;
+  margin-bottom: -5px;
+  padding-bottom: 20px;
+  background: linear-gradient(to bottom, #fff 45%, rgba(255, 255, 255, 0));
 }
 
 /* The verses fill the space left under the word pills */

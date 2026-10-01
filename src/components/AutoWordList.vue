@@ -1,12 +1,10 @@
 <template>
-  <div
-    v-for="groupType in ['exact', 'attached', 'root', 'other']"
-    :key="groupType"
-  >
+  <div class="d-flex flex-column flex-grow-1">
     <v-card
-      v-if="getGroupItems(groupType).length"
+      v-for="groupType in visibleGroups"
+      :key="groupType"
       variant="outlined"
-      class="mb-2"
+      class="mb-2 flex-grow-0"
     >
       <v-card-title class="mb-2 text-grey-darken-1 text-subtitle-1">
         {{ getGroupTitle(groupType) }} ({{ getGroupItems(groupType).length }})
@@ -39,6 +37,8 @@
 </template>
 
 <script setup>
+import { computed } from "vue"
+
 const props = defineProps({
   items: {
     type: Array,
@@ -73,4 +73,10 @@ const removeItem = (item) => {
 const getGroupItems = (groupType) => {
   return props.items.filter((item) => (item.group || "exact") === groupType)
 }
+
+const visibleGroups = computed(() =>
+  ["exact", "attached", "root", "other"].filter(
+    (groupType) => getGroupItems(groupType).length
+  )
+)
 </script>
