@@ -35,7 +35,12 @@
         <div
           class="verses-toolbar d-flex align-center justify-space-between px-sm-4 py-2"
         >
-          <v-chip color="primary" variant="tonal" size="large">
+          <v-chip
+            color="primary"
+            variant="tonal"
+            size="large"
+            @click="showVerses = false"
+          >
             <span class="ml-1">{{ selectedWord }}</span>
             <span class="text-caption text-grey-darken-1">
               ({{ selectedVerseCount }})

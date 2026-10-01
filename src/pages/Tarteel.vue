@@ -1,5 +1,5 @@
 <template>
-  <v-container max-width="75vw" class="px-sm-4 px-2">
+  <v-container fluid class="main-column px-2">
     <template v-if="showChartView">
       <!-- Letters chart fills the page as a background; the history card sits on it -->
       <div class="position-relative chart-history-page">

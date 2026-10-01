@@ -1,5 +1,5 @@
 <template>
-  <v-container max-width="75vw" class="sura-page px-sm-4 px-2">
+  <v-container fluid class="main-column sura-page px-2">
     <SuraBoard
       v-if="!showVerseDetails"
       :tabs="tabs"

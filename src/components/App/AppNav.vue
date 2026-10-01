@@ -13,7 +13,7 @@
     <v-app-bar-title class="mr-16" style="max-width: 140px" v-if="!isMobile">
       رُسُلْ
     </v-app-bar-title>
-    <v-container v-if="isInputVisible" class="pt-6" max-width="75vw">
+    <v-container v-if="isInputVisible" class="main-column pt-6" fluid>
       <div class="mb-2">
         <SearchBar :autoFocus="isMobile" />
       </div>

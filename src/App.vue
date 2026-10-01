@@ -136,4 +136,10 @@ html {
 .highlight-match {
   letter-spacing: 0 !important;
 }
+
+@media (min-width: 960px) {
+  .main-column.v-container {
+    max-width: 75vw;
+  }
+}
 </style>

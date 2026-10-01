@@ -1,6 +1,6 @@
 <template>
   <div
-    class="sura-text-container sura-board-overflow scrolling-container px-sm-10 pa-2 pb-9 mt-1 mx-auto bg-surface"
+    class="sura-text-container sura-board-overflow scrolling-container px-sm-16 pa-2 pb-9 mt-1 mx-auto bg-surface"
     variant="text"
     rounded
   >
@@ -57,7 +57,7 @@ const emit = defineEmits(["verseSelected"])
 
 const target = computed(() => store.getTarget)
 const isTargetedVerse = computed(
-  () => (index) => index + 1 === parseInt(target.value.verseIndex)
+  () => (index) => index + 1 === parseInt(target.value.verseIndex),
 )
 
 const handleKeyNavigation = (event) => {
@@ -92,7 +92,7 @@ const setTargetedVerse = (verse, index) => {
   const verseNumberToQuran = dataStore.oneQuranFile.find(
     (verse) =>
       verse.fileName === target.value.fileName &&
-      verse.verseIndex === parseInt(target.value.verseIndex)
+      verse.verseIndex === parseInt(target.value.verseIndex),
   ).verseNumberToQuran
 
   const isSameVerse = target.value.verseIndex === index

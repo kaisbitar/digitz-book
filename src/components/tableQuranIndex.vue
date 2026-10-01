@@ -77,7 +77,7 @@ const dataStore = useDataStore()
 const display = useDisplay()
 
 const isInputVisible = ref(false)
-const isDetailView = ref(false)
+const isDetailView = ref(true)
 
 const drawerState = computed(() => store.getIndexDrawer)
 
@@ -123,7 +123,7 @@ const handleSelectedSura = (sura) => {
 
 const getFirstVerse = (fileName) => {
   const verse = QuranOneFile.value.find(
-    (file) => file.fileName === fileName && file.verseIndex === 1
+    (file) => file.fileName === fileName && file.verseIndex === 1,
   )
 
   return verse
