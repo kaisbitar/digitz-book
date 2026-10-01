@@ -2,7 +2,7 @@
   <div>
     <div class="d-flex align-center">
       <span class="text-h4 font-weight-bold"
-        >{{ selectedTarteel.inputText + "ـ" }}
+        >{{ selectedTarteel.inputText.trim() + "ـ" }}
         <span v-if="!isPhrase" class="ml-6 text-caption">ومشتقاتها</span>
       </span>
     </div>
@@ -19,24 +19,24 @@ const props = defineProps({
 })
 
 const isPhrase = computed(() =>
-  (props.selectedTarteel.inputText || "").trim().includes(" ")
+  (props.selectedTarteel.inputText || "").includes(" "),
 )
 
 const distinctSurasCount = computed(() => {
   return [
     ...new Set(
-      props.selectedTarteel.results.flatMap((result) => result.suras || [])
+      props.selectedTarteel.results.flatMap((result) => result.suras || []),
     ),
   ].sort().length
 })
 
 const uniqueVersesCount = computed(() => {
   const allVerses = props.selectedTarteel.results.flatMap(
-    (result) => result.verses
+    (result) => result.verses,
   )
 
   const uniqueVerses = new Set(
-    allVerses.map((verse) => verse.verseNumberToQuran)
+    allVerses.map((verse) => verse.verseNumberToQuran),
   )
 
   return uniqueVerses.size

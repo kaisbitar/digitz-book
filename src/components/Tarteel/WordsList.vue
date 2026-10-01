@@ -26,8 +26,8 @@
       />
     </div>
 
-    <!-- Verses panel - slides up from bottom to cover pills -->
-    <v-expand-transition>
+    <!-- Verses panel - slides up from the bottom -->
+    <transition name="verses-slide">
       <div
         v-if="showVerses && selectedWord"
         class="verses-panel flex-grow-1 d-flex flex-column"
@@ -67,7 +67,7 @@
           <div class="mt-5 mb-6 text-center">صدق الله العظيم</div>
         </div>
       </div>
-    </v-expand-transition>
+    </transition>
   </div>
 </template>
 
@@ -108,7 +108,7 @@ const selectedVerseCount = computed(
   () => tarteelStore.getSelectedRatl?.verses?.length || 0,
 )
 const isPhrase = computed(() =>
-  (props.selectedTarteel?.inputText || "").trim().includes(" "),
+  (props.selectedTarteel?.inputText || "").includes(" "),
 )
 const isWordMeaningOpen = ref(false)
 const showVerses = ref(isPhrase.value)
@@ -179,6 +179,17 @@ onMounted(async () => {
 /* Fill the space under the app bar; only the word groups scroll */
 .words-list-page {
   height: calc(100vh - 92px);
+  overflow: hidden;
+}
+
+.verses-slide-enter-active,
+.verses-slide-leave-active {
+  transition: transform 0.35s ease;
+}
+
+.verses-slide-enter-from,
+.verses-slide-leave-to {
+  transform: translateY(100%);
 }
 
 .tarteel-overview-overflow {

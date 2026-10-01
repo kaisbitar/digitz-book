@@ -1,5 +1,5 @@
 <template>
-  <v-container max-width="1200" class="px-sm-4 px-2">
+  <v-container max-width="75vw" class="sura-page px-sm-4 px-2">
     <SuraBoard
       v-if="!showVerseDetails"
       :tabs="tabs"
@@ -9,12 +9,14 @@
       :chartFreqSeries="chartFreqSeries"
       @verseSelected="handleVerseSelectedOnTable"
     />
-    <VerseDetails
-      v-if="showVerseDetails"
-      :title="suraName"
-      :inputText="targetTarteel"
-      @go-back="handleGoBack"
-    />
+    <transition name="verses-slide">
+      <VerseDetails
+        v-if="showVerseDetails"
+        :title="suraName"
+        :inputText="targetTarteel"
+        @go-back="handleGoBack"
+      />
+    </transition>
   </v-container>
 </template>
 
@@ -50,14 +52,14 @@ const targetVerseIndex = computed(() => target.value?.verseIndex)
 
 const tableQuranIndex = computed(() => dataStore.getQuranIndex)
 const suraKeyValues = computed(
-  () => tableQuranIndex.value[suraNumber.value] || tableQuranIndex.value[1]
+  () => tableQuranIndex.value[suraNumber.value] || tableQuranIndex.value[1],
 )
 const mushafChartOptions = computed(() =>
-  getMushafChartOptions(tableQuranIndex.value.length)
+  getMushafChartOptions(tableQuranIndex.value.length),
 )
 const chartFreqType = computed(() => store.getChartFreqType)
 const chartFreqSeries = computed(() =>
-  chartFreqType.value === "words" ? wordsSeries.value : letterSeries.value
+  chartFreqType.value === "words" ? wordsSeries.value : letterSeries.value,
 )
 
 const oneQuranFile = computed(() => dataStore.getOneQuranFile)
@@ -151,7 +153,7 @@ const prepareData = () => {
   })
   suraWithTashkeel.value = allVersesWithTashkeel.value.slice(
     startIndex.value,
-    endIndex.value
+    endIndex.value,
   )
 }
 
@@ -167,5 +169,20 @@ onMounted(() => {
 .back-btn .v-badge {
   margin-top: 10px;
   margin-bottom: 30px;
+}
+
+.sura-page {
+  height: calc(100vh - 92px);
+  overflow: hidden;
+}
+
+.verses-slide-enter-active,
+.verses-slide-leave-active {
+  transition: transform 0.35s ease;
+}
+
+.verses-slide-enter-from,
+.verses-slide-leave-to {
+  transform: translateY(100%);
 }
 </style>

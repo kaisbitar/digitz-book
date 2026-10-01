@@ -1,14 +1,15 @@
 <template>
-  <v-container max-width="1200" class="px-sm-4 px-2">
+  <v-container max-width="75vw" class="px-sm-4 px-2">
     <template v-if="showChartView">
       <!-- Letters chart fills the page as a background; the history card sits on it -->
       <div class="position-relative chart-history-page">
         <div class="position-absolute w-100 h-100 chart-layer">
           <LettersChart :letter="liveLetter || ''" fill />
         </div>
-        <v-row v-if="historyItems.length" class="position-relative mt-0">
-          <v-col cols="12" md="5">
+        <v-row v-if="historyItems.length" class="history-layer position-relative mt-0">
+          <v-col cols="12" md="5" class="history-layer">
             <SearchHistory
+              class="history-card"
               :items="historyItems"
               :selected-id="tarteelStore.getSelectedTarteelId"
               @select="openHistoryItem"
@@ -106,7 +107,7 @@ const isWordMeaningOpen = ref(false)
 const ratl = computed(() => tarteelStore.getSelectedRatl)
 const selectedTarteel = computed(() => {
   return tarteelStore.getStoredTarteels.find(
-    (tarteel) => tarteel.id === tarteelStore.getSelectedTarteelId
+    (tarteel) => tarteel.id === tarteelStore.getSelectedTarteelId,
   )
 })
 
@@ -131,12 +132,12 @@ const targetedVerseIndex = computed(() => store.getTarget?.verseNumberToQuran)
 
 // Newest search first
 const historyItems = computed(() =>
-  [...tarteelStore.getStoredTarteels].reverse()
+  [...tarteelStore.getStoredTarteels].reverse(),
 )
 
 const liveLetter = computed(() => tarteelStore.liveLetter)
 const showChartView = computed(
-  () => !!tarteelStore.liveLetter || tarteelStore.chartVisible
+  () => !!tarteelStore.liveLetter || tarteelStore.chartVisible,
 )
 
 const openHistoryItem = (item) => {
@@ -159,7 +160,7 @@ const removeHistoryItem = (item) => {
 const { paginatedItems, handleInfiniteScroll, isLoading } =
   useIndexedPagination(
     computed(() => ratl.value?.verses || []),
-    targetedVerseIndex
+    targetedVerseIndex,
   )
 
 const handleSelectedVerse = (verse, tarteel) => {
@@ -192,7 +193,7 @@ watch(
   () => ratl.value,
   () => {
     handleScrolling()
-  }
+  },
 )
 
 onMounted(async () => {
@@ -222,7 +223,12 @@ const showList = () => {
   top: 0;
   left: 0;
   opacity: 0.85;
+}
+.history-layer {
   pointer-events: none;
+}
+.history-card {
+  pointer-events: auto;
 }
 .tarteel-board-overflow {
   height: calc(100vh - 230px);

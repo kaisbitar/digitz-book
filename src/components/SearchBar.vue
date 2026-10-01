@@ -115,12 +115,13 @@ const onFocusIn = () => {
 
 // Push the current results into the store so the tarteel page renders them
 const showLiveResults = () => {
-  const value = tarteel.value?.trim() || ""
+  const raw = tarteel.value || ""
+  const value = raw.trim()
   if (value.length <= 1) return
   if (currentWordsList.value.length === 0) return
 
   tarteelStore.setLiveTarteel({
-    inputText: value,
+    inputText: raw.endsWith(" ") ? `${value} ` : value,
     results: [...currentWordsList.value],
     wordRoot: currentWordsList.value.wordRoot ?? null,
   })

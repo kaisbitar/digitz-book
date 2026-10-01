@@ -85,11 +85,11 @@ const generalStats = computed(() => {
   const totalVerses = quranFile.length
   const totalWords = quranFile.reduce(
     (acc, verse) => acc + verse.verseText.split(/\s+/).length,
-    0
+    0,
   )
   const totalLetters = quranFile.reduce(
     (acc, verse) => acc + verse.verseText.replace(/\s+/g, "").length,
-    0
+    0,
   )
   const uniqueWords = distinctWords.value.length
 

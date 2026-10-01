@@ -25,14 +25,14 @@ export function useAutoComplete(dataStore, tarteelStore) {
       word,
       dataStore.getOneQuranFile,
       wordRoot,
-      { removeTashkeel: !includeTashkeel.value }
+      { removeTashkeel: !includeTashkeel.value },
     )
     if (wordSearchResults.suggestions) {
       suggestions.value = wordSearchResults.suggestions.map((suggestion) =>
         suggestion.replace(
           /[\u064B-\u0652\u0670\u0656-\u065F\u0610-\u061A\u06D6-\u06ED]/g,
-          ""
-        )
+          "",
+        ),
       )
       filteredList.value = []
       return
@@ -50,16 +50,16 @@ export function useAutoComplete(dataStore, tarteelStore) {
     filteredList.value = []
 
     const pattern = createArabicPattern(sentence)
-    const filteredVerses = dataStore
-      .getOneQuranFile
-      .filter((verse) => pattern.test(verse.verseText))
+    const filteredVerses = dataStore.getOneQuranFile.filter((verse) =>
+      pattern.test(verse.verseText),
+    )
 
     if (filteredVerses.length === 0) return (filteredList.value = [])
 
     // Same shape as a word result so the phrase renders as a pill
     const suras = [
       ...new Set(
-        filteredVerses.map((verse) => verse.fileName.replace(/[0-9]/g, ""))
+        filteredVerses.map((verse) => verse.fileName.replace(/[0-9]/g, "")),
       ),
     ]
 
@@ -76,7 +76,7 @@ export function useAutoComplete(dataStore, tarteelStore) {
             verseIndex,
             verseNumberToQuran,
             verseText,
-          })
+          }),
         ),
       },
     ]
@@ -134,7 +134,7 @@ export function useAutoComplete(dataStore, tarteelStore) {
         return filteredList.value.length > 0
       }
 
-      await updateFilteredVerses(value)
+      await updateFilteredVerses(value.trim())
       return filteredList.value.length > 0
     } catch (error) {
       console.error("Error in debounced search:", error)
