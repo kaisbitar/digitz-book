@@ -1,6 +1,6 @@
 <template>
   <div
-    class="sura-text-container sura-board-overflow scrolling-container px-sm-16 pa-2 pb-9 mt-1 mx-auto bg-surface"
+    class="sura-text-container sura-board-overflow scrolling-container pa-2 pb-9 mt-1 mx-auto bg-surface"
     variant="text"
     rounded
   >
@@ -123,6 +123,7 @@ const setTargetedVerse = (verse, index) => {
   font-size: 19px;
   line-height: 1.8;
   overflow-y: auto;
+  padding: 0px 100px 0px 100px !important;
 }
 
 .verse-container {

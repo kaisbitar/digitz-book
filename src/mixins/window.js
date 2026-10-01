@@ -8,10 +8,13 @@ export function useWindow(elementRef) {
     await nextTick()
     setTimeout(() => {
       const activeVerseItem = document.querySelector(activeItem)
-      if (!activeVerseItem) return
+      const scrollContainer = document.querySelector(container)
+      // A missing container falls back to the page. On a phone that scrolls
+      // the whole screen. Skip it and leave the real containers unchanged.
+      if (!activeVerseItem || !scrollContainer) return
 
       goTo(activeVerseItem, {
-        container: container,
+        container: scrollContainer,
         offset: -100,
         duration: 300,
         easing: "easeInOutCubic",
