@@ -126,6 +126,13 @@ const setTargetedVerse = (verse, index) => {
   padding: 0px 100px 0px 100px !important;
 }
 
+@media (max-width: 600px) {
+  .sura-text-container {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+}
+
 .verse-container {
   text-align: justify;
   text-justify: inter-word;

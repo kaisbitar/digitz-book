@@ -1,12 +1,22 @@
 <template>
-  <div>
-    <div class="d-flex align-center">
-      <span class="text-h4 font-weight-bold"
-        >{{ selectedTarteel.inputText.trim() + "ـ" }}
-        <span v-if="!isPhrase" class="ml-6 text-caption">ومشتقاتها</span>
+  <div class="d-flex align-center flex-wrap ga-2">
+    <span class="text-h5 text-sm-h4 font-weight-bold">
+      {{ selectedTarteel.inputText.trim() + "ـ" }}
+    </span>
+    <div class="d-flex align-center flex-wrap">
+      <span
+        v-for="item in formattedCounts"
+        :key="item.label"
+        class="d-inline-flex align-baseline ms-3"
+      >
+        <span class="text-body-2 font-weight-bold count-key-item">
+          {{ item.value }}
+        </span>
+        <span class="text-caption text-medium-emphasis me-1">
+          {{ item.label }}
+        </span>
       </span>
     </div>
-    <AppHeaderMetrics :metrics="formattedCounts" />
   </div>
 </template>
 

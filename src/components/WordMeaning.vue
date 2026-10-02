@@ -8,7 +8,7 @@
       </v-fade-transition>
     </v-card-item>
 
-    <v-card hover v-if="!isWordMeaningOpen && !loading">
+    <v-card v-if="!isWordMeaningOpen && !loading">
       <v-card-item>
         <template v-slot:prepend>
           <v-icon icon="mdi-translate" class="mx-2" />
@@ -30,12 +30,15 @@
       <v-list
         v-if="isWordMeaningOpen"
         :key="results[0]?.meaning[0]?.word"
+        border
+        rounded
         :class="isWordMeaningOpen ? 'tarteel-meaning-overflow' : 'fixed-height'"
       >
         <v-list-item
           v-for="(item, index) in results[0]?.meaning"
-          @click="emit('meaningItemClick', item)"
           :key="index"
+          :link="false"
+          :ripple="false"
         >
           <v-list-item-title class="ml-2 count-key-item">
             {{ item.word }}
@@ -48,9 +51,7 @@
 
           <v-divider
             v-if="index < results[0]?.meaning.length - 1"
-            horizontal
-            length="50%"
-            class="mt-7"
+            class="mt-3"
           />
         </v-list-item>
       </v-list>
@@ -65,7 +66,7 @@ import { fetchWordData } from "@/utils/dictionaryUtils.js"
 
 const store = useStore()
 
-const emit = defineEmits(["update:isWordMeaningOpen", "meaningItemClick"])
+defineEmits(["update:isWordMeaningOpen"])
 const props = defineProps({
   word: {
     type: String,
@@ -113,7 +114,7 @@ watch(
     if (newWord) {
       await fetchMeanings()
     }
-  }
+  },
 )
 </script>
 

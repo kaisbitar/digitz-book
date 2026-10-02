@@ -1,17 +1,30 @@
 <template>
   <div class="d-flex flex-column words-list-page">
-    <WordsListHeader
-      :selectedTarteel="selectedTarteel"
-      class="mb-4 flex-grow-0"
-    />
-    <v-divider class="mx-auto flex-grow-0" width="100%"></v-divider>
+    <div class="words-head flex-grow-0">
+      <WordsListHeader :selectedTarteel="selectedTarteel" class="mb-2" />
+      <v-divider class="mx-auto mb-2" width="100%"></v-divider>
+      <div v-if="!isPhrase" class="d-flex flex-wrap ga-2 mb-2">
+      <v-card
+        variant="tonal"
+        :color="isWordMeaningOpen ? 'primary' : undefined"
+        class="px-3 py-2 d-flex align-center"
+        @click="isWordMeaningOpen = !isWordMeaningOpen"
+      >
+        <v-icon
+          icon="mdi-book-open-page-variant-outline"
+          size="small"
+          class="ml-2"
+        />
+        <span>تحليل الكلمة</span>
+      </v-card>
+    </div>
     <WordMeaning
-      v-if="!isPhrase"
+      v-if="!isPhrase && isWordMeaningOpen"
       :word="selectedTarteel.inputText"
-      :isWordMeaningOpen="isWordMeaningOpen"
-      :class="isWordMeaningOpen ? 'tarteel-meaning-overflow' : ''"
-      @click="isWordMeaningOpen = !isWordMeaningOpen"
+      :isWordMeaningOpen="true"
+      class="meaning-panel"
     />
+    </div>
 
     <!-- Pills list - shown when verses are hidden -->
     <div
@@ -30,7 +43,7 @@
     <transition name="verses-slide">
       <div
         v-if="showVerses && selectedWord"
-        class="verses-panel flex-grow-1 d-flex flex-column"
+        class="verses-panel d-flex flex-column"
       >
         <div
           class="verses-toolbar d-flex align-center justify-space-between px-sm-4 py-2"
@@ -53,7 +66,7 @@
 
         <!-- Verses list with scroll -->
         <div
-          class="verses-inline-overflow px-sm-4 flex-grow-1"
+          class="verses-inline-overflow px-sm-4"
           @scroll="handleInfiniteScroll"
         >
           <VerseCardItem
@@ -202,29 +215,44 @@ onMounted(async () => {
   overflow-y: auto;
 }
 
-/* The verses panel covers the pills area */
+/* Title, tile, and meanings stay above the verses */
+.words-head {
+  position: relative;
+  z-index: 2;
+  background: rgb(var(--v-theme-surface));
+}
+
+/* Verses only fill the space under the interpretation, and cannot paint over it */
 .verses-panel {
+  position: relative;
+  z-index: 0;
+  flex: 1 1 0;
   min-height: 0;
-  background: white;
+  overflow: hidden;
+  background: rgb(var(--v-theme-surface));
 }
 
 .verses-toolbar {
   position: relative;
   z-index: 1;
-  margin-top: 10px;
+  flex-shrink: 0;
   margin-bottom: -5px;
-  padding-bottom: 20px;
-  background: linear-gradient(to bottom, #fff 45%, rgba(255, 255, 255, 0));
+  padding-bottom: 12px;
+  background: linear-gradient(
+    to bottom,
+    rgb(var(--v-theme-surface)) 45%,
+    rgba(var(--v-theme-surface), 0)
+  );
 }
 
-/* The verses fill the space left under the word pills */
 .verses-inline-overflow {
+  flex: 1 1 0;
   min-height: 0;
   overflow-y: auto;
 }
 
-.tarteel-meaning-overflow {
-  height: calc(50vh - 100px);
+.meaning-panel {
+  max-height: 28vh;
   overflow: auto;
 }
 </style>
