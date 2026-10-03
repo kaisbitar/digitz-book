@@ -56,8 +56,14 @@
             :key="`${item.value}-${index}`"
             @click="pickSuggestion(item.value)"
           >
-            <v-list-item-title style="white-space: normal">
-              {{ item.label }}
+            <v-list-item-title
+              class="d-flex align-center justify-space-between"
+              style="white-space: normal"
+            >
+              <span>{{ item.label }}</span>
+              <span class="text-caption text-medium-emphasis mr-3">
+                {{ item.count }}
+              </span>
             </v-list-item-title>
           </v-list-item>
         </v-list>

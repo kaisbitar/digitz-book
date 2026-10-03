@@ -4,7 +4,7 @@ import { useSearchTarteel } from "@/hooks/useSearchTarteel"
 import { fetchWordRoot } from "@/utils/dictionaryUtils.js"
 import { createArabicPattern, removeTashkeel } from "@/utils/arabicUtils"
 
-const SUGGESTION_LIMIT = 80000
+const SUGGESTION_LIMIT = 200
 const VERSE_SUGGESTION_LIMIT = 20000
 let wordIndexFile = null
 let wordIndex = []
@@ -41,7 +41,11 @@ const suggestWords = (prefix, entries) => {
   return matches
     .sort((a, b) => b.count - a.count || a.word.length - b.word.length)
     .slice(0, SUGGESTION_LIMIT)
-    .map((item) => item.word)
+    .map((item) => ({
+      label: item.word,
+      value: item.word,
+      count: item.count,
+    }))
 }
 
 const normalizeVerse = (text) => normalizeWord(text).replace(/\s+/g, " ").trim()
@@ -95,15 +99,18 @@ const suggestVerses = (raw, file, exact) => {
   const partialEnd = !/\s$/.test(raw)
   const prefix = new RegExp(`^${createArabicPattern(trimmed).source}`)
   const inside = createArabicPattern(trimmed)
-  const found = []
-  const seen = new Set()
+  const found = new Map()
 
   const push = (text, match) => {
-    if (found.length >= VERSE_SUGGESTION_LIMIT) return
     const snippet = verseSnippet(text, match, partialEnd, exact)
-    if (!snippet || seen.has(snippet.value)) return
-    seen.add(snippet.value)
-    found.push(snippet)
+    if (!snippet) return
+    const existing = found.get(snippet.value)
+    if (existing) {
+      existing.count += 1
+      return
+    }
+    if (found.size >= VERSE_SUGGESTION_LIMIT) return
+    found.set(snippet.value, { ...snippet, count: 1 })
   }
 
   const verses = []
@@ -114,16 +121,15 @@ const suggestVerses = (raw, file, exact) => {
   }
 
   for (const text of verses) {
-    if (found.length >= VERSE_SUGGESTION_LIMIT) break
-    push(text, text.match(prefix))
-  }
-
-  for (const text of verses) {
-    if (found.length >= VERSE_SUGGESTION_LIMIT) break
+    const prefixMatch = text.match(prefix)
+    if (prefixMatch) {
+      push(text, prefixMatch)
+      continue
+    }
     push(text, text.match(inside))
   }
 
-  return found
+  return [...found.values()].sort((a, b) => b.count - a.count)
 }
 
 export function useAutoComplete(dataStore, tarteelStore) {
@@ -151,10 +157,7 @@ export function useAutoComplete(dataStore, tarteelStore) {
     if (raw.includes(" "))
       return suggestVerses(raw, file, exactVerseMatch.value)
 
-    return suggestWords(text, getWordIndex(file)).map((word) => ({
-      label: word,
-      value: word,
-    }))
+    return suggestWords(text, getWordIndex(file))
   })
 
   const { setTarteel } = useSearchTarteel()

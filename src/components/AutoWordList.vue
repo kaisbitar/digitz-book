@@ -11,7 +11,7 @@
       </v-card-title>
       <v-card-text style="overflow-y: auto; width: 100%; display: flex; flex-wrap: wrap; gap: 12px; align-content: flex-start;">
         <v-chip
-          v-for="item in getGroupItems(groupType)"
+          v-for="item in visibleItems(groupType)"
           :key="item.word"
           :color="item.word === selectedWord ? 'primary' : 'grey-darken-2'"
           variant="tonal"
@@ -32,12 +32,22 @@
           />
         </v-chip>
       </v-card-text>
+      <v-btn
+        v-if="hiddenSoundAlikes(groupType)"
+        variant="text"
+        block
+        @click="showAllSoundAlikes = true"
+      >
+        عرض الباقي ({{ hiddenSoundAlikes(groupType) }})
+      </v-btn>
     </v-card>
   </div>
 </template>
 
 <script setup>
-import { computed } from "vue"
+import { computed, ref, watch } from "vue"
+
+const SOUND_ALIKE_LIMIT = 100
 
 const props = defineProps({
   items: {
@@ -51,6 +61,14 @@ const props = defineProps({
 })
 
 const emit = defineEmits(["select", "update:currentWordsList"])
+const showAllSoundAlikes = ref(false)
+
+watch(
+  () => props.items.word,
+  () => {
+    showAllSoundAlikes.value = false
+  },
+)
 
 const getGroupTitle = (group) => {
   const root = props.items.wordRoot
@@ -72,6 +90,17 @@ const removeItem = (item) => {
 
 const getGroupItems = (groupType) => {
   return props.items.filter((item) => (item.group || "exact") === groupType)
+}
+
+const visibleItems = (groupType) => {
+  const items = getGroupItems(groupType)
+  if (groupType !== "other" || showAllSoundAlikes.value) return items
+  return items.slice(0, SOUND_ALIKE_LIMIT)
+}
+
+const hiddenSoundAlikes = (groupType) => {
+  if (groupType !== "other" || showAllSoundAlikes.value) return 0
+  return Math.max(0, getGroupItems(groupType).length - SOUND_ALIKE_LIMIT)
 }
 
 const visibleGroups = computed(() =>
