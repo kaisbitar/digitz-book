@@ -35,6 +35,7 @@ $body-font-family: "Almarai", sans-serif;
 
 html {
   font-family: $body-font-family !important;
+  font-size: clamp(16px, 12px + 0.5vw, 18px);
   overflow: hidden;
   position: relative;
 }
@@ -88,17 +89,17 @@ html {
 }
 
 .v-card-text.verse-card-item-text {
-  font-size: 18px;
+  font-size: 1.125rem;
   max-width: 1083px;
   opacity: 0.9;
 }
 
 .text-caption {
-  font-size: 14px !important;
+  font-size: 0.875rem !important;
 }
 
 .v-card-subtitle {
-  font-size: 16px !important;
+  font-size: 1rem !important;
 }
 
 .activeSuraItem,

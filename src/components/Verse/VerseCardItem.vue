@@ -1,7 +1,8 @@
 <template>
   <v-card
     hover
-    class="px-4 pt-4 pb-4 mt-2 mb-2 verse-card-item"
+    class="px-4 pt-4 pb-4 mt-2 mb-2 mx-auto verse-card-item"
+    max-width="720"
     @click="handleClick"
     variant="outlined"
   >

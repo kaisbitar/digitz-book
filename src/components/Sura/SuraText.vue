@@ -146,10 +146,11 @@ const setTargetedVerse = (verse, index) => {
 @import "@/styles/variables.scss";
 
 .sura-text-container {
-  font-size: 19px;
+  font-size: 1.2rem;
   line-height: 1.8;
   overflow-y: auto;
-  padding: 0px 100px 0px 100px !important;
+  max-width: 720px;
+  padding: 0 24px !important;
 }
 
 @media (max-width: 600px) {
@@ -182,6 +183,7 @@ const setTargetedVerse = (verse, index) => {
   position: fixed;
   inset: 0;
   z-index: 2400;
+  max-width: none;
   height: 100vh !important;
   margin: 0;
   padding-left: 24px !important;

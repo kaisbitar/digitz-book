@@ -53,6 +53,6 @@ const handleWordClick = async (word) => {
   display: inline-block;
   margin: 0 4px;
   cursor: pointer;
-  font-size: 22px;
+  font-size: 1.375rem;
 }
 </style>
