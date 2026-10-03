@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="meaning-panel">
     <v-card-item v-if="loading">
       <v-fade-transition mode="out-in">
         <v-card-title class="pa-3">
@@ -39,19 +39,19 @@
           :key="index"
           :link="false"
           :ripple="false"
+          class="py-4"
         >
-          <v-list-item-title class="ml-2 count-key-item">
+          <div class="text-medium-emphasis mb-2">
             {{ item.word }}
-          </v-list-item-title>
-
-          {{ item.meaning }}
-          <v-list-item-subtitle class="text-caption count-key-item">{{
-            item.dictionary
-          }}</v-list-item-subtitle>
+          </div>
+          <div class="meaning-body">{{ item.meaning }}</div>
+          <div class="text-caption text-medium-emphasis mt-3">
+            {{ item.dictionary }}
+          </div>
 
           <v-divider
             v-if="index < results[0]?.meaning.length - 1"
-            class="mt-3"
+            class="mt-4"
           />
         </v-list-item>
       </v-list>
@@ -124,5 +124,10 @@ watch(
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
+}
+
+.meaning-body {
+  line-height: 1.9;
+  white-space: normal;
 }
 </style>
