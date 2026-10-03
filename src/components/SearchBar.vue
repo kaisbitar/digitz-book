@@ -22,6 +22,48 @@
       @keydown:enter="commit"
     />
 
+    <v-menu
+      v-model="showMenu"
+      :activator="barRef"
+      location="bottom"
+      offset="4"
+      :open-on-click="false"
+      :close-on-content-click="false"
+      :width="menuWidth"
+    >
+      <div class="border rounded bg-surface" @mousedown.prevent>
+        <template v-if="isVerseQuery">
+          <v-list density="compact" class="py-0">
+            <v-list-item>
+              <v-checkbox
+                v-model="exactVerseMatch"
+                label="مطابقة تامة"
+                density="compact"
+                hide-details
+                @click.stop
+              />
+            </v-list-item>
+          </v-list>
+          <v-divider />
+        </template>
+        <v-list
+          density="compact"
+          class="py-0"
+          style="overflow-y: auto; max-height: 280px"
+        >
+          <v-list-item
+            v-for="(item, index) in menuSuggestions"
+            :key="`${item.value}-${index}`"
+            @click="pickSuggestion(item.value)"
+          >
+            <v-list-item-title style="white-space: normal">
+              {{ item.label }}
+            </v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </div>
+    </v-menu>
+
     <v-snackbar
       v-model="showLangHint"
       location="top"
@@ -41,7 +83,7 @@
 </template>
 
 <script setup>
-import { nextTick, onMounted, ref, watch } from "vue"
+import { computed, nextTick, onMounted, ref, watch } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import { useDataStore } from "@/stores/dataStore"
 import { useTarteelStore } from "@/stores/TarteelStore"
@@ -60,17 +102,48 @@ const route = useRoute()
 const dataStore = useDataStore()
 const tarteelStore = useTarteelStore()
 
-const { tarteel, currentWordsList, handleInputChange, clearInput } =
-  useAutoComplete(dataStore, tarteelStore)
+const {
+  tarteel,
+  currentWordsList,
+  menuSuggestions,
+  exactVerseMatch,
+  handleInputChange,
+  searchNow,
+  clearInput,
+} = useAutoComplete(dataStore, tarteelStore)
 
 const barRef = ref(null)
 const inputHasError = ref(false)
 const inputHasSuccess = ref(false)
 const showLangHint = ref(false)
+const isFocused = ref(false)
+const suppressMenu = ref(false)
+const menuWidth = ref(280)
+
+const isVerseQuery = computed(() => (tarteel.value || "").includes(" "))
+
+watch(exactVerseMatch, async () => {
+  const raw = tarteel.value || ""
+  if (!raw.includes(" ")) return
+  await searchNow(raw)
+  showLiveResults()
+})
+
+const showMenu = computed({
+  get: () =>
+    isFocused.value &&
+    !suppressMenu.value &&
+    (menuSuggestions.value.length > 0 || isVerseQuery.value),
+  set: (open) => {
+    if (open) return
+    suppressMenu.value = true
+  },
+})
 
 const NON_ARABIC = /[^\u0600-\u06FF\u0750-\u077F\s]/g
 
-const onInput = async (value) => {
+const onInput = async (value, keepMenuClosed = false) => {
+  suppressMenu.value = keepMenuClosed
   const text = value ?? ""
   const cleaned = text.replace(NON_ARABIC, "")
   if (cleaned !== text) {
@@ -106,7 +179,16 @@ const showLiveLetter = () => {
 }
 
 // Focusing the box (empty or one letter) shows the chart and history
+const pickSuggestion = (value) => {
+  const input = barRef.value?.querySelector("input")
+  if (input) input.value = value
+  onInput(value, true)
+}
+
 const onFocusIn = () => {
+  isFocused.value = true
+  suppressMenu.value = false
+  menuWidth.value = barRef.value?.offsetWidth || 280
   const value = tarteel.value?.trim() || ""
   if (value.length > 1) return
   tarteelStore.setChartVisible(true)
@@ -118,7 +200,7 @@ const showLiveResults = () => {
   const raw = tarteel.value || ""
   const value = raw.trim()
   if (value.length <= 1) return
-  if (currentWordsList.value.length === 0) return
+  if (currentWordsList.value.length === 0 && !raw.includes(" ")) return
 
   tarteelStore.setLiveTarteel({
     inputText: raw.endsWith(" ") ? `${value} ` : value,
@@ -131,13 +213,31 @@ const showLiveResults = () => {
   }
 }
 
-const commit = () => {
+const commit = async () => {
+  suppressMenu.value = true
+  const raw = tarteel.value || ""
+  const value = raw.trim()
+
+  if (value.length > 1) {
+    await searchNow(raw)
+    showLiveResults()
+    tarteelStore.setLiveLetter(null)
+    tarteelStore.setChartVisible(false)
+  }
+
+  const onSearchPage =
+    route.name === "tarteel" && route.query.view !== "detail"
+  if (!onSearchPage) {
+    router.push({ name: "tarteel", query: { view: "list" } })
+  }
+
   tarteelStore.commitDraft()
 }
 
 // Leaving the search box (e.g. clicking a result) finalizes the draft
 const onFocusOut = (event) => {
   if (barRef.value?.contains(event.relatedTarget)) return
+  isFocused.value = false
   tarteelStore.setChartVisible(false)
   if (!tarteel.value) return
   commit()

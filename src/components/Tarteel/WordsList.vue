@@ -4,7 +4,10 @@
       :selectedTarteel="selectedTarteel"
       class="mb-2 flex-grow-0"
     />
-    <v-divider class="mx-auto mb-2 flex-grow-0" width="100%"></v-divider>
+    <v-divider
+      class="mx-auto mb-2 flex-grow-0 opacity-0"
+      width="100%"
+    ></v-divider>
     <div v-if="!isPhrase" class="d-flex flex-wrap ga-2 mb-2">
       <v-card
         variant="tonal"
@@ -20,6 +23,11 @@
         <span>تحليل الكلمة</span>
       </v-card>
     </div>
+    <v-divider
+      class="mx-auto mb-2 flex-grow-0 opacity-0"
+      width="100%"
+    ></v-divider>
+
     <v-navigation-drawer
       v-if="!isPhrase"
       v-model="isWordMeaningOpen"
@@ -100,7 +108,10 @@
             :item="verse"
             :key="verse.originalIndex ?? verse.verseNumberToQuran"
             :index="index"
-            :textToHighlight="selectedWord"
+            :textToHighlight="
+              isPhrase ? selectedTarteel.inputText : selectedWord
+            "
+            :exact="isPhrase && !!tarteelStore.getSelectedRatl?.exact"
             :active="parseInt(targetedVerseIndex) === verse.verseNumberToQuran"
             :class="{
               'active-verse-text':

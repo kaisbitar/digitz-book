@@ -17,16 +17,17 @@
 
 <script setup>
 import { useRouter } from "vue-router"
-import { useSearchTarteel } from "@/hooks/useSearchTarteel"
 import { filterWords } from "@/utils/wordFilter"
 import { useDataStore } from "@/stores/dataStore"
+import { useTarteelStore } from "@/stores/TarteelStore"
 import { fetchWordRoot } from "@/utils/dictionaryUtils"
 import { removeTashkeel } from "@/utils/arabicUtils"
 const router = useRouter()
 const dataStore = useDataStore()
-const { setTarteel } = useSearchTarteel()
+const tarteelStore = useTarteelStore()
 
 const wordRoot = ref("")
+const storedRoot = ref("")
 const props = defineProps({
   word: {
     type: String,
@@ -38,27 +39,39 @@ const props = defineProps({
   },
 })
 
-const handleSearch = async () => {
-  const tarteel = await filterWords(wordRoot.value, dataStore.getOneQuranFile)
-  await setTarteel(tarteel.results, wordRoot.value)
-  router.push({ name: "tarteel" })
+const loadRoot = async (word) => {
+  if (!word) return
+  const root = await fetchWordRoot(word)
+  if (!root) return
+  storedRoot.value = root
+  wordRoot.value = removeTashkeel(root)
 }
 
-watch(
-  () => props.word,
-  async (newWord) => {
-    if (newWord) {
-      const root = await fetchWordRoot(newWord)
-      wordRoot.value = removeTashkeel(root)
-    }
-  }
-)
+const handleSearch = () => {
+  const root = storedRoot.value || wordRoot.value
+  if (!root) return
+
+  const searched = filterWords(wordRoot.value, dataStore.getOneQuranFile, root, {
+    removeTashkeel: true,
+  })
+  const results = searched.results || []
+  if (!results.length) return
+
+  tarteelStore.setLiveLetter(null)
+  tarteelStore.setChartVisible(false)
+  tarteelStore.setLiveTarteel({
+    inputText: wordRoot.value,
+    results,
+    wordRoot: wordRoot.value,
+  })
+  tarteelStore.commitDraft()
+  router.push({ name: "tarteel", query: { view: "list" } })
+}
+
+watch(() => props.word, loadRoot)
 
 defineEmits(["close"])
-onMounted(async () => {
-  const root = await fetchWordRoot(props.word)
-  wordRoot.value = removeTashkeel(root)
-})
+onMounted(() => loadRoot(props.word))
 </script>
 
 <style scoped></style>

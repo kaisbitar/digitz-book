@@ -1,6 +1,6 @@
 <template>
-  <v-card class="d-flex">
-    <v-col :cols="$vuetify.display.smAndUp ? 7 : 11" class="pl-0">
+  <v-card elevation="0" class="d-flex mb-n1">
+    <v-col :cols="$vuetify.display.smAndUp ? 5 : 11" class="pa-3">
       <AppInputField
         v-model="localSearch"
         :fieldPlaceHolder="placeholderText"
@@ -58,7 +58,7 @@ watch(
   () => props.search,
   (newValue) => {
     localSearch.value = newValue
-  }
+  },
 )
 
 const onInput = async (value) => {

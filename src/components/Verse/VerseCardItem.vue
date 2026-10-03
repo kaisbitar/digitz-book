@@ -33,7 +33,7 @@
     </div>
     <v-card-text
       class="verse-card-item-text pa-1 mb-3"
-      v-html="highlight(displayText, textToHighlight)"
+      v-html="highlight(displayText, textToHighlight, exact)"
     />
 
     <div class="d-flex flex-row-reverse" :style="{ maxWidth: '1091px' }">
@@ -53,6 +53,10 @@ const { calculateValue, countVerseLetters } = useCounting()
 const props = defineProps({
   item: Object,
   textToHighlight: String,
+  exact: {
+    type: Boolean,
+    default: false,
+  },
   index: Number,
   active: Boolean,
 })

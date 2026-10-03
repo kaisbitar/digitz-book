@@ -1,6 +1,7 @@
 <template>
-  <v-card>
-    <v-tabs grow align-tabs="center" mobile v-model="computedTab">
+  <div class="d-flex justify-center">
+    <v-card elevation="0">
+      <v-tabs align-tabs="center" mobile v-model="computedTab">
       <v-tab v-for="(item, index) in tabs" :key="index" :value="item.name">
         <v-icon
           class="ml-2"
@@ -9,8 +10,9 @@
         ></v-icon>
         <span>{{ item.title }}</span>
       </v-tab>
-    </v-tabs>
-  </v-card>
+      </v-tabs>
+    </v-card>
+  </div>
 </template>
 
 <script setup>

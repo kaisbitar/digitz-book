@@ -4,8 +4,6 @@
     :isToolbarExpanded="isToolbarExpanded"
     @expandedToggle="isToolbarExpanded = !isToolbarExpanded"
   />
-  <v-divider class="mt-5"></v-divider>
-
   <AppTabs
     v-if="isToolbarExpanded"
     class="mb-1"

@@ -1,10 +1,5 @@
 <template>
-  <v-app-bar
-    :elevation="0"
-    density="comfortable"
-    class="border-b"
-    location="top"
-  >
+  <v-app-bar :elevation="0" density="comfortable" location="top">
     <v-app-bar-nav-icon
       @click="drawer = !drawer"
       class="ml-2"
@@ -13,7 +8,12 @@
     <v-app-bar-title class="mr-16" style="max-width: 140px" v-if="!isMobile">
       رُسُلْ
     </v-app-bar-title>
-    <v-container v-if="isInputVisible" class="main-column pt-6" fluid>
+    <v-container
+      v-if="isInputVisible"
+      class="pt-6 flex-grow-1"
+      style="max-width: 480px"
+      fluid
+    >
       <div class="mb-2">
         <SearchBar :autoFocus="isMobile" />
       </div>
@@ -42,7 +42,6 @@
     />
     <UserAvatar />
   </v-app-bar>
-  <v-divider></v-divider>
 
   <TableQuranIndex />
 
