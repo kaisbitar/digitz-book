@@ -17,12 +17,17 @@
       <AppHeaderMetrics :metrics="formattedMetrics" />
     </div>
 
-    <v-btn
-      icon="mdi-arrow-left"
+    <v-chip
+      v-if="searchedWord"
+      closable
+      color="primary"
       variant="tonal"
-      size="small"
-      @click="goBack"
-    />
+      size="large"
+      @click="openSearchedWord"
+      @click:close="clearSearchedWord"
+    >
+      {{ searchedWord }}
+    </v-chip>
   </div>
 </template>
 
@@ -30,11 +35,15 @@
 import { computed, ref } from "vue"
 import { useDataStore } from "@/stores/dataStore"
 import { useStore } from "@/stores/appStore"
+import { useTarteelStore } from "@/stores/TarteelStore"
 import { useRouter } from "vue-router"
+import { filterWords } from "@/utils/wordFilter"
+import { fetchWordRoot } from "@/utils/dictionaryUtils.js"
 
 const router = useRouter()
 const dataStore = useDataStore()
 const store = useStore()
+const tarteelStore = useTarteelStore()
 
 const props = defineProps({
   title: String,
@@ -48,12 +57,66 @@ const toggleToolbar = () => {
   emit("expandedToggle")
 }
 
-const goBack = () => {
-  router.back()
+const openSearchedWord = async () => {
+  const word = searchedWord.value.trim()
+  if (!word) return
+
+  const items = [...tarteelStore.getStoredTarteels].reverse()
+  const hasWord = (item) =>
+    (item.inputText || "").trim() === word ||
+    item.results?.some((result) => result.word === word)
+
+  let match = items.find(hasWord)
+  if (!match) {
+    const wordRoot = word.length >= 2 ? await fetchWordRoot(word) : null
+    const searched = filterWords(word, dataStore.getOneQuranFile, wordRoot, {
+      removeTashkeel: true,
+    })
+    const results = searched.results || []
+    if (!results.length) return
+    results.wordRoot = wordRoot
+    tarteelStore.setLiveTarteel({ inputText: word, results, wordRoot })
+    match = tarteelStore.getSelectedTarteel
+  }
+  if (!match) return
+
+  const verseId = target.value?.verseNumberToQuran
+  const ratl =
+    match.results?.find((item) => item.word === word) ||
+    match.results?.find((item) =>
+      item.verses?.some((verse) => verse.verseNumberToQuran == verseId),
+    ) ||
+    match.results?.[0] ||
+    null
+
+  tarteelStore.setLiveLetter(null)
+  tarteelStore.setChartVisible(false)
+  tarteelStore.setSelectedTarteelId(match.id)
+  tarteelStore.setSelectedRatl(ratl)
+  tarteelStore.setSelectedRatlIndex(
+    ratl ? match.results.findIndex((item) => item.word === ratl.word) : null,
+  )
+  if (
+    ratl?.verses?.some((verse) => verse.verseNumberToQuran == verseId)
+  ) {
+    tarteelStore.rememberOpenedVerse()
+  }
+  router.push({ name: "tarteel", query: { view: "list" } })
+}
+
+const clearSearchedWord = () => {
+  store.setTarget({
+    ...target.value,
+    tarteel: "",
+  })
+  const query = { ...router.currentRoute.value.query }
+  delete query.tarteel
+  router.replace({ query })
 }
 
 const tableQuranIndex = computed(() => dataStore.getQuranIndex)
 const target = computed(() => store.getTarget)
+const searchedWord = computed(() => target.value?.tarteel || "")
 const suraNumber = computed(() => {
   const numberPart = target.value.fileName
     .replace(/[ء-٩]/g, "")

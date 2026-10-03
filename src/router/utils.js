@@ -18,7 +18,7 @@ export async function processSuraNavigation(to) {
   if (verse) {
     store.setTarget({
       ...verse,
-      tarteel: to.query.tarteel || "",
+      tarteel: to.query.tarteel || store.getTarget?.tarteel || "",
     })
   }
 }

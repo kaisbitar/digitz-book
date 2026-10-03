@@ -69,7 +69,7 @@
     <transition name="verses-slide">
       <div
         v-if="showVerses && selectedWord"
-        class="verses-panel flex-grow-1 d-flex flex-column"
+        class="verses-panel flex-grow-1 d-flex flex-column bg-surface"
       >
         <div
           class="verses-toolbar d-flex align-center justify-space-between px-sm-4 py-2"
@@ -249,7 +249,6 @@ onMounted(async () => {
 /* The verses panel covers the pills area */
 .verses-panel {
   min-height: 0;
-  background: white;
 }
 
 .verses-toolbar {
@@ -257,7 +256,11 @@ onMounted(async () => {
   z-index: 1;
   margin-bottom: -5px;
   padding-bottom: 12px;
-  background: linear-gradient(to bottom, #fff 45%, rgba(255, 255, 255, 0));
+  background: linear-gradient(
+    to bottom,
+    rgb(var(--v-theme-surface)) 45%,
+    rgba(var(--v-theme-surface), 0)
+  );
 }
 
 /* The verses fill the space left under the word pills */

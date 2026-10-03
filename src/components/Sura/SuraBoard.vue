@@ -25,11 +25,7 @@
     @navigate-down="handleClickDown"
   />
 
-  <v-window
-    v-model="activeTab"
-    class="input-visible"
-    :touch="false"
-  >
+  <v-window v-model="activeTab" class="input-visible" :touch="false">
     <v-window-item value="suraText" @before-enter="scrollToActiveVerse">
       <SuraText
         ref="suraTextRef"
@@ -200,6 +196,13 @@ const onInput = (value) => {
     setRoute()
   }, 100)
 }
+
+watch(targetTarteel, (value) => {
+  const next = value || ""
+  if (next === inputText.value) return
+  inputText.value = next
+  searchBtnText.value = next || `ترتيل ${props.suraName}`
+})
 
 const handleLanding = async () => {
   if (!targetTarteel.value) {

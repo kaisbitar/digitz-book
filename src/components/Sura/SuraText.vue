@@ -1,9 +1,28 @@
 <template>
   <div
     class="sura-text-container sura-board-overflow scrolling-container pa-2 pb-9 mt-1 mx-auto bg-surface"
+    :class="{ 'reading-mode': isReading }"
     variant="text"
     rounded
   >
+    <div v-if="isReading" class="reading-title d-flex align-center ga-2 bg-surface">
+      <SuraHeader class="flex-grow-1" />
+      <v-btn
+        icon="mdi-fullscreen-exit"
+        variant="tonal"
+        size="small"
+        @click="isReading = false"
+      />
+    </div>
+    <v-btn
+      v-else
+      class="reading-toggle"
+      icon="mdi-fullscreen"
+      variant="tonal"
+      size="small"
+      @click="isReading = true"
+    />
+    <div class="reading-column">
     <div class="mt-4 mb-7 text-center">بسم الله الرحمن الرحيم</div>
 
     <div class="verse-container">
@@ -37,6 +56,7 @@
     </div>
 
     <div class="mt-7 text-center">صدق الله العظيم</div>
+    </div>
   </div>
 </template>
 
@@ -60,7 +80,13 @@ const isTargetedVerse = computed(
   () => (index) => index + 1 === parseInt(target.value.verseIndex),
 )
 
+const isReading = ref(false)
+
 const handleKeyNavigation = (event) => {
+  if (event.key === "Escape" && isReading.value) {
+    isReading.value = false
+    return
+  }
   if (!target.value.verseIndex) return
   if (!["ArrowUp", "ArrowDown", "Enter"].includes(event.key)) return
 
@@ -131,6 +157,35 @@ const setTargetedVerse = (verse, index) => {
     padding-left: 16px !important;
     padding-right: 16px !important;
   }
+}
+
+.reading-toggle {
+  position: sticky;
+  top: 8px;
+  z-index: 2;
+  float: left;
+}
+
+.reading-title {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  padding: 12px 8px;
+}
+
+.reading-mode .reading-column {
+  max-width: 640px;
+  margin-inline: auto;
+}
+
+.sura-text-container.reading-mode {
+  position: fixed;
+  inset: 0;
+  z-index: 2400;
+  height: 100vh !important;
+  margin: 0;
+  padding-left: 24px !important;
+  padding-right: 24px !important;
 }
 
 .verse-container {

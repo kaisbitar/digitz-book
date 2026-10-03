@@ -59,7 +59,10 @@ export const useStore = defineStore("Quran", {
     setTarget(target) {
       if (target.fileName !== "000المصحف") {
         this.target = {
-          tarteel: target.tarteel,
+          tarteel:
+            target.tarteel !== undefined
+              ? target.tarteel
+              : this.target?.tarteel || "",
           suraNumber: target.fileName.replace(/[ء-٩]/g, "").replace(/\s/g, ""),
           suraName: target.fileName.replace(/[0-9]/g, ""),
           fileName: target.fileName,
@@ -82,6 +85,7 @@ export const useStore = defineStore("Quran", {
         numberOfWords: 77432,
         verseText: "بسم الله الرحمن الرحيم",
         verseValue: 115,
+        tarteel: this.target?.tarteel || "",
       }
     },
     resetTarget() {
