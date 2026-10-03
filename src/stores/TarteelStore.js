@@ -100,8 +100,15 @@ export const useTarteelStore = defineStore("tarteel", {
       restoreVersesOnReturn = false
     },
 
-    // The draft becomes a normal history entry
+    // The draft becomes a normal history entry. One row per searched word.
     commitDraft() {
+      const draft = this.storedTarteels.find((t) => t.id === this.draftId)
+      const key = (draft?.inputText || "").trim()
+      if (draft && key) {
+        this.storedTarteels = this.storedTarteels.filter(
+          (item) => item.id === draft.id || (item.inputText || "").trim() !== key,
+        )
+      }
       this.draftId = null
     },
 

@@ -130,10 +130,18 @@ const ratlData = computed(() => {
 
 const targetedVerseIndex = computed(() => store.getTarget?.verseNumberToQuran)
 
-// Newest search first
-const historyItems = computed(() =>
-  [...tarteelStore.getStoredTarteels].reverse(),
-)
+// Newest search first, one row per word
+const historyItems = computed(() => {
+  const seen = new Set()
+  const unique = []
+  for (const item of [...tarteelStore.getStoredTarteels].reverse()) {
+    const key = (item.inputText || "").trim()
+    if (!key || seen.has(key)) continue
+    seen.add(key)
+    unique.push(item)
+  }
+  return unique
+})
 
 const liveLetter = computed(() => tarteelStore.liveLetter)
 const showChartView = computed(
@@ -151,7 +159,11 @@ const openHistoryItem = (item) => {
 }
 
 const removeHistoryItem = (item) => {
-  tarteelStore.removeTarteelItem(item.id)
+  const key = (item.inputText || "").trim()
+  const ids = tarteelStore.getStoredTarteels
+    .filter((entry) => (entry.inputText || "").trim() === key)
+    .map((entry) => entry.id)
+  ids.forEach((id) => tarteelStore.removeTarteelItem(id))
   const selected = tarteelStore.getSelectedTarteel
   tarteelStore.setSelectedRatl(selected?.results?.[0] ?? null)
   tarteelStore.setSelectedRatlIndex(selected ? 0 : null)

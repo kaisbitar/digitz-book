@@ -5,7 +5,10 @@
     variant="text"
     rounded
   >
-    <div v-if="isReading" class="reading-title d-flex align-center ga-2 bg-surface">
+    <div
+      v-if="isReading"
+      class="reading-title d-flex align-center ga-2 bg-surface"
+    >
       <SuraHeader class="flex-grow-1" />
       <v-btn
         icon="mdi-fullscreen-exit"
@@ -23,39 +26,39 @@
       @click="isReading = true"
     />
     <div class="reading-column">
-    <div class="mt-4 mb-7 text-center">بسم الله الرحمن الرحيم</div>
+      <div class="mt-4 mb-7 text-center">بسم الله الرحمن الرحيم</div>
 
-    <div class="verse-container">
-      <span
-        v-for="(verse, index) in versesBasics"
-        :key="index"
-        :class="{
-          'active-verse-text': isTargetedVerse(index),
-          'dimmed-verse': !isTargetedVerse(index),
-        }"
-      >
-        <v-badge
-          :content="`${index + 1}`"
-          color="count-key-item"
-          offset-x="5"
-          offset-y="0"
-          inline
-        ></v-badge>
+      <div class="verse-container">
         <span
-          :id="`v${index + 1}`"
-          class="verse-content"
-          @click="setTargetedVerse(verse.verseText, index + 1)"
+          v-for="(verse, index) in versesBasics"
+          :key="index"
+          :class="{
+            'active-verse-text': isTargetedVerse(index),
+            'dimmed-verse': !isTargetedVerse(index),
+          }"
         >
+          <v-badge
+            :content="`${index + 1}`"
+            color="count-key-item"
+            offset-x="5"
+            offset-y="0"
+            inline
+          ></v-badge>
           <span
-            v-if="inputText"
-            v-html="highlight(verse.verseText, inputText)"
-          />
-          <span v-else>{{ verse.verseText }}</span>
+            :id="`v${index + 1}`"
+            class="verse-content"
+            @click="setTargetedVerse(verse.verseText, index + 1)"
+          >
+            <span
+              v-if="inputText"
+              v-html="highlight(verse.verseText, inputText)"
+            />
+            <span v-else>{{ verse.verseText }}</span>
+          </span>
         </span>
-      </span>
-    </div>
+      </div>
 
-    <div class="mt-7 text-center">صدق الله العظيم</div>
+      <div class="mt-7 text-center">صدق الله العظيم</div>
     </div>
   </div>
 </template>
