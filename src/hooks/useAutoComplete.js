@@ -2,15 +2,15 @@ import { ref, computed } from "vue"
 import { filterWords } from "@/utils/wordFilter"
 import { useSearchTarteel } from "@/hooks/useSearchTarteel"
 import { fetchWordRoot } from "@/utils/dictionaryUtils.js"
-import { createArabicPattern, removeTashkeel } from "@/utils/arabicUtils"
+import { createArabicPattern } from "@/utils/arabicUtils"
 
 const SUGGESTION_LIMIT = 200
 const VERSE_SUGGESTION_LIMIT = 20000
 let wordIndexFile = null
 let wordIndex = []
 
-const normalizeWord = (word) =>
-  removeTashkeel(String(word || "").replace(/\u0670/g, "ا"))
+// Strip vowels only. Keep the dagger alif so the suggestion stays the Quran spelling.
+const normalizeWord = (word) => String(word || "").replace(/[\u064B-\u0652]/g, "")
 
 const getWordIndex = (oneQuranFile) => {
   if (wordIndexFile === oneQuranFile) return wordIndex

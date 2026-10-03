@@ -60,24 +60,24 @@
       </div>
     </v-navigation-drawer>
 
-    <!-- Pills list - shown when verses are hidden -->
-    <div
-      v-if="!showVerses"
-      class="tarteel-overview-overflow px-sm-4 mt-1 flex-grow-1 d-flex flex-column"
-    >
-      <AutoWordList
-        :items="listItems"
-        :selected-word="tarteelStore.getSelectedRatl?.word"
-        @select="handleWordSelect"
-        @update:currentWordsList="updateResults"
-      />
-    </div>
+    <!-- Pills stay full height. The verses panel covers them while it slides. -->
+    <div class="words-stage flex-grow-1">
+      <div
+        v-show="!showVerses"
+        class="tarteel-overview-overflow px-sm-4 mt-1 h-100 d-flex flex-column"
+      >
+        <AutoWordList
+          :items="listItems"
+          :selected-word="tarteelStore.getSelectedRatl?.word"
+          @select="handleWordSelect"
+          @update:currentWordsList="updateResults"
+        />
+      </div>
 
-    <!-- Verses panel - slides up from the bottom -->
-    <transition name="verses-slide">
+      <transition name="verses-slide">
       <div
         v-if="showVerses && selectedWord"
-        class="verses-panel flex-grow-1 d-flex flex-column bg-surface"
+        class="verses-panel d-flex flex-column bg-surface"
       >
         <div
           class="verses-toolbar d-flex align-center justify-space-between px-sm-4 py-2"
@@ -122,7 +122,8 @@
           <div class="mt-5 mb-6 text-center">صدق الله العظيم</div>
         </div>
       </div>
-    </transition>
+      </transition>
+    </div>
   </div>
 </template>
 
@@ -252,13 +253,20 @@ onMounted(async () => {
   transform: translateY(100%);
 }
 
+.words-stage {
+  position: relative;
+  min-height: 0;
+}
+
 .tarteel-overview-overflow {
   min-height: 0;
   overflow-y: auto;
 }
 
-/* The verses panel covers the pills area */
+/* Covers the pills. Stays out of the flex flow so the list keeps its full height. */
 .verses-panel {
+  position: absolute;
+  inset: 0;
   min-height: 0;
 }
 

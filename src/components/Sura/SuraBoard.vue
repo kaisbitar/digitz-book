@@ -236,8 +236,10 @@ const setTargetVerse = (verse) => {
 
 <style scoped>
 .input-visible {
-  --content-height: calc(90vh - 180px);
+  /* App bar, page padding, sura title, tabs, search row */
+  --content-height: calc(100vh - var(--v-layout-top) - 16px - 57px - 52px - 60px);
 }
+
 .sura-board-overflow {
   height: var(--content-height);
   overflow: auto;

@@ -1,22 +1,23 @@
 <template>
   <v-container fluid class="main-column sura-page px-2">
-    <SuraBoard
-      v-if="!showVerseDetails"
-      :tabs="tabs"
-      :suraName="suraName"
-      :suraWithTashkeel="suraWithTashkeel"
-      :versesBasics="versesBasics"
-      :chartFreqSeries="chartFreqSeries"
-      @verseSelected="handleVerseSelectedOnTable"
-    />
-    <transition name="verses-slide">
-      <VerseDetails
-        v-if="showVerseDetails"
-        :title="suraName"
-        :inputText="targetTarteel"
-        @go-back="handleGoBack"
+    <div class="sura-stage">
+      <SuraBoard
+        :tabs="tabs"
+        :suraName="suraName"
+        :suraWithTashkeel="suraWithTashkeel"
+        :versesBasics="versesBasics"
+        :chartFreqSeries="chartFreqSeries"
+        @verseSelected="handleVerseSelectedOnTable"
       />
-    </transition>
+      <transition name="verses-slide">
+        <VerseDetails
+          v-if="showVerseDetails"
+          :title="suraName"
+          :inputText="targetTarteel"
+          @go-back="handleGoBack"
+        />
+      </transition>
+    </div>
   </v-container>
 </template>
 
@@ -171,9 +172,25 @@ onMounted(() => {
   margin-bottom: 30px;
 }
 
-.sura-page {
-  height: calc(100vh - 92px);
+.sura-page.v-container {
+  height: calc(100vh - var(--v-layout-top));
+  max-height: calc(100vh - var(--v-layout-top));
+  padding-bottom: 0;
   overflow: hidden;
+}
+
+.sura-stage {
+  position: relative;
+  height: 100%;
+}
+
+/* Covers the sura. Stays out of the flow so the sura keeps its full height. */
+.sura-stage > .verse-details-container {
+  position: absolute;
+  inset: 0;
+  height: auto;
+  z-index: 2;
+  background-color: rgb(var(--v-theme-background));
 }
 
 .verses-slide-enter-active,

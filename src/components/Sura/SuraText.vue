@@ -1,6 +1,6 @@
 <template>
   <div
-    class="sura-text-container sura-board-overflow scrolling-container pa-2 pb-9 mt-1 mx-auto bg-surface"
+    class="sura-text-container sura-board-overflow scrolling-container pa-2 pb-9 mx-auto bg-surface"
     :class="{ 'reading-mode': isReading }"
     variant="text"
     rounded
@@ -32,10 +32,12 @@
         <span
           v-for="(verse, index) in versesBasics"
           :key="index"
+          class="verse-hit"
           :class="{
             'active-verse-text': isTargetedVerse(index),
             'dimmed-verse': !isTargetedVerse(index),
           }"
+          @click="setTargetedVerse(verse.verseText, index + 1)"
         >
           <v-badge
             :content="`${index + 1}`"
@@ -44,11 +46,7 @@
             offset-y="0"
             inline
           ></v-badge>
-          <span
-            :id="`v${index + 1}`"
-            class="verse-content"
-            @click="setTargetedVerse(verse.verseText, index + 1)"
-          >
+          <span :id="`v${index + 1}`" class="verse-content">
             <span
               v-if="inputText"
               v-html="highlight(verse.verseText, inputText)"
@@ -153,13 +151,14 @@ const setTargetedVerse = (verse, index) => {
   line-height: 1.8;
   overflow-y: auto;
   max-width: 720px;
-  padding: 0 24px !important;
+  padding: 0 24px 36px !important;
 }
 
 @media (max-width: 600px) {
   .sura-text-container {
     padding-left: 16px !important;
     padding-right: 16px !important;
+    padding-bottom: 36px !important;
   }
 }
 
@@ -198,8 +197,11 @@ const setTargetedVerse = (verse, index) => {
   text-justify: inter-word;
 }
 
-.verse-content {
+.verse-hit {
   cursor: pointer;
+}
+
+.verse-content {
   display: inline;
 }
 
