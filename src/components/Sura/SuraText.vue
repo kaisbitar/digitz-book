@@ -17,46 +17,48 @@
         @click="isReading = false"
       />
     </div>
-    <v-btn
-      v-else
-      class="reading-toggle"
-      icon="mdi-fullscreen"
-      variant="tonal"
-      size="small"
-      @click="isReading = true"
-    />
-    <div class="reading-column">
-      <div class="mt-4 mb-7 text-center">بسم الله الرحمن الرحيم</div>
+    <div class="reading-row">
+      <v-btn
+        v-if="!isReading"
+        class="reading-toggle"
+        icon="mdi-fullscreen"
+        variant="tonal"
+        size="small"
+        @click="isReading = true"
+      />
+      <div class="reading-column">
+        <div class="mt-4 mb-7 text-center">بسم الله الرحمن الرحيم</div>
 
-      <div class="verse-container">
-        <span
-          v-for="(verse, index) in versesBasics"
-          :key="index"
-          class="verse-hit"
-          :class="{
-            'active-verse-text': isTargetedVerse(index),
-            'dimmed-verse': !isTargetedVerse(index),
-          }"
-          @click="setTargetedVerse(verse.verseText, index + 1)"
-        >
-          <v-badge
-            :content="`${index + 1}`"
-            color="count-key-item"
-            offset-x="5"
-            offset-y="0"
-            inline
-          ></v-badge>
-          <span :id="`v${index + 1}`" class="verse-content">
-            <span
-              v-if="inputText"
-              v-html="highlight(verse.verseText, inputText)"
-            />
-            <span v-else>{{ verse.verseText }}</span>
+        <div class="verse-container">
+          <span
+            v-for="(verse, index) in versesBasics"
+            :key="index"
+            class="verse-hit"
+            :class="{
+              'active-verse-text': isTargetedVerse(index),
+              'dimmed-verse': !isTargetedVerse(index),
+            }"
+            @click="setTargetedVerse(verse.verseText, index + 1)"
+          >
+            <v-badge
+              :content="`${index + 1}`"
+              color="count-key-item"
+              offset-x="5"
+              offset-y="0"
+              inline
+            ></v-badge>
+            <span :id="`v${index + 1}`" class="verse-content">
+              <span
+                v-if="inputText"
+                v-html="highlight(verse.verseText, inputText)"
+              />
+              <span v-else>{{ verse.verseText }}</span>
+            </span>
           </span>
-        </span>
-      </div>
+        </div>
 
-      <div class="mt-7 text-center">صدق الله العظيم</div>
+        <div class="mt-7 text-center">صدق الله العظيم</div>
+      </div>
     </div>
   </div>
 </template>
@@ -154,19 +156,65 @@ const setTargetedVerse = (verse, index) => {
   padding: 0 24px 36px !important;
 }
 
+.sura-text-container::before {
+  content: "";
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: block;
+  height: 28px;
+  margin: 0 -24px -28px;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgb(var(--v-theme-background)),
+    transparent
+  );
+}
+
+.reading-mode::before {
+  content: none;
+}
+
 @media (max-width: 600px) {
   .sura-text-container {
     padding-left: 16px !important;
     padding-right: 16px !important;
     padding-bottom: 36px !important;
   }
+
+  .sura-text-container::before {
+    margin-inline: -16px;
+  }
+}
+
+.reading-row {
+  display: flex;
+  align-items: flex-start;
+}
+
+.reading-column {
+  order: 1;
+  flex: 1;
 }
 
 .reading-toggle {
+  order: 2;
   position: sticky;
-  top: 8px;
+  top: 58px;
   z-index: 2;
-  float: left;
+  margin-inline-start: 8px;
+}
+
+@media (max-width: 600px) {
+  .reading-row {
+    display: block;
+  }
+
+  .reading-toggle {
+    float: left;
+    margin-inline-start: 0;
+  }
 }
 
 .reading-title {

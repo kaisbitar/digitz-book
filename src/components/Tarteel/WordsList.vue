@@ -3,39 +3,32 @@
     <WordsListHeader
       :selectedTarteel="selectedTarteel"
       class="mb-2 flex-grow-0"
-    />
-    <v-divider
-      class="mx-auto mb-2 flex-grow-0 opacity-0"
-      width="100%"
-    ></v-divider>
-    <div v-if="!isPhrase" class="d-flex flex-wrap ga-2 mb-2">
-      <v-card
-        variant="outlined"
-        :color="isWordMeaningOpen ? 'primary' : undefined"
-        class="px-3 py-2 d-flex align-center"
-        @click="toggleWordMeaning"
-      >
-        <v-icon
-          icon="mdi-book-open-page-variant-outline"
-          size="small"
-          class="ml-2"
-        />
-        <span>تحليل الكلمة</span>
-      </v-card>
-      <v-card
-        variant="outlined"
-        :color="isLetterMeaningOpen ? 'primary' : undefined"
-        class="px-3 py-2 d-flex align-center"
-        @click="toggleLetterMeaning"
-      >
-        <v-icon icon="mdi-abjad-arabic" size="small" class="ml-2" />
-        <span>دلالة الحروف</span>
-      </v-card>
-    </div>
-    <v-divider
-      class="mx-auto mb-2 flex-grow-0 opacity-0"
-      width="100%"
-    ></v-divider>
+    >
+      <div v-if="!isPhrase" class="d-flex flex-wrap ga-2">
+        <v-card
+          variant="outlined"
+          :color="isWordMeaningOpen ? 'primary' : undefined"
+          class="px-3 py-2 d-flex align-center"
+          @click="toggleWordMeaning"
+        >
+          <v-icon
+            icon="mdi-book-open-page-variant-outline"
+            size="small"
+            class="ml-2"
+          />
+          <span>تحليل الجذر</span>
+        </v-card>
+        <v-card
+          variant="outlined"
+          :color="isLetterMeaningOpen ? 'primary' : undefined"
+          class="px-3 py-2 d-flex align-center"
+          @click="toggleLetterMeaning"
+        >
+          <v-icon icon="mdi-abjad-arabic" size="small" class="ml-2" />
+          <span>تحليل الحروف</span>
+        </v-card>
+      </div>
+    </WordsListHeader>
 
     <v-navigation-drawer
       v-if="!isPhrase"
@@ -115,10 +108,9 @@
           v-if="showVerses && selectedWord"
           class="verses-panel d-flex flex-column bg-surface"
         >
-          <div
-            class="verses-toolbar d-flex align-center justify-space-between px-sm-4 py-2"
-          >
+          <div class="verses-toolbar d-flex align-center px-sm-4 py-2">
             <v-chip
+              class="ms-auto"
               color="primary"
               variant="tonal"
               size="large"
@@ -129,9 +121,6 @@
                 ({{ selectedVerseCount }})
               </span>
             </v-chip>
-            <v-btn icon size="small" variant="text" @click="showVerses = false">
-              <v-icon>mdi-close</v-icon>
-            </v-btn>
           </div>
 
           <!-- Verses list with scroll -->
@@ -324,10 +313,10 @@ onMounted(async () => {
 
 .verses-toolbar {
   position: relative;
-  z-index: 1;
-  margin-bottom: -5px;
-  padding-bottom: 12px;
-  background: rgb(var(--v-theme-background));
+  z-index: 200;
+  margin-top: -58px;
+  /* padding-bottom: 12px; */
+  /* background: rgb(var(--v-theme-background)); */
 }
 
 /* The verses fill the space left under the word pills */

@@ -18,26 +18,13 @@
             {{ badgeContent }}/{{ inputIndex }}
           </span>
         </template>
-        <template v-slot:append-input-items>
-          <v-btn
-            v-for="btn in inputNavigation"
-            :key="btn.icon"
-            :class="[btn.class]"
-            :icon="btn.icon"
-            :tabindex="btn.tabindex"
-            variant="tonal"
-            size="small"
-            clickable
-            @click="btn.action"
-          ></v-btn>
-        </template>
       </AppInputField>
     </div>
   </v-card>
 </template>
 
 <script setup>
-import { ref, watch, computed, nextTick } from "vue"
+import { ref, watch, nextTick } from "vue"
 
 const props = defineProps({
   search: String,
@@ -46,12 +33,7 @@ const props = defineProps({
   inputIndex: Number,
 })
 
-const emit = defineEmits([
-  "update:search",
-  "enter",
-  "navigate-up",
-  "navigate-down",
-])
+const emit = defineEmits(["update:search", "enter"])
 
 const localSearch = ref(props.search || "")
 const hasError = ref(false)
@@ -88,29 +70,6 @@ const onInput = async (value) => {
 const onEnter = () => {
   emit("enter", localSearch.value)
 }
-
-const handleClickUp = () => {
-  emit("navigate-up")
-}
-
-const handleClickDown = () => {
-  emit("navigate-down")
-}
-
-const inputNavigation = computed(() => [
-  {
-    icon: "mdi-chevron-up",
-    class: "ml-1",
-    tabindex: -1,
-    action: handleClickUp,
-  },
-  {
-    icon: "mdi-chevron-down",
-    class: "ml-1",
-    tabindex: -1,
-    action: handleClickDown,
-  },
-])
 </script>
 
 <style scoped></style>

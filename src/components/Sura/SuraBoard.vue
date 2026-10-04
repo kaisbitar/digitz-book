@@ -1,10 +1,11 @@
 <template>
   <SuraHeader
-    class="flex-wrap mb-4"
+    class="mb-2 mt-n3"
     :isToolbarExpanded="isToolbarExpanded"
     @expandedToggle="isToolbarExpanded = !isToolbarExpanded"
-  />
-  <div class="d-flex align-center flex-wrap">
+    @navigate-up="handleClickUp"
+    @navigate-down="handleClickDown"
+  >
     <AppTabs
       v-if="isToolbarExpanded"
       class="flex-shrink-0"
@@ -12,6 +13,8 @@
       :activeTab="activeTab"
       @update:activeTab="updateActiveTab"
     />
+  </SuraHeader>
+  <div v-if="activeTab !== 'suraText'" class="d-flex align-center">
     <SuraInputField
       :search="inputText"
       :placeholderText="`سورة ${suraName}`"
@@ -20,12 +23,14 @@
       class="ms-auto"
       @update:search="onInput"
       @enter="onEnter"
-      @navigate-up="handleClickUp"
-      @navigate-down="handleClickDown"
     />
   </div>
 
-  <v-window v-model="activeTab" class="input-visible" :touch="false">
+  <v-window
+    v-model="activeTab"
+    :class="activeTab === 'suraText' ? 'sura-text-visible' : 'input-visible'"
+    :touch="false"
+  >
     <v-window-item
       value="suraText"
       @before-enter="scrollToActiveVerse"
@@ -238,8 +243,19 @@ const setTargetVerse = (verse) => {
 
 <style scoped>
 .input-visible {
-  /* App bar, page padding, sura title, tabs and search on one row */
+  /* App bar, page padding, sura title, search row */
   --content-height: calc(100vh - var(--v-layout-top) - 16px - 57px - 48px);
+}
+
+.sura-text-visible {
+  --content-height: calc(100vh - var(--v-layout-top) - 16px - 57px);
+}
+
+@media (max-width: 600px) {
+  .sura-text-visible,
+  .input-visible {
+    --content-height: calc(100vh - var(--v-layout-top) - 16px - 40px - 56px);
+  }
 }
 
 .sura-board-overflow {

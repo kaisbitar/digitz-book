@@ -1,33 +1,42 @@
 <template>
-  <div class="d-flex justify-space-between">
-    <!-- <v-btn
-      class="float-end"
-      @click="toggleToolbar"
-      icon
-      variant="tonal"
-      size="small"
-    >
-      <v-icon>{{
-        isToolbarExpanded ? "mdi-chevron-up" : "mdi-chevron-down"
-      }}</v-icon>
-    </v-btn> -->
-    <div>
-      <span class="text-h4 ml-1">{{ suraNumber }}</span>
-      <span class="text-h4 ml-4">{{ target.suraName }}</span>
-      <AppHeaderMetrics :metrics="formattedMetrics" />
+  <div class="sura-header d-flex align-center flex-wrap position-relative">
+    <div class="sura-title">
+      <!-- <span class="ml-1">{{ suraNumber }}</span> -->
+      <span class="ml-2 font-weight-bold text-h5"
+        >سورة {{ target.suraName }}</span
+      >
+      <!-- <AppHeaderMetrics :metrics="formattedMetrics" /> -->
     </div>
-
-    <v-chip
+    <div class="sura-header-tabs">
+      <slot />
+    </div>
+    <div
       v-if="searchedWord"
-      closable
-      color="primary"
-      variant="tonal"
-      size="large"
-      @click="openSearchedWord"
-      @click:close="clearSearchedWord"
+      class="sura-chip ms-auto d-flex align-center ga-1 flex-row-reverse"
     >
-      {{ searchedWord }}
-    </v-chip>
+      <v-chip
+        closable
+        color="primary"
+        variant="tonal"
+        size="large"
+        @click="openSearchedWord"
+        @click:close="clearSearchedWord"
+      >
+        {{ searchedWord }}
+      </v-chip>
+      <v-btn
+        icon="mdi-chevron-up"
+        variant="tonal"
+        size="small"
+        @click="emit('navigate-up')"
+      />
+      <v-btn
+        icon="mdi-chevron-down"
+        variant="tonal"
+        size="small"
+        @click="emit('navigate-down')"
+      />
+    </div>
   </div>
 </template>
 
@@ -51,7 +60,7 @@ const props = defineProps({
   isToolbarExpanded: Boolean,
 })
 
-const emit = defineEmits(["expandedToggle"])
+const emit = defineEmits(["expandedToggle", "navigate-up", "navigate-down"])
 
 const toggleToolbar = () => {
   emit("expandedToggle")
@@ -141,4 +150,24 @@ const formattedMetrics = computed(() => {
 })
 </script>
 
-<style scoped></style>
+<style scoped>
+.sura-header-tabs {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@media (max-width: 600px) {
+  .sura-header-tabs {
+    position: fixed;
+    inset: auto 0 0;
+    transform: none;
+    z-index: 4;
+    display: flex;
+    justify-content: center;
+    background: rgb(var(--v-theme-background));
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+</style>
