@@ -96,9 +96,7 @@ const openSearchedWord = async () => {
   tarteelStore.setSelectedRatlIndex(
     ratl ? match.results.findIndex((item) => item.word === ratl.word) : null,
   )
-  if (
-    ratl?.verses?.some((verse) => verse.verseNumberToQuran == verseId)
-  ) {
+  if (ratl?.verses?.some((verse) => verse.verseNumberToQuran == verseId)) {
     tarteelStore.rememberOpenedVerse()
   }
   router.push({ name: "tarteel", query: { view: "list" } })
@@ -125,7 +123,7 @@ const suraNumber = computed(() => {
 })
 
 const suraKeyValues = computed(
-  () => tableQuranIndex.value[suraNumber.value] || tableQuranIndex.value[1]
+  () => tableQuranIndex.value[suraNumber.value] || tableQuranIndex.value[1],
 )
 
 import { useDisplay } from "vuetify"
@@ -135,8 +133,8 @@ const display = useDisplay()
 const formattedMetrics = computed(() => {
   const allCounts = [
     { value: suraKeyValues.value.numberOfVerses, label: "أية" },
-    { value: suraKeyValues.value.numberOfWords, label: "كلمة" },
-    { value: suraKeyValues.value.numberOfLetters, label: "حرف" },
+    // { value: suraKeyValues.value.numberOfWords, label: "كلمة" },
+    // { value: suraKeyValues.value.numberOfLetters, label: "حرف" },
   ]
 
   return display.xs.value ? [allCounts[0]] : allCounts

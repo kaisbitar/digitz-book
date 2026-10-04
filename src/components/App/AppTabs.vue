@@ -1,7 +1,12 @@
 <template>
   <div class="d-flex">
-    <v-card elevation="0">
-      <v-tabs align-tabs="center" mobile v-model="computedTab">
+    <v-card elevation="0" class="bg-background">
+      <v-tabs
+        align-tabs="center"
+        mobile
+        class="bg-background"
+        v-model="computedTab"
+      >
         <v-tab v-for="(item, index) in tabs" :key="index" :value="item.name">
           <v-icon
             class="ml-2"

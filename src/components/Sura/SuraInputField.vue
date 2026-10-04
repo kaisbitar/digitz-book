@@ -1,6 +1,9 @@
 <template>
-  <v-card elevation="0" class="d-flex SuraInputField">
-    <v-col :cols="$vuetify.display.smAndUp ? 5 : 11" class="pa-3">
+  <v-card
+    elevation="0"
+    class="d-flex SuraInputField bg-background flex-grow-0 flex-shrink-0"
+  >
+    <div class="py-1" style="width: 280px; max-width: 100%">
       <AppInputField
         v-model="localSearch"
         :fieldPlaceHolder="placeholderText"
@@ -29,7 +32,7 @@
           ></v-btn>
         </template>
       </AppInputField>
-    </v-col>
+    </div>
   </v-card>
 </template>
 

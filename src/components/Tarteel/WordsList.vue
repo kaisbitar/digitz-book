@@ -10,7 +10,7 @@
     ></v-divider>
     <div v-if="!isPhrase" class="d-flex flex-wrap ga-2 mb-2">
       <v-card
-        variant="tonal"
+        variant="outlined"
         :color="isWordMeaningOpen ? 'primary' : undefined"
         class="px-3 py-2 d-flex align-center"
         @click="toggleWordMeaning"
@@ -23,7 +23,7 @@
         <span>تحليل الكلمة</span>
       </v-card>
       <v-card
-        variant="tonal"
+        variant="outlined"
         :color="isLetterMeaningOpen ? 'primary' : undefined"
         class="px-3 py-2 d-flex align-center"
         @click="toggleLetterMeaning"
@@ -100,7 +100,7 @@
     <div class="words-stage flex-grow-1">
       <div
         v-show="!showVerses"
-        class="tarteel-overview-overflow px-sm-4 mt-1 h-100 d-flex flex-column"
+        class="tarteel-overview-overflow mt-1 h-100 d-flex flex-column"
       >
         <AutoWordList
           :items="listItems"
@@ -111,53 +111,55 @@
       </div>
 
       <transition name="verses-slide">
-      <div
-        v-if="showVerses && selectedWord"
-        class="verses-panel d-flex flex-column bg-surface"
-      >
         <div
-          class="verses-toolbar d-flex align-center justify-space-between px-sm-4 py-2"
+          v-if="showVerses && selectedWord"
+          class="verses-panel d-flex flex-column bg-surface"
         >
-          <v-chip
-            color="primary"
-            variant="tonal"
-            size="large"
-            @click="showVerses = false"
+          <div
+            class="verses-toolbar d-flex align-center justify-space-between px-sm-4 py-2"
           >
-            <span class="ml-1">{{ selectedWord }}</span>
-            <span class="text-caption text-grey-darken-1">
-              ({{ selectedVerseCount }})
-            </span>
-          </v-chip>
-          <v-btn icon size="small" variant="text" @click="showVerses = false">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-        </div>
+            <v-chip
+              color="primary"
+              variant="tonal"
+              size="large"
+              @click="showVerses = false"
+            >
+              <span class="ml-1">{{ selectedWord }}</span>
+              <span class="text-caption text-grey-darken-1">
+                ({{ selectedVerseCount }})
+              </span>
+            </v-chip>
+            <v-btn icon size="small" variant="text" @click="showVerses = false">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </div>
 
-        <!-- Verses list with scroll -->
-        <div
-          class="verses-inline-overflow px-sm-4 flex-grow-1"
-          @scroll="handleInfiniteScroll"
-        >
-          <VerseCardItem
-            v-for="(verse, index) in paginatedItems"
-            :item="verse"
-            :key="verse.originalIndex ?? verse.verseNumberToQuran"
-            :index="index"
-            :textToHighlight="
-              isPhrase ? selectedTarteel.inputText : selectedWord
-            "
-            :exact="isPhrase && !!tarteelStore.getSelectedRatl?.exact"
-            :active="parseInt(targetedVerseIndex) === verse.verseNumberToQuran"
-            :class="{
-              'active-verse-text':
-                parseInt(targetedVerseIndex) === verse.verseNumberToQuran,
-            }"
-            @click="handleSelectedVerse(verse)"
-          />
-          <div class="mt-5 mb-6 text-center">صدق الله العظيم</div>
+          <!-- Verses list with scroll -->
+          <div
+            class="verses-inline-overflow px-sm-4 flex-grow-1"
+            @scroll="handleInfiniteScroll"
+          >
+            <VerseCardItem
+              v-for="(verse, index) in paginatedItems"
+              :item="verse"
+              :key="verse.originalIndex ?? verse.verseNumberToQuran"
+              :index="index"
+              :textToHighlight="
+                isPhrase ? selectedTarteel.inputText : selectedWord
+              "
+              :exact="isPhrase && !!tarteelStore.getSelectedRatl?.exact"
+              :active="
+                parseInt(targetedVerseIndex) === verse.verseNumberToQuran
+              "
+              :class="{
+                'active-verse-text':
+                  parseInt(targetedVerseIndex) === verse.verseNumberToQuran,
+              }"
+              @click="handleSelectedVerse(verse)"
+            />
+            <div class="mt-5 mb-6 text-center">صدق الله العظيم</div>
+          </div>
         </div>
-      </div>
       </transition>
     </div>
   </div>
@@ -325,11 +327,7 @@ onMounted(async () => {
   z-index: 1;
   margin-bottom: -5px;
   padding-bottom: 12px;
-  background: linear-gradient(
-    to bottom,
-    rgb(var(--v-theme-surface)) 45%,
-    rgba(var(--v-theme-surface), 0)
-  );
+  background: rgb(var(--v-theme-background));
 }
 
 /* The verses fill the space left under the word pills */

@@ -4,24 +4,26 @@
     :isToolbarExpanded="isToolbarExpanded"
     @expandedToggle="isToolbarExpanded = !isToolbarExpanded"
   />
-  <AppTabs
-    v-if="isToolbarExpanded"
-    :tabs="tabs"
-    :activeTab="activeTab"
-    @update:activeTab="updateActiveTab"
-  />
-
-  <SuraInputField
-    :search="inputText"
-    :placeholderText="`سورة ${suraName}`"
-    :badgeContent="badgeContent"
-    :inputIndex="inputIndex"
-    class="justify-center elevation-3"
-    @update:search="onInput"
-    @enter="onEnter"
-    @navigate-up="handleClickUp"
-    @navigate-down="handleClickDown"
-  />
+  <div class="d-flex align-center flex-wrap">
+    <AppTabs
+      v-if="isToolbarExpanded"
+      class="flex-shrink-0"
+      :tabs="tabs"
+      :activeTab="activeTab"
+      @update:activeTab="updateActiveTab"
+    />
+    <SuraInputField
+      :search="inputText"
+      :placeholderText="`سورة ${suraName}`"
+      :badgeContent="badgeContent"
+      :inputIndex="inputIndex"
+      class="ms-auto"
+      @update:search="onInput"
+      @enter="onEnter"
+      @navigate-up="handleClickUp"
+      @navigate-down="handleClickDown"
+    />
+  </div>
 
   <v-window v-model="activeTab" class="input-visible" :touch="false">
     <v-window-item
@@ -236,10 +238,8 @@ const setTargetVerse = (verse) => {
 
 <style scoped>
 .input-visible {
-  /* App bar, page padding, sura title, tabs, search row */
-  --content-height: calc(
-    100vh - var(--v-layout-top) - 16px - 57px - 52px - 60px
-  );
+  /* App bar, page padding, sura title, tabs and search on one row */
+  --content-height: calc(100vh - var(--v-layout-top) - 16px - 57px - 48px);
 }
 
 .sura-board-overflow {
