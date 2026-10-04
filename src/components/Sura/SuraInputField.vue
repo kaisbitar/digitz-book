@@ -1,5 +1,5 @@
 <template>
-  <v-card elevation="0" class="d-flex mb-n1">
+  <v-card elevation="0" class="d-flex SuraInputField">
     <v-col :cols="$vuetify.display.smAndUp ? 5 : 11" class="pa-3">
       <AppInputField
         v-model="localSearch"

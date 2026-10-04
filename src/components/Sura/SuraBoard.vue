@@ -6,7 +6,6 @@
   />
   <AppTabs
     v-if="isToolbarExpanded"
-    class="mb-1"
     :tabs="tabs"
     :activeTab="activeTab"
     @update:activeTab="updateActiveTab"
@@ -17,6 +16,7 @@
     :placeholderText="`سورة ${suraName}`"
     :badgeContent="badgeContent"
     :inputIndex="inputIndex"
+    class="justify-center elevation-3"
     @update:search="onInput"
     @enter="onEnter"
     @navigate-up="handleClickUp"
@@ -237,7 +237,9 @@ const setTargetVerse = (verse) => {
 <style scoped>
 .input-visible {
   /* App bar, page padding, sura title, tabs, search row */
-  --content-height: calc(100vh - var(--v-layout-top) - 16px - 57px - 52px - 60px);
+  --content-height: calc(
+    100vh - var(--v-layout-top) - 16px - 57px - 52px - 60px
+  );
 }
 
 .sura-board-overflow {

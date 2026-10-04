@@ -1,15 +1,15 @@
 <template>
-  <div class="d-flex justify-center">
+  <div class="d-flex">
     <v-card elevation="0">
       <v-tabs align-tabs="center" mobile v-model="computedTab">
-      <v-tab v-for="(item, index) in tabs" :key="index" :value="item.name">
-        <v-icon
-          class="ml-2"
-          v-if="item.icon"
-          :icon="computedTab === item.name ? item.activeIcon : item.icon"
-        ></v-icon>
-        <span>{{ item.title }}</span>
-      </v-tab>
+        <v-tab v-for="(item, index) in tabs" :key="index" :value="item.name">
+          <v-icon
+            class="ml-2"
+            v-if="item.icon"
+            :icon="computedTab === item.name ? item.activeIcon : item.icon"
+          ></v-icon>
+          <span>{{ item.title }}</span>
+        </v-tab>
       </v-tabs>
     </v-card>
   </div>

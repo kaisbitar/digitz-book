@@ -1,5 +1,5 @@
 <template>
-  <div class="sura-board-overflow">
+  <div class="sura-board-overflow bg-surface">
     <v-item-group v-for="(item, index) in data" :key="item.verseNumberToQuran">
       <v-item v-slot="{ isSelected, selectedClass, toggle }">
         <VerseCardItem
@@ -13,7 +13,7 @@
               ['active-verse-table']: activeItemKey === item.verseNumberToQuran,
             },
           ]"
-          @verse-clicked="selectItem(item), toggle()"
+          @verse-clicked="onVerseClicked(item, toggle)"
         />
       </v-item>
       <div v-if="index === data.length - 1" class="mt-3 mb-3 text-center">
@@ -43,6 +43,12 @@ const isTargetedRow = (item: any) => {
 const selectItem = (item: any) => {
   selectedItem.value = item.verseNumberToQuran
   emit("rowClicked", item)
+}
+
+const onVerseClicked = (item: any, toggle?: () => void) => {
+  selectItem(item)
+  if (!toggle) return
+  toggle()
 }
 
 onMounted(async () => {

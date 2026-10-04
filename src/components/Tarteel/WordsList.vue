@@ -13,7 +13,7 @@
         variant="tonal"
         :color="isWordMeaningOpen ? 'primary' : undefined"
         class="px-3 py-2 d-flex align-center"
-        @click="isWordMeaningOpen = !isWordMeaningOpen"
+        @click="toggleWordMeaning"
       >
         <v-icon
           icon="mdi-book-open-page-variant-outline"
@@ -21,6 +21,15 @@
           class="ml-2"
         />
         <span>تحليل الكلمة</span>
+      </v-card>
+      <v-card
+        variant="tonal"
+        :color="isLetterMeaningOpen ? 'primary' : undefined"
+        class="px-3 py-2 d-flex align-center"
+        @click="toggleLetterMeaning"
+      >
+        <v-icon icon="mdi-abjad-arabic" size="small" class="ml-2" />
+        <span>دلالة الحروف</span>
       </v-card>
     </div>
     <v-divider
@@ -56,6 +65,33 @@
           v-if="isWordMeaningOpen"
           :word="selectedTarteel.inputText"
           :isWordMeaningOpen="true"
+        />
+      </div>
+    </v-navigation-drawer>
+
+    <v-navigation-drawer
+      v-if="!isPhrase"
+      v-model="isLetterMeaningOpen"
+      location="left"
+      temporary
+      :width="letterDrawerWidth"
+    >
+      <div class="d-flex align-center pa-3">
+        <v-icon icon="mdi-abjad-arabic" size="small" class="ml-2" />
+        <span>دلالة الحروف</span>
+        <v-spacer />
+        <v-btn
+          icon="mdi-close"
+          size="small"
+          variant="text"
+          @click="isLetterMeaningOpen = false"
+        />
+      </div>
+      <v-divider />
+      <div class="meaning-drawer-body pa-3">
+        <LetterMeanings
+          v-if="isLetterMeaningOpen"
+          :root="selectedTarteel.wordRoot || selectedTarteel.inputText"
         />
       </div>
     </v-navigation-drawer>
@@ -169,9 +205,23 @@ const isPhrase = computed(() =>
   (props.selectedTarteel?.inputText || "").includes(" "),
 )
 const isWordMeaningOpen = ref(false)
+const isLetterMeaningOpen = ref(false)
 const meaningDrawerWidth = computed(() =>
   width.value < 600 ? width.value : 480,
 )
+const letterDrawerWidth = computed(() =>
+  width.value < 600 ? width.value : 640,
+)
+
+const toggleWordMeaning = () => {
+  isLetterMeaningOpen.value = false
+  isWordMeaningOpen.value = !isWordMeaningOpen.value
+}
+
+const toggleLetterMeaning = () => {
+  isWordMeaningOpen.value = false
+  isLetterMeaningOpen.value = !isLetterMeaningOpen.value
+}
 const showVerses = ref(isPhrase.value)
 
 const currentView = computed(() => route.query.view)
