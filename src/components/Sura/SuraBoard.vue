@@ -31,11 +31,7 @@
     :class="activeTab === 'suraText' ? 'sura-text-visible' : 'input-visible'"
     :touch="false"
   >
-    <v-window-item
-      value="suraText"
-      @before-enter="scrollToActiveVerse"
-      class="bg-surface"
-    >
+    <v-window-item value="suraText" @before-enter="scrollToActiveVerse">
       <SuraText
         ref="suraTextRef"
         :inputText="inputText"

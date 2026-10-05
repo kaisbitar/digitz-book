@@ -156,35 +156,11 @@ const setTargetedVerse = (verse, index) => {
   padding: 0 24px 36px !important;
 }
 
-.sura-text-container::before {
-  content: "";
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  display: block;
-  height: 28px;
-  margin: 0 -24px -28px;
-  pointer-events: none;
-  background: linear-gradient(
-    to bottom,
-    rgb(var(--v-theme-background)),
-    transparent
-  );
-}
-
-.reading-mode::before {
-  content: none;
-}
-
 @media (max-width: 600px) {
   .sura-text-container {
     padding-left: 16px !important;
     padding-right: 16px !important;
     padding-bottom: 36px !important;
-  }
-
-  .sura-text-container::before {
-    margin-inline: -16px;
   }
 }
 

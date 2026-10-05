@@ -9,6 +9,7 @@
       <div class="sura-index-search mr-3">
         <AppInputField
           variant="outlined"
+          bg-color="surface"
           density="compact"
           :modelValue="search"
           fieldPlaceHolder="ابحث عن سورة"

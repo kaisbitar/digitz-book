@@ -1,62 +1,40 @@
 <template>
-  <div class="meaning-panel">
-    <v-card-item v-if="loading">
-      <v-fade-transition mode="out-in">
-        <v-card-title class="pa-3">
-          فَإِنَّ مَعَ الْعُسْرِ يُسْرًا, إِنَّ مَعَ الْعُسْرِ يُسْرًا
-        </v-card-title>
-      </v-fade-transition>
-    </v-card-item>
-
-    <v-card v-if="!isWordMeaningOpen && !loading">
-      <v-card-item>
-        <template v-slot:prepend>
-          <v-icon icon="mdi-translate" class="mx-2" />
-        </template>
-
-        <v-card-title class="ml-2 count-key-item">
-          {{ results[0]?.meaning[0]?.word }}
-        </v-card-title>
-        <v-card-text class="text-truncate mb-n5">
-          {{ results[0]?.meaning[0]?.meaning }}
-        </v-card-text>
-        <span class="text-caption count-key-item">
-          {{ results[0]?.meaning[0]?.dictionary }}
-        </span>
-      </v-card-item>
-    </v-card>
-
-    <v-slide-y-transition mode="out-in">
-      <v-list
-        v-if="isWordMeaningOpen"
-        :key="results[0]?.meaning[0]?.word"
-        border
-        rounded
-        :class="isWordMeaningOpen ? 'tarteel-meaning-overflow' : 'fixed-height'"
+  <!-- <div class="meaning-panel"> -->
+  <v-card-item v-if="loading">
+    <v-fade-transition mode="out-in">
+      <v-card-title class="pa-3">
+        فَإِنَّ مَعَ الْعُسْرِ يُسْرًا, إِنَّ مَعَ الْعُسْرِ يُسْرًا
+      </v-card-title>
+    </v-fade-transition>
+  </v-card-item>
+  <v-slide-y-transition mode="out-in">
+    <v-list
+      v-if="isWordMeaningOpen && !loading"
+      :key="results[0]?.meaning[0]?.word"
+      border
+      rounded
+      :class="isWordMeaningOpen ? 'tarteel-meaning-overflow' : 'fixed-height'"
+    >
+      <v-list-item
+        v-for="(item, index) in results[0]?.meaning"
+        :key="index"
+        :link="false"
+        :ripple="false"
+        class="py-4"
       >
-        <v-list-item
-          v-for="(item, index) in results[0]?.meaning"
-          :key="index"
-          :link="false"
-          :ripple="false"
-          class="py-4"
-        >
-          <div class="text-medium-emphasis mb-2">
-            {{ item.word }}
-          </div>
-          <div class="meaning-body">{{ item.meaning }}</div>
-          <div class="text-caption text-medium-emphasis mt-3">
-            {{ item.dictionary }}
-          </div>
+        <div class="text-h5 mb-2">
+          {{ item.word }}
+        </div>
+        <div class="meaning-body">{{ item.meaning }}</div>
+        <div class="text-caption text-medium-emphasis mt-3">
+          {{ item.dictionary }}
+        </div>
 
-          <v-divider
-            v-if="index < results[0]?.meaning.length - 1"
-            class="mt-4"
-          />
-        </v-list-item>
-      </v-list>
-    </v-slide-y-transition>
-  </div>
+        <v-divider v-if="index < results[0]?.meaning.length - 1" class="mt-4" />
+      </v-list-item>
+    </v-list>
+  </v-slide-y-transition>
+  <!-- </div> -->
 </template>
 
 <script setup>

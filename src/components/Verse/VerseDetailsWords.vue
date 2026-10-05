@@ -3,13 +3,10 @@
     v-for="(word, index) in verseWords"
     :key="index"
     class="word ml-0 mr-1"
-    :class="[
-      hasMatch(word, inputText) ? 'highlight-match' : '',
-      currentWord === word ? 'border bg-secondary-highlight' : '',
-    ]"
+    :class="currentWord === word ? 'border bg-secondary-highlight' : ''"
     @click="handleWordClick(word)"
   >
-    <span>{{ word }}</span>
+    <span v-html="marked(word)"></span>
   </div>
 </template>
 
@@ -37,13 +34,19 @@ const emit = defineEmits(["update:currentWord"])
 
 const verseWords = computed(() => props.verse.split(" "))
 
-const hasMatch = (word, input) => {
-  if (!input) return false
+const marked = (word) => {
+  const input = props.inputText?.trim()
+  if (!input) return word
 
-  return word.includes(input)
+  const tokens = input.split(/\s+/)
+  for (const token of tokens) {
+    const result = highlight(word, token)
+    if (result && result !== word) return result
+  }
+  return word
 }
 
-const handleWordClick = async (word) => {
+const handleWordClick = (word) => {
   emit("update:currentWord", word)
 }
 </script>
@@ -53,6 +56,6 @@ const handleWordClick = async (word) => {
   display: inline-block;
   margin: 0 4px;
   cursor: pointer;
-  font-size: 1.375rem;
+  font-size: 1.09rem;
 }
 </style>

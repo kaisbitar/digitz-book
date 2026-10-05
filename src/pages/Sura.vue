@@ -12,7 +12,6 @@
       <transition name="verses-slide">
         <VerseDetails
           v-if="showVerseDetails"
-          :title="suraName"
           :inputText="targetTarteel"
           @go-back="handleGoBack"
         />

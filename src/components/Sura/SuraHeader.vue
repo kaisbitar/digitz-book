@@ -1,11 +1,19 @@
 <template>
   <div class="sura-header d-flex align-center flex-wrap position-relative">
-    <div class="sura-title">
-      <!-- <span class="ml-1">{{ suraNumber }}</span> -->
-      <span class="ml-2 font-weight-bold text-h5"
-        >سورة {{ target.suraName }}</span
-      >
-      <!-- <AppHeaderMetrics :metrics="formattedMetrics" /> -->
+    <div class="sura-title d-flex align-center ga-1">
+      <span class="font-weight-bold text-h5">سورة {{ target.suraName }}</span>
+      <v-btn
+        icon="mdi-chevron-up"
+        variant="tonal"
+        size="small"
+        @click="goToSura(-1)"
+      />
+      <v-btn
+        icon="mdi-chevron-down"
+        variant="tonal"
+        size="small"
+        @click="goToSura(1)"
+      />
     </div>
     <div class="sura-header-tabs">
       <slot />
@@ -48,6 +56,7 @@ import { useTarteelStore } from "@/stores/TarteelStore"
 import { useRouter } from "vue-router"
 import { filterWords } from "@/utils/wordFilter"
 import { fetchWordRoot } from "@/utils/dictionaryUtils.js"
+import { processSuraNavigation } from "@/router/utils"
 
 const router = useRouter()
 const dataStore = useDataStore()
@@ -64,6 +73,22 @@ const emit = defineEmits(["expandedToggle", "navigate-up", "navigate-down"])
 
 const toggleToolbar = () => {
   emit("expandedToggle")
+}
+
+const goToSura = async (offset) => {
+  const next = Number(suraNumber.value) + offset
+  if (next < 1 || !tableQuranIndex.value?.[next]) return
+
+  const query = { ...router.currentRoute.value.query }
+  await processSuraNavigation({
+    params: { suraNumber: next, verseIndex: 1 },
+    query,
+  })
+  router.push({
+    name: "sura",
+    params: { suraNumber: next, verseIndex: 1 },
+    query,
+  })
 }
 
 const openSearchedWord = async () => {

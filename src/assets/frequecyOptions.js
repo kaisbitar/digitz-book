@@ -7,6 +7,7 @@ export const getChartOptions = (length) => {
   const categories = generateCategories(length)
   return {
     chart: {
+      fontFamily: "Almarai, sans-serif",
       type: "area",
       offsetY: 20,
       toolbar: {
@@ -87,7 +88,6 @@ export const getChartOptions = (length) => {
         offsetY: 5,
         style: {
           fontSize: "18px",
-          fontFamily: '"Roboto", sans-serif !important',
           color: "#ccc",
         },
       },
@@ -98,15 +98,11 @@ export const getChartOptions = (length) => {
       showAlways: false,
       labels: {
         show: false,
-        style: {
-          fontFamily: '"Roboto", sans-serif !important',
-        },
       },
       title: {
         offsetX: -50,
         style: {
           fontSize: "18px",
-          fontFamily: '"Roboto", sans-serif !important',
         },
       },
       min: 0,

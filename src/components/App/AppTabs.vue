@@ -7,7 +7,12 @@
         class="bg-background"
         v-model="computedTab"
       >
-        <v-tab v-for="(item, index) in tabs" :key="index" :value="item.name">
+        <v-tab
+          v-for="(item, index) in tabs"
+          :key="index"
+          :value="item.name"
+          :class="computedTab === item.name ? 'bg-surface' : undefined"
+        >
           <v-icon
             class="ml-2"
             v-if="item.icon"
@@ -40,4 +45,12 @@ const computedTab = computed({
 })
 </script>
 
-<style scoped></style>
+<style scoped>
+:deep(.v-tab__slider) {
+  display: none;
+}
+
+:deep(.v-tab:not(.v-tab--selected)) {
+  opacity: 0.45;
+}
+</style>
