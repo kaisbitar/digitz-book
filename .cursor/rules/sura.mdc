@@ -1,0 +1,15 @@
+---
+description: Sura page header, text, and the sura index drawer
+globs: src/components/Sura/**,src/components/tableQuranIndex.vue,src/components/TableRow.vue
+alwaysApply: false
+---
+
+# Sura
+
+`SuraHeader.vue` title stays on the right. Tabs are page-centered on desktop. At `max-width: 600px` the tabs are a fixed bar at the bottom.
+
+The sura search field is hidden on the نص tab. On desktop the fullscreen button sits to the left of the text. On a phone it may float over the text.
+
+The sura index drawer (`tableQuranIndex.vue`) keeps one outlined search, placeholder ابحث عن سورة, width `calc(100% / 1.618)`. No open toggle, no close button, no list or menu buttons in that toolbar.
+
+Sura names in the index are bold (`font-weight-bold` on the `suraName` cell when `isIndexItem`).

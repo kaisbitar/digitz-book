@@ -1,0 +1,17 @@
+---
+description: Word-list header, verse overlay, and analysis buttons
+globs: src/components/Tarteel/WordsList.vue,src/components/Tarteel/WordsListHeader.vue,src/components/AutoWordList.vue
+alwaysApply: false
+---
+
+# Word list
+
+`WordsList.vue` shows the word chips. Opening a chip sets `showVerses` and covers the list with `.verses-panel` (`position: absolute; inset: 0`). Do not remove that overlay.
+
+Clicking the header title (`header-title`) sets `showVerses` false, same as the verse pill.
+
+Clicking تحليل الجذر or تحليل الحروف must not close the verses. Do not put the close handler on the header row.
+
+`.words-list-header` is `pointer-events: none` so it does not block the pill. The title and `.v-btn` set `pointer-events: auto`.
+
+On screens under 600px, `.header-actions` wraps onto its own line so the buttons sit under the title and do not cover the verse pill.

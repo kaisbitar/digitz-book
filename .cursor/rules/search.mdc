@@ -1,0 +1,19 @@
+---
+description: Quran search, tashkeel, and root grouping
+globs: src/components/SearchBar.vue,src/hooks/useAutoComplete.js,src/utils/wordFilter/**,src/utils/dictionaryUtils.js
+alwaysApply: false
+---
+
+# Search
+
+`SearchBar.vue` is the Quran search. `useAutoComplete.js` builds suggestions. `filterWords` groups results.
+
+The تشكيل checkbox shows vowels in the suggestion menu and in the result chips.
+
+Root matching still uses the plain word. Strip vowels with `normalizeWord` before `filterWords` when تشكيل is on. In `groupResults`, compare the stripped form to the root derivatives so vocalized chips stay in the root group.
+
+Clicking the search box while it has text must reopen suggestions (`openSuggestions`). Picking a suggestion searches the plain value.
+
+`fetchWordRoot("قل")` returns قلل because the first stored root wins. Do not change that unless asked.
+
+Do not fold dagger alif into ا in suggestions.

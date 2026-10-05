@@ -1,0 +1,18 @@
+---
+description: Constraints that apply to every Tarteel change
+alwaysApply: true
+---
+
+# Tarteel
+
+Vue 3, Vuetify, Pinia. Arabic RTL. Prefer early returns. Use Vuetify utilities. Add CSS only when Vuetify cannot do it.
+
+RTL flex: the first child sits on the physical right. `ms-auto` pushes an item to the physical left.
+
+Do not convert dagger alif (U+0670) to ا. Suggestions keep it.
+
+Do not hardcode `#fff`. Use `rgb(var(--v-theme-surface))` or `rgb(var(--v-theme-background))`.
+
+Deploy only when the user says "push merge and deploy": commit, push `main`, then `bash deploy.sh` from the repo root. Never print the deploy password.
+
+Leave these alone unless asked: the sura back arrow, a fixed pixel page width, white gutter CSS, and stretching `SuraBoard` into a flex column.
