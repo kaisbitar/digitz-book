@@ -1,14 +1,21 @@
 <template>
   <div class="d-flex align-center flex-wrap ga-2">
     <div>
-      <span class="text-h4 ml-4">{{ headerTitle }}</span>
-      <AppHeaderMetrics :metrics="formattedCounts" />
+      <span class="header-title text-h4 ml-4" @click="emit('closeVerses')">
+        {{ headerTitle }}
+      </span>
+      <AppHeaderMetrics
+        :metrics="formattedCounts"
+        @click="emit('closeVerses')"
+      />
     </div>
     <slot />
   </div>
 </template>
 
 <script setup>
+const emit = defineEmits(["closeVerses"])
+
 const props = defineProps({
   selectedTarteel: {
     type: Object,

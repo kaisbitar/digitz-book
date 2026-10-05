@@ -3,6 +3,7 @@
     <WordsListHeader
       :selectedTarteel="selectedTarteel"
       class="words-list-header mb-2 flex-grow-0"
+      @close-verses="showVerses = false"
     >
       <div v-if="!isPhrase" class="header-actions d-flex flex-wrap ga-2">
         <v-btn
@@ -294,8 +295,10 @@ onMounted(async () => {
   pointer-events: none;
 }
 
-.words-list-header :deep(.v-btn) {
+.words-list-header :deep(.v-btn),
+.words-list-header :deep(.header-title) {
   pointer-events: auto;
+  cursor: pointer;
 }
 
 .verses-slide-enter-active,

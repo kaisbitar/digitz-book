@@ -7,26 +7,29 @@ import { createArabicPattern } from "@/utils/arabicUtils"
 const SUGGESTION_LIMIT = 200
 const VERSE_SUGGESTION_LIMIT = 20000
 let wordIndexFile = null
-let wordIndex = []
+let plainIndex = []
+let vocalizedIndex = []
 
 // Strip vowels only. Keep the dagger alif so the suggestion stays the Quran spelling.
 const normalizeWord = (word) => String(word || "").replace(/[\u064B-\u0652]/g, "")
 
 const getWordIndex = (oneQuranFile) => {
-  if (wordIndexFile === oneQuranFile) return wordIndex
+  if (wordIndexFile === oneQuranFile) return
 
-  const counts = new Map()
+  const plainCounts = new Map()
+  const vocalCounts = new Map()
   for (const verse of oneQuranFile || []) {
     for (const raw of String(verse.verseText || "").split(/\s+/)) {
-      const word = normalizeWord(raw)
-      if (!word) continue
-      counts.set(word, (counts.get(word) || 0) + 1)
+      const plain = normalizeWord(raw)
+      if (!plain) continue
+      plainCounts.set(plain, (plainCounts.get(plain) || 0) + 1)
+      vocalCounts.set(raw, (vocalCounts.get(raw) || 0) + 1)
     }
   }
 
   wordIndexFile = oneQuranFile
-  wordIndex = [...counts.entries()]
-  return wordIndex
+  plainIndex = [...plainCounts.entries()]
+  vocalizedIndex = [...vocalCounts.entries()]
 }
 
 const suggestWords = (prefix, entries) => {
@@ -43,7 +46,7 @@ const suggestWords = (prefix, entries) => {
     .slice(0, SUGGESTION_LIMIT)
     .map((item) => ({
       label: item.word,
-      value: item.word,
+      value: normalizeWord(item.word),
       count: item.count,
     }))
 }
@@ -157,15 +160,18 @@ export function useAutoComplete(dataStore, tarteelStore) {
     if (raw.includes(" "))
       return suggestVerses(raw, file, exactVerseMatch.value)
 
-    return suggestWords(text, getWordIndex(file))
+    getWordIndex(file)
+    const entries = includeTashkeel.value ? vocalizedIndex : plainIndex
+    return suggestWords(text, entries)
   })
 
   const { setTarteel } = useSearchTarteel()
 
   const updateFilteredWords = async (word) => {
     const wordRoot = word.length >= 2 ? await fetchWordRoot(word) : null
+    const term = includeTashkeel.value ? normalizeWord(word) : word
     const wordSearchResults = filterWords(
-      word,
+      term,
       dataStore.getOneQuranFile,
       wordRoot,
       { removeTashkeel: !includeTashkeel.value },
@@ -385,6 +391,7 @@ export function useAutoComplete(dataStore, tarteelStore) {
     totalWordsCount,
     checkedItems,
     suggestions,
+    includeTashkeel,
     hasSuggestions,
     menuSuggestions,
     exactVerseMatch,

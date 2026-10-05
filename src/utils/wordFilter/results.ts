@@ -12,6 +12,7 @@ export const groupResults = (
 
   const derivativesSet = new Set(rootDerivatives)
   const exactRegex = generateWholeWordRegex(searchTerm)
+  const plainWord = (word: string) => word.replace(/[\u064B-\u0652\u0670]/g, "")
 
   // Exact when the word is the typed word, allowing letter variations
   // (e.g. typed "بامولهم" is an exact match for the stored "بأمولهم").
@@ -20,9 +21,10 @@ export const groupResults = (
   }
 
   Object.entries(results).forEach(([word, { count, verses }]) => {
+    const plain = plainWord(word)
     if (isExactMatch(word, searchTerm)) {
       exactMatches.push({ word, count, verses, group: 'exact' })
-    } else if (derivativesSet.has(word)) {
+    } else if (derivativesSet.has(word) || derivativesSet.has(plain)) {
       rootDerivativeMatches.push({ word, count, verses, group: 'root' })
     } else {
       otherMatches.push({ word, count, verses, group: 'other' })

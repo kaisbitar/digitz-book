@@ -1,5 +1,5 @@
 <template>
-  <div ref="barRef" @focusin="onFocusIn" @focusout="onFocusOut">
+  <div ref="barRef" @focusin="onFocusIn" @focusout="onFocusOut" @click="openSuggestions">
     <AppInputField
       :modelValue="tarteel"
       fieldPlaceHolder="ابحث في القرآن الكريم..."
@@ -32,6 +32,20 @@
       :width="menuWidth"
     >
       <div class="border rounded bg-surface" @mousedown.prevent>
+        <template v-if="!isVerseQuery">
+          <v-list density="compact" class="py-0">
+            <v-list-item>
+              <v-checkbox
+                v-model="includeTashkeel"
+                label="تشكيل"
+                density="compact"
+                hide-details
+                @click.stop
+              />
+            </v-list-item>
+          </v-list>
+          <v-divider />
+        </template>
         <template v-if="isVerseQuery">
           <v-list density="compact" class="py-0">
             <v-list-item>
@@ -112,6 +126,7 @@ const {
   tarteel,
   currentWordsList,
   menuSuggestions,
+  includeTashkeel,
   exactVerseMatch,
   handleInputChange,
   searchNow,
@@ -189,6 +204,13 @@ const pickSuggestion = (value) => {
   const input = barRef.value?.querySelector("input")
   if (input) input.value = value
   onInput(value, true)
+}
+
+const openSuggestions = () => {
+  if (!(tarteel.value || "").trim()) return
+  isFocused.value = true
+  suppressMenu.value = false
+  menuWidth.value = barRef.value?.offsetWidth || 280
 }
 
 const onFocusIn = () => {
