@@ -8,6 +8,7 @@
     <template v-for="key in headerKeys" :key="key">
       <td
         v-if="String(key) !== 'index'"
+        :class="{ 'font-weight-bold': isIndexItem && key === 'suraName' }"
         v-html="highlight(item[key], search)"
       ></td>
     </template>

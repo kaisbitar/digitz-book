@@ -1,10 +1,6 @@
 <template>
   <v-app-bar :elevation="0" density="comfortable" location="top">
-    <v-app-bar-nav-icon
-      @click="drawer = !drawer"
-      class="ml-2"
-      v-if="isMobile && !isInputVisible"
-    />
+    <v-app-bar-nav-icon @click="drawer = !drawer" class="ml-2" />
     <v-app-bar-title class="mr-16" style="max-width: 140px" v-if="!isMobile">
       رُسُلْ
     </v-app-bar-title>
@@ -30,7 +26,6 @@
 
     <v-spacer></v-spacer>
     <AppToggleBtn
-      v-if="!(isMobile && isInputVisible)"
       class="mx-2 mx-sm-4"
       btnText="السور"
       :btnVariant="getButtonVariant('index')"
@@ -40,7 +35,7 @@
       size="default"
       @toggle="toggleDrawer('index')"
     />
-    <UserAvatar />
+    <!-- <UserAvatar /> -->
   </v-app-bar>
 
   <TableQuranIndex />

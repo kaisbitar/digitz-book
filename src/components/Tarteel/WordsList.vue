@@ -2,13 +2,15 @@
   <div class="d-flex flex-column words-list-page">
     <WordsListHeader
       :selectedTarteel="selectedTarteel"
-      class="mb-2 flex-grow-0"
+      class="words-list-header mb-2 flex-grow-0"
     >
-      <div v-if="!isPhrase" class="d-flex flex-wrap ga-2">
-        <v-card
+      <div v-if="!isPhrase" class="header-actions d-flex flex-wrap ga-2">
+        <v-btn
           variant="outlined"
+          rounded="pill"
+          size="small"
+          class="bg-surface"
           :color="isWordMeaningOpen ? 'primary' : undefined"
-          class="px-3 py-2 d-flex align-center"
           @click="toggleWordMeaning"
         >
           <v-icon
@@ -16,17 +18,19 @@
             size="small"
             class="ml-2"
           />
-          <span>تحليل الجذر</span>
-        </v-card>
-        <v-card
+          تحليل الجذر
+        </v-btn>
+        <v-btn
           variant="outlined"
+          rounded="pill"
+          size="small"
+          class="bg-surface"
           :color="isLetterMeaningOpen ? 'primary' : undefined"
-          class="px-3 py-2 d-flex align-center"
           @click="toggleLetterMeaning"
         >
           <v-icon icon="mdi-abjad-arabic" size="small" class="ml-2" />
-          <span>تحليل الحروف</span>
-        </v-card>
+          تحليل الحروف
+        </v-btn>
       </div>
     </WordsListHeader>
 
@@ -284,6 +288,16 @@ onMounted(async () => {
   overflow: hidden;
 }
 
+.words-list-header {
+  position: relative;
+  z-index: 210;
+  pointer-events: none;
+}
+
+.words-list-header :deep(.v-btn) {
+  pointer-events: auto;
+}
+
 .verses-slide-enter-active,
 .verses-slide-leave-active {
   transition: transform 0.35s ease;
@@ -317,6 +331,26 @@ onMounted(async () => {
   margin-top: -58px;
   /* padding-bottom: 12px; */
   /* background: rgb(var(--v-theme-background)); */
+}
+
+@media (max-width: 600px) {
+  .header-actions {
+    flex: 1 0 100%;
+    justify-content: flex-start;
+  }
+
+  .verses-toolbar {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    margin-top: -90px;
+    pointer-events: none;
+  }
+
+  .verses-toolbar :deep(.v-chip) {
+    pointer-events: auto;
+  }
 }
 
 /* The verses fill the space left under the word pills */

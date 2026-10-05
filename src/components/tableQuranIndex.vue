@@ -2,46 +2,21 @@
   <v-navigation-drawer
     :model-value="drawerState"
     @update:model-value="updateDrawerState"
-    :width="isDetailView ? 550 : 270"
+    :width="550"
     :location="'left'"
   >
     <v-toolbar dark>
-      <AppToggleBtn
-        v-if="!isInputVisible"
-        :isActive="isInputVisible"
-        btnText="ترتيل السور"
-        inActiveIcon="mdi-magnify"
-        activeIcon="mdi-arrow-right"
-        size="default"
-        @toggle="isInputVisible = !isInputVisible"
-      />
-      <AppInputField
-        class="flex-grow-1 mx-2"
-        v-if="isInputVisible"
-        :modelValue="search"
-        :fieldPlaceHolder="'السور'"
-        :dataToShow="indexData.length - 1"
-        :type="'QuranCount'"
-        closable
-        @close="isInputVisible = false"
-        @update:modelValue="updateSearchValue"
-      />
-      <v-spacer v-if="!isInputVisible"></v-spacer>
-      <AppToggleBtn
-        v-if="!isInputVisible"
-        :isActive="isDetailView"
-        inActiveIcon="mdi-list-box-outline"
-        activeIcon="mdi-list-box"
-        size="default"
-        @toggle="toggleDetailView"
-      />
-      <AppToggleBtn
-        v-if="!isInputVisible"
-        isActive
-        activeIcon="mdi-menu-open"
-        size="default"
-        @toggle="store.setIndexDrawer(false)"
-      />
+      <div class="sura-index-search mr-3">
+        <AppInputField
+          variant="outlined"
+          density="compact"
+          :modelValue="search"
+          fieldPlaceHolder="ابحث عن سورة"
+          :dataToShow="indexData.length - 1"
+          type="QuranCount"
+          @update:modelValue="updateSearchValue"
+        />
+      </div>
     </v-toolbar>
 
     <Table
@@ -75,9 +50,6 @@ const router = useRouter()
 const store = useStore()
 const dataStore = useDataStore()
 const display = useDisplay()
-
-const isInputVisible = ref(false)
-const isDetailView = ref(true)
 
 const drawerState = computed(() => store.getIndexDrawer)
 
@@ -129,10 +101,6 @@ const getFirstVerse = (fileName) => {
   return verse
 }
 
-const toggleDetailView = () => {
-  isDetailView.value = !isDetailView.value
-}
-
 watch(targetedFileName, () => {
   scrollToActiveItem(`.active-index-item`, `.index-container .v-table__wrapper`)
 })
@@ -145,5 +113,22 @@ onMounted(() => {
 <style>
 .index-container .v-table__wrapper {
   overflow-x: hidden !important;
+}
+
+.sura-index-search {
+  width: calc(100% / 1.618);
+  flex-shrink: 0;
+}
+
+.sura-index-search .v-input__control {
+  flex-grow: 1;
+}
+
+.sura-index-search .v-input__append {
+  display: none;
+}
+
+.sura-index-search .v-field {
+  font-size: 0.875rem;
 }
 </style>
