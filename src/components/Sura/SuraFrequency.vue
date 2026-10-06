@@ -32,6 +32,7 @@ const LONG_SURA = 150
 const LABEL_STEP = 10
 const MARKER_SIZE = 12
 const MATCH_SIZE = 6
+const HOVER_SIZE = 6
 const SELECT_COLOR = "#9E9E9E"
 
 const chartRoot = (chart) => chart?.w?.globals?.dom?.baseEl
@@ -73,6 +74,60 @@ const placeLine = (event, root) => {
   line.setAttribute("x2", x)
   line.classList.add("apexcharts-active")
 }
+
+const chartPoints = (chart, root) => {
+  const markers = [...(root?.querySelectorAll(".apexcharts-series-markers-wrap .apexcharts-marker") || [])]
+  if (markers.length) {
+    return markers.map((marker) => ({
+      x: Number(marker.getAttribute("cx")),
+      y: Number(marker.getAttribute("cy")),
+    }))
+  }
+  return (chart?.w?.globals?.pointsArray?.[0] || []).map((point) => ({
+    x: point[0],
+    y: point[1],
+  }))
+}
+
+const nearestPoint = (event, chart) => {
+  const root = chartRoot(chart)
+  const grid = root?.querySelector(".apexcharts-grid")
+  const points = chartPoints(chart, root).filter(
+    (point) => Number.isFinite(point.x) && Number.isFinite(point.y),
+  )
+  if (!grid || !points.length) return null
+  const x = event.clientX - grid.getBoundingClientRect().left
+  return points.reduce((best, point) =>
+    Math.abs(point.x - x) < Math.abs(best.x - x) ? point : best,
+  )
+}
+
+const placeHoverMarker = (event, chart) => {
+  const root = chartRoot(chart)
+  const host = root?.querySelector(".apexcharts-plot-series")
+  if (!host) return
+  const point = nearestPoint(event, chart)
+  if (!point) {
+    host.querySelector(".freq-hover-marker")?.remove()
+    return
+  }
+  const { x, y } = point
+  let marker = host.querySelector(".freq-hover-marker")
+  if (!marker) {
+    marker = document.createElementNS("http://www.w3.org/2000/svg", "circle")
+    marker.setAttribute("class", "freq-hover-marker")
+    marker.setAttribute("r", String(HOVER_SIZE))
+    marker.setAttribute("stroke-width", "2")
+    marker.setAttribute("pointer-events", "none")
+  }
+  const colors = theme.current.value?.colors || theme.themes.value.light.colors
+  marker.setAttribute("fill", colors.primary)
+  marker.setAttribute("stroke", colors.surface)
+  marker.setAttribute("cx", x)
+  marker.setAttribute("cy", y)
+  host.appendChild(marker)
+}
+
 const { highlight } = useInputFiltering()
 const { countVerseWords, countVerseLetters } = useCounting()
 const props = defineProps({
@@ -123,7 +178,11 @@ const chartOptions = computed(() => {
       requestAnimationFrame(() => {
         placeTip(event, root)
         placeLine(event, root)
+        placeHoverMarker(event, chart)
       })
+    },
+    mouseLeave: (_event, chart) => {
+      chartRoot(chart)?.querySelector(".freq-hover-marker")?.remove()
     },
   }
 
@@ -159,7 +218,7 @@ const chartOptions = computed(() => {
     return value
   }
 
-  const colors = theme.current.value.colors
+  const colors = theme.current.value?.colors || theme.themes.value.light.colors
   const stroke = colors["on-highlight"]
   const hasWord = matches.includes(point)
   const discrete = matches
