@@ -6,6 +6,7 @@
     :height="height"
     :class="$vuetify.display.xs ? '' : 'px-9'"
     @mouseMove="handleMouseMove"
+    @click="handleClick"
   />
 </template>
 
@@ -22,7 +23,7 @@ const props = defineProps({
     default: () => [],
   },
 })
-const emit = defineEmits(["mouseMove", "dataPointSelection"])
+const emit = defineEmits(["mouseMove", "click"])
 const chartRef = ref(null)
 
 // const dataPointSelection = computed(() => {
@@ -34,6 +35,10 @@ const chartRef = ref(null)
 
 const handleMouseMove = (event, chartContext, config) => {
   emit("mouseMove", config.dataPointIndex)
+}
+
+const handleClick = (event, chartContext, config) => {
+  emit("click", config?.dataPointIndex)
 }
 
 const mergedOptions = computed(() => {

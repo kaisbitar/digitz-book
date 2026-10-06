@@ -3,12 +3,14 @@
     <div class="sura-title d-flex align-center ga-1">
       <span class="font-weight-bold text-h5">سورة {{ target.suraName }}</span>
       <v-btn
+        v-if="showSuraNav"
         icon="mdi-chevron-up"
         variant="tonal"
         size="small"
         @click="goToSura(-1)"
       />
       <v-btn
+        v-if="showSuraNav"
         icon="mdi-chevron-down"
         variant="tonal"
         size="small"
@@ -163,6 +165,9 @@ const suraKeyValues = computed(
 import { useDisplay } from "vuetify"
 
 const display = useDisplay()
+const showSuraNav = computed(
+  () => !searchedWord.value || !display.smAndDown.value,
+)
 
 const formattedMetrics = computed(() => {
   const allCounts = [
