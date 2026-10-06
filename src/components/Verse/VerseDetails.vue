@@ -26,7 +26,7 @@
     </div>
     <v-divider class="mb-3" />
 
-    <v-card variant="outlined" class="pa-4">
+    <v-card variant="outlined" class="pa-4 selected-verse">
       <VerseDetailsWords
         :verse="verseText"
         :inputText="inputText"
@@ -155,7 +155,7 @@ const mushafNumber = computed(() => targetVerse.value?.verseNumberToQuran)
 const wordCount = computed(() => countVerseWords(verseText.value))
 const letterCount = computed(() => countVerseLetters(verseText.value))
 const verseWords = computed(() =>
-  verseText.value.split(" ").filter(Boolean).reverse(),
+  verseText.value.split(" ").filter(Boolean),
 )
 const letterSeries = computed(() =>
   verseWords.value.map((word) => countVerseLetters(word)),

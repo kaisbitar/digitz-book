@@ -1,6 +1,6 @@
 // Creating categories for the chart to be reversed
 const generateCategories = (length) => {
-  return Array.from({ length }, (_, i) => i + 1).reverse()
+  return Array.from({ length }, (_, i) => i + 1)
 }
 
 export const getChartOptions = (length) => {
@@ -14,7 +14,6 @@ export const getChartOptions = (length) => {
         show: false,
         offsetY: 2,
       },
-      dir: "rtl",
     },
     zoom: {
       enabled: true,

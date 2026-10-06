@@ -30,6 +30,7 @@ export default createVuetify({
           success: "#4CAF50", // A green color for success messages
           error: "#F44336", // A red color for error messages
           highlight: "#ffff00",
+          match: "#FF9800",
           "secondary-highlight": "#90EE90", // Light green
           "on-highlight": "#060603",
           "active-row": "#e4e4e4",
@@ -48,6 +49,7 @@ export default createVuetify({
           success: "#66BB6A", // A slightly lighter green for dark mode
           error: "#EF5350", // A slightly lighter red for dark mode
           highlight: "#324507",
+          match: "#FF9800",
           "secondary-highlight": "#2F4F4F", // Dark slate gray
           "active-row": "#2f2f2f",
           "count-key-item": "#919191",
@@ -69,6 +71,7 @@ export default createVuetify({
           "on-background": "#CDD6F4",
           "on-surface": "#CDD6F4",
           highlight: "#a5e3a1",
+          match: "#FF9800",
           "secondary-highlight": "#89B4FA", // Soft blue matching primary
           "active-row": "#313142",
           "count-key-item": "#919191",
@@ -90,6 +93,7 @@ export default createVuetify({
           "on-background": "#212121", // Very dark gray
           "on-surface": "#424242", // Dark gray
           highlight: "#FFC400", // Amber
+          match: "#FF9800",
           "secondary-highlight": "#64B5F6", // Light blue
           "active-row": "#f2f1f1",
           "count-key-item": "#747474",

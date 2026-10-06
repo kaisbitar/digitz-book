@@ -78,9 +78,14 @@ html {
 
 .highlight-match {
   color: rgb(var(--v-theme-on-highlight));
+  background: rgb(var(--v-theme-match)) !important;
+}
+
+.active-verse-text .highlight-match,
+.active-verse-table .highlight-match,
+.active-word-card-item .highlight-match,
+.selected-verse .highlight-match {
   background: rgb(var(--v-theme-highlight)) !important;
-  // font-weight: bold;
-  // padding: 2px;
 }
 
 .count-key-item,

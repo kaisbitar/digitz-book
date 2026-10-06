@@ -2,7 +2,7 @@
   <v-card class="px-4 sura-board-overflow" variant="plain">
     <v-card-text v-if="verse" class="position-absolute">
       <div
-        class="freq-verse"
+        class="freq-verse selected-verse"
         v-html="highlight(verse.verseText, verse.tarteel)"
       ></div>
       <div class="text-caption text-medium-emphasis mt-1">
@@ -26,10 +26,13 @@ import { useStore } from "@/stores/appStore"
 import getChartOptions from "@/assets/frequecyOptions"
 import { useInputFiltering } from "@/mixins/inputFiltering"
 import { useCounting } from "@/mixins/counting"
+import { createArabicPattern } from "@/utils/arabicUtils"
 
 const LONG_SURA = 150
 const LABEL_STEP = 10
 const MARKER_SIZE = 12
+const MATCH_SIZE = 6
+const SELECT_COLOR = "#9E9E9E"
 
 const chartRoot = (chart) => chart?.w?.globals?.dom?.baseEl
 
@@ -90,12 +93,24 @@ const selectedPoint = computed(() => {
   const length = props.verses.length
   const verseIndex = Number(target.value?.verseIndex)
   if (!length || !verseIndex) return -1
-  return length - verseIndex
+  return verseIndex - 1
+})
+const matchPoints = computed(() => {
+  const word = target.value?.tarteel?.trim()
+  const verses = props.verses
+  if (!word || !verses?.length) return []
+  const regex = createArabicPattern(word)
+  const points = []
+  verses.forEach((item, index) => {
+    if (regex.test(item.verseText)) points.push(index)
+  })
+  return points
 })
 const chartOptions = computed(() => {
   const length = props.verses.length
   const options = getChartOptions(length)
   const point = selectedPoint.value
+  const matches = matchPoints.value
   const labelColor = theme.themes.value.light.colors.surface
 
   options.chart.events = {
@@ -119,12 +134,13 @@ const chartOptions = computed(() => {
     custom: ({ dataPointIndex }) => {
       const verses = props.verses
       if (dataPointIndex == null || dataPointIndex < 0 || !verses?.length) return ""
-      const next = verses[verses.length - 1 - dataPointIndex]
+      const next = verses[dataPointIndex]
       if (!next?.verseText) return ""
       const text = highlight(next.verseText, target.value?.tarteel) || next.verseText
       const words = countVerseWords(next.verseText)
       const letters = countVerseLetters(next.verseText)
-      return `<div class="freq-tip">
+      const selected = dataPointIndex === point ? " selected-verse" : ""
+      return `<div class="freq-tip${selected}">
         <div>${text}</div>
         <div class="freq-tip-stats">آية ${next.verseIndex} · مصحف ${next.verseNumberToQuran} · ${words} كلمة · ${letters} حرف</div>
       </div>`
@@ -138,12 +154,37 @@ const chartOptions = computed(() => {
 
   options.dataLabels.formatter = (value, opts) => {
     const index = opts.dataPointIndex
-    if (index === point) return ""
+    if (index === point || matches.includes(index)) return ""
     if (length > LONG_SURA && index % LABEL_STEP !== 0) return ""
     return value
   }
 
-  if (point < 0 || point >= length) return options
+  const colors = theme.current.value.colors
+  const stroke = colors["on-highlight"]
+  const hasWord = matches.includes(point)
+  const discrete = matches
+    .filter((index) => index !== point)
+    .map((index) => ({
+      seriesIndex: 0,
+      dataPointIndex: index,
+      fillColor: colors.match,
+      strokeColor: stroke,
+      size: MATCH_SIZE,
+      strokeWidth: 2,
+    }))
+
+  if (point >= 0 && point < length) {
+    discrete.push({
+      seriesIndex: 0,
+      dataPointIndex: point,
+      fillColor: hasWord ? colors.highlight : SELECT_COLOR,
+      strokeColor: stroke,
+      size: MARKER_SIZE,
+      strokeWidth: 2,
+    })
+  }
+
+  if (!discrete.length) return options
 
   options.markers = {
     ...options.markers,
@@ -152,16 +193,7 @@ const chartOptions = computed(() => {
       ...options.markers.hover,
       size: MARKER_SIZE + 4,
     },
-    discrete: [
-      {
-        seriesIndex: 0,
-        dataPointIndex: point,
-        fillColor: theme.current.value.colors.highlight,
-        strokeColor: theme.current.value.colors["on-highlight"],
-        size: MARKER_SIZE,
-        strokeWidth: 2,
-      },
-    ],
+    discrete,
   }
   return options
 })
@@ -169,10 +201,7 @@ const height = computed(() => window.innerHeight - 300)
 
 const handleClick = (dataPointIndex) => {
   if (dataPointIndex == null || dataPointIndex < 0) return
-  const totalPoints = props.chartFreqSeries?.[0]?.data?.length
-  if (!totalPoints) return
-  const verseIndex = totalPoints - dataPointIndex
-  const next = props.verses[verseIndex - 1]
+  const next = props.verses?.[dataPointIndex]
   if (!next) return
   store.setTarget(next)
 }

@@ -22,8 +22,8 @@ export const prepareSuraData = ({
     letters.push(item.verseText.replace(/ /g, "").length)
     words.push(item.verseText.split(" ").length)
   })
-  letterSeries.value = [{ data: letters.reverse() }]
-  wordsSeries.value = [{ data: words.reverse() }]
+  letterSeries.value = [{ data: letters }]
+  wordsSeries.value = [{ data: words }]
 }
 
 export const setSuraToolTip = ({

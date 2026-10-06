@@ -1,6 +1,6 @@
 // Creating categories for the mushaf chart
 const generateCategories = (length) => {
-  return Array.from({ length }, (_, i) => i + 1).reverse()
+  return Array.from({ length }, (_, i) => i + 1)
 }
 
 export const getMushafChartOptions = (length) => {
@@ -11,7 +11,6 @@ export const getMushafChartOptions = (length) => {
       toolbar: {
         show: false,
       },
-      dir: "rtl",
     },
     dataLabels: {
       enabled: true,
