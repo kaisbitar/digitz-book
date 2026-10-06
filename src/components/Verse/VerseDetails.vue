@@ -71,15 +71,15 @@
         />
         <span>تحليل {{ currentWord }}</span>
         <v-btn
-          v-if="wordRoot"
+          v-if="plainWord"
           class="bg-surface ms-3"
           variant="outlined"
           rounded="pill"
           size="small"
-          @click="searchRoot"
+          @click="searchWord"
         >
           <v-icon icon="mdi-magnify" size="small" class="ml-2" />
-          رتل {{ wordRoot }}
+          رتل {{ plainWord }}
         </v-btn>
         <v-spacer />
         <v-btn
@@ -109,8 +109,6 @@ import { useDataStore } from "@/stores/dataStore"
 import { useTarteelStore } from "@/stores/TarteelStore"
 import { useCounting } from "@/mixins/counting"
 import { filterWords } from "@/utils/wordFilter"
-import { fetchWordRoot } from "@/utils/dictionaryUtils"
-import { removeTashkeel } from "@/utils/arabicUtils"
 import getChartOptions from "@/assets/frequecyOptions"
 
 const router = useRouter()
@@ -142,9 +140,10 @@ const tabs = [
   },
 ]
 const currentWord = ref("")
-const wordRoot = ref("")
-const storedRoot = ref("")
 const isMeaningOpen = ref(false)
+const plainWord = computed(() =>
+  String(currentWord.value || "").replace(/[\u064B-\u0652]/g, ""),
+)
 const meaningDrawerWidth = computed(() =>
   width.value < 600 ? width.value : 480,
 )
@@ -188,37 +187,19 @@ const goBack = () => {
   emit("go-back")
 }
 
-const loadRoot = async (word) => {
-  wordRoot.value = ""
-  storedRoot.value = ""
+const searchWord = () => {
+  const word = plainWord.value.trim()
   if (!word) return
 
-  const root = await fetchWordRoot(word)
-  if (!root) return
-
-  storedRoot.value = root
-  wordRoot.value = removeTashkeel(root)
-}
-
-const searchRoot = () => {
-  const root = storedRoot.value || wordRoot.value
-  if (!root) return
-
-  const searched = filterWords(
-    wordRoot.value,
-    dataStore.getOneQuranFile,
-    root,
-    { removeTashkeel: true },
-  )
+  const searched = filterWords(word, dataStore.getOneQuranFile)
   const results = searched.results || []
   if (!results.length) return
 
   tarteelStore.setLiveLetter(null)
   tarteelStore.setChartVisible(false)
   tarteelStore.setLiveTarteel({
-    inputText: wordRoot.value,
+    inputText: word,
     results,
-    wordRoot: wordRoot.value,
   })
   tarteelStore.commitDraft()
   router.push({ name: "tarteel", query: { view: "list" } })
@@ -232,8 +213,6 @@ const openMeaning = (word) => {
   currentWord.value = word
   isMeaningOpen.value = true
 }
-
-watch(currentWord, loadRoot)
 
 watch(verseText, () => {
   currentWord.value = ""
