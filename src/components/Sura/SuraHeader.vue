@@ -32,6 +32,14 @@
         @click="openSearchedWord"
         @click:close="clearSearchedWord"
       >
+        <template #append>
+          <v-btn
+            icon="mdi-arrow-left"
+            size="x-small"
+            variant="text"
+            @click.stop="openSearchedWord"
+          />
+        </template>
         {{ searchedWord }}
       </v-chip>
       <v-btn
@@ -132,9 +140,6 @@ const openSearchedWord = async () => {
   tarteelStore.setSelectedRatlIndex(
     ratl ? match.results.findIndex((item) => item.word === ratl.word) : null,
   )
-  if (ratl?.verses?.some((verse) => verse.verseNumberToQuran == verseId)) {
-    tarteelStore.rememberOpenedVerse()
-  }
   router.push({ name: "tarteel", query: { view: "list" } })
 }
 

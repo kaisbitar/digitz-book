@@ -55,11 +55,11 @@ const distinctSuras = computed(() => {
 })
 const uniqueVersesCount = computed(() => {
   const allVerses = props.selectedTarteel.results.flatMap(
-    (result) => result.verses
+    (result) => result.verses,
   )
 
   const uniqueVerses = new Set(
-    allVerses.map((verse) => verse.verseNumberToQuran)
+    allVerses.map((verse) => verse.verseNumberToQuran),
   )
 
   return uniqueVerses.size
