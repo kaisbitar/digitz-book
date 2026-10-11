@@ -4,25 +4,11 @@
     <v-app-bar-title class="mr-16" style="max-width: 140px" v-if="!isMobile">
       رُسُلْ
     </v-app-bar-title>
-    <v-container
-      v-if="isInputVisible"
-      class="pt-6 flex-grow-1"
-      style="max-width: 480px"
-      fluid
-    >
+    <v-container class="pt-6 flex-grow-1" style="max-width: 480px" fluid>
       <div class="mb-2">
         <SearchBar :autoFocus="isMobile" />
       </div>
     </v-container>
-    <AppToggleBtn
-      v-if="!isInputVisible"
-      :isActive="false"
-      btnText="ترتيل القرآن"
-      inActiveIcon="mdi-magnify"
-      activeIcon="mdi-close"
-      size="default"
-      @toggle="isInputVisible = true"
-    />
 
     <v-spacer></v-spacer>
     <AppToggleBtn
@@ -55,29 +41,17 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from "vue"
+import { ref, computed, watch } from "vue"
 import { useRouter } from "vue-router"
 import { useDisplay } from "vuetify"
 import { useStore } from "@/stores/appStore"
-import { useTarteelStore } from "@/stores/TarteelStore"
-import UserAvatar from "@/components/Profile/UserAvatar.vue"
 import SearchBar from "@/components/SearchBar.vue"
 
-const tarteelStore = useTarteelStore()
 const router = useRouter()
 const display = useDisplay()
 const activeRoute = computed(() => router.currentRoute.value.name)
 
-const isInputVisible = ref(false)
 const drawer = ref(false)
-
-// On mobile the search box is hidden until asked for
-watch(
-  () => tarteelStore.searchFocusTick,
-  () => {
-    isInputVisible.value = true
-  },
-)
 
 const handleNavigation = (route) => {
   router.push(route)
@@ -142,15 +116,4 @@ const navigationItems = [
     label: "تدبري",
   },
 ]
-onMounted(() => {
-  if (!isMobile.value) {
-    isInputVisible.value = true
-  }
-  if (router.currentRoute.value.name === "home") {
-    isInputVisible.value = false
-  }
-  if (router.currentRoute.value.query.focus) {
-    isInputVisible.value = true
-  }
-})
 </script>
