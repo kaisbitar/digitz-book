@@ -159,6 +159,12 @@ const prepareData = () => {
 
 watch(fileName, prepareData)
 
+// On mobile the Quran data arrives after mount (no localStorage cache),
+// so re-prepare the sura once it lands.
+watch(oneQuranFile, (file) => {
+  if (file?.length) prepareData()
+})
+
 onMounted(() => {
   store.setActiveRoute("sura")
   prepareData()

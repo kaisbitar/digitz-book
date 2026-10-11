@@ -55,15 +55,27 @@ export const useDataStore = defineStore("data", {
         return
       }
 
-      try {
-        const appApi = import.meta.env.VITE_APP_API_URL
+      const appApi = import.meta.env.VITE_APP_API_URL
 
-        await this.fetchQuranFileAndIndex(appApi)
-        await this.fetchAndProcessVerses(appApi)
-        await this.fetchRoots(appApi)
-        this.setDataVersion(import.meta.env.VITE_QURAN_DATA_VERSION)
-      } catch (error) {
-        console.error("Error fetching Quran data:", error)
+      // Mobile networks drop large requests often; retry with backoff
+      // instead of leaving the app with no verse data.
+      const RETRIES = 3
+      for (let attempt = 1; attempt <= RETRIES; attempt++) {
+        try {
+          await this.fetchQuranFileAndIndex(appApi)
+          await this.fetchAndProcessVerses(appApi)
+          await this.fetchRoots(appApi)
+          this.setDataVersion(import.meta.env.VITE_QURAN_DATA_VERSION)
+          return
+        } catch (error) {
+          console.error(
+            `Error fetching Quran data (attempt ${attempt}/${RETRIES}):`,
+            error,
+          )
+          if (attempt < RETRIES) {
+            await new Promise((r) => setTimeout(r, attempt * 2000))
+          }
+        }
       }
     },
 
