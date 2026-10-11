@@ -1,5 +1,18 @@
 <template>
-  <!-- <div class="meaning-panel"> -->
+  <div v-if="isWordMeaningOpen && phraseWords.length" class="d-flex align-center px-3 pt-3">
+    <span class="text-subtitle-2 text-grey-darken-1">
+      {{ displayedRoot || activeWord }}
+    </span>
+    <v-btn
+      v-if="phraseWords.length > 1"
+      size="x-small"
+      variant="tonal"
+      class="ms-auto"
+      @click="nextWord"
+    >
+      التالي
+    </v-btn>
+  </div>
   <v-card-item v-if="loading">
     <v-fade-transition mode="out-in">
       <v-card-title class="pa-3">
@@ -40,7 +53,7 @@
 <script setup>
 import { ref, onMounted, computed, watch } from "vue"
 import { useStore } from "@/stores/appStore"
-import { fetchWordData } from "@/utils/dictionaryUtils.js"
+import { fetchWordData, fetchWordRoot } from "@/utils/dictionaryUtils.js"
 
 const store = useStore()
 
@@ -61,22 +74,38 @@ const props = defineProps({
 })
 
 const loading = ref(true)
+const wordIndex = ref(0)
+const displayedRoot = ref("")
+
+const phraseWords = computed(() =>
+  (props.word || "").trim().split(/\s+/).filter(Boolean),
+)
+const activeWord = computed(
+  () => phraseWords.value[wordIndex.value] || phraseWords.value[0] || "",
+)
 
 const results = computed(() => {
   if (!loading.value) {
-    const meaning = store.getWordMeaning(props.word)
+    const meaning = store.getWordMeaning(activeWord.value)
     return meaning ? [{ meaning }] : [{ meaning: [] }]
   }
   return [{ meaning: [] }]
 })
 
 const fetchMeanings = async () => {
+  if (!activeWord.value) return
   try {
     loading.value = true
-    return await fetchWordData(props.word)
+    displayedRoot.value = (await fetchWordRoot(activeWord.value)) || ""
+    return await fetchWordData(activeWord.value)
   } finally {
     loading.value = false
   }
+}
+
+const nextWord = () => {
+  if (phraseWords.value.length < 2) return
+  wordIndex.value = (wordIndex.value + 1) % phraseWords.value.length
 }
 
 onMounted(() => {
@@ -89,11 +118,13 @@ onMounted(() => {
 watch(
   () => props.word,
   async (newWord) => {
-    if (newWord) {
-      await fetchMeanings()
-    }
+    wordIndex.value = 0
+    if (newWord) await fetchMeanings()
   },
 )
+watch(activeWord, async (word) => {
+  if (word) await fetchMeanings()
+})
 </script>
 
 <style scoped>

@@ -1,5 +1,10 @@
 <template>
-  <div ref="barRef" @focusin="onFocusIn" @focusout="onFocusOut" @click="openSuggestions">
+  <div
+    ref="barRef"
+    @focusin="onFocusIn"
+    @focusout="onFocusOut"
+    @click="openSuggestions"
+  >
     <AppInputField
       :modelValue="tarteel"
       fieldPlaceHolder="ابحث في القرآن الكريم..."
@@ -88,9 +93,7 @@
       v-model="showLangHint"
       location="top"
       :timeout="2500"
-      color="primary"
       variant="flat"
-      rounded="pill"
       min-width="0"
       elevation="1"
     >
@@ -107,7 +110,7 @@ import { computed, nextTick, onMounted, ref, watch } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import { useDataStore } from "@/stores/dataStore"
 import { useTarteelStore } from "@/stores/TarteelStore"
-import { useAutoComplete } from "@/hooks/useAutoComplete"
+import { isPhraseSearch, useAutoComplete } from "@/hooks/useAutoComplete"
 import AppInputField from "@/components/App/AppInputField.vue"
 
 defineProps({
@@ -141,11 +144,11 @@ const isFocused = ref(false)
 const suppressMenu = ref(false)
 const menuWidth = ref(280)
 
-const isVerseQuery = computed(() => (tarteel.value || "").includes(" "))
+const isVerseQuery = computed(() => isPhraseSearch(tarteel.value))
 
 watch(exactVerseMatch, async () => {
   const raw = tarteel.value || ""
-  if (!raw.includes(" ")) return
+  if (!isPhraseSearch(raw)) return
   await searchNow(raw)
   showLiveResults()
 })
@@ -228,7 +231,7 @@ const showLiveResults = () => {
   const raw = tarteel.value || ""
   const value = raw.trim()
   if (value.length <= 1) return
-  if (currentWordsList.value.length === 0 && !raw.includes(" ")) return
+  if (currentWordsList.value.length === 0 && !isPhraseSearch(raw)) return
 
   tarteelStore.setLiveTarteel({
     inputText: raw.endsWith(" ") ? `${value} ` : value,
@@ -253,8 +256,7 @@ const commit = async () => {
     tarteelStore.setChartVisible(false)
   }
 
-  const onSearchPage =
-    route.name === "tarteel" && route.query.view !== "detail"
+  const onSearchPage = route.name === "tarteel" && route.query.view !== "detail"
   if (!onSearchPage) {
     router.push({ name: "tarteel", query: { view: "list" } })
   }

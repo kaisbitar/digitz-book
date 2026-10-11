@@ -3,6 +3,7 @@ import { filterWords } from "@/utils/wordFilter"
 import { useSearchTarteel } from "@/hooks/useSearchTarteel"
 import { fetchWordRoot } from "@/utils/dictionaryUtils.js"
 import { createArabicPattern } from "@/utils/arabicUtils"
+import { generateWholeWordRegex } from "@/utils/wordFilter/regexGenerators"
 
 const SUGGESTION_LIMIT = 200
 const VERSE_SUGGESTION_LIMIT = 20000
@@ -52,6 +53,9 @@ const suggestWords = (prefix, entries) => {
 }
 
 const normalizeVerse = (text) => normalizeWord(text).replace(/\s+/g, " ").trim()
+
+// Verse search starts only after the first letter after a space
+export const isPhraseSearch = (raw = "") => /\s\S/.test(raw)
 
 const wordEdgeMatch = (text, match, partialEnd, exact) => {
   if (!match || match.index == null) return null
@@ -214,40 +218,68 @@ export function useAutoComplete(dataStore, tarteelStore) {
     return false
   }
 
+  const toVerseItems = (verses) =>
+    verses.map(({ fileName, verseIndex, verseNumberToQuran, verseText }) => ({
+      fileName,
+      verseIndex,
+      verseNumberToQuran,
+      verseText,
+    }))
+
+  const toPhraseItem = (phrase, verses, group) => {
+    const suras = [
+      ...new Set(verses.map((verse) => verse.fileName.replace(/[0-9]/g, ""))),
+    ]
+    return {
+      word: phrase,
+      exact: group === "exact" && exactVerseMatch.value,
+      count: verses.length,
+      group,
+      uniqueSuraCount: suras.length,
+      suras,
+      verses: toVerseItems(verses),
+    }
+  }
+
+  const collectSimilarPhrases = (firstWord, excludePhrase, file) => {
+    const firstRx = generateWholeWordRegex(firstWord)
+    const fold = (text) =>
+      normalizeWord(text).replace(/[أإآٱ]/g, "ا").replace(/ة/g, "ه")
+    const exclude = fold(excludePhrase)
+    const found = new Map()
+
+    for (const verse of file || []) {
+      const tokens = normalizeVerse(verse.verseText).split(" ")
+      for (let i = 0; i < tokens.length - 1; i++) {
+        if (!firstRx.test(tokens[i])) continue
+        const phrase = `${tokens[i]} ${tokens[i + 1]}`
+        if (fold(phrase) === exclude) continue
+        if (!found.has(phrase)) found.set(phrase, [])
+        found.get(phrase).push(verse)
+      }
+    }
+
+    return [...found.entries()]
+      .sort((a, b) => b[1].length - a[1].length)
+      .slice(0, 40)
+      .map(([phrase, verses]) => toPhraseItem(phrase, verses, "attached"))
+  }
+
   const updateFilteredVerses = (raw) => {
     filteredList.value = []
 
     const sentence = raw.trim()
-    const filteredVerses = dataStore.getOneQuranFile.filter((verse) =>
+    const file = dataStore.getOneQuranFile
+    const filteredVerses = file.filter((verse) =>
       matchesPhrase(verse.verseText, raw, exactVerseMatch.value),
     )
 
     if (filteredVerses.length === 0) return (filteredList.value = [])
 
-    // Same shape as a word result so the phrase renders as a pill
-    const suras = [
-      ...new Set(
-        filteredVerses.map((verse) => verse.fileName.replace(/[0-9]/g, "")),
-      ),
-    ]
-
+    const firstWord = sentence.split(/\s+/).filter(Boolean)[0]
     filteredList.value = [
-      {
-        word: sentence,
-        exact: exactVerseMatch.value,
-        count: filteredVerses.length,
-        group: "exact",
-        uniqueSuraCount: suras.length,
-        suras,
-        verses: filteredVerses.map(
-          ({ fileName, verseIndex, verseNumberToQuran, verseText }) => ({
-            fileName,
-            verseIndex,
-            verseNumberToQuran,
-            verseText,
-          }),
-        ),
-      },
+      toPhraseItem(sentence, filteredVerses, "exact"),
+      ...collectSimilarPhrases(firstWord, sentence, file),
     ]
     filteredList.value.word = sentence
     filteredList.value.wordRoot = null
@@ -297,8 +329,8 @@ export function useAutoComplete(dataStore, tarteelStore) {
         return true
       }
 
-      if (!value.includes(" ")) {
-        await updateFilteredWords(value)
+      if (!isPhraseSearch(value)) {
+        await updateFilteredWords(value.trim())
         return filteredList.value.length > 0
       }
 
