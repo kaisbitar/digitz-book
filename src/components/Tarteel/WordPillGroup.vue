@@ -5,9 +5,10 @@
     </v-card-title>
     <div class="pill-group-overflow flex-grow-1">
       <div class="d-flex flex-wrap align-content-start ga-3 pa-3">
-        <v-chip
-          v-for="item in items"
-          :key="item.word"
+        <slot name="empty">
+          <v-chip
+            v-for="item in items"
+            :key="item.word"
           :color="chipColor(item)"
           :variant="chipVariant(item)"
           size="large"
@@ -26,6 +27,7 @@
             @click.stop="emit('remove', item)"
           />
         </v-chip>
+        </slot>
       </div>
     </div>
   </v-card>

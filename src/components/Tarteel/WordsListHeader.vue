@@ -9,6 +9,10 @@
 </template>
 
 <script setup>
+import { useCounting } from "@/mixins/counting"
+
+const { calculateValue } = useCounting()
+
 const props = defineProps({
   selectedTarteel: {
     type: Object,
@@ -36,10 +40,45 @@ const rootResults = computed(() => {
 
 const derivedCount = computed(() => rootResults.value.length)
 
+const totalVerses = computed(() =>
+  rootResults.value.reduce((sum, item) => sum + (item.verses?.length || 0), 0),
+)
+
+const totalCount = computed(() =>
+  rootResults.value.reduce((sum, item) => sum + (item.count || 0), 0),
+)
+
+const totalSuras = computed(() => {
+  const suras = new Set(
+    rootResults.value.flatMap((item) => item.suras || []),
+  )
+  return suras.size
+})
+
+const numeralValue = computed(() =>
+  calculateValue((props.selectedTarteel.inputText || "").trim()),
+)
+
 const formattedCounts = computed(() => [
   {
     value: derivedCount.value,
     label: isPhrase.value ? "نتيجة" : "مشتق",
+  },
+  {
+    value: totalVerses.value,
+    label: "آية",
+  },
+  {
+    value: totalCount.value,
+    label: "مرة",
+  },
+  {
+    value: totalSuras.value,
+    label: "سورة",
+  },
+  {
+    value: numeralValue.value,
+    label: "مرقوم",
   },
 ])
 </script>

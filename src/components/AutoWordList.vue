@@ -13,7 +13,8 @@
       <VersesTile
         :word="selectedWord || word"
         :verses="paginatedItems"
-        :text-to-highlight="word"
+        :verse-count="verseCount"
+        :text-to-highlight="selectedWord || word"
         :exact="exact"
         :targeted-verse-index="targetedVerseIndex"
         :handle-infinite-scroll="handleInfiniteScroll"
@@ -38,6 +39,24 @@
         </div>
       </v-card>
 
+      <v-card variant="outlined" class="pill-group d-flex flex-column">
+        <v-card-title class="text-grey-darken-1 text-subtitle-1">
+          السور ({{ suras.length }})
+        </v-card-title>
+        <div class="pill-group-overflow flex-grow-1">
+          <div class="d-flex flex-wrap align-content-start ga-3 pa-3">
+            <v-chip
+              v-for="sura in suras"
+              :key="sura"
+              color="secondary"
+              size="large"
+            >
+              {{ sura }}
+            </v-chip>
+          </div>
+        </div>
+      </v-card>
+
       <WordPillGroup
         v-for="groupType in trailingGroups"
         :key="groupType"
@@ -46,7 +65,11 @@
         :selected-word="selectedWord"
         @select="(item) => emit('select', item)"
         @remove="removeItem"
-      />
+      >
+        <template v-if="!getGroupItems(groupType).length" #empty>
+          <span class="text-caption text-grey">لا توجد كلمات مشابهة صوتيًا</span>
+        </template>
+      </WordPillGroup>
     </div>
     <v-btn
       v-if="hiddenSoundAlikes"
@@ -88,6 +111,10 @@ const props = defineProps({
   paginatedItems: {
     type: Array,
     default: () => [],
+  },
+  verseCount: {
+    type: Number,
+    default: 0,
   },
   exact: {
     type: Boolean,
@@ -164,9 +191,14 @@ const wordsTitle = computed(() => {
   return root ? `مشتقات الجذر ${root}` : "الكلمات"
 })
 
-const trailingGroups = computed(() =>
-  ["other"].filter((groupType) => getGroupItems(groupType).length),
+// Suras that contain any of the derived words
+const suras = computed(() =>
+  [
+    ...new Set(props.items.flatMap((item) => item.suras || [])),
+  ].sort(),
 )
+
+const trailingGroups = computed(() => ["other"])
 </script>
 
 <style scoped>

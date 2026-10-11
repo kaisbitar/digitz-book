@@ -9,6 +9,7 @@
         :word="selectedTarteel.inputText"
         :root="selectedTarteel.wordRoot || ''"
         :paginated-items="paginatedItems"
+        :verse-count="tarteelStore.getSelectedRatl?.verses?.length || 0"
         :exact="isPhrase && !!tarteelStore.getSelectedRatl?.exact"
         :targeted-verse-index="targetedVerseIndex"
         :handle-infinite-scroll="handleInfiniteScroll"
