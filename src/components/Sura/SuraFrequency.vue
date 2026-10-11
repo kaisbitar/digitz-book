@@ -12,7 +12,7 @@
     </v-card-text>
 
     <Chart
-      :series="chartFreqSeries"
+      :series="rtlFreqSeries"
       :options="chartOptions"
       :height="height"
       @click="handleClick"
@@ -27,8 +27,9 @@ import getChartOptions from "@/assets/frequecyOptions"
 import { useInputFiltering } from "@/mixins/inputFiltering"
 import { useCounting } from "@/mixins/counting"
 import { createArabicPattern } from "@/utils/arabicUtils"
+import { rtlIndex, rtlSeries } from "@/utils/chartRtl"
 
-const LONG_SURA = 150
+const LONG_SURA = 100
 const LABEL_STEP = 10
 const MARKER_SIZE = 12
 const MATCH_SIZE = 6
@@ -144,6 +145,8 @@ const wordCount = computed(() => countVerseWords(verse.value?.verseText || ""))
 const letterCount = computed(() =>
   countVerseLetters(verse.value?.verseText || ""),
 )
+const rtlFreqSeries = computed(() => rtlSeries(props.chartFreqSeries))
+
 const selectedPoint = computed(() => {
   const length = props.verses.length
   const verseIndex = Number(target.value?.verseIndex)
@@ -192,17 +195,44 @@ const chartOptions = computed(() => {
     followCursor: true,
     custom: ({ dataPointIndex }) => {
       const verses = props.verses
-      if (dataPointIndex == null || dataPointIndex < 0 || !verses?.length) return ""
-      const next = verses[dataPointIndex]
+      const verseIndex = rtlIndex(dataPointIndex, verses?.length)
+      if (verseIndex < 0) return ""
+      const next = verses[verseIndex]
       if (!next?.verseText) return ""
       const text = highlight(next.verseText, target.value?.tarteel) || next.verseText
       const words = countVerseWords(next.verseText)
       const letters = countVerseLetters(next.verseText)
-      const selected = dataPointIndex === point ? " selected-verse" : ""
+      const selected = verseIndex === point ? " selected-verse" : ""
       return `<div class="freq-tip${selected}">
         <div>${text}</div>
         <div class="freq-tip-stats">آية ${next.verseIndex} · مصحف ${next.verseNumberToQuran} · ${words} كلمة · ${letters} حرف</div>
       </div>`
+    },
+  }
+
+  options.chart.offsetY = 0
+  options.grid.padding = {
+    ...options.grid.padding,
+    bottom: 16,
+  }
+  options.xaxis.axisBorder = { show: true }
+  options.xaxis.axisTicks = { show: true }
+  options.xaxis.labels = {
+    ...options.xaxis.labels,
+    show: true,
+    rotate: 0,
+    hideOverlappingLabels: true,
+    style: {
+      fontSize: "12px",
+      fontFamily: "Almarai, sans-serif",
+    },
+    formatter: (value) => {
+      const n = parseInt(value, 10)
+      if (!n) return ""
+      if (length <= 20) return String(n)
+      const step = length > LONG_SURA ? 20 : 10
+      if (n === 1 || n === length || n % step === 0) return String(n)
+      return ""
     },
   }
 
@@ -212,9 +242,9 @@ const chartOptions = computed(() => {
   }
 
   options.dataLabels.formatter = (value, opts) => {
-    const index = opts.dataPointIndex
-    if (index === point || matches.includes(index)) return ""
-    if (length > LONG_SURA && index % LABEL_STEP !== 0) return ""
+    const verseIndex = rtlIndex(opts.dataPointIndex, length)
+    if (verseIndex === point || matches.includes(verseIndex)) return ""
+    if (length > LONG_SURA && verseIndex % LABEL_STEP !== 0) return ""
     return value
   }
 
@@ -225,7 +255,7 @@ const chartOptions = computed(() => {
     .filter((index) => index !== point)
     .map((index) => ({
       seriesIndex: 0,
-      dataPointIndex: index,
+      dataPointIndex: rtlIndex(index, length),
       fillColor: colors.match,
       strokeColor: stroke,
       size: MATCH_SIZE,
@@ -235,7 +265,7 @@ const chartOptions = computed(() => {
   if (point >= 0 && point < length) {
     discrete.push({
       seriesIndex: 0,
-      dataPointIndex: point,
+      dataPointIndex: rtlIndex(point, length),
       fillColor: hasWord ? colors.highlight : SELECT_COLOR,
       strokeColor: stroke,
       size: MARKER_SIZE,
@@ -256,11 +286,12 @@ const chartOptions = computed(() => {
   }
   return options
 })
-const height = computed(() => window.innerHeight - 300)
+const height = computed(() => Math.max(280, window.innerHeight - 240))
 
 const handleClick = (dataPointIndex) => {
-  if (dataPointIndex == null || dataPointIndex < 0) return
-  const next = props.verses?.[dataPointIndex]
+  const verseIndex = rtlIndex(dataPointIndex, props.verses?.length)
+  if (verseIndex < 0) return
+  const next = props.verses?.[verseIndex]
   if (!next) return
   store.setTarget(next)
 }

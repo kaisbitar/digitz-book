@@ -157,15 +157,14 @@ const verseWords = computed(() =>
   verseText.value.split(" ").filter(Boolean),
 )
 const letterSeries = computed(() =>
-  verseWords.value.map((word) => countVerseLetters(word)),
+  [...verseWords.value].reverse().map((word) => countVerseLetters(word)),
 )
 const chartOptions = computed(() => {
   const options = getChartOptions(verseWords.value.length)
-  const words = verseWords.value
+  const words = [...verseWords.value].reverse()
   options.dataLabels.formatter = (_value, opts) =>
     words[opts.dataPointIndex] || ""
   options.xaxis.categories = words
-  options.xaxis.min = undefined
   options.xaxis.title.text = ""
   options.xaxis.labels.show = false
   return options

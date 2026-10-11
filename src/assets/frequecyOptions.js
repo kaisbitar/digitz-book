@@ -1,6 +1,6 @@
-// Creating categories for the chart to be reversed
+// Categories run right-to-left so verse/word 1 sits on the right
 const generateCategories = (length) => {
-  return Array.from({ length }, (_, i) => i + 1)
+  return Array.from({ length }, (_, i) => String(length - i))
 }
 
 export const getChartOptions = (length) => {
@@ -90,7 +90,6 @@ export const getChartOptions = (length) => {
           color: "#ccc",
         },
       },
-      min: 1,
     },
     yaxis: {
       floating: true,
