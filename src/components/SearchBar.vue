@@ -140,8 +140,6 @@ const barRef = ref(null)
 const inputHasError = ref(false)
 const inputHasSuccess = ref(false)
 const showLangHint = ref(false)
-const isFocused = ref(false)
-const suppressMenu = ref(false)
 const menuWidth = ref(280)
 
 const isVerseQuery = computed(() => isPhraseSearch(tarteel.value))
@@ -153,21 +151,13 @@ watch(exactVerseMatch, async () => {
   showLiveResults()
 })
 
-const showMenu = computed({
-  get: () =>
-    isFocused.value &&
-    !suppressMenu.value &&
-    (menuSuggestions.value.length > 0 || isVerseQuery.value),
-  set: (open) => {
-    if (open) return
-    suppressMenu.value = true
-  },
-})
+// The menu is always open; it shows suggestions when they exist, or the
+// verse-match toggle for phrase queries.
+const showMenu = computed(() => true)
 
 const NON_ARABIC = /[^\u0600-\u06FF\u0750-\u077F\s]/g
 
-const onInput = async (value, keepMenuClosed = false) => {
-  suppressMenu.value = keepMenuClosed
+const onInput = async (value) => {
   const text = value ?? ""
   const cleaned = text.replace(NON_ARABIC, "")
   if (cleaned !== text) {
@@ -202,23 +192,17 @@ const showLiveLetter = () => {
   if (route.name !== "tarteel") router.push({ name: "tarteel" })
 }
 
-// Focusing the box (empty or one letter) shows the chart and history
 const pickSuggestion = (value) => {
   const input = barRef.value?.querySelector("input")
   if (input) input.value = value
-  onInput(value, true)
+  onInput(value)
 }
 
 const openSuggestions = () => {
-  if (!(tarteel.value || "").trim()) return
-  isFocused.value = true
-  suppressMenu.value = false
   menuWidth.value = barRef.value?.offsetWidth || 280
 }
 
 const onFocusIn = () => {
-  isFocused.value = true
-  suppressMenu.value = false
   menuWidth.value = barRef.value?.offsetWidth || 280
   const value = tarteel.value?.trim() || ""
   if (value.length > 1) return
@@ -245,7 +229,6 @@ const showLiveResults = () => {
 }
 
 const commit = async () => {
-  suppressMenu.value = true
   const raw = tarteel.value || ""
   const value = raw.trim()
 
@@ -267,7 +250,6 @@ const commit = async () => {
 // Leaving the search box (e.g. clicking a result) finalizes the draft
 const onFocusOut = (event) => {
   if (barRef.value?.contains(event.relatedTarget)) return
-  isFocused.value = false
   tarteelStore.setChartVisible(false)
   if (!tarteel.value) return
   commit()
