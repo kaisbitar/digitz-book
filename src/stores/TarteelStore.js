@@ -108,6 +108,48 @@ export const useTarteelStore = defineStore("tarteel", {
         )
       }
       this.draftId = null
+      this.trimStoredTarteels()
+    },
+
+    // Keep storage small: drop verse texts from the oldest searches so
+    // mobile browsers do not hit the localStorage quota and lose everything.
+    trimStoredTarteels(max = 5) {
+      // Newest first, one entry per search term
+      const seen = new Set()
+      const unique = []
+      for (const item of [...this.storedTarteels].reverse()) {
+        const key = (item.inputText || "").trim()
+        if (!key || seen.has(key)) continue
+        seen.add(key)
+        unique.push(item)
+      }
+
+      const kept = unique.slice(0, max)
+      const removedIds = new Set(
+        unique
+          .slice(max)
+          .map((item) => item.id)
+          .concat(
+            this.storedTarteels
+              .filter((item) => !(item.inputText || "").trim())
+              .map((item) => item.id),
+          ),
+      )
+      this.storedTarteels = this.storedTarteels.filter(
+        (item) => !removedIds.has(item.id),
+      )
+
+      // Beyond the newest few searches, drop verse texts (heavy) but keep
+      // the word + count so history still shows meaningful rows.
+      kept.slice(2).forEach((item) => {
+        if (item.results) {
+          item.results = item.results.map((r) => ({ ...r, verses: [] }))
+        }
+      })
+
+      if (removedIds.has(this.selectedTarteelId)) {
+        this.selectedTarteelId = kept[0]?.id ?? null
+      }
     },
 
     setLiveLetter(letter) {
