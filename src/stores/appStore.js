@@ -25,12 +25,15 @@ export const useStore = defineStore("Quran", {
     },
   }),
   persist: {
-    enabled: true,
-    strategies: [
-      {
-        key: "AppStore",
-        storage: localStorage,
-      },
+    key: "AppStore",
+    storage: localStorage,
+    pick: [
+      "target",
+      "versesMobileView",
+      "activeSuraTab",
+      "activeRoute",
+      "chartFreqType",
+      "userPreferences",
     ],
   },
   getters: {

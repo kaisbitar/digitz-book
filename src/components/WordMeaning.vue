@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isWordMeaningOpen && phraseWords.length" class="d-flex align-center px-3 pt-3">
+  <div v-if="showHeader && isWordMeaningOpen && phraseWords.length" class="d-flex align-center px-3 pt-3">
     <span class="text-subtitle-2 text-grey-darken-1">
       {{ displayedRoot || activeWord }}
     </span>
@@ -57,7 +57,7 @@ import { fetchWordData, fetchWordRoot } from "@/utils/dictionaryUtils.js"
 
 const store = useStore()
 
-defineEmits(["update:isWordMeaningOpen"])
+const emit = defineEmits(["update:isWordMeaningOpen", "header"])
 const props = defineProps({
   word: {
     type: String,
@@ -70,6 +70,10 @@ const props = defineProps({
   isWordMeaningOpen: {
     type: Boolean,
     default: false,
+  },
+  showHeader: {
+    type: Boolean,
+    default: true,
   },
 })
 
@@ -103,10 +107,25 @@ const fetchMeanings = async () => {
   }
 }
 
+const hasNext = computed(() => phraseWords.value.length > 1)
+
 const nextWord = () => {
-  if (phraseWords.value.length < 2) return
+  if (!hasNext.value) return
   wordIndex.value = (wordIndex.value + 1) % phraseWords.value.length
 }
+
+defineExpose({ nextWord })
+
+watch(
+  [displayedRoot, activeWord, hasNext],
+  () => {
+    emit("header", {
+      label: displayedRoot.value || activeWord.value,
+      hasNext: hasNext.value,
+    })
+  },
+  { immediate: true },
+)
 
 onMounted(() => {
   if (!props.word) {

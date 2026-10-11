@@ -22,11 +22,27 @@
       />
 
       <v-card variant="outlined" class="pill-group d-flex flex-column">
-        <v-card-title class="text-grey-darken-1 text-subtitle-1">
-          المعاجم
+        <v-card-title class="d-flex align-center text-grey-darken-1 text-subtitle-1">
+          <span>المعاجم</span>
+          <span v-if="meaningHeader.label" class="ms-3">{{ meaningHeader.label }}</span>
+          <v-btn
+            v-if="meaningHeader.hasNext"
+            size="x-small"
+            variant="tonal"
+            class="ms-auto"
+            @click="meaning.nextWord()"
+          >
+            التالي
+          </v-btn>
         </v-card-title>
         <div class="pill-group-overflow flex-grow-1">
-          <WordMeaning :word="word" :isWordMeaningOpen="true" />
+          <WordMeaning
+            ref="meaning"
+            :word="word"
+            :isWordMeaningOpen="true"
+            :show-header="false"
+            @header="meaningHeader = $event"
+          />
         </div>
       </v-card>
 
@@ -136,6 +152,8 @@ const emit = defineEmits([
   "verseSelected",
 ])
 const showAllSoundAlikes = ref(false)
+const meaning = ref(null)
+const meaningHeader = ref({ label: "", hasNext: false })
 
 watch(
   () => props.items.word,

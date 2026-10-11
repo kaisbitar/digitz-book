@@ -10,13 +10,9 @@ export const useNotesStore = defineStore("notes", {
   }),
 
   persist: {
-    enabled: true,
-    strategies: [
-      {
-        key: "NotesStore",
-        storage: localStorage,
-      },
-    ],
+    key: "NotesStore",
+    storage: localStorage,
+    pick: ["notes"],
   },
 
   getters: {

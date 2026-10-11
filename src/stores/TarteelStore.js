@@ -14,12 +14,14 @@ export const useTarteelStore = defineStore("tarteel", {
   }),
 
   persist: {
-    enabled: true,
-    strategies: [
-      {
-        key: "tarteel",
-        storage: localStorage,
-      },
+    key: "tarteel",
+    storage: localStorage,
+    pick: [
+      "storedTarteels",
+      "selectedTarteelId",
+      "selectedRatl",
+      "selectedRatlIndex",
+      "tarteelHistory",
     ],
   },
 

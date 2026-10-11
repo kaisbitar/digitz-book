@@ -18,15 +18,9 @@ export const useDataStore = defineStore("data", {
     dataVersion: null,
     allWordsRoots: [],
   }),
-  persist: {
-    enabled: true,
-    strategies: [
-      {
-        key: "quran-data-store",
-        storage: localStorage,
-      },
-    ],
-  },
+  // The full Quran text is several MB — persisting it blows the mobile
+  // localStorage quota. It is static cacheable data, so just refetch it.
+  persist: false,
   getters: {
     getOneQuranFile: (state) => state.oneQuranFile,
     getQuranIndex: (state) => state.QuranIndex,

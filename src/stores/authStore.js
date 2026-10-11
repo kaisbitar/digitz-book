@@ -10,13 +10,9 @@ export const useAuthStore = defineStore("auth", {
   }),
 
   persist: {
-    enabled: true,
-    strategies: [
-      {
-        key: "auth-store",
-        storage: localStorage,
-      },
-    ],
+    key: "auth-store",
+    storage: localStorage,
+    pick: ["user", "userSettings"],
   },
 
   getters: {
