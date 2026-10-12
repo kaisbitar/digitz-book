@@ -111,8 +111,8 @@ export const useTarteelStore = defineStore("tarteel", {
       this.trimStoredTarteels()
     },
 
-    // Keep storage small: drop verse texts from the oldest searches so
-    // mobile browsers do not hit the localStorage quota and lose everything.
+    // Keep storage small: keep only the newest searches so mobile browsers
+    // do not hit the localStorage quota and lose everything.
     trimStoredTarteels(max = 5) {
       // Newest first, one entry per search term
       const seen = new Set()
@@ -138,14 +138,6 @@ export const useTarteelStore = defineStore("tarteel", {
       this.storedTarteels = this.storedTarteels.filter(
         (item) => !removedIds.has(item.id),
       )
-
-      // Beyond the newest few searches, drop verse texts (heavy) but keep
-      // the word + count so history still shows meaningful rows.
-      kept.slice(2).forEach((item) => {
-        if (item.results) {
-          item.results = item.results.map((r) => ({ ...r, verses: [] }))
-        }
-      })
 
       if (removedIds.has(this.selectedTarteelId)) {
         this.selectedTarteelId = kept[0]?.id ?? null
