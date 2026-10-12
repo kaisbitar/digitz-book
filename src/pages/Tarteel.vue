@@ -43,22 +43,22 @@
       />
     </template>
     <template v-else>
-      <v-row justify="center" class="mt-4">
-        <v-col cols="12" md="6">
-          <SearchHistory
-            v-if="historyItems.length"
-            :items="historyItems"
-            :selected-id="tarteelStore.getSelectedTarteelId"
-            @select="openHistoryItem"
-            @remove="removeHistoryItem"
-          />
-          <NoData
-            v-else
-            text="ورتل القرآن ترتيلا.."
-            icon="mdi-book-open-page-variant-outline"
-          />
-        </v-col>
-      </v-row>
+      <div class="position-relative chart-history-page">
+        <div class="position-absolute w-100 h-100 chart-layer">
+          <LettersChart :letter="liveLetter || ''" fill />
+        </div>
+        <v-row v-if="historyItems.length" class="history-layer position-relative mt-0">
+          <v-col cols="12" md="5" class="history-layer">
+            <SearchHistory
+              class="history-card"
+              :items="historyItems"
+              :selected-id="tarteelStore.getSelectedTarteelId"
+              @select="openHistoryItem"
+              @remove="removeHistoryItem"
+            />
+          </v-col>
+        </v-row>
+      </div>
     </template>
   </v-container>
 </template>
