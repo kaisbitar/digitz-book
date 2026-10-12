@@ -13,24 +13,13 @@
       <AppHeaderMetrics :metrics="counts" />
     </div>
 
-    <template v-if="selectedTarteel.results.length > 1">
-      <v-btn
-        icon="mdi-arrow-left"
-        variant="tonal"
-        size="small"
-        class="mr-auto d-block"
-        @click="$emit('back-to-list')"
-      />
-    </template>
-    <template v-else>
-      <v-btn
-        icon="mdi-arrow-left"
-        variant="tonal"
-        size="small"
-        class="mr-auto d-block"
-        @click="tarteelStore.requestSearchFocus()"
-      />
-    </template>
+    <v-btn
+      icon="mdi-arrow-left"
+      variant="tonal"
+      size="small"
+      class="mr-auto d-block"
+      @click="goBack"
+    />
 
     <v-btn
       v-if="isWordMeaningOpen"
@@ -44,8 +33,12 @@
 </template>
 
 <script setup>
+import { useRouter } from "vue-router"
+import { useDisplay } from "vuetify"
 import { useCounting } from "@/mixins/counting"
 import { useTarteelStore } from "@/stores/TarteelStore"
+
+const router = useRouter()
 
 const { calculateValue } = useCounting()
 const tarteelStore = useTarteelStore()
@@ -69,8 +62,6 @@ const props = defineProps({
   },
 })
 
-import { useDisplay } from "vuetify"
-
 const display = useDisplay()
 const selectedTarteel = computed(() => {
   return tarteelStore.getStoredTarteels.find(
@@ -87,10 +78,18 @@ const counts = computed(() => {
   return display.xs.value ? [allCounts[0]] : allCounts
 })
 
+// Several words: back to the word list. One word: back to the chart.
+const goBack = () => {
+  if (selectedTarteel.value?.results?.length > 1) {
+    router.push({ name: "tarteel", query: { view: "list" } })
+    return
+  }
+  router.push({ name: "tarteel" })
+}
+
 defineEmits([
   "update:expanded",
   "update:isWordMeaningOpen",
   "update:isUserNoteOpen",
-  "back-to-list",
 ])
 </script>

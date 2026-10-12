@@ -9,8 +9,6 @@ export const useTarteelStore = defineStore("tarteel", {
     selectedRatlIndex: null,
     draftId: null,
     liveLetter: null,
-    chartVisible: false,
-    searchFocusTick: 0,
   }),
 
   persist: {
@@ -146,16 +144,6 @@ export const useTarteelStore = defineStore("tarteel", {
 
     setLiveLetter(letter) {
       this.liveLetter = letter
-    },
-
-    // Same as clicking the search box: focus it and show the chart + history
-    requestSearchFocus() {
-      this.searchFocusTick++
-    },
-
-    // True while the search box is focused with zero or one letter typed
-    setChartVisible(value) {
-      this.chartVisible = value
     },
 
     discardDraft() {

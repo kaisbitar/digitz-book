@@ -1,25 +1,28 @@
 <template>
   <v-container fluid class="main-column px-2">
-    <template v-if="showChartView">
-      <!-- Letters chart fills the page as a background; the history card sits on it -->
-      <div class="position-relative chart-history-page">
-        <div class="position-absolute w-100 h-100 chart-layer">
-          <LettersChart :letter="liveLetter || ''" fill />
-        </div>
-        <v-row v-if="historyItems.length" class="history-layer position-relative mt-0">
-          <v-col cols="12" md="5" class="history-layer">
-            <SearchHistory
-              class="history-card"
-              :items="historyItems"
-              :selected-id="tarteelStore.getSelectedTarteelId"
-              @select="openHistoryItem"
-              @remove="removeHistoryItem"
-            />
-          </v-col>
-        </v-row>
+    <!-- Home: letters chart with the search history on top of it -->
+    <div
+      v-if="!hasView"
+      class="position-relative chart-history-page"
+    >
+      <div class="position-absolute w-100 h-100 chart-layer">
+        <LettersChart :letter="liveLetter || ''" fill />
       </div>
-    </template>
-    <template v-else-if="ratl">
+      <v-row v-if="historyItems.length" class="history-layer position-relative mt-0">
+        <v-col cols="12" md="5" class="history-layer">
+          <SearchHistory
+            class="history-card"
+            :items="historyItems"
+            :selected-id="tarteelStore.getSelectedTarteelId"
+            @select="openHistoryItem"
+            @remove="removeHistoryItem"
+          />
+        </v-col>
+      </v-row>
+    </div>
+
+    <!-- ?view= is present: list / overview / verses of the searched word -->
+    <template v-else>
       <component
         :is="currentView"
         :selectedTarteel="selectedTarteel"
@@ -30,8 +33,6 @@
         :targetedVerseIndex="targetedVerseIndex"
         :handleInfiniteScroll="handleInfiniteScroll"
         @ratl-selected="showDetail"
-        @back-to-overview="showOverview"
-        @back-to-list="showList"
         @update:isWordMeaningOpen="isWordMeaningOpen = $event"
         @update:isUserNoteOpen="isUserNoteOpen = $event"
         @verseSelected="({ verse, word }) => handleSelectedVerse(verse, word)"
@@ -42,35 +43,16 @@
         :verses="ratlData.verses"
       />
     </template>
-    <template v-else>
-      <div class="position-relative chart-history-page">
-        <div class="position-absolute w-100 h-100 chart-layer">
-          <LettersChart :letter="liveLetter || ''" fill />
-        </div>
-        <v-row v-if="historyItems.length" class="history-layer position-relative mt-0">
-          <v-col cols="12" md="5" class="history-layer">
-            <SearchHistory
-              class="history-card"
-              :items="historyItems"
-              :selected-id="tarteelStore.getSelectedTarteelId"
-              @select="openHistoryItem"
-              @remove="removeHistoryItem"
-            />
-          </v-col>
-        </v-row>
-      </div>
-    </template>
   </v-container>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, nextTick } from "vue"
+import { ref, computed, onMounted, nextTick, watch } from "vue"
 import { useStore } from "@/stores/appStore"
 import { useRouter, useRoute } from "vue-router"
 import { useTarteelStore } from "@/stores/TarteelStore"
 import { useWindow } from "@/mixins/window"
 import { useIndexedPagination } from "@/hooks/useIndexedPagination"
-import { useNotesStore } from "@/stores/notesStore"
 import WordsOverview from "@/components/Tarteel/WordsOverview.vue"
 import WordsList from "@/components/Tarteel/WordsList.vue"
 import WordVerses from "@/components/Tarteel/WordVerses.vue"
@@ -81,13 +63,15 @@ const tarteelStore = useTarteelStore()
 const router = useRouter()
 const route = useRoute()
 const store = useStore()
-const notesStore = useNotesStore()
 
 const VIEW_TYPES = {
   OVERVIEW: "overview",
   LIST: "list",
   DETAIL: "detail",
 }
+
+// No ?view= → chart home. ?view=list|overview|detail → results view.
+const hasView = computed(() => !!route.query.view)
 
 const currentView = computed(() => {
   const view = route.query.view || VIEW_TYPES.LIST
@@ -98,8 +82,6 @@ const currentView = computed(() => {
     [VIEW_TYPES.DETAIL]: WordVerses,
   }[view]
 })
-
-const currentViewType = computed(() => route.query.view || VIEW_TYPES.LIST)
 
 const isUserNoteOpen = ref(false)
 const isWordMeaningOpen = ref(false)
@@ -144,13 +126,8 @@ const historyItems = computed(() => {
 })
 
 const liveLetter = computed(() => tarteelStore.liveLetter)
-const showChartView = computed(
-  () => !!tarteelStore.liveLetter || tarteelStore.chartVisible,
-)
 
 const openHistoryItem = (item) => {
-  tarteelStore.setLiveLetter(null)
-  tarteelStore.setChartVisible(false)
   document.activeElement?.blur?.()
   tarteelStore.setSelectedTarteelId(item.id)
   tarteelStore.setSelectedRatlIndex(0)
@@ -214,14 +191,6 @@ onMounted(async () => {
 
 const showDetail = () => {
   router.push({ query: { ...route.query, view: VIEW_TYPES.DETAIL } })
-}
-
-const showOverview = () => {
-  router.push({ query: { ...route.query, view: VIEW_TYPES.OVERVIEW } })
-}
-
-const showList = () => {
-  router.push({ query: { ...route.query, view: VIEW_TYPES.LIST } })
 }
 </script>
 

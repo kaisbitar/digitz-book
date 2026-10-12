@@ -107,21 +107,6 @@ const routes = [
     name: "duality-test",
     component: () => import("@/components/Tarkeem/Tarkeem.vue"),
   },
-  {
-    path: "/tarteel",
-    children: [
-      {
-        path: "",
-        name: "tarteel-overview",
-        component: () => import("@/pages/Tarteel.vue"),
-      },
-      {
-        path: "detail",
-        name: "tarteel-detail",
-        component: () => import("@/pages/Tarteel.vue"),
-      },
-    ],
-  },
 ]
 
 const router = createRouter({

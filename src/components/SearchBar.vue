@@ -106,7 +106,7 @@
 </template>
 
 <script setup>
-import { computed, nextTick, onMounted, ref, watch } from "vue"
+import { computed, onMounted, ref, watch } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import { useDataStore } from "@/stores/dataStore"
 import { useTarteelStore } from "@/stores/TarteelStore"
@@ -197,9 +197,8 @@ const onInput = async (value, keepMenuClosed = false) => {
 const showLiveLetter = () => {
   const value = tarteel.value?.trim() || ""
   tarteelStore.setLiveLetter(value.length === 1 ? value : null)
-  tarteelStore.setChartVisible(value.length <= 1)
   if (value.length > 1) return
-  if (route.name !== "tarteel") router.push({ name: "tarteel" })
+  if (route.name !== "tarteel" || route.query.view) router.push({ name: "tarteel" })
 }
 
 // Focusing the box (empty or one letter) shows the chart and history
@@ -222,8 +221,7 @@ const onFocusIn = () => {
   menuWidth.value = barRef.value?.offsetWidth || 280
   const value = tarteel.value?.trim() || ""
   if (value.length > 1) return
-  tarteelStore.setChartVisible(true)
-  if (route.name !== "tarteel") router.push({ name: "tarteel" })
+  if (route.name !== "tarteel" || route.query.view) router.push({ name: "tarteel" })
 }
 
 // Push the current results into the store so the tarteel page renders them
@@ -253,7 +251,6 @@ const commit = async () => {
     await searchNow(raw)
     showLiveResults()
     tarteelStore.setLiveLetter(null)
-    tarteelStore.setChartVisible(false)
   }
 
   const onSearchPage = route.name === "tarteel" && route.query.view !== "detail"
@@ -268,7 +265,6 @@ const commit = async () => {
 const onFocusOut = (event) => {
   if (barRef.value?.contains(event.relatedTarget)) return
   isFocused.value = false
-  tarteelStore.setChartVisible(false)
   if (!tarteel.value) return
   commit()
 }
@@ -276,31 +272,14 @@ const onFocusOut = (event) => {
 const onClear = () => {
   tarteelStore.discardDraft()
   tarteelStore.setLiveLetter(null)
-  tarteelStore.setChartVisible(true)
   clearInput()
   inputHasError.value = false
   inputHasSuccess.value = false
+  if (route.query.view) router.push({ name: "tarteel" })
 }
-
-// Back buttons on the results pages ask for the search box to be focused
-watch(
-  () => tarteelStore.searchFocusTick,
-  async () => {
-    // Keep the search that was on screen in history, then start fresh
-    tarteelStore.commitDraft()
-    clearInput()
-    inputHasError.value = false
-    inputHasSuccess.value = false
-    tarteelStore.setLiveLetter(null)
-    tarteelStore.setChartVisible(true)
-    await nextTick()
-    barRef.value?.querySelector("input")?.focus()
-  },
-)
 
 onMounted(() => {
   tarteelStore.setLiveLetter(null)
-  tarteelStore.setChartVisible(false)
   if (!route.query.focus) return
   barRef.value?.querySelector("input")?.focus()
   router.replace({ query: {} })

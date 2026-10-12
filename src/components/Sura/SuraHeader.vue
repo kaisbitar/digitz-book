@@ -134,7 +134,6 @@ const openSearchedWord = async () => {
     null
 
   tarteelStore.setLiveLetter(null)
-  tarteelStore.setChartVisible(false)
   tarteelStore.setSelectedTarteelId(match.id)
   tarteelStore.setSelectedRatl(ratl)
   tarteelStore.setSelectedRatlIndex(

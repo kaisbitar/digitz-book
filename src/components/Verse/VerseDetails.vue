@@ -195,7 +195,6 @@ const searchWord = () => {
   if (!results.length) return
 
   tarteelStore.setLiveLetter(null)
-  tarteelStore.setChartVisible(false)
   tarteelStore.setLiveTarteel({
     inputText: word,
     results,

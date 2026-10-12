@@ -7,7 +7,6 @@
       :is-word-meaning-open="isWordMeaningOpen"
       @update:isWordMeaningOpen="$emit('update:isWordMeaningOpen', $event)"
       @update:isUserNoteOpen="$emit('update:isUserNoteOpen', $event)"
-      @back-to-list="$emit('back-to-list')"
     />
 
     <v-divider class="mx-auto" width="100%"></v-divider>
@@ -82,7 +81,6 @@ const emit = defineEmits([
   "update:isWordMeaningOpen",
   "update:isUserNoteOpen",
   "verseSelected",
-  "back-to-list",
 ])
 
 // Computed properties from ratl
