@@ -251,10 +251,19 @@ const commit = async () => {
     await searchNow(raw)
     showLiveResults()
     tarteelStore.setLiveLetter(null)
+
+    // Make the searched word the active pill in the list view
+    const results = [...(currentWordsList.value || [])]
+    const matchIndex = results.findIndex(
+      (item) => item.group === "exact" || item.word === value,
+    )
+    const match = results[matchIndex] ?? results[0] ?? null
+    tarteelStore.setSelectedRatl(match)
+    tarteelStore.setSelectedRatlIndex(match ? matchIndex : 0)
   }
 
   const onSearchPage = route.name === "tarteel" && route.query.view !== "detail"
-  if (!onSearchPage) {
+  if (!onSearchPage || !route.query.view) {
     router.push({ name: "tarteel", query: { view: "list" } })
   }
 

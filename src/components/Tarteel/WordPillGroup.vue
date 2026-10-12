@@ -9,24 +9,25 @@
           <v-chip
             v-for="item in items"
             :key="item.word"
-          :color="chipColor(item)"
-          :variant="chipVariant(item)"
-          size="large"
-          class="pl-0"
-          @click="emit('select', item)"
-        >
-          <span class="ml-1">{{ item.word }}</span>
-          <span class="text-caption text-grey-darken-1">
-            ({{ item.verses.length }})
-          </span>
-          <v-btn
-            icon="mdi-close"
-            size="x-small"
-            variant="text"
-            class="mr-1"
-            @click.stop="emit('remove', item)"
-          />
-        </v-chip>
+            :color="chipColor(item)"
+            :variant="chipVariant(item)"
+            size="large"
+            class="pl-0"
+            @click="emit('select', item)"
+          >
+            <span class="ml-1">{{ item.word }}</span>
+            <span v-if="isExact(item)" class="text-caption">(مطابقة)</span>
+            <span class="text-caption text-grey-darken-1">
+              ({{ item.verses.length }})
+            </span>
+            <v-btn
+              icon="mdi-close"
+              size="x-small"
+              variant="text"
+              class="mr-1"
+              @click.stop="emit('remove', item)"
+            />
+          </v-chip>
         </slot>
       </div>
     </div>
@@ -51,17 +52,21 @@ const props = defineProps({
 
 const emit = defineEmits(["select", "remove"])
 
-// Exact matches stay primary. Derivatives stay grey. The open word is outlined.
+// All pills share the same design. Exact matches get a (مطابقة) label.
 const chipColor = (item) => {
-  if (item.group === "exact" || item.word === props.selectedWord) return "primary"
+  if (item.group === "exact" || item.word === props.selectedWord)
+    return "primary"
+
+  // if (item.word === props.selectedWord) return "primary"
   return "grey-darken-2"
 }
 
 const chipVariant = (item) => {
   if (item.word === props.selectedWord) return "outlined"
-  if (item.group === "exact") return "flat"
   return "tonal"
 }
+
+const isExact = (item) => item.group === "exact"
 </script>
 
 <style scoped>
