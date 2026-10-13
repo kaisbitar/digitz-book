@@ -38,6 +38,10 @@
       />
     </v-window-item>
 
+    <v-window-item value="letters">
+      <SuraLetters :verses="versesBasics" />
+    </v-window-item>
+
     <v-window-item value="frequency">
       <SuraFrequency
         class="mt-2 mb-n2"

@@ -25,7 +25,7 @@ import VueApexCharts from "vue3-apexcharts"
 
 import { useDataStore } from "@/stores/dataStore"
 import { computed, ref, onMounted, watch, nextTick } from "vue"
-import lettersOptions from "@/assets/lettersOptions"
+import lettersOptions, { lettersPercentLabel } from "@/assets/lettersOptions"
 
 const props = defineProps({
   letter: { type: String, default: "" },
@@ -54,10 +54,12 @@ const chartOptions = computed(() => {
     return {
       ...baseOptions,
       dataLabels: {
+        ...baseOptions.dataLabels,
         enabled: true,
         formatter: function (val, opts) {
           const currentLetter = letters.value.categories[opts.dataPointIndex]
-          return currentLetter === selectedLetter.value.letter ? val : ""
+          if (currentLetter !== selectedLetter.value.letter) return ""
+          return lettersPercentLabel(val, opts)
         },
       },
     }

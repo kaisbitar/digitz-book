@@ -119,6 +119,12 @@ const tabs = computed(() => [
   //   activeIcon: "mdi-table-outline",
   // },
   {
+    title: "الحروف",
+    name: "letters",
+    icon: "mdi-alphabetical-variant",
+    activeIcon: "mdi-alphabetical-variant",
+  },
+  {
     title: "تواتر",
     name: "frequency",
     icon: "mdi-chart-line",

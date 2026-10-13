@@ -1,3 +1,9 @@
+export const lettersPercentLabel = (val, opts) => {
+  const total = (opts?.w?.globals?.series?.[0] || []).reduce((a, b) => a + b, 0)
+  if (!total) return ""
+  return `${((val / total) * 100).toFixed(1)}%`
+}
+
 export const lettersOptions = () => {
   return {
     chart: {
@@ -47,8 +53,9 @@ export const lettersOptions = () => {
       },
     },
     dataLabels: {
-      enabled: false,
-      offsetY: -30,
+      enabled: true,
+      offsetY: -25,
+      formatter: lettersPercentLabel,
       background: {
         enabled: true,
         foreColor: "#616161",
@@ -80,6 +87,7 @@ export const lettersOptions = () => {
         style: {
           fontSize: "16px",
           fontFamily: '"Tajawal", sans-serif !important',
+          fontWeight: "bold",
         },
       },
       axisTicks: {
