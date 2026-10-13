@@ -275,4 +275,16 @@ const setTargetVerse = (verse) => {
   background: rgb(var(--v-theme-background));
   padding-bottom: env(safe-area-inset-bottom);
 }
+
+/* Share the bar between the tabs so none get clipped on a phone.
+   Specificity matches Vuetify's own `.v-tab.v-tab.v-btn { min-width: 90px }`. */
+.sura-tabs-bar :deep(.v-tab.v-tab.v-btn) {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.sura-tabs-bar :deep(.v-slide-group__content) {
+  flex: 1 1 auto;
+  min-width: 0;
+}
 </style>

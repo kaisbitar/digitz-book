@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex">
+  <div class="d-flex w-100">
     <v-card elevation="0" class="bg-background w-100">
       <v-tabs
         align-tabs="center"
