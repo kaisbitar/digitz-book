@@ -1,6 +1,20 @@
 <template>
   <div class="sura-header d-flex align-center flex-wrap position-relative">
-    <span class="font-weight-bold text-h5">سورة {{ target.suraName }}</span>
+    <div class="d-flex align-center ga-1">
+      <v-btn
+        icon="mdi-chevron-up"
+        variant="tonal"
+        size="small"
+        @click="goToSura(-1)"
+      />
+      <v-btn
+        icon="mdi-chevron-down"
+        variant="tonal"
+        size="small"
+        @click="goToSura(1)"
+      />
+      <span class="font-weight-bold text-h5">سورة {{ target.suraName }}</span>
+    </div>
     <div v-if="!hideControls" class="sura-header-input">
       <SuraInputField
         :search="search"
@@ -31,6 +45,7 @@ import { useTarteelStore } from "@/stores/TarteelStore"
 import { useRouter } from "vue-router"
 import { filterWords } from "@/utils/wordFilter"
 import { fetchWordRoot } from "@/utils/dictionaryUtils.js"
+import { processSuraNavigation } from "@/router/utils"
 
 const router = useRouter()
 const dataStore = useDataStore()
@@ -51,6 +66,22 @@ const emit = defineEmits([
   "update:search",
   "enter",
 ])
+
+const goToSura = async (offset) => {
+  const next = Number(suraNumber.value) + offset
+  if (next < 1 || !tableQuranIndex.value?.[next]) return
+
+  const query = { ...router.currentRoute.value.query }
+  await processSuraNavigation({
+    params: { suraNumber: next, verseIndex: 1 },
+    query,
+  })
+  router.push({
+    name: "sura",
+    params: { suraNumber: next, verseIndex: 1 },
+    query,
+  })
+}
 
 const openSearchedWord = async () => {
   const word = searchedWord.value.trim()
