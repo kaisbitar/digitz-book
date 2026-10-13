@@ -2,29 +2,16 @@
   <SuraHeader
     class="mb-2 mt-n3"
     :isToolbarExpanded="isToolbarExpanded"
+    :search="inputText"
+    :placeholderText="`سورة ${suraName}`"
+    :badgeContent="badgeContent"
+    :inputIndex="inputIndex"
+    @update:search="onInput"
+    @enter="onEnter"
     @expandedToggle="isToolbarExpanded = !isToolbarExpanded"
     @navigate-up="handleClickUp"
     @navigate-down="handleClickDown"
-  >
-    <AppTabs
-      v-if="isToolbarExpanded"
-      class="flex-shrink-0"
-      :tabs="tabs"
-      :activeTab="activeTab"
-      @update:activeTab="updateActiveTab"
-    />
-  </SuraHeader>
-  <div v-if="activeTab !== 'suraText'" class="d-flex align-center">
-    <SuraInputField
-      :search="inputText"
-      :placeholderText="`سورة ${suraName}`"
-      :badgeContent="badgeContent"
-      :inputIndex="inputIndex"
-      class="ms-auto"
-      @update:search="onInput"
-      @enter="onEnter"
-    />
-  </div>
+  />
 
   <v-window
     v-model="activeTab"
@@ -60,6 +47,15 @@
       />
     </v-window-item>
   </v-window>
+
+  <!-- Sura tab bar pinned to the bottom of the sura column -->
+  <div v-if="isToolbarExpanded" class="sura-tabs-bar">
+    <AppTabs
+      :tabs="tabs"
+      :activeTab="activeTab"
+      @update:activeTab="updateActiveTab"
+    />
+  </div>
 </template>
 
 <script setup>
@@ -264,5 +260,15 @@ const setTargetVerse = (verse) => {
   left: 03px;
   top: 4px;
   z-index: 100;
+}
+
+.sura-tabs-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 4;
+  display: flex;
+  justify-content: center;
+  background: rgb(var(--v-theme-background));
+  padding-bottom: env(safe-area-inset-bottom);
 }
 </style>

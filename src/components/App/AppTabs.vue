@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex">
-    <v-card elevation="0" class="bg-background">
+    <v-card elevation="0" class="bg-background w-100">
       <v-tabs
         align-tabs="center"
         mobile
@@ -15,6 +15,7 @@
         >
           <v-icon
             class="ml-2"
+            size="36"
             v-if="item.icon"
             :icon="computedTab === item.name ? item.activeIcon : item.icon"
           ></v-icon>

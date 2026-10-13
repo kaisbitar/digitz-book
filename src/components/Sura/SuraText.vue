@@ -9,7 +9,7 @@
       v-if="isReading"
       class="reading-title d-flex align-center ga-2 bg-surface"
     >
-      <SuraHeader class="flex-grow-1" />
+      <SuraHeader class="flex-grow-1" hideControls />
       <v-btn
         icon="mdi-fullscreen-exit"
         variant="tonal"

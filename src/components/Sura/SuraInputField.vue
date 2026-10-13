@@ -1,9 +1,9 @@
 <template>
   <v-card
     elevation="0"
-    class="d-flex SuraInputField bg-background flex-grow-0 flex-shrink-0"
+    class="d-flex SuraInputField bg-background flex-grow-0 flex-shrink"
   >
-    <div class="py-1" style="width: 280px; max-width: 100%">
+    <div class="py-1 flex-grow-1" style="min-width: 0">
       <AppInputField
         v-model="localSearch"
         :fieldPlaceHolder="placeholderText"

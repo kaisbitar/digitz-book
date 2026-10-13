@@ -1,7 +1,6 @@
 <template>
   <div class="sura-header d-flex align-center flex-wrap position-relative">
     <div class="sura-title d-flex align-center ga-1">
-      <span class="font-weight-bold text-h5">سورة {{ target.suraName }}</span>
       <v-btn
         v-if="showSuraNav"
         icon="mdi-chevron-up"
@@ -16,12 +15,10 @@
         size="small"
         @click="goToSura(1)"
       />
-    </div>
-    <div class="sura-header-tabs">
-      <slot />
+      <span class="font-weight-bold text-h5">سورة {{ target.suraName }}</span>
     </div>
     <div
-      v-if="searchedWord"
+      v-if="searchedWord && !hideControls"
       class="sura-chip ms-auto d-flex align-center ga-1 flex-row-reverse"
     >
       <v-chip
@@ -55,6 +52,16 @@
         @click="emit('navigate-down')"
       />
     </div>
+    <div v-if="!hideControls" class="sura-header-input ms-auto">
+      <SuraInputField
+        :search="search"
+        :placeholderText="placeholderText"
+        :badgeContent="badgeContent"
+        :inputIndex="inputIndex"
+        @update:search="emit('update:search', $event)"
+        @enter="emit('enter')"
+      />
+    </div>
   </div>
 </template>
 
@@ -77,9 +84,20 @@ const props = defineProps({
   title: String,
   showMetaData: Boolean,
   isToolbarExpanded: Boolean,
+  search: String,
+  placeholderText: String,
+  badgeContent: String,
+  inputIndex: [String, Number],
+  hideControls: Boolean,
 })
 
-const emit = defineEmits(["expandedToggle", "navigate-up", "navigate-down"])
+const emit = defineEmits([
+  "expandedToggle",
+  "navigate-up",
+  "navigate-down",
+  "update:search",
+  "enter",
+])
 
 const toggleToolbar = () => {
   emit("expandedToggle")
@@ -185,23 +203,23 @@ const formattedMetrics = computed(() => {
 </script>
 
 <style scoped>
-.sura-header-tabs {
+/* Desktop: input centered in the header, as before */
+.sura-header-input {
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+  width: 280px;
+  max-width: 100%;
 }
 
+/* Phone: inline after the chip and navs, shrunk to fit one line */
 @media (max-width: 600px) {
-  .sura-header-tabs {
-    position: fixed;
-    inset: auto 0 0;
+  .sura-header-input {
+    position: static;
     transform: none;
-    z-index: 4;
-    display: flex;
-    justify-content: center;
-    background: rgb(var(--v-theme-background));
-    padding-bottom: env(safe-area-inset-bottom);
+    width: 220px;
+    flex: 1 0 220px;
   }
 }
 </style>
