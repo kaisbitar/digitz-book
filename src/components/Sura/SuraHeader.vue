@@ -218,8 +218,9 @@ const formattedMetrics = computed(() => {
   .sura-header-input {
     position: static;
     transform: none;
-    width: 220px;
-    flex: 1 0 220px;
+    /* flex: 0 0 250px; */
+    min-width: 0;
+    margin-left: auto;
   }
 }
 </style>

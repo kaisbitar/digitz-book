@@ -184,8 +184,12 @@ onMounted(() => {
 }
 
 .sura-page.v-container {
+  /* dvh, not vh: on a phone 100vh is the large viewport (toolbar hidden),
+     which pushes the bottom tab bar behind the browser chrome. */
   height: calc(100vh - var(--v-layout-top));
+  height: calc(100dvh - var(--v-layout-top));
   max-height: calc(100vh - var(--v-layout-top));
+  max-height: calc(100dvh - var(--v-layout-top));
   padding-bottom: 0;
   overflow: hidden;
 }

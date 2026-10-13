@@ -240,17 +240,17 @@ const setTargetVerse = (verse) => {
 <style scoped>
 .input-visible {
   /* App bar, page padding, sura title, search row */
-  --content-height: calc(100vh - var(--v-layout-top) - 16px - 57px - 48px);
+  --content-height: calc(100dvh - var(--v-layout-top) - 16px - 57px - 64px);
 }
 
 .sura-text-visible {
-  --content-height: calc(100vh - var(--v-layout-top) - 16px - 57px);
+  --content-height: calc(100dvh - var(--v-layout-top) - 16px - 57px - 48px);
 }
 
 @media (max-width: 600px) {
   .sura-text-visible,
   .input-visible {
-    --content-height: calc(100vh - var(--v-layout-top) - 16px - 40px - 56px);
+    --content-height: calc(100dvh - var(--v-layout-top) - 16px - 40px - 104px);
   }
 }
 
