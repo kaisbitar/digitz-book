@@ -1,14 +1,12 @@
 <template>
   <SuraHeader
     class="mb-2 mt-n3"
-    :isToolbarExpanded="isToolbarExpanded"
     :search="inputText"
     :placeholderText="`سورة ${suraName}`"
     :badgeContent="badgeContent"
     :inputIndex="inputIndex"
     @update:search="onInput"
     @enter="onEnter"
-    @expandedToggle="isToolbarExpanded = !isToolbarExpanded"
     @navigate-up="handleClickUp"
     @navigate-down="handleClickDown"
   />
@@ -53,7 +51,7 @@
   </v-window>
 
   <!-- Sura tab bar pinned to the bottom of the sura column -->
-  <div v-if="isToolbarExpanded" class="sura-tabs-bar">
+  <div class="sura-tabs-bar">
     <AppTabs
       :tabs="tabs"
       :activeTab="activeTab"
@@ -83,7 +81,6 @@ const props = defineProps({
 const emit = defineEmits(["verseSelected"])
 const searchBtnText = ref(`ترتيل ${props.suraName}`)
 const inputText = ref("")
-const isToolbarExpanded = ref(true)
 const isHeaderVisible = useHideOnScroll()
 
 const filteredVerses = computed(() => {

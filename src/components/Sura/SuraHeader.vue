@@ -1,58 +1,7 @@
 <template>
   <div class="sura-header d-flex align-center flex-wrap position-relative">
-    <div class="sura-title d-flex align-center ga-1">
-      <v-btn
-        v-if="showSuraNav"
-        icon="mdi-chevron-up"
-        variant="tonal"
-        size="small"
-        @click="goToSura(-1)"
-      />
-      <v-btn
-        v-if="showSuraNav"
-        icon="mdi-chevron-down"
-        variant="tonal"
-        size="small"
-        @click="goToSura(1)"
-      />
-      <span class="font-weight-bold text-h5">سورة {{ target.suraName }}</span>
-    </div>
-    <div
-      v-if="searchedWord && !hideControls"
-      class="sura-chip ms-auto d-flex align-center ga-1 flex-row-reverse"
-    >
-      <v-chip
-        closable
-        color="primary"
-        variant="tonal"
-        size="large"
-        @click="openSearchedWord"
-        @click:close="clearSearchedWord"
-      >
-        <template #append>
-          <v-btn
-            icon="mdi-arrow-left"
-            size="x-small"
-            variant="text"
-            @click.stop="openSearchedWord"
-          />
-        </template>
-        {{ searchedWord }}
-      </v-chip>
-      <v-btn
-        icon="mdi-chevron-up"
-        variant="tonal"
-        size="small"
-        @click="emit('navigate-up')"
-      />
-      <v-btn
-        icon="mdi-chevron-down"
-        variant="tonal"
-        size="small"
-        @click="emit('navigate-down')"
-      />
-    </div>
-    <div v-if="!hideControls" class="sura-header-input ms-auto">
+    <span class="font-weight-bold text-h5">سورة {{ target.suraName }}</span>
+    <div v-if="!hideControls" class="sura-header-input">
       <SuraInputField
         :search="search"
         :placeholderText="placeholderText"
@@ -60,8 +9,17 @@
         :inputIndex="inputIndex"
         @update:search="emit('update:search', $event)"
         @enter="emit('enter')"
+        @navigate-up="emit('navigate-up')"
+        @navigate-down="emit('navigate-down')"
       />
     </div>
+    <v-btn
+      v-if="searchedWord && !hideControls"
+      icon="mdi-arrow-left"
+      variant="tonal"
+      size="small"
+      @click="openSearchedWord"
+    />
   </div>
 </template>
 
@@ -73,7 +31,6 @@ import { useTarteelStore } from "@/stores/TarteelStore"
 import { useRouter } from "vue-router"
 import { filterWords } from "@/utils/wordFilter"
 import { fetchWordRoot } from "@/utils/dictionaryUtils.js"
-import { processSuraNavigation } from "@/router/utils"
 
 const router = useRouter()
 const dataStore = useDataStore()
@@ -81,9 +38,6 @@ const store = useStore()
 const tarteelStore = useTarteelStore()
 
 const props = defineProps({
-  title: String,
-  showMetaData: Boolean,
-  isToolbarExpanded: Boolean,
   search: String,
   placeholderText: String,
   badgeContent: String,
@@ -92,32 +46,11 @@ const props = defineProps({
 })
 
 const emit = defineEmits([
-  "expandedToggle",
   "navigate-up",
   "navigate-down",
   "update:search",
   "enter",
 ])
-
-const toggleToolbar = () => {
-  emit("expandedToggle")
-}
-
-const goToSura = async (offset) => {
-  const next = Number(suraNumber.value) + offset
-  if (next < 1 || !tableQuranIndex.value?.[next]) return
-
-  const query = { ...router.currentRoute.value.query }
-  await processSuraNavigation({
-    params: { suraNumber: next, verseIndex: 1 },
-    query,
-  })
-  router.push({
-    name: "sura",
-    params: { suraNumber: next, verseIndex: 1 },
-    query,
-  })
-}
 
 const openSearchedWord = async () => {
   const word = searchedWord.value.trim()
@@ -160,16 +93,6 @@ const openSearchedWord = async () => {
   router.push({ name: "tarteel", query: { view: "list" } })
 }
 
-const clearSearchedWord = () => {
-  store.setTarget({
-    ...target.value,
-    tarteel: "",
-  })
-  const query = { ...router.currentRoute.value.query }
-  delete query.tarteel
-  router.replace({ query })
-}
-
 const tableQuranIndex = computed(() => dataStore.getQuranIndex)
 const target = computed(() => store.getTarget)
 const searchedWord = computed(() => target.value?.tarteel || "")
@@ -187,9 +110,6 @@ const suraKeyValues = computed(
 import { useDisplay } from "vuetify"
 
 const display = useDisplay()
-const showSuraNav = computed(
-  () => !searchedWord.value || !display.smAndDown.value,
-)
 
 const formattedMetrics = computed(() => {
   const allCounts = [
@@ -203,24 +123,20 @@ const formattedMetrics = computed(() => {
 </script>
 
 <style scoped>
-/* Desktop: input centered in the header, as before */
 .sura-header-input {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 280px;
-  max-width: 100%;
+  width: 350px;
+  margin-inline-start: auto;
 }
 
-/* Phone: inline after the chip and navs, shrunk to fit one line */
+/* Phone keeps the back button at the far left, beside the input */
 @media (max-width: 600px) {
+  .sura-header > .v-btn {
+    order: 1;
+    margin-inline-start: auto;
+  }
   .sura-header-input {
-    position: static;
-    transform: none;
-    /* flex: 0 0 250px; */
-    min-width: 0;
-    margin-left: auto;
+    order: 2;
+    margin-inline-start: 0;
   }
 }
 </style>

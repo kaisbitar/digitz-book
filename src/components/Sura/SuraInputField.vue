@@ -17,6 +17,19 @@
           <span v-if="inputIndex > 0">
             {{ badgeContent }}/{{ inputIndex }}
           </span>
+          <v-divider v-if="inputIndex > 0" vertical class="mx-1" />
+          <v-btn
+            icon="mdi-chevron-up"
+            variant="text"
+            size="small"
+            @click="emit('navigate-up')"
+          />
+          <v-btn
+            icon="mdi-chevron-down"
+            variant="text"
+            size="small"
+            @click="emit('navigate-down')"
+          />
         </template>
       </AppInputField>
     </div>
@@ -33,7 +46,7 @@ const props = defineProps({
   inputIndex: Number,
 })
 
-const emit = defineEmits(["update:search", "enter"])
+const emit = defineEmits(["update:search", "enter", "navigate-up", "navigate-down"])
 
 const localSearch = ref(props.search || "")
 const hasError = ref(false)
