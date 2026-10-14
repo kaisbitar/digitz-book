@@ -37,7 +37,7 @@
     </v-window-item>
 
     <v-window-item value="letters">
-      <SuraLetters :verses="versesBasics" />
+      <SuraLetters :verses="versesBasics" :word="inputText" />
     </v-window-item>
 
     <v-window-item value="frequency">

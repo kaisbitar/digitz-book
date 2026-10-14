@@ -29,6 +29,7 @@
       :tableHeaders="indexHeaders"
       :fieldPlaceHolder="'السور'"
       :activeItemKey="targetedFileName"
+      :dimFileNames="matchingSuras"
       :tableHeight="'calc(100vh - 64px - 48px - 8px)'"
       @rowClicked="handleSelectedSura"
     />
@@ -44,12 +45,15 @@ import { useWindow } from "@/mixins/window"
 import { useInputFiltering } from "@/mixins/inputFiltering"
 import { useDisplay } from "vuetify"
 import { buildVerseObject } from "@/utils/suraUtils"
+import { createArabicPattern } from "@/utils/arabicUtils"
+import { useTarteelStore } from "@/stores/TarteelStore"
 const { scrollToActiveItem } = useWindow()
 const { updateSearchValue, search } = useInputFiltering()
 
 const router = useRouter()
 const store = useStore()
 const dataStore = useDataStore()
+const tarteelStore = useTarteelStore()
 const display = useDisplay()
 
 const drawerState = computed(() => store.getIndexDrawer)
@@ -73,33 +77,76 @@ const targetedFileName = computed(() => {
   return store.getTarget.fileName
 })
 
+const searchedWord = computed(() => {
+  if (activeRoute.value === "sura") return (store.getTarget?.tarteel || "").trim()
+  const selected = (tarteelStore.getSelectedTarteel?.inputText || "").trim()
+  if (selected) return selected
+  return (store.getTarget?.tarteel || "").trim()
+})
+
+const matchingSuras = computed(() => {
+  const word = searchedWord.value
+  if (!word) return null
+  const verses = QuranOneFile.value
+  if (!verses?.length) return null
+
+  const regex = createArabicPattern(word)
+  const names = new Set()
+  for (const verse of verses) {
+    if (!regex.test(verse.verseText)) continue
+    names.add(verse.fileName)
+  }
+  return names
+})
+
 const isMobile = computed(() => {
   return display.mobile.value
 })
 
-const handleSelectedSura = (sura) => {
-  if (activeRoute !== "sura") {
-    router.push({ name: "sura" })
-  }
-  if (isMobile.value) {
-    store.setIndexDrawer(false)
-  }
-  if (sura.fileName === targetedFileName.value) return
+const verseForSura = (fileName) => {
+  const verses = (QuranOneFile.value || []).filter(
+    (item) => item.fileName === fileName,
+  )
+  if (!verses.length) return null
 
-  if (sura.fileName !== "000المصحف") {
-    const verseObject = buildVerseObject(getFirstVerse(sura.fileName))
-    store.setTarget(verseObject)
-    return
-  }
-  store.setTarget({ fileName: "000المصحف" })
+  const first = verses.find((item) => item.verseIndex === 1) || verses[0]
+  const word = searchedWord.value
+  if (!word) return first
+
+  const regex = createArabicPattern(word)
+  return verses.find((item) => regex.test(item.verseText)) || first
 }
 
-const getFirstVerse = (fileName) => {
-  const verse = QuranOneFile.value.find(
-    (file) => file.fileName === fileName && file.verseIndex === 1,
-  )
+const handleSelectedSura = async (sura) => {
+  if (isMobile.value) store.setIndexDrawer(false)
+  if (sura.fileName === "000المصحف") {
+    store.setTarget({ fileName: "000المصحف" })
+    if (activeRoute.value !== "sura") router.push({ name: "sura" })
+    return
+  }
 
-  return verse
+  const verse = verseForSura(sura.fileName)
+  if (!verse) return
+
+  store.setActiveSuraTab("suraText")
+  const word = searchedWord.value
+  store.setTarget({
+    ...buildVerseObject(verse),
+    tarteel: word || store.getTarget?.tarteel || "",
+  })
+
+  const query = { ...router.currentRoute.value.query }
+  if (word) query.tarteel = word
+  await router.push({
+    name: "sura",
+    params: {
+      suraNumber: String(verse.fileName).replace(/[ء-٩]/g, "").replace(/\s/g, ""),
+      verseIndex: verse.verseIndex,
+    },
+    query,
+  })
+
+  scrollToActiveItem(".active-verse-text", ".sura-text-container")
 }
 
 watch(targetedFileName, () => {

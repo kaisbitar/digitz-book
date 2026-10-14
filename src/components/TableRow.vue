@@ -1,7 +1,7 @@
 <template>
   <tr
     class="tableItem"
-    :class="{ [activeItemClass]: isTargetedRow }"
+    :class="{ [activeItemClass]: isTargetedRow, 'dim-row': dimmed, 'no-border': hideBorder }"
     @click="$emit('rowClicked', item)"
   >
     <td>{{ computedIndex }}</td>
@@ -30,9 +30,13 @@ const props = withDefaults(
     activeItemClass: string
     headerKeys: string[]
     isIndexItem?: boolean
+    dimmed?: boolean
+    hideBorder?: boolean
   }>(),
   {
     isIndexItem: false, // or whatever default makes sense for your component
+    dimmed: false,
+    hideBorder: false,
   }
 )
 
@@ -52,4 +56,12 @@ const isTargetedRow = computed(() => {
 })
 </script>
 
-<style scoped></style>
+<style scoped>
+.dim-row {
+  opacity: 0.35;
+}
+
+.no-border td {
+  border-bottom: none !important;
+}
+</style>

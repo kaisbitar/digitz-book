@@ -17,6 +17,8 @@
         :search="search"
         :activeItemKey="activeItemKey"
         :activeItemClass="activeItemClass"
+        :dimmed="isDimmed(item)"
+        :hideBorder="hideBorder(item)"
         :headerKeys="tableHeaders.map((header) => header.key)"
         @rowClicked="$emit('rowClicked', item)"
       />
@@ -42,6 +44,7 @@ const props = defineProps<{
   activeItemClass: string
   isIndexItem?: boolean
   tableHeight?: string
+  dimFileNames?: Set<string> | null
 }>()
 
 const tableRef = ref(null)
@@ -55,6 +58,18 @@ const emit = defineEmits<{
 
 const handleScroll = (event: Event) => {
   emit("scroll", event)
+}
+
+const isDimmed = (item: TableItem) => {
+  const names = props.dimFileNames
+  if (!names) return false
+  if (item.fileName === "000المصحف") return names.size === 0
+  return !names.has(item.fileName)
+}
+
+const hideBorder = (item: TableItem) => {
+  if (!props.dimFileNames) return false
+  return !isDimmed(item)
 }
 
 const filteredTableData = computed(() => {

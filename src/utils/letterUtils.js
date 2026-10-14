@@ -14,6 +14,26 @@ const variations = {
   و: ["و", "ؤ"],
 }
 
+const DIACRITICS =
+  /[\u064B-\u0652\u0670\u0656-\u065F\u0610-\u061A\u06D6-\u06ED\s]/g
+
+/**
+ * Unique base letters of a word, in the order they appear.
+ * @param {string} word
+ * @returns {string[]}
+ */
+export function lettersOf(word) {
+  const seen = []
+  const text = String(word || "").replace(DIACRITICS, "")
+  for (const char of text) {
+    if (!/[\u0600-\u06FF]/.test(char)) continue
+    const letter = getBaseChar(char)
+    if (seen.includes(letter)) continue
+    seen.push(letter)
+  }
+  return seen
+}
+
 /**
  * Get base character for a given variation
  * @param {string} char
