@@ -17,7 +17,8 @@
         <div class="text-h4">{{ currentWord?.text || "—" }}</div>
         <div class="text-caption text-medium-emphasis mt-1">
           <template v-if="currentWord">
-            قيمة {{ currentWord.value }} · آية {{ currentWord.verseIndex }}
+            قيمة {{ currentWord.value }} · {{ Math.round(currentHz) }} Hz · آية
+            {{ currentWord.verseIndex }}
           </template>
         </div>
       </div>
@@ -44,6 +45,18 @@
         />
       </v-locale-provider>
       <span class="hums-time text-caption">{{ formatTime(total) }}</span>
+      <v-locale-provider v-if="scaleName === LITERAL" :rtl="false">
+        <v-slider
+          v-model="gain"
+          :min="MIN_GAIN"
+          :max="MAX_GAIN"
+          :step="1"
+          hide-details
+          density="compact"
+          class="hums-gain"
+          :title="`التكبير ${gain}x`"
+        />
+      </v-locale-provider>
       <v-select
         v-model="scaleName"
         :items="scaleOptions"
@@ -68,7 +81,13 @@
 import { computed, onMounted, onUnmounted, ref, watch } from "vue"
 import { useTheme } from "vuetify"
 import { calculateValue } from "@/mixins/counting"
-import { toneForValue } from "@/utils/wordTone"
+import {
+  DEFAULT_GAIN,
+  LITERAL,
+  MAX_GAIN,
+  MIN_GAIN,
+  toneForValue,
+} from "@/utils/wordTone"
 import { useStore } from "@/stores/appStore"
 
 const VERSE_PAUSE = 0.8
@@ -85,7 +104,9 @@ const plateRef = ref(null)
 const currentIndex = ref(0)
 const isPlaying = ref(false)
 const isFullscreen = ref(false)
-const scaleName = ref("pentatonic")
+// Literal is the default: it is the word's own value, only transposed.
+const scaleName = ref(LITERAL)
+const gain = ref(DEFAULT_GAIN)
 let timer = null
 let audio = null
 const voices = new Set()
@@ -108,7 +129,7 @@ const playTone = (value, seconds) => {
   const gain = ctx.createGain()
 
   oscillator.type = "sine"
-  oscillator.frequency.value = toneForValue(value, scaleName.value)
+  oscillator.frequency.value = toneForValue(value, scaleName.value, gain.value)
 
   gain.gain.setValueAtTime(0, now)
   gain.gain.linearRampToValueAtTime(VOLUME, now + 0.01)
@@ -141,6 +162,7 @@ const stripTashkeel = (text) =>
   text.replace(/[\u064B-\u0652\u0670\u0656-\u065F\u0610-\u061A\u06D6-\u06ED]/g, "")
 
 const scaleOptions = [
+  { title: "خام", value: LITERAL },
   { title: "خماسي", value: "pentatonic" },
   { title: "كبير", value: "major" },
   { title: "صغير", value: "minor" },
@@ -179,6 +201,12 @@ const total = computed(() =>
 )
 const currentWord = computed(() => timeline.value[currentIndex.value])
 const position = computed(() => currentWord.value?.start || 0)
+// Shown in the caption so the value -> Hz choice is visible, not hidden.
+const currentHz = computed(() =>
+  currentWord.value
+    ? toneForValue(currentWord.value.value, scaleName.value, gain.value)
+    : 0,
+)
 
 const formatTime = (seconds) => {
   const s = Math.floor(seconds)
@@ -317,6 +345,10 @@ onUnmounted(() => {
 
 .hums-scale {
   max-width: 90px;
+}
+
+.hums-gain {
+  max-width: 110px;
 }
 
 :deep(.hums-scale .v-field__input) {
