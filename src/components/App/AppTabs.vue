@@ -19,7 +19,7 @@
             v-if="item.icon"
             :icon="computedTab === item.name ? item.activeIcon : item.icon"
           ></v-icon>
-          <span>{{ item.title }}</span>
+          <span class="tab-label">{{ item.title }}</span>
         </v-tab>
       </v-tabs>
     </v-card>
@@ -53,5 +53,12 @@ const computedTab = computed({
 
 :deep(.v-tab:not(.v-tab--selected)) {
   opacity: 0.45;
+}
+
+/* Five tabs no longer fit with labels on a phone. */
+@media (max-width: 600px) {
+  .tab-label {
+    display: none;
+  }
 }
 </style>

@@ -130,6 +130,12 @@ const tabs = computed(() => [
     icon: "mdi-chart-line",
     activeIcon: "mdi-chart-areaspline",
   },
+  {
+    title: "همس",
+    name: "hums",
+    icon: "mdi-music-circle-outline",
+    activeIcon: "mdi-music-circle",
+  },
 ])
 
 const prepareData = () => {

@@ -48,6 +48,10 @@
         :versesBasics="versesBasics"
       />
     </v-window-item>
+
+    <v-window-item value="hums">
+      <SuraHums class="px-sm-3" :verses="versesBasics" />
+    </v-window-item>
   </v-window>
 
   <!-- Sura tab bar pinned to the bottom of the sura column -->
