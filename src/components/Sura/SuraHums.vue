@@ -44,6 +44,16 @@
         />
       </v-locale-provider>
       <span class="hums-time text-caption">{{ formatTime(total) }}</span>
+      <v-select
+        v-model="scaleName"
+        :items="scaleOptions"
+        item-title="title"
+        item-value="value"
+        density="compact"
+        variant="plain"
+        hide-details
+        class="hums-scale"
+      />
       <v-btn
         icon="mdi-fullscreen"
         variant="text"
@@ -58,9 +68,11 @@
 import { computed, onMounted, onUnmounted, ref, watch } from "vue"
 import { useTheme } from "vuetify"
 import { calculateValue } from "@/mixins/counting"
+import { toneForValue } from "@/utils/wordTone"
 import { useStore } from "@/stores/appStore"
 
 const VERSE_PAUSE = 0.8
+const VOLUME = 0.25
 
 const props = defineProps({
   verses: Array,
@@ -73,10 +85,67 @@ const plateRef = ref(null)
 const currentIndex = ref(0)
 const isPlaying = ref(false)
 const isFullscreen = ref(false)
+const scaleName = ref("pentatonic")
 let timer = null
+let audio = null
+const voices = new Set()
+
+// One short voice per word. The old page leaked oscillators because it never
+// disconnected them; every node here is released and dropped.
+const initAudio = () => {
+  if (!audio) {
+    audio = new (window.AudioContext || window.webkitAudioContext)()
+  }
+  if (audio.state === "suspended") audio.resume()
+  return audio
+}
+
+const playTone = (value, seconds) => {
+  const ctx = initAudio()
+  const now = ctx.currentTime
+  const release = Math.min(0.08, seconds / 4)
+  const oscillator = ctx.createOscillator()
+  const gain = ctx.createGain()
+
+  oscillator.type = "sine"
+  oscillator.frequency.value = toneForValue(value, scaleName.value)
+
+  gain.gain.setValueAtTime(0, now)
+  gain.gain.linearRampToValueAtTime(VOLUME, now + 0.01)
+  gain.gain.setValueAtTime(VOLUME, now + seconds - release)
+  gain.gain.linearRampToValueAtTime(0, now + seconds)
+
+  oscillator.connect(gain).connect(ctx.destination)
+  oscillator.start(now)
+  oscillator.stop(now + seconds)
+  voices.add(gain)
+  oscillator.onended = () => {
+    voices.delete(gain)
+    oscillator.disconnect()
+    gain.disconnect()
+  }
+}
+
+// Pausing must silence the note already sounding, not just cancel the next one.
+const silenceVoices = () => {
+  if (!audio) return
+  const now = audio.currentTime
+  voices.forEach((gain) => {
+    gain.gain.cancelScheduledValues(now)
+    gain.gain.setValueAtTime(gain.gain.value, now)
+    gain.gain.linearRampToValueAtTime(0, now + 0.05)
+  })
+}
 
 const stripTashkeel = (text) =>
   text.replace(/[\u064B-\u0652\u0670\u0656-\u065F\u0610-\u061A\u06D6-\u06ED]/g, "")
+
+const scaleOptions = [
+  { title: "خماسي", value: "pentatonic" },
+  { title: "كبير", value: "major" },
+  { title: "صغير", value: "minor" },
+  { title: "حجاز", value: "hijaz" },
+]
 
 // One entry per word, with the timeline slot it occupies.
 const timeline = computed(() => {
@@ -92,6 +161,7 @@ const timeline = computed(() => {
         text: word,
         value: calculateValue(word),
         verseIndex: verse.verseIndex,
+        tail,
         start: cursor,
         duration: duration + tail,
       })
@@ -118,6 +188,8 @@ const formatTime = (seconds) => {
 const step = () => {
   const word = currentWord.value
   if (!word) return stop()
+  // The verse-end pause is silence, so the tone only lasts the word's own time.
+  playTone(word.value, word.duration - (word.tail || 0))
   timer = setTimeout(() => {
     if (!isPlaying.value) return
     if (currentIndex.value >= timeline.value.length - 1) return stop()
@@ -136,6 +208,7 @@ const stop = () => {
   isPlaying.value = false
   clearTimeout(timer)
   timer = null
+  silenceVoices()
 }
 
 // The plate stands in for the cymatics field: frequency picks the mode, the
@@ -191,6 +264,10 @@ onMounted(() => {
 onUnmounted(() => {
   stop()
   window.removeEventListener("resize", drawPlate)
+  if (audio) {
+    audio.close()
+    audio = null
+  }
 })
 </script>
 
@@ -236,5 +313,15 @@ onUnmounted(() => {
   min-width: 34px;
   text-align: center;
   font-variant-numeric: tabular-nums;
+}
+
+.hums-scale {
+  max-width: 90px;
+}
+
+:deep(.hums-scale .v-field__input) {
+  padding: 0;
+  min-height: 24px;
+  font-size: 0.75rem;
 }
 </style>
