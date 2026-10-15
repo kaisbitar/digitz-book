@@ -3,18 +3,24 @@
     <v-card
       v-if="wordReport.length"
       variant="outlined"
-      class="letters-report bg-background pa-2"
+      class="letters-report bg-background"
     >
-      <div
-        v-for="item in wordReport"
-        :key="item.letter"
-        class="d-flex align-center justify-center ga-3"
-      >
-        <span>{{ item.index + 1 }}</span>
-        <span class="text-h5 font-weight-bold">{{ item.letter }}</span>
-        <span>{{ item.count }}</span>
-        <span class="text-caption">مرة</span>
-      </div>
+      <v-table density="compact" class="bg-background">
+        <thead>
+          <tr>
+            <th class="text-center">ترتيب</th>
+            <th class="text-center">حرف</th>
+            <th class="text-center">مرة</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in wordReport" :key="item.letter">
+            <td class="text-center">{{ item.index + 1 }}</td>
+            <td class="text-center text-h6 font-weight-bold">{{ item.letter }}</td>
+            <td class="text-center">{{ item.count }}</td>
+          </tr>
+        </tbody>
+      </v-table>
     </v-card>
     <VueApexCharts :series="series" :options="chartOptions" :height="height" />
   </v-card>
@@ -119,6 +125,7 @@ const height = computed(() => Math.max(320, window.innerHeight - 280))
   z-index: 4;
   top: 8px;
   inset-inline-start: 12px;
+  width: max-content;
   pointer-events: none;
 }
 </style>
