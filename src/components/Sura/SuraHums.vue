@@ -180,6 +180,12 @@ const multiplierWarning = computed(() => {
 
 const multipliers = MULTIPLIERS.map((value) => ({ title: `×${value}`, value }))
 
+// The scarcest letter sets the smallest figure, so the plate spans its range.
+const minCount = computed(() => {
+  const values = Object.values(letterCounts.value || {})
+  return values.length ? Math.min(...values) : 1
+})
+
 // One short voice per letter. The old page leaked oscillators because it never
 // disconnected them; every node here is released and dropped.
 const initAudio = () => {
@@ -324,6 +330,7 @@ const step = () => {
   const word = timeline.value[index]
   if (!word) return stop()
   playNotes(word.notes)
+  startDrive(word.notes)
   // The tick only advances the index; the watch below starts the next word, so
   // a scrub and the timeline share one path.
   timer = setTimeout(() => {
@@ -362,33 +369,239 @@ const stop = () => {
   clearTimeout(timer)
   timer = null
   silenceVoices()
+  drive = null
+  showStaticMode()
 }
 
-// The plate stands in for the cymatics field: frequency picks the mode, the
-// mode sets where the sand gathers.
-const drawPlate = () => {
+// A real plate resonates only at integer modes, where pitch grows with m^2+n^2,
+// so the figure is chosen by the letter's own count ratio and not by its
+// transposed Hz. That keeps the shape the same at every multiplier.
+const MAX_MODE = 9
+const MODE_BASE = 2.2
+// 28 letters at most, so one small cache keeps the per-frame lookup free.
+const modeCache = {}
+
+const modeFor = (letter) => {
+  const cache = modeCache
+  if (cache[letter]) return cache[letter]
+  const counts = letterCounts.value || {}
+  const count = counts[letter]
+  if (!count) return (cache[letter] = { m: 1, n: 1 })
+  const target = (count / minCount.value) * MODE_BASE
+  let best = { m: 1, n: 1, err: Infinity }
+  for (let m = 1; m <= MAX_MODE; m++) {
+    for (let n = m; n <= MAX_MODE; n++) {
+      const err = Math.abs(m * m + n * n - target)
+      if (err < best.err) best = { m, n, err }
+    }
+  }
+  return (cache[letter] = best)
+}
+
+const SAMPLE = 3
+const SAND = 2400
+
+// |field| is the local vibration amplitude: zero is a nodal line, where sand rests.
+const fieldAt = (m, n, x, y) =>
+  Math.abs(Math.sin(m * Math.PI * x) * Math.sin(n * Math.PI * y))
+
+let plate = null
+let sand = null
+let fieldImage = null
+let fieldKey = ""
+let rafId = null
+let drive = null
+
+// Sand walks downhill to the nearest nodal line. This runs only when the mode
+// changes, not per frame.
+const settleSand = () => {
+  const { m, n, rest } = plate
+  for (let i = 0; i < SAND; i++) {
+    let x = plate.seed[i * 2]
+    let y = plate.seed[i * 2 + 1]
+    for (let k = 0; k < 12; k++) {
+      const h = 0.02
+      const gx =
+        (fieldAt(m, n, x + h, y) - fieldAt(m, n, x - h, y)) / (2 * h)
+      const gy =
+        (fieldAt(m, n, x, y + h) - fieldAt(m, n, x, y - h)) / (2 * h)
+      x = Math.min(1, Math.max(0, x - gx * 0.35))
+      y = Math.min(1, Math.max(0, y - gy * 0.35))
+    }
+    rest[i * 2] = x
+    rest[i * 2 + 1] = y
+  }
+}
+
+// The nodal lines, drawn once per mode into an offscreen canvas and blitted.
+const paintField = () => {
+  const { size, m, n } = plate
+  const cells = Math.ceil(size / SAMPLE)
+  if (!fieldImage || fieldImage.width !== cells) {
+    fieldImage = document.createElement("canvas")
+    fieldImage.width = cells
+    fieldImage.height = cells
+    plate.fieldCtx = fieldImage.getContext("2d")
+    plate.fieldData = plate.fieldCtx.createImageData(cells, cells)
+  }
+  const data = plate.fieldData.data
+  const tint = theme.current.value.colors.primary
+  const rgb = [
+    parseInt(tint.slice(1, 3), 16),
+    parseInt(tint.slice(3, 5), 16),
+    parseInt(tint.slice(5, 7), 16),
+  ]
+  for (let j = 0; j < cells; j++) {
+    for (let i = 0; i < cells; i++) {
+      // Bright where the sand will gather, faint in the moving regions.
+      const amplitude = fieldAt(m, n, i / cells, j / cells)
+      const alpha = Math.round((1 - amplitude) ** 3 * 120)
+      const p = (j * cells + i) * 4
+      data[p] = rgb[0]
+      data[p + 1] = rgb[1]
+      data[p + 2] = rgb[2]
+      data[p + 3] = alpha
+    }
+  }
+  plate.fieldCtx.putImageData(plate.fieldData, 0, 0)
+}
+
+const rebuildField = () => {
+  if (!plate) return
+  const letter = drive?.letters[drive.index] || drive?.letters[0]
+  const { m, n } = modeFor(letter)
+  const key = `${m}:${n}`
+  if (key === fieldKey) return
+  fieldKey = key
+  plate.m = m
+  plate.n = n
+  paintField()
+  settleSand()
+  plate.sandColor = canvasRgb(plateRef.value, "--v-theme-on-surface")
+}
+
+// Reading a CSS variable forces a style recalc, so do it once per mode change
+// rather than on every frame.
+const canvasRgb = (canvas, name) => {
+  if (!canvas) return "0,0,0"
+  return getComputedStyle(canvas).getPropertyValue(name).trim() || "0,0,0"
+}
+
+const frame = () => {
+  rafId = requestAnimationFrame(frame)
+  const canvas = plateRef.value
+  if (!canvas || !plate || !sand) return
+  const { size } = plate
+  const ctx = canvas.getContext("2d")
+  // An idle plate shows a still mode; only real playback drives it.
+  const playing = isPlaying.value && !!drive
+
+  // Where each letter is in its own step, so the plate pulses with the pitch.
+  let pulse = 0
+  if (playing) {
+    const elapsed = performance.now() - drive.start
+    drive.index = Math.min(
+      drive.letters.length - 1,
+      Math.floor(elapsed / drive.stepMs),
+    )
+    const inStep = (elapsed % drive.stepMs) / drive.stepMs
+    pulse = Math.sin(Math.PI * Math.min(inStep / 0.35, 1))
+  }
+
+  rebuildField()
+  const { rest, sandColor } = plate
+
+  ctx.setTransform(dprSize(canvas), 0, 0, dprSize(canvas), 0, 0)
+  ctx.clearRect(0, 0, size, size)
+
+  if (fieldImage) {
+    ctx.globalAlpha = playing ? 0.5 : 0.22
+    ctx.drawImage(fieldImage, 0, 0, size, size)
+  }
+
+  // Sand falls to the nodal lines; while driven it also jitters in place.
+  const jitter = pulse * 0.012
+  ctx.fillStyle = `rgb(${sandColor} / ${playing ? 0.9 : 0.5})`
+  for (let i = 0; i < SAND; i++) {
+    const tx = rest[i * 2]
+    const ty = rest[i * 2 + 1]
+    sand[i * 2] += (tx - sand[i * 2]) * 0.2
+    sand[i * 2 + 1] += (ty - sand[i * 2 + 1]) * 0.2
+    const x = sand[i * 2] * size + (Math.random() - 0.5) * jitter * size
+    const y = sand[i * 2 + 1] * size + (Math.random() - 0.5) * jitter * size
+    ctx.fillRect(x, y, 1.6, 1.6)
+  }
+
+  // A ring brightens with each letter so the plate reads as being driven.
+  ctx.globalAlpha = 0.15 + pulse * 0.5
+  ctx.strokeStyle = theme.current.value.colors.primary
+  ctx.lineWidth = 2
+  ctx.beginPath()
+  ctx.arc(size / 2, size / 2, size / 2 - 2, 0, Math.PI * 2)
+  ctx.stroke()
+  ctx.globalAlpha = 1
+}
+
+const dprSize = (canvas) => Number(canvas.dataset.dpr || 1)
+
+// Drawing starts on mount and stops when the tab goes away, so no rAF is left
+// running for a hidden plate.
+const startPlate = () => {
+  if (rafId) return
+  rafId = requestAnimationFrame(frame)
+}
+
+const stopPlate = () => {
+  cancelAnimationFrame(rafId)
+  rafId = null
+}
+
+const resizePlate = () => {
   const canvas = plateRef.value
   if (!canvas) return
   const box = canvas.parentElement
-  const size = Math.min(box.clientWidth, box.clientHeight)
-  if (!size) return
+  const size = Math.max(Math.min(box.clientWidth, box.clientHeight), 1)
   const dpr = window.devicePixelRatio || 1
   canvas.width = size * dpr
   canvas.height = size * dpr
   canvas.style.width = `${size}px`
   canvas.style.height = `${size}px`
-  const ctx = canvas.getContext("2d")
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-  ctx.clearRect(0, 0, size, size)
-  ctx.globalAlpha = 0.25
-  ctx.strokeStyle = theme.current.value.colors.primary
-  ctx.lineWidth = 1
-  const r = size / 2
-  for (let i = 1; i <= 4; i++) {
-    ctx.beginPath()
-    ctx.arc(r, r, (r * i) / 4, 0, Math.PI * 2)
-    ctx.stroke()
+  canvas.dataset.dpr = String(dpr)
+  const kept = sand
+  plate = {
+    size,
+    m: 0,
+    n: 0,
+    seed: new Float32Array(SAND * 2),
+    rest: new Float32Array(SAND * 2),
   }
+  for (let i = 0; i < SAND; i++) {
+    plate.seed[i * 2] = Math.random()
+    plate.seed[i * 2 + 1] = Math.random()
+  }
+  // Keep the sand where it was so a fullscreen toggle does not scatter it.
+  sand = kept && kept.length === SAND * 2 ? kept : plate.seed.slice()
+  fieldKey = ""
+  rebuildField()
+}
+
+// One entry per letter of the word being played, so the plate retunes itself.
+const startDrive = (notes) => {
+  const letters = (notes || []).filter((letter) => letterHz(letter))
+  if (!letters.length) return
+  drive = {
+    letters,
+    index: 0,
+    start: performance.now(),
+    stepMs: (LETTER_SECONDS / speed.value) * 1000,
+  }
+}
+
+// Not playing: the plate still shows the mode of the word under the cursor.
+const showStaticMode = () => {
+  if (drive) return
+  const letters = currentWord.value?.notes || []
+  drive = letters.length ? { letters, index: 0, start: 0, stepMs: 1e9 } : null
 }
 
 // A speed change rebuilds the timeline, so clamp the index and restart the
@@ -401,7 +614,8 @@ watch(timeline, (slots) => {
 })
 
 // The multiplier changes pitch only, so the timeline stays put and this watch
-// is what restarts the sound.
+// is what restarts the sound. The plate keeps its shape, which is chosen from
+// the letter ratios the multiplier preserves.
 watch(multiplier, restart)
 
 watch(
@@ -413,19 +627,37 @@ watch(
 
 watch(isFullscreen, async () => {
   await new Promise((resolve) => requestAnimationFrame(resolve))
-  drawPlate()
+  resizePlate()
 })
 
+// Swapping suras while stopped should still show the new first word's mode.
+watch(currentWord, showStaticMode)
+
+// A theme switch changes both the tint and the sand colour, so repaint them.
+watch(
+  () => theme.current.value.dark,
+  () => {
+    if (!plate) return
+    // Force the cached mode to repaint in the new palette.
+    fieldKey = ""
+    plate.sandColor = canvasRgb(plateRef.value, "--v-theme-on-surface")
+    rebuildField()
+  },
+)
+
 onMounted(async () => {
-  drawPlate()
-  window.addEventListener("resize", drawPlate)
+  resizePlate()
+  startPlate()
+  window.addEventListener("resize", resizePlate)
   // Letter counts are the source of the frequencies, so make sure they landed.
   await dataStore.getQuranData()
+  showStaticMode()
 })
 
 onUnmounted(() => {
   stop()
-  window.removeEventListener("resize", drawPlate)
+  stopPlate()
+  window.removeEventListener("resize", resizePlate)
   if (audio) {
     audio.close()
     audio = null
