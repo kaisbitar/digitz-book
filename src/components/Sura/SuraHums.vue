@@ -54,6 +54,14 @@
         />
       </v-locale-provider>
       <span class="hums-time text-caption">{{ formatTime(total) }}</span>
+      <v-btn
+        icon="mdi-repeat"
+        variant="text"
+        size="small"
+        :color="isLooping ? 'primary' : undefined"
+        :title="isLooping ? 'تكرار: مفعّل' : 'تكرار: متوقف'"
+        @click="isLooping = !isLooping"
+      />
       <v-chip size="small" variant="text" class="hums-hint">
         تردد الحرف ÷ {{ LETTER_DIVISOR }}
       </v-chip>
@@ -90,6 +98,7 @@ const theme = useTheme()
 const plateRef = ref(null)
 const currentIndex = ref(0)
 const isPlaying = ref(false)
+const isLooping = ref(false)
 const isFullscreen = ref(false)
 let timer = null
 let audio = null
@@ -220,8 +229,9 @@ const step = () => {
   // a scrub and the timeline share one path.
   timer = setTimeout(() => {
     if (!isPlaying.value) return
-    if (index >= timeline.value.length - 1) return stop()
-    currentIndex.value++
+    if (index < timeline.value.length - 1) return currentIndex.value++
+    if (isLooping.value) return (currentIndex.value = 0)
+    stop()
   }, word.duration * 1000)
 }
 
