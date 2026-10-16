@@ -62,9 +62,60 @@
         :title="isLooping ? 'تكرار: مفعّل' : 'تكرار: متوقف'"
         @click="isLooping = !isLooping"
       />
-      <v-chip size="small" variant="text" class="hums-hint">
-        تردد الحرف ÷ {{ LETTER_DIVISOR }}
+      <v-chip
+        size="small"
+        variant="text"
+        class="hums-hint"
+        :color="multiplierWarning ? 'warning' : undefined"
+      >
+        {{ multiplierWarning || `تردد الحرف ÷ ${LETTER_DIVISOR}` }}
       </v-chip>
+      <v-menu location="top">
+        <template #activator="{ props: menuProps }">
+          <v-btn
+            v-bind="menuProps"
+            icon="mdi-speedometer"
+            variant="text"
+            size="small"
+            :title="`السرعة ${speed}x`"
+          />
+        </template>
+        <v-list density="compact" class="pa-3" min-width="240">
+          <div class="text-caption text-medium-emphasis mb-1">السرعة {{ speed }}x</div>
+          <v-slider
+            v-model="speed"
+            :min="0.25"
+            :max="4"
+            :step="0.25"
+            hide-details
+            density="compact"
+            thumb-label
+            color="primary"
+          />
+        </v-list>
+      </v-menu>
+      <v-menu location="top">
+        <template #activator="{ props: menuProps }">
+          <v-btn
+            v-bind="menuProps"
+            variant="text"
+            size="small"
+            class="hums-multiplier"
+            :title="multiplierWarning || `تردد الحرف ÷ ${LETTER_DIVISOR}`"
+          >
+            ×{{ multiplier }}
+          </v-btn>
+        </template>
+        <v-list density="compact">
+          <v-list-item
+            v-for="item in multipliers"
+            :key="item.value"
+            :title="item.title"
+            :active="item.value === multiplier"
+            @click="multiplier = item.value"
+          />
+        </v-list>
+      </v-menu>
       <v-btn
         icon="mdi-fullscreen"
         variant="text"
@@ -79,7 +130,13 @@
 import { computed, onMounted, onUnmounted, ref, watch } from "vue"
 import { useTheme } from "vuetify"
 import { getBaseChar } from "@/utils/letterUtils"
-import { LETTER_DIVISOR, toneForLetter } from "@/utils/wordTone"
+import {
+  AUDIBLE_MAX_HZ,
+  AUDIBLE_MIN_HZ,
+  LETTER_DIVISOR,
+  MULTIPLIERS,
+  toneForLetter,
+} from "@/utils/wordTone"
 import { useDataStore } from "@/stores/dataStore"
 import { useStore } from "@/stores/appStore"
 
@@ -89,7 +146,6 @@ const VOLUME = 0.25
 
 const props = defineProps({
   verses: Array,
-  tempo: { type: Number, default: 1 },
 })
 
 const store = useStore()
@@ -100,14 +156,29 @@ const currentIndex = ref(0)
 const isPlaying = ref(false)
 const isLooping = ref(false)
 const isFullscreen = ref(false)
+// Kept in the form the UI shows: 1 is the faithful speed, letters at 140ms.
+const speed = ref(1)
+const multiplier = ref(1)
 let timer = null
 let audio = null
 const voices = new Set()
 
-// Each letter plays its own Quran-wide frequency, transposed into hearing
-// range. A word's letters hold the same note, so a word is heard as a chord.
+// Each letter plays its own Quran-wide frequency, scaled by the multiplier.
+// A word's letters sound in order, so a word is heard as a short phrase.
 const letterCounts = computed(() => dataStore.getQuranLetterCounts)
-const letterHz = (letter) => toneForLetter(letter, letterCounts.value)
+const letterHz = (letter) =>
+  toneForLetter(letter, letterCounts.value, multiplier.value)
+
+// Sets outside the audible band go quiet instead of erroring, so warn about them.
+const multiplierWarning = computed(() => {
+  const hz = Object.keys(letterCounts.value || {}).map((letter) => letterHz(letter))
+  if (!hz.length) return ""
+  if (Math.min(...hz) < AUDIBLE_MIN_HZ) return "أخفض من مدى السمع"
+  if (Math.max(...hz) > AUDIBLE_MAX_HZ) return "أعلى من مدى السمع"
+  return ""
+})
+
+const multipliers = MULTIPLIERS.map((value) => ({ title: `×${value}`, value }))
 
 // One short voice per letter. The old page leaked oscillators because it never
 // disconnected them; every node here is released and dropped.
@@ -122,7 +193,7 @@ const initAudio = () => {
 const playNotes = (notes) => {
   if (!notes?.length) return
   const ctx = initAudio()
-  const step = LETTER_SECONDS / props.tempo
+  const step = LETTER_SECONDS / speed.value
   const release = Math.min(0.05, step / 4)
   notes.forEach((letter, index) => {
     const frequency = letterHz(letter)
@@ -175,7 +246,8 @@ const notesFor = (word) =>
 // One entry per word. Each carries its letters, which the sound walks in order.
 const timeline = computed(() => {
   if (!props.verses?.length) return []
-  const steps = LETTER_SECONDS / props.tempo
+  const steps = LETTER_SECONDS / speed.value
+  const pause = VERSE_PAUSE / speed.value
   const slots = []
   let cursor = 0
   props.verses.forEach((verse) => {
@@ -184,7 +256,7 @@ const timeline = computed(() => {
       const notes = notesFor(word)
       if (!notes.length) return
       const duration = notes.length * steps
-      const tail = index === words.length - 1 ? VERSE_PAUSE : 0
+      const tail = index === words.length - 1 ? pause : 0
       slots.push({
         text: word,
         notes,
@@ -249,6 +321,15 @@ const play = () => {
   step()
 }
 
+// Speed and multiplier rebuild the timeline, so the sounding word must restart
+// at the new pitch and the new length.
+const restart = () => {
+  if (!isPlaying.value) return
+  clearTimeout(timer)
+  silenceVoices()
+  step()
+}
+
 const stop = () => {
   isPlaying.value = false
   clearTimeout(timer)
@@ -283,11 +364,18 @@ const drawPlate = () => {
   }
 }
 
-// A shorter sura, or leaving the tab, must not leave the player running.
+// A speed change rebuilds the timeline, so clamp the index and restart the
+// sounding word at its new length. Clamping already triggers the index watch
+// above, so only restart here when the index stayed put.
 watch(timeline, (slots) => {
-  if (currentIndex.value < slots.length) return
-  currentIndex.value = Math.max(slots.length - 1, 0)
+  const clamped = Math.max(slots.length - 1, 0)
+  if (currentIndex.value > clamped) return (currentIndex.value = clamped)
+  restart()
 })
+
+// The multiplier changes pitch only, so the timeline stays put and this watch
+// is what restarts the sound.
+watch(multiplier, restart)
 
 watch(
   () => store.getActiveSuraTab,
@@ -364,5 +452,33 @@ onUnmounted(() => {
   min-width: 34px;
   text-align: center;
   font-variant-numeric: tabular-nums;
+}
+
+.hums-multiplier {
+  min-width: 52px;
+}
+
+.hums-hint {
+  max-width: 40vw;
+}
+
+/* Phone: the buttons alone fill the bar, so give the scrubber its own row
+   instead of letting it collapse to nothing. The locale provider is
+   display:contents, so the slider itself is the flex item to size. */
+@media (max-width: 600px) {
+  .hums-player {
+    flex-wrap: wrap;
+    gap: 4px !important;
+  }
+
+  .hums-player .v-slider {
+    order: -1;
+    flex: 0 0 100%;
+    margin-inline: 0;
+  }
+
+  .hums-hint {
+    display: none;
+  }
 }
 </style>

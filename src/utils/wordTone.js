@@ -11,9 +11,16 @@ export const LITERAL = "literal"
 // 853..56762 becomes 42.6..2838 Hz, so alif sounds 63.5x above za, exactly.
 export const LETTER_DIVISOR = 20
 
-export const toneForLetter = (letter, counts, divisor = LETTER_DIVISOR) => {
+// Hearing runs 20 Hz - 16 kHz. All 28 letters stay inside that band only
+// between roughly x0.5 and x5; the extremes below push za under 20 Hz or alif
+// past 16 kHz, so the UI flags them rather than silently going quiet.
+export const AUDIBLE_MIN_HZ = 20
+export const AUDIBLE_MAX_HZ = 16000
+export const MULTIPLIERS = [0.1, 1, 10, 100, 1000]
+
+export const toneForLetter = (letter, counts, multiplier = 1) => {
   const count = counts?.[letter]
-  return count ? count / divisor : 0
+  return count ? (count / LETTER_DIVISOR) * multiplier : 0
 }
 
 export const SCALES = {
