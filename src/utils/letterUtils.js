@@ -39,7 +39,7 @@ export function lettersOf(word) {
  * @param {string} char
  * @returns {string}
  */
-const getBaseChar = (char) => {
+export const getBaseChar = (char) => {
   for (const [base, chars] of Object.entries(variations)) {
     if (chars.includes(char)) {
       return base

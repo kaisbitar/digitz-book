@@ -15,10 +15,19 @@
       />
       <div class="hums-word text-center">
         <div class="text-h4">{{ currentWord?.text || "—" }}</div>
-        <div class="text-caption text-medium-emphasis mt-1">
+        <div class="hums-notes d-flex justify-center flex-wrap ga-1 mt-2">
+          <v-chip
+            v-for="(note, index) in currentNotes"
+            :key="index"
+            size="small"
+            variant="tonal"
+          >
+            {{ note.letter }} {{ note.hz }}
+          </v-chip>
+        </div>
+        <div class="text-caption text-medium-emphasis mt-2">
           <template v-if="currentWord">
-            قيمة {{ currentWord.value }} · {{ Math.round(currentHz) }} Hz · آية
-            {{ currentWord.verseIndex }}
+            آية {{ currentWord.verseIndex }} · {{ currentWord.notes.length }} حرف
           </template>
         </div>
       </div>
@@ -45,28 +54,9 @@
         />
       </v-locale-provider>
       <span class="hums-time text-caption">{{ formatTime(total) }}</span>
-      <v-locale-provider v-if="scaleName === LITERAL" :rtl="false">
-        <v-slider
-          v-model="gain"
-          :min="MIN_GAIN"
-          :max="MAX_GAIN"
-          :step="1"
-          hide-details
-          density="compact"
-          class="hums-gain"
-          :title="`التكبير ${gain}x`"
-        />
-      </v-locale-provider>
-      <v-select
-        v-model="scaleName"
-        :items="scaleOptions"
-        item-title="title"
-        item-value="value"
-        density="compact"
-        variant="plain"
-        hide-details
-        class="hums-scale"
-      />
+      <v-chip size="small" variant="text" class="hums-hint">
+        تردد الحرف ÷ {{ LETTER_DIVISOR }}
+      </v-chip>
       <v-btn
         icon="mdi-fullscreen"
         variant="text"
@@ -80,17 +70,13 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref, watch } from "vue"
 import { useTheme } from "vuetify"
-import { calculateValue } from "@/mixins/counting"
-import {
-  DEFAULT_GAIN,
-  LITERAL,
-  MAX_GAIN,
-  MIN_GAIN,
-  toneForValue,
-} from "@/utils/wordTone"
+import { getBaseChar } from "@/utils/letterUtils"
+import { LETTER_DIVISOR, toneForLetter } from "@/utils/wordTone"
+import { useDataStore } from "@/stores/dataStore"
 import { useStore } from "@/stores/appStore"
 
-const VERSE_PAUSE = 0.8
+const VERSE_PAUSE = 0.6
+const LETTER_SECONDS = 0.14
 const VOLUME = 0.25
 
 const props = defineProps({
@@ -99,19 +85,22 @@ const props = defineProps({
 })
 
 const store = useStore()
+const dataStore = useDataStore()
 const theme = useTheme()
 const plateRef = ref(null)
 const currentIndex = ref(0)
 const isPlaying = ref(false)
 const isFullscreen = ref(false)
-// Literal is the default: it is the word's own value, only transposed.
-const scaleName = ref(LITERAL)
-const gain = ref(DEFAULT_GAIN)
 let timer = null
 let audio = null
 const voices = new Set()
 
-// One short voice per word. The old page leaked oscillators because it never
+// Each letter plays its own Quran-wide frequency, transposed into hearing
+// range. A word's letters hold the same note, so a word is heard as a chord.
+const letterCounts = computed(() => dataStore.getQuranLetterCounts)
+const letterHz = (letter) => toneForLetter(letter, letterCounts.value)
+
+// One short voice per letter. The old page leaked oscillators because it never
 // disconnected them; every node here is released and dropped.
 const initAudio = () => {
   if (!audio) {
@@ -121,33 +110,38 @@ const initAudio = () => {
   return audio
 }
 
-const playTone = (value, seconds) => {
+const playNotes = (notes) => {
+  if (!notes?.length) return
   const ctx = initAudio()
-  const now = ctx.currentTime
-  const release = Math.min(0.08, seconds / 4)
-  const oscillator = ctx.createOscillator()
-  const gain = ctx.createGain()
-
-  oscillator.type = "sine"
-  oscillator.frequency.value = toneForValue(value, scaleName.value, gain.value)
-
-  gain.gain.setValueAtTime(0, now)
-  gain.gain.linearRampToValueAtTime(VOLUME, now + 0.01)
-  gain.gain.setValueAtTime(VOLUME, now + seconds - release)
-  gain.gain.linearRampToValueAtTime(0, now + seconds)
-
-  oscillator.connect(gain).connect(ctx.destination)
-  oscillator.start(now)
-  oscillator.stop(now + seconds)
-  voices.add(gain)
-  oscillator.onended = () => {
-    voices.delete(gain)
-    oscillator.disconnect()
-    gain.disconnect()
-  }
+  const step = LETTER_SECONDS / props.tempo
+  const release = Math.min(0.05, step / 4)
+  notes.forEach((letter, index) => {
+    const frequency = letterHz(letter)
+    if (!frequency) return
+    // Scheduled ahead from one clock, so consecutive same letters stay distinct.
+    const when = ctx.currentTime + index * step
+    const oscillator = ctx.createOscillator()
+    const gain = ctx.createGain()
+    oscillator.type = "sawtooth"
+    oscillator.frequency.value = frequency
+    const tilt = Math.min(1, Math.max(0.35, 900 / frequency))
+    gain.gain.setValueAtTime(0, when)
+    gain.gain.linearRampToValueAtTime(VOLUME * tilt, when + 0.008)
+    gain.gain.setValueAtTime(VOLUME * tilt, when + step - release)
+    gain.gain.linearRampToValueAtTime(0, when + step)
+    oscillator.connect(gain).connect(ctx.destination)
+    oscillator.start(when)
+    oscillator.stop(when + step)
+    voices.add(gain)
+    oscillator.onended = () => {
+      voices.delete(gain)
+      oscillator.disconnect()
+      gain.disconnect()
+    }
+  })
 }
 
-// Pausing must silence the note already sounding, not just cancel the next one.
+// Pausing must silence the notes already sounding, not just cancel the next one.
 const silenceVoices = () => {
   if (!audio) return
   const now = audio.currentTime
@@ -161,27 +155,30 @@ const silenceVoices = () => {
 const stripTashkeel = (text) =>
   text.replace(/[\u064B-\u0652\u0670\u0656-\u065F\u0610-\u061A\u06D6-\u06ED]/g, "")
 
-const scaleOptions = [
-  { title: "خام", value: LITERAL },
-  { title: "خماسي", value: "pentatonic" },
-  { title: "كبير", value: "major" },
-  { title: "صغير", value: "minor" },
-  { title: "حجاز", value: "hijaz" },
-]
+// The letters a word sounds, in order. Repeated letters replay, so a word is
+// the sequence of its letters, not its set of them.
+const notesFor = (word) =>
+  stripTashkeel(word)
+    .split("")
+    .filter((char) => /[\u0621-\u063A\u0641-\u064A]/.test(char))
+    .map((char) => getBaseChar(char))
 
-// One entry per word, with the timeline slot it occupies.
+// One entry per word. Each carries its letters, which the sound walks in order.
 const timeline = computed(() => {
   if (!props.verses?.length) return []
+  const steps = LETTER_SECONDS / props.tempo
   const slots = []
   let cursor = 0
   props.verses.forEach((verse) => {
     const words = stripTashkeel(verse.verseText || "").split(/\s+/).filter(Boolean)
     words.forEach((word, index) => {
-      const duration = (0.15 + word.length * 0.05) / props.tempo
+      const notes = notesFor(word)
+      if (!notes.length) return
+      const duration = notes.length * steps
       const tail = index === words.length - 1 ? VERSE_PAUSE : 0
       slots.push({
         text: word,
-        value: calculateValue(word),
+        notes,
         verseIndex: verse.verseIndex,
         tail,
         start: cursor,
@@ -201,11 +198,12 @@ const total = computed(() =>
 )
 const currentWord = computed(() => timeline.value[currentIndex.value])
 const position = computed(() => currentWord.value?.start || 0)
-// Shown in the caption so the value -> Hz choice is visible, not hidden.
-const currentHz = computed(() =>
-  currentWord.value
-    ? toneForValue(currentWord.value.value, scaleName.value, gain.value)
-    : 0,
+// The word's letters and their frequencies, so the mapping is visible.
+const currentNotes = computed(() =>
+  (currentWord.value?.notes || []).map((letter) => ({
+    letter,
+    hz: Math.round(letterHz(letter)),
+  })),
 )
 
 const formatTime = (seconds) => {
@@ -214,17 +212,26 @@ const formatTime = (seconds) => {
 }
 
 const step = () => {
-  const word = currentWord.value
+  const index = currentIndex.value
+  const word = timeline.value[index]
   if (!word) return stop()
-  // The verse-end pause is silence, so the tone only lasts the word's own time.
-  playTone(word.value, word.duration - (word.tail || 0))
+  playNotes(word.notes)
+  // The tick only advances the index; the watch below starts the next word, so
+  // a scrub and the timeline share one path.
   timer = setTimeout(() => {
     if (!isPlaying.value) return
-    if (currentIndex.value >= timeline.value.length - 1) return stop()
+    if (index >= timeline.value.length - 1) return stop()
     currentIndex.value++
-    step()
   }, word.duration * 1000)
 }
+
+// Scrubbing jumps the sound to the newly picked word.
+watch(currentIndex, () => {
+  if (!isPlaying.value) return
+  clearTimeout(timer)
+  silenceVoices()
+  step()
+})
 
 const play = () => {
   if (!timeline.value.length) return
@@ -284,9 +291,11 @@ watch(isFullscreen, async () => {
   drawPlate()
 })
 
-onMounted(() => {
+onMounted(async () => {
   drawPlate()
   window.addEventListener("resize", drawPlate)
+  // Letter counts are the source of the frequencies, so make sure they landed.
+  await dataStore.getQuranData()
 })
 
 onUnmounted(() => {
@@ -337,23 +346,13 @@ onUnmounted(() => {
   border-top: 1px solid rgba(var(--v-theme-on-surface), 0.12);
 }
 
+.hums-notes {
+  min-height: 28px;
+}
+
 .hums-time {
   min-width: 34px;
   text-align: center;
   font-variant-numeric: tabular-nums;
-}
-
-.hums-scale {
-  max-width: 90px;
-}
-
-.hums-gain {
-  max-width: 110px;
-}
-
-:deep(.hums-scale .v-field__input) {
-  padding: 0;
-  min-height: 24px;
-  font-size: 0.75rem;
 }
 </style>

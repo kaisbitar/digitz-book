@@ -6,6 +6,16 @@
 // hold). Literal keeps the ratios exact and only transposes them into range.
 export const LITERAL = "literal"
 
+// Letter counts are the Quran-wide frequencies (dataStore.getQuranLetterCounts).
+// Every letter plays its own count, transposed by DIVISOR into hearing range:
+// 853..56762 becomes 42.6..2838 Hz, so alif sounds 63.5x above za, exactly.
+export const LETTER_DIVISOR = 20
+
+export const toneForLetter = (letter, counts, divisor = LETTER_DIVISOR) => {
+  const count = counts?.[letter]
+  return count ? count / divisor : 0
+}
+
 export const SCALES = {
   pentatonic: [1, 1.125, 1.25, 1.5, 1.667],
   major: [1, 1.125, 1.25, 1.333, 1.5, 1.667, 1.875],
