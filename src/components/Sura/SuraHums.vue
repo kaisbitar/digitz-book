@@ -190,35 +190,62 @@ const initAudio = () => {
   return audio
 }
 
+// The ear is least sensitive at the bottom, where the cheapest letters sit.
+const tiltFor = (frequency) => Math.min(1, Math.max(0.35, 900 / frequency))
+
+// One oscillator per word: the pitch slides between letters, so the word is one
+// phrase instead of separate blips. Each letter still holds its own exact
+// frequency for the rest of its step, so nothing is smeared away.
+const GLIDE = 0.35
+
 const playNotes = (notes) => {
-  if (!notes?.length) return
+  const live = (notes || []).filter((letter) => letterHz(letter))
+  if (!live.length) return
   const ctx = initAudio()
   const step = LETTER_SECONDS / speed.value
+  const start = ctx.currentTime
+  const end = start + live.length * step
+  const attack = Math.min(0.008, step / 4)
   const release = Math.min(0.05, step / 4)
-  notes.forEach((letter, index) => {
-    const frequency = letterHz(letter)
-    if (!frequency) return
-    // Scheduled ahead from one clock, so consecutive same letters stay distinct.
-    const when = ctx.currentTime + index * step
-    const oscillator = ctx.createOscillator()
-    const gain = ctx.createGain()
-    oscillator.type = "sawtooth"
-    oscillator.frequency.value = frequency
-    const tilt = Math.min(1, Math.max(0.35, 900 / frequency))
-    gain.gain.setValueAtTime(0, when)
-    gain.gain.linearRampToValueAtTime(VOLUME * tilt, when + 0.008)
-    gain.gain.setValueAtTime(VOLUME * tilt, when + step - release)
-    gain.gain.linearRampToValueAtTime(0, when + step)
-    oscillator.connect(gain).connect(ctx.destination)
-    oscillator.start(when)
-    oscillator.stop(when + step)
-    voices.add(gain)
-    oscillator.onended = () => {
-      voices.delete(gain)
-      oscillator.disconnect()
-      gain.disconnect()
-    }
+  const glide = step * GLIDE
+  const oscillator = ctx.createOscillator()
+  const gain = ctx.createGain()
+  const first = letterHz(live[0])
+
+  oscillator.type = "sine"
+  oscillator.frequency.setValueAtTime(first, start)
+  gain.gain.setValueAtTime(0, start)
+  gain.gain.linearRampToValueAtTime(VOLUME * tiltFor(first), start + attack)
+
+  live.forEach((letter, index) => {
+    if (!index) return
+    const at = start + index * step
+    const from = letterHz(live[index - 1])
+    const to = letterHz(letter)
+    const arrive = Math.min(at + glide, end)
+    // Hold the previous pitch until this step, then slide onto the new one.
+    oscillator.frequency.setValueAtTime(from, at)
+    oscillator.frequency.linearRampToValueAtTime(to, arrive)
+    gain.gain.setValueAtTime(VOLUME * tiltFor(from), at)
+    gain.gain.linearRampToValueAtTime(VOLUME * tiltFor(to), arrive)
   })
+
+  const last = letterHz(live[live.length - 1])
+  gain.gain.setValueAtTime(
+    VOLUME * tiltFor(last),
+    Math.max(end - release, start + attack),
+  )
+  gain.gain.linearRampToValueAtTime(0, end)
+
+  oscillator.connect(gain).connect(ctx.destination)
+  oscillator.start(start)
+  oscillator.stop(end)
+  voices.add(gain)
+  oscillator.onended = () => {
+    voices.delete(gain)
+    oscillator.disconnect()
+    gain.disconnect()
+  }
 }
 
 // Pausing must silence the notes already sounding, not just cancel the next one.
