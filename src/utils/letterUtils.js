@@ -14,8 +14,21 @@ const variations = {
   و: ["و", "ؤ"],
 }
 
+// Quranic diacritics and annotation marks, whitespace included.
 const DIACRITICS =
   /[\u064B-\u0652\u0670\u0656-\u065F\u0610-\u061A\u06D6-\u06ED\s]/g
+// The same marks, whitespace kept. For callers that keep word boundaries.
+const MARKS = /[\u064B-\u0652\u0670\u0656-\u065F\u0610-\u061A\u06D6-\u06ED]/g
+
+/**
+ * Removes Quranic marks from text, keeping whitespace.
+ * @param {string} text
+ * @returns {string}
+ */
+export function stripMarks(text) {
+  if (!text) return text
+  return String(text).replace(MARKS, "")
+}
 
 /**
  * Unique base letters of a word, in the order they appear.
