@@ -31,8 +31,11 @@ export function useCymatics(canvasRef, morphSeconds) {
 
   const modeCache = {}
   let counts = {}
-  let minCount = 1
-  let maxCount = 1
+  // The letters in ascending frequency order, and each one's rank in it. The
+  // figure comes from the rank, so two letters with near-identical counts still
+  // draw different shapes.
+  let ranked = []
+  let rankOf = {}
   let plate = null
   let rafId = null
   // The letters the sound is walking, so the shape retunes on the sound's clock.
@@ -42,7 +45,9 @@ export function useCymatics(canvasRef, morphSeconds) {
 
   const letterFig = (letter) => {
     if (modeCache[letter]) return modeCache[letter]
-    return (modeCache[letter] = letterMode(counts[letter], minCount, maxCount))
+    const rank = rankOf[letter]
+    if (rank === undefined) return (modeCache[letter] = { m: 1, n: 1.35 })
+    return (modeCache[letter] = letterMode(rank, ranked.length))
   }
 
   // Only a letter with a Quran count has a tone, so only those drive the plate.
@@ -203,9 +208,11 @@ export function useCymatics(canvasRef, morphSeconds) {
   // also retires the mode cache.
   const setCounts = (next) => {
     counts = next || {}
-    const values = Object.values(counts)
-    minCount = values.length ? Math.min(...values) : 1
-    maxCount = values.length ? Math.max(...values) : 1
+    // Ascending by count, so rank 0 is the rarest letter. Ties keep a stable
+    // order, which is what matters: two letters must not share a rank.
+    ranked = Object.keys(counts).sort((a, b) => counts[a] - counts[b] || a.localeCompare(b))
+    rankOf = {}
+    ranked.forEach((letter, index) => (rankOf[letter] = index))
     Object.keys(modeCache).forEach((key) => delete modeCache[key])
     if (plate) plate.letter = ""
   }

@@ -196,15 +196,29 @@ export const checkRefresh = () => {
   return reset(all) === 100 && reset(none) === 0 && reset(some) > 0 && reset(some) < 100
 }
 
-// A letter's figure. Interpolating from its own Quran-wide count gives a shape
-// that moves continuously with the letters instead of cutting between integers.
-// 1 + up to 3.5 extra cells keeps the commonest letter legible while the rarest
-// still shows structure.
-export const letterMode = (count, min, max) => {
-  if (!count) return { m: 1, n: 1 }
-  const span = Math.log(max / min) || 1
-  const k = 1 + (3.5 * Math.log(count / min)) / span
-  return { m: k, n: k * 1.25 }
+// A letter's figure, from its rank among the letters by Quran-wide frequency.
+// Ranking is what keeps the letters apart. Mapped straight from the count,
+// letters that differ by a fraction of a percent landed on the identical figure
+// (ت 10520 and ك 10497 both drew m=3.09 n=3.87), and the whole count range only
+// reached order 4.5 — too few orders to give 28 letters 28 figures. Rank adds no
+// new input: it only uses the ordering the counts already have, one order step
+// per letter, so each letter gets a figure of its own.
+export const letterMode = (rank, total, extra = 4) => {
+  const k = 1 + (extra * rank) / Math.max(1, total - 1)
+  return { m: k, n: k * 1.35 }
+}
+
+// Self-check: every rank must draw its own figure, in increasing order and
+// inside the intended band. Nothing else stops two letters collapsing together.
+export const checkLetterModes = () => {
+  const total = 28
+  const extra = 4
+  const modes = Array.from({ length: total }, (_, i) => letterMode(i, total, extra))
+  const keys = new Set(modes.map(({ m, n }) => `${m.toFixed(6)},${n.toFixed(6)}`))
+  const ordered = modes.every((x, i) => i === 0 || x.m > modes[i - 1].m)
+  // n = m * 1.35, so n is always above m; m tops out at 1 + extra.
+  const inBand = modes.every(({ m, n }) => m >= 1 && m <= 1 + extra + 1e-9 && n > m)
+  return keys.size === total && ordered && inBand
 }
 
 // The figure a single fixed tone produces. The reference visualiser derives one
