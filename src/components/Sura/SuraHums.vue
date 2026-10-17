@@ -66,7 +66,6 @@ import { useTheme } from "vuetify"
 import {
   AUDIBLE_MAX_HZ,
   AUDIBLE_MIN_HZ,
-  LETTER_DIVISOR,
   toneForLetter,
 } from "@/utils/wordTone"
 import { useDataStore } from "@/stores/dataStore"
@@ -188,25 +187,20 @@ const stop = () => {
 }
 
 // Scrubbing and the timer share one path: both move the index, and this watch
-// starts the word at whatever index was landed on.
-watch(currentIndex, () => {
-  if (!isPlaying.value) return
-  clearTimeout(timer)
-  silence()
-  step()
-})
-
-const seek = (index) => {
-  currentIndex.value = index
-}
-
-// Speed and multiplier rebuild the timeline, so the sounding word must restart
+// starts the word at whatever index was landed on. Speed and multiplier changes
+// land here too — they rebuild the timeline, so the sounding word must restart
 // at the new pitch and the new length.
 const restart = () => {
   if (!isPlaying.value) return
   clearTimeout(timer)
   silence()
   step()
+}
+
+watch(currentIndex, restart)
+
+const seek = (index) => {
+  currentIndex.value = index
 }
 
 const toggleTone = () => {
@@ -222,6 +216,7 @@ watch(timeline, (slots) => {
 // The multiplier changes pitch only, so the timeline stays put and this watch
 // is what restarts the sound.
 watch(multiplier, restart)
+
 // Swapping suras while stopped should still show the new first word's figure.
 watch(currentWord, () => cym.showStatic(currentWord.value?.notes))
 

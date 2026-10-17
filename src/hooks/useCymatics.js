@@ -23,10 +23,8 @@ const dprSize = (canvas) => Number(canvas.dataset.dpr || 1)
 export function useCymatics(canvasRef, morphSeconds) {
   // Live physics values, bound directly by the settings sliders.
   const tune = reactive({ ...CYMATICS_DEFAULTS })
-  // The letter whose figure is showing, so the UI can mark the active chip.
-  const activeLetter = ref("")
-  // Which occurrence of it: a word can repeat a letter, and highlighting by the
-  // letter alone would light up every copy at once.
+  // Which note of the word is sounding: a word can repeat a letter, and
+  // highlighting by the letter alone would light up every copy at once.
   const activeNote = ref(-1)
 
   const modeCache = {}
@@ -158,7 +156,6 @@ export function useCymatics(canvasRef, morphSeconds) {
   const setLetter = (letter, note = -1) => {
     if (!plate || letter === plate.letter) return
     plate.letter = letter
-    activeLetter.value = letter || ""
     activeNote.value = note
     if (!letter) return
     const { m, n } = letterFig(letter)
@@ -173,7 +170,6 @@ export function useCymatics(canvasRef, morphSeconds) {
     plate.targetM = m
     plate.targetN = n
     plate.letter = ""
-    activeLetter.value = ""
     activeNote.value = -1
   }
 
@@ -183,14 +179,14 @@ export function useCymatics(canvasRef, morphSeconds) {
   const startDrive = (notes, stepMs) => {
     const letters = (notes || []).filter(drivable)
     if (!letters.length) return
-    drive = { letters, index: 0, start: performance.now(), stepMs }
+    drive = { letters, start: performance.now(), stepMs }
   }
 
   // Not playing: hold the first letter's figure so the plate is never blank.
   const showStatic = (notes) => {
     if (drive) return
     const letters = (notes || []).filter(drivable)
-    drive = letters.length ? { letters, index: 0, start: 0, stepMs: 1e9 } : null
+    drive = letters.length ? { letters, start: 0, stepMs: 1e9 } : null
   }
 
   const clearDrive = () => {
@@ -201,8 +197,6 @@ export function useCymatics(canvasRef, morphSeconds) {
   const setToneHz = (hz) => {
     toneHz = hz
   }
-
-  const currentLetter = () => drive?.letters?.[drive.index] || ""
 
   // The letter counts are the input to the figure mapping, so replacing them
   // also retires the mode cache.
@@ -259,20 +253,14 @@ export function useCymatics(canvasRef, morphSeconds) {
 
   return {
     tune,
-    activeLetter,
     activeNote,
     start,
-    stop,
     resize,
-    setLetter,
-    setTone,
     setToneHz,
     setCounts,
     startDrive,
     showStatic,
     clearDrive,
-    setToneHz,
-    currentLetter,
     clear,
   }
 }

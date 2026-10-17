@@ -89,25 +89,28 @@ export const makeParticles = (count, size) => {
 
 // One physics step. Kept flat so the hot loop stays inline.
 export const stepParticle = (p, m, n, size, cfg) => {
-  // Small step in plate units for the finite difference. A large one samples
-  // across a whole lobe, where the difference cancels out and the pull turns to
-  // noise, so the sand never converges on a nodal line.
-  const h = 0.01
-  const scale = cfg.blobScale
   // Sampled in plate coordinates, not raw pixels, so a figure looks the same at
   // any canvas size.
+  const scale = cfg.blobScale
   const u = (p.x / size - 0.5) / scale
   const v = (p.y / size - 0.5) / scale
-  const level = Math.abs(fieldSigned(m, n, u, v))
-  // Gradient of |field|, normalised to a direction, so sand is pushed towards
-  // the nearest node at a fixed speed and dense modes do not fling it off.
-  const gx =
-    Math.abs(fieldSigned(m, n, u + h, v)) -
-    Math.abs(fieldSigned(m, n, u - h, v))
-  const gy =
-    Math.abs(fieldSigned(m, n, u, v + h)) -
-    Math.abs(fieldSigned(m, n, u, v - h))
-  const len = Math.sqrt(gx * gx + gy * gy)
+  const pm = Math.PI * m
+  const pn = Math.PI * n
+  const snx = Math.sin(pn * u)
+  const smx = Math.sin(pm * u)
+  const sny = Math.sin(pn * v)
+  const smy = Math.sin(pm * v)
+  const w = snx * smy + smx * sny
+  const level = Math.abs(w)
+  // Analytic gradient of the superposition: 8 trig values, shared with the field
+  // itself. The finite differences it replaces needed 20 trig calls per grain
+  // per frame, which was most of the physics cost at 60fps.
+  const sw = Math.sign(w) || 1
+  const gx = pn * Math.cos(pn * u) * smy + pm * Math.cos(pm * u) * sny
+  const gy = pm * snx * Math.cos(pm * v) + pn * smx * Math.cos(pn * v)
+  const swx = sw * gx
+  const swy = sw * gy
+  const len = Math.sqrt(swx * swx + swy * swy)
 
   // This branch must run even at rest, otherwise a grain damps to a stop
   // wherever it happens to be and its glow decays away, which is what leaves a
@@ -117,8 +120,8 @@ export const stepParticle = (p, m, n, size, cfg) => {
     // the part running along it: kill the first so the grain stops crossing,
     // keep most of the second so grains slide and spread evenly instead of
     // piling up wherever each one happened to land.
-    const nx = gx / len
-    const ny = gy / len
+    const nx = swx / len
+    const ny = swy / len
     const vn = p.vx * nx + p.vy * ny
     p.vx = (p.vx - vn * nx) * cfg.slide + vn * nx * cfg.settledDamping
     p.vy = (p.vy - vn * ny) * cfg.slide + vn * ny * cfg.settledDamping
@@ -128,8 +131,8 @@ export const stepParticle = (p, m, n, size, cfg) => {
   // Step shrinks as the node approaches, so the sand eases onto the line instead
   // of always stepping a fixed distance and overshooting across it.
   const pull = len > 1e-6 ? (cfg.force * Math.min(1, level * 3)) / len : 0
-  p.vx -= gx * pull
-  p.vy -= gy * pull
+  p.vx -= swx * pull
+  p.vy -= swy * pull
   p.intensity = Math.max(0, p.intensity - DECAY_INTENSITY)
   return finish(p, size, cfg)
 }
