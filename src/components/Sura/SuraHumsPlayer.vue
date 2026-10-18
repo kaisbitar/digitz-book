@@ -137,7 +137,7 @@
     </v-menu>
     <SuraHumsGrainMenu v-model="grain" />
     <v-btn
-      icon="mdi-fullscreen"
+      :icon="isFullscreen ? 'mdi-fullscreen-exit' : 'mdi-fullscreen'"
       variant="text"
       size="small"
       @click="$emit('fullscreen')"
@@ -150,6 +150,7 @@ import { MULTIPLIERS, LETTER_DIVISOR } from "@/utils/wordTone"
 import SuraHumsGrainMenu from "./SuraHumsGrainMenu.vue"
 
 defineProps({
+  isFullscreen: Boolean,
   isPlaying: Boolean,
   isLooping: Boolean,
   index: Number,

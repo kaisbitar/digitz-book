@@ -62,31 +62,38 @@ export function useCymatics(canvasRef, morphSeconds) {
     const canvas = canvasRef.value
     if (!canvas) return
     const box = canvas.parentElement
-    const size = Math.max(Math.min(box.clientWidth, box.clientHeight), 1)
-    // Nothing laid out yet, or the flex item is hidden: sizing to 1 would blank
-    // the plate until the next resize, so wait for real dimensions instead.
-    if (size <= 1) return
+    // YouTube's player aspect: the largest 16:9 rectangle that fits the box, so
+    // the plate always has a video-shaped frame at any container size.
+    const maxW = box.clientWidth
+    const maxH = box.clientHeight
+    const w = Math.max(Math.min(maxW, (maxH * 16) / 9), 1)
+    const h = Math.max(Math.min(maxH, (maxW * 9) / 16), 1)
+    // Nothing laid out yet (or hidden): wait for real dimensions rather than
+    // blanking the plate.
+    if (w <= 1 || h <= 1) return
     const dpr = window.devicePixelRatio || 1
-    canvas.width = size * dpr
-    canvas.height = size * dpr
-    canvas.style.width = `${size}px`
-    canvas.style.height = `${size}px`
+    canvas.width = w * dpr
+    canvas.height = h * dpr
+    canvas.style.width = `${w}px`
+    canvas.style.height = `${h}px`
     canvas.dataset.dpr = String(dpr)
     // Keep the particles when only the size changed, so a fullscreen toggle does
     // not scatter a pattern that has already settled.
     if (plate && plate.particles.length === tune.count) {
-      plate.size = size
+      plate.w = w
+      plate.h = h
       return
     }
     plate = {
-      size,
+      w,
+      h,
       m: 1,
       n: 1,
       targetM: 1,
       targetN: 1,
       hue: tune.sandHue,
       lit: 0,
-      particles: makeParticles(tune.count, size),
+      particles: makeParticles(tune.count, w, h),
       sandColor: "",
       bgColor: "",
     }
@@ -96,13 +103,14 @@ export function useCymatics(canvasRef, morphSeconds) {
     rafId = requestAnimationFrame(frame)
     const canvas = canvasRef.value
     if (!canvas || !plate) return
-    const { size, particles } = plate
+    const { w, h, particles } = plate
     const ctx = canvas.getContext("2d")
     if (!plate.sandColor)
       plate.sandColor = canvasRgb(canvas, "--v-theme-on-surface")
-    if (!plate.bgColor) plate.bgColor = canvasRgb(canvas, "--v-theme-background")
+    // The plate is always black, whatever the app theme, so the sand glows.
+    plate.bgColor = "0, 0, 0"
     const { sandColor, bgColor } = plate
-    if (!sandColor || !bgColor) return
+    if (!sandColor) return
 
     // Advance the drive to the letter being heard, then show its figure. A fixed
     // tone has no letter stepping, so it just holds one figure.
@@ -141,8 +149,10 @@ export function useCymatics(canvasRef, morphSeconds) {
     // light rather than paint. Drawn after the trail fade so it sits under the
     // grains. A gradient per frame is cheap next to the particle loop.
     if (tune.ambient > 0) {
-      const mid = (size * dpr) / 2
-      const halo = ctx.createRadialGradient(mid, mid, 0, mid, mid, mid * 1.15)
+      const mx = (w * dpr) / 2
+      const my = (h * dpr) / 2
+      const rr = Math.max(mx, my) * 1.15
+      const halo = ctx.createRadialGradient(mx, my, 0, mx, my, rr)
       halo.addColorStop(0, `hsla(${plate.hue}, 80%, ${plate.lit}%, ${tune.ambient})`)
       halo.addColorStop(1, `hsla(${plate.hue}, 80%, ${plate.lit}%, 0)`)
       ctx.globalCompositeOperation = "lighter"
@@ -155,7 +165,7 @@ export function useCymatics(canvasRef, morphSeconds) {
     // way a real plate keeps shedding and redepositing sand. This is what stops
     // grains camping on lines that are nodal for every mode and keeps the
     // figure redrawing itself instead of hardening into a heap.
-    refreshParticles(particles, size, tune.churn)
+    refreshParticles(particles, w, h, tune.churn)
 
     // Physics + draw in one pass, scaled into device pixels. One fillStyle for
     // the whole batch; only alpha varies, set on the context per grain.
@@ -163,7 +173,7 @@ export function useCymatics(canvasRef, morphSeconds) {
     ctx.fillStyle = `hsl(${plate.hue}, 78%, ${plate.lit}%)`
     for (let i = 0; i < particles.length; i++) {
       const p = particles[i]
-      stepParticle(p, m, n, size, tune)
+      stepParticle(p, m, n, w, h, tune)
       const { r, alpha } = grainLook(p, tune)
       ctx.globalAlpha = alpha
       ctx.beginPath()

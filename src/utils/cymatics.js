@@ -77,12 +77,12 @@ export const CYMATICS_FIELDS = [
   { key: "hueSpread", label: "تدرج التردد", min: 0, max: 180, step: 5 },
 ]
 
-export const makeParticles = (count, size) => {
+export const makeParticles = (count, w, h) => {
   const p = new Array(count)
   for (let i = 0; i < count; i++) {
     p[i] = {
-      x: Math.random() * size,
-      y: Math.random() * size,
+      x: Math.random() * w,
+      y: Math.random() * h,
       vx: 0,
       vy: 0,
       intensity: 0,
@@ -97,25 +97,26 @@ export const makeParticles = (count, size) => {
   return p
 }
 
-// One physics step. Kept flat so the hot loop stays inline.
-export const stepParticle = (p, m, n, size, cfg) => {
+// One physics step. Kept flat so the hot loop stays inline. w and h are the
+// plate's pixel extents, so a figure keeps its shape at any aspect ratio.
+export const stepParticle = (p, m, n, w, h, cfg) => {
   // Sampled in plate coordinates, not raw pixels, so a figure looks the same at
   // any canvas size.
   const scale = cfg.blobScale
-  const u = (p.x / size - 0.5) / scale
-  const v = (p.y / size - 0.5) / scale
+  const u = (p.x / w - 0.5) / scale
+  const v = (p.y / h - 0.5) / scale
   const pm = Math.PI * m
   const pn = Math.PI * n
   const snx = Math.sin(pn * u)
   const smx = Math.sin(pm * u)
   const sny = Math.sin(pn * v)
   const smy = Math.sin(pm * v)
-  const w = snx * smy + smx * sny
-  const level = Math.abs(w)
+  const field = snx * smy + smx * sny
+  const level = Math.abs(field)
   // Analytic gradient of the superposition: 8 trig values, shared with the field
   // itself. The finite differences it replaces needed 20 trig calls per grain
   // per frame, which was most of the physics cost at 60fps.
-  const sw = Math.sign(w) || 1
+  const sw = Math.sign(field) || 1
   const gx = pn * Math.cos(pn * u) * smy + pm * Math.cos(pm * u) * sny
   const gy = pm * snx * Math.cos(pm * v) + pn * smx * Math.cos(pn * v)
   const swx = sw * gx
@@ -136,7 +137,7 @@ export const stepParticle = (p, m, n, size, cfg) => {
     p.vx = (p.vx - vn * nx) * cfg.slide + vn * nx * cfg.settledDamping
     p.vy = (p.vy - vn * ny) * cfg.slide + vn * ny * cfg.settledDamping
     p.intensity = Math.min(p.peak, p.intensity + SETTLE_INTENSITY * cfg.lockGlow)
-    return finish(p, size, cfg)
+    return finish(p, w, h, cfg)
   }
   // Step shrinks as the node approaches, so the sand eases onto the line instead
   // of always stepping a fixed distance and overshooting across it.
@@ -144,20 +145,20 @@ export const stepParticle = (p, m, n, size, cfg) => {
   p.vx -= swx * pull
   p.vy -= swy * pull
   p.intensity = Math.max(0, p.intensity - DECAY_INTENSITY)
-  return finish(p, size, cfg)
+  return finish(p, w, h, cfg)
 }
 
-// Shared tail: damp, integrate, and keep the sand on the square plate.
-const finish = (p, size, cfg) => {
+// Shared tail: damp, integrate, and keep the sand on the plate.
+const finish = (p, w, h, cfg) => {
   p.vx *= cfg.damping
   p.vy *= cfg.damping
   p.x += p.vx
   p.y += p.vy
   // Reflection reads as sand hitting the rim.
   if (p.x < 0) ((p.x = 0), (p.vx *= -BOUNCE))
-  if (p.x > size) ((p.x = size), (p.vx *= -BOUNCE))
+  if (p.x > w) ((p.x = w), (p.vx *= -BOUNCE))
   if (p.y < 0) ((p.y = 0), (p.vy *= -BOUNCE))
-  if (p.y > size) ((p.y = size), (p.vy *= -BOUNCE))
+  if (p.y > h) ((p.y = h), (p.vy *= -BOUNCE))
 }
 
 // How long the plate holds one figure. The sand needs roughly half a second to
@@ -170,14 +171,14 @@ export const FIGURE_HOLD_MS = 550
 // Called every frame, this is the plate being tapped continuously: trapped
 // grains are released, the figure keeps redrawing itself, and the shape no
 // longer depends on one lucky dense sprinkling forming before the tune changes.
-export const refreshParticles = (particles, size, share) => {
+export const refreshParticles = (particles, w, h, share) => {
   if (share <= 0) return
   const rate = share / 100
   for (let i = 0; i < particles.length; i++) {
     if (Math.random() >= rate) continue
     const p = particles[i]
-    p.x = Math.random() * size
-    p.y = Math.random() * size
+    p.x = Math.random() * w
+    p.y = Math.random() * h
     p.vx = 0
     p.vy = 0
     p.intensity = 0
@@ -188,7 +189,7 @@ export const refreshParticles = (particles, size, share) => {
 // reset every grain, and a middle share must move some but not all.
 export const checkRefresh = () => {
   const seed = () => {
-    const ps = makeParticles(100, 10)
+    const ps = makeParticles(100, 10, 10)
     ps.forEach((p, i) => {
       p.x = i
       p.y = 5
@@ -201,11 +202,11 @@ export const checkRefresh = () => {
   const reset = (ps) =>
     ps.filter((p) => p.vx === 0 && p.vy === 0 && p.intensity === 0).length
   const all = seed()
-  refreshParticles(all, 10, 100)
+  refreshParticles(all, 10, 10, 100)
   const none = seed()
-  refreshParticles(none, 10, 0)
+  refreshParticles(none, 10, 10, 0)
   const some = seed()
-  refreshParticles(some, 10, 20)
+  refreshParticles(some, 10, 10, 20)
   return reset(all) === 100 && reset(none) === 0 && reset(some) > 0 && reset(some) < 100
 }
 
@@ -258,9 +259,10 @@ export const grainLook = (p, cfg) => {
 
 // Hue (degrees) for the sand on a given letter. The letter's rank among the
 // Quran-wide counts spreads the hue, so rarer letters shift colour; with no
-// rank (or zero spread) it is the base hue.
+// rank (or zero spread) it is the base hue. rank is undefined for a fixed tone
+// or an unmapped letter, which must fall back rather than produce NaN.
 export const hueForLetter = (rank, total, cfg) => {
-  if (!total || !cfg.hueSpread) return cfg.sandHue
+  if (!total || !cfg.hueSpread || !Number.isFinite(rank)) return cfg.sandHue
   return (cfg.sandHue + (cfg.hueSpread * rank) / Math.max(1, total - 1)) % 360
 }
 

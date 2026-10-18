@@ -11,28 +11,28 @@
         icon="mdi-fullscreen-exit"
         variant="tonal"
         size="small"
-        @click="isFullscreen = false"
+        @click="toggleFullscreen"
       />
-    </div>
-
-    <div class="hums-word text-center px-2">
-      <div class="text-h5">{{ currentWord?.text || "—" }}</div>
-      <div class="hums-notes d-flex justify-center flex-wrap ga-1 mt-1">
-        <v-chip
-          v-for="(note, index) in currentNotes"
-          :key="index"
-          size="small"
-          :variant="index === activeNote ? 'flat' : 'tonal'"
-          :color="index === activeNote ? 'primary' : undefined"
-        >
-          {{ note.letter }} {{ note.hz }}
-        </v-chip>
-      </div>
-      <div class="text-caption text-medium-emphasis mt-1">
-        <template v-if="currentWord">
-          آية {{ currentWord.verseIndex }} ·
-          {{ currentWord.notes.length }} حرف
-        </template>
+      <!-- The word sits on the plate, not below it, so the sand gets the whole
+           height. The panel is translucent, so the figure glows through it. -->
+      <div class="hums-word text-center px-2">
+        <div class="text-h5">{{ currentWord?.text || "—" }}</div>        <div class="hums-notes d-flex justify-center flex-wrap ga-1 mt-1">
+          <v-chip
+            v-for="(note, index) in currentNotes"
+            :key="index"
+            size="small"
+            :variant="index === activeNote ? 'flat' : 'tonal'"
+            :color="index === activeNote ? 'primary' : undefined"
+          >
+            {{ note.letter }} {{ note.hz }}
+          </v-chip>
+        </div>
+        <div class="text-caption text-medium-emphasis mt-1">
+          <template v-if="currentWord">
+            آية {{ currentWord.verseIndex }} ·
+            {{ currentWord.notes.length }} حرف
+          </template>
+        </div>
       </div>
     </div>
 
@@ -43,6 +43,7 @@
       v-model:grain="grain"
       :is-playing="isPlaying"
       :is-looping="isLooping"
+      :is-fullscreen="isFullscreen"
       :index="currentIndex"
       :total-words="timeline.length"
       :position="position"
@@ -55,7 +56,7 @@
       @seek="seek"
       @update:is-looping="isLooping = $event"
       @toggle-tone="toggleTone"
-      @fullscreen="isFullscreen = true"
+      @fullscreen="toggleFullscreen"
     />
   </div>
 </template>
@@ -208,6 +209,15 @@ const toggleTone = () => {
   else playTone(tuneHz.value)
 }
 
+// Real device fullscreen (like YouTube), not just a big CSS box: ask the browser
+// to fullscreen the stage. The fullscreenchange listener keeps the flag and the
+// button icon in step when the user exits with Esc or the system gesture.
+const toggleFullscreen = () => {
+  if (document.fullscreenElement) return document.exitFullscreen()
+  // Some browsers reject on certain elements; ignore it and stay windowed.
+  plateRef.value?.closest(".hums-stage")?.requestFullscreen()?.catch(() => {})
+}
+
 watch(timeline, (slots) => {
   const clamped = Math.max(slots.length - 1, 0)
   if (currentIndex.value > clamped) return (currentIndex.value = clamped)
@@ -247,6 +257,11 @@ watch(isFullscreen, async () => {
   cym.resize()
 })
 
+// The browser is the source of truth for fullscreen: Esc or a system gesture
+// must update the flag, the button icon, and the plate size.
+const onFullscreenChange = () => (isFullscreen.value = !!document.fullscreenElement)
+document.addEventListener("fullscreenchange", onFullscreenChange)
+
 // A theme switch changes both the tint and the sand colour, so repaint them.
 watch(() => theme.current.value.dark, cym.clear)
 
@@ -264,6 +279,8 @@ onUnmounted(() => {
   stop()
   stopTone()
   dispose()
+  document.removeEventListener("fullscreenchange", onFullscreenChange)
+  if (document.fullscreenElement) document.exitFullscreen()
 })
 </script>
 
@@ -274,12 +291,14 @@ onUnmounted(() => {
   justify-content: space-between;
 }
 
-.hums-fullscreen {
+.hums-fullscreen,
+.hums-stage:fullscreen {
   position: fixed;
   inset: 0;
   z-index: 2400;
   height: 100dvh;
-  background: rgb(var(--v-theme-background));
+  width: 100vw;
+  background: black;
 }
 
 .hums-plate {
@@ -289,6 +308,8 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   min-height: 0;
+  /* Always black, so the plate corners match the always-black canvas. */
+  background: black;
 }
 
 .hums-exit {
@@ -298,11 +319,21 @@ onUnmounted(() => {
 }
 
 .hums-word {
-  flex: 0 0 auto;
-  /* Viewport-relative, so it resolves without a definite parent height and the
-     plate always keeps the bulk of the area even for a very long word. */
-  max-height: 32vh;
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  /* A translucent scrim, so the figure glows through the text behind it. */
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(2px);
+  max-height: 40%;
   overflow-y: auto;
+  /* The plate is always black, so the overlay text is always light, whatever
+     the app theme. */
+  color: white;
+}
+
+.hums-word .text-medium-emphasis {
+  color: rgba(255, 255, 255, 0.7) !important;
 }
 
 .hums-player {
