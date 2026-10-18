@@ -29,6 +29,20 @@
       :title="isLooping ? 'تكرار: مفعّل' : 'تكرار: متوقف'"
       @click="$emit('update:isLooping', !isLooping)"
     />
+    <!-- Distinctive method switch: letters one by one, or the whole word. -->
+    <v-btn
+      class="hums-mode text-caption font-weight-bold"
+      variant="flat"
+      size="small"
+      color="primary"
+      :title="mode === 'letters' ? 'حرف واحد لكل تردد' : 'مجموع الحروف لكل كلمة'"
+      @click="$emit('update:mode', mode === 'letters' ? 'words' : 'letters')"
+    >
+      <v-icon start size="small">
+        {{ mode === "letters" ? "mdi-alphabetical" : "mdi-format-letter-case" }}
+      </v-icon>
+      {{ mode === "letters" ? "حرف" : "كلمة" }}
+    </v-btn>
     <v-chip
       size="small"
       variant="text"
@@ -136,6 +150,105 @@
       </v-list>
     </v-menu>
     <SuraHumsGrainMenu v-model="grain" />
+    <v-menu location="top" :close-on-content-click="false">
+      <template #activator="{ props: menuProps }">
+        <v-btn
+          v-bind="menuProps"
+          icon="mdi-tune"
+          variant="text"
+          size="small"
+          title="إعدادات التشغيل"
+        />
+      </template>
+      <v-list density="compact" class="pa-3" min-width="300">
+        <div class="text-caption text-medium-emphasis mb-1">
+          مدة الحرف {{ letterSeconds.toFixed(2) }} ث
+        </div>
+        <v-slider
+          :model-value="letterSeconds"
+          :min="0.05"
+          :max="0.5"
+          :step="0.01"
+          hide-details
+          density="compact"
+          thumb-label
+          color="primary"
+          @update:model-value="$emit('update:letterSeconds', $event)"
+        />
+        <div class="text-caption text-medium-emphasis mb-1">
+          مدة الكلمة {{ wordSeconds.toFixed(2) }} ث
+        </div>
+        <v-slider
+          :model-value="wordSeconds"
+          :min="0.2"
+          :max="1.5"
+          :step="0.05"
+          hide-details
+          density="compact"
+          thumb-label
+          color="primary"
+          @update:model-value="$emit('update:wordSeconds', $event)"
+        />
+        <div class="d-flex align-center justify-space-between">
+          <v-icon size="small">mdi-volume-high</v-icon>
+          <span class="text-caption text-medium-emphasis">
+            مستوى الصوت {{ Math.round(volume * 100) }}٪
+          </span>
+        </div>
+        <v-slider
+          :model-value="volume"
+          :min="0"
+          :max="1"
+          :step="0.05"
+          hide-details
+          density="compact"
+          color="primary"
+          @update:model-value="$emit('update:volume', $event)"
+        />
+        <div class="text-caption text-medium-emphasis mb-1">
+          كلمات في كل نبضة {{ wordsPerPulse }}
+        </div>
+        <v-slider
+          :model-value="wordsPerPulse"
+          :min="1"
+          :max="6"
+          :step="1"
+          hide-details
+          density="compact"
+          thumb-label
+          color="primary"
+          @update:model-value="$emit('update:wordsPerPulse', $event)"
+        />
+        <div class="text-caption text-medium-emphasis mb-1">
+          وقفة بين النبضات {{ phrasePause.toFixed(1) }} ث
+        </div>
+        <v-slider
+          :model-value="phrasePause"
+          :min="0.1"
+          :max="1"
+          :step="0.1"
+          hide-details
+          density="compact"
+          thumb-label
+          color="primary"
+          @update:model-value="$emit('update:phrasePause', $event)"
+        />
+        <div class="text-caption text-medium-emphasis mb-1">
+          وقفة بين الآيات {{ versePause.toFixed(1) }} ث
+        </div>
+        <v-slider
+          :model-value="versePause"
+          :min="0.5"
+          :max="2"
+          :step="0.1"
+          hide-details
+          density="compact"
+          thumb-label
+          color="primary"
+          @update:model-value="$emit('update:versePause', $event)"
+        />
+      </v-list>
+    </v-menu>
     <v-btn
       :icon="isFullscreen ? 'mdi-fullscreen-exit' : 'mdi-fullscreen'"
       variant="text"
@@ -163,6 +276,12 @@ defineProps({
   tuneActive: Boolean,
   tuneSounding: Boolean,
   tuneHz: Number,
+  volume: Number,
+  wordsPerPulse: Number,
+  phrasePause: Number,
+  versePause: Number,
+  letterSeconds: Number,
+  wordSeconds: Number,
 })
 
 // v-model targets, so the parent keeps ownership of the actual refs.
@@ -170,12 +289,19 @@ const speed = defineModel("speed", { type: Number, required: true })
 const multiplier = defineModel("multiplier", { type: Number, required: true })
 const tuneHz = defineModel("tuneHz", { type: Number, required: true })
 const grain = defineModel("grain", { type: Object, required: true })
+const mode = defineModel("mode", { type: String, required: true })
 
 defineEmits([
   "play",
   "stop",
   "seek",
   "update:isLooping",
+  "update:volume",
+  "update:wordsPerPulse",
+  "update:phrasePause",
+  "update:versePause",
+  "update:letterSeconds",
+  "update:wordSeconds",
   "toggle-tone",
   "fullscreen",
 ])

@@ -16,12 +16,20 @@ export const LETTER_DIVISOR = 20
 // past 16 kHz, so the UI flags them rather than silently going quiet.
 export const AUDIBLE_MIN_HZ = 20
 export const AUDIBLE_MAX_HZ = 16000
-export const MULTIPLIERS = [0.1, 1, 10, 100, 1000]
+// Verses sound at several times a letter's pitch, because a word's frequency is
+// its letters' summed. The list reaches low enough for word mode: 0.01 puts even
+// a long word back inside the audible band.
+export const MULTIPLIERS = [0.01, 0.025, 0.05, 0.075, 0.1, 1, 10, 100, 1000]
 
 export const toneForLetter = (letter, counts, multiplier = 1) => {
   const count = counts?.[letter]
   return count ? (count / LETTER_DIVISOR) * multiplier : 0
 }
+
+// A word's frequency is the sum of its letters'. Letters with no count add 0,
+// so a word of unmapped letters is silent rather than a bug.
+export const wordToneFor = (letters, counts, multiplier = 1) =>
+  (letters || []).reduce((sum, letter) => sum + toneForLetter(letter, counts, multiplier), 0)
 
 export const SCALES = {
   pentatonic: [1, 1.125, 1.25, 1.5, 1.667],

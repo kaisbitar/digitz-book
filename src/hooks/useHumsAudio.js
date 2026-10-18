@@ -12,6 +12,8 @@ const tiltFor = (frequency) => Math.min(1, Math.max(0.35, 900 / frequency))
 
 export function useHumsAudio() {
   const tuneSounding = ref(false)
+  // Master level, 0..1, applied through VOLUME. Read when a voice is built.
+  const volume = ref(1)
   let audio = null
   const voices = new Set()
   // The held reference tone, tracked separately so it can be replaced or stopped
@@ -38,6 +40,7 @@ export function useHumsAudio() {
     const attack = Math.min(0.008, step / 4)
     const release = Math.min(0.05, step / 4)
     const glide = step * GLIDE
+    const level = VOLUME * volume.value
     const oscillator = ctx.createOscillator()
     const gain = ctx.createGain()
     const first = hzFor(live[0])
@@ -45,7 +48,7 @@ export function useHumsAudio() {
     oscillator.type = "sine"
     oscillator.frequency.setValueAtTime(first, start)
     gain.gain.setValueAtTime(0, start)
-    gain.gain.linearRampToValueAtTime(VOLUME * tiltFor(first), start + attack)
+    gain.gain.linearRampToValueAtTime(level * tiltFor(first), start + attack)
 
     live.forEach((letter, index) => {
       if (!index) return
@@ -56,13 +59,13 @@ export function useHumsAudio() {
       // Hold the previous pitch until this step, then slide onto the new one.
       oscillator.frequency.setValueAtTime(from, at)
       oscillator.frequency.linearRampToValueAtTime(to, arrive)
-      gain.gain.setValueAtTime(VOLUME * tiltFor(from), at)
-      gain.gain.linearRampToValueAtTime(VOLUME * tiltFor(to), arrive)
+      gain.gain.setValueAtTime(level * tiltFor(from), at)
+      gain.gain.linearRampToValueAtTime(level * tiltFor(to), arrive)
     })
 
     const last = hzFor(live[live.length - 1])
     gain.gain.setValueAtTime(
-      VOLUME * tiltFor(last),
+      level * tiltFor(last),
       Math.max(end - release, start + attack),
     )
     gain.gain.linearRampToValueAtTime(0, end)
@@ -70,6 +73,34 @@ export function useHumsAudio() {
     oscillator.connect(gain).connect(ctx.destination)
     oscillator.start(start)
     oscillator.stop(end)
+    voices.add(gain)
+    oscillator.onended = () => {
+      voices.delete(gain)
+      oscillator.disconnect()
+      gain.disconnect()
+    }
+  }
+
+  // One tone per word, held for the word's whole duration. Same envelope as the
+  // letter voice, so word mode and letter mode sound like one instrument.
+  const playHeld = (hz, duration) => {
+    if (!hz) return
+    const ctx = init()
+    const start = ctx.currentTime
+    const attack = Math.min(0.01, duration / 4)
+    const release = Math.min(0.08, duration / 4)
+    const level = VOLUME * volume.value * tiltFor(hz)
+    const oscillator = ctx.createOscillator()
+    const gain = ctx.createGain()
+    oscillator.type = "sine"
+    oscillator.frequency.setValueAtTime(hz, start)
+    gain.gain.setValueAtTime(0, start)
+    gain.gain.linearRampToValueAtTime(level, start + attack)
+    gain.gain.setValueAtTime(level, Math.max(start + duration - release, start + attack))
+    gain.gain.linearRampToValueAtTime(0, start + duration)
+    oscillator.connect(gain).connect(ctx.destination)
+    oscillator.start(start)
+    oscillator.stop(start + duration)
     voices.add(gain)
     oscillator.onended = () => {
       voices.delete(gain)
@@ -90,7 +121,7 @@ export function useHumsAudio() {
     oscillator.frequency.value = hz
     gain.gain.setValueAtTime(0, ctx.currentTime)
     // A short fade rather than a click, then hold at a level the ear tolerates.
-    gain.gain.linearRampToValueAtTime(VOLUME, ctx.currentTime + 0.02)
+    gain.gain.linearRampToValueAtTime(VOLUME * volume.value, ctx.currentTime + 0.02)
     oscillator.connect(gain).connect(ctx.destination)
     oscillator.start()
     tone = { oscillator, gain }
@@ -141,5 +172,14 @@ export function useHumsAudio() {
     audio = null
   }
 
-  return { tuneSounding, play, playTone, silence, stopTone, dispose }
+  return {
+    tuneSounding,
+    volume,
+    play,
+    playHeld,
+    playTone,
+    silence,
+    stopTone,
+    dispose,
+  }
 }

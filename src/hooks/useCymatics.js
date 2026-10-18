@@ -6,7 +6,6 @@ import {
   CYMATICS_DEFAULTS,
   grainLook,
   hueForHz,
-  hueForRank,
   letterMode,
   makeParticles,
   refreshParticles,
@@ -28,7 +27,7 @@ const luminance = (rgb) => {
 
 const dprSize = (canvas) => Number(canvas.dataset.dpr || 1)
 
-export function useCymatics(canvasRef, morphSeconds) {
+export function useCymatics(canvasRef, morphSeconds, hzForLetter) {
   // Live physics values, bound directly by the settings sliders.
   const tune = reactive({ ...CYMATICS_DEFAULTS })
   // Which note of the word is sounding: a word can repeat a letter, and
@@ -114,8 +113,10 @@ export function useCymatics(canvasRef, morphSeconds) {
     if (!sandColor) return
 
     // Advance the drive to the letter being heard, then show its figure. A fixed
-    // tone has no letter stepping, so it just holds one figure.
+    // tone has no letter stepping, so it just holds one figure, and a word drive
+    // is one hz, so it holds one figure for the whole word.
     if (toneHz) setTone(toneHz)
+    else if (drive?.hz) setTone(drive.hz)
     else if (drive) {
       const index = Math.min(
         drive.letters.length - 1,
@@ -137,12 +138,12 @@ export function useCymatics(canvasRef, morphSeconds) {
     ctx.fillStyle = `rgba(${bgColor}, ${tune.trail})`
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-    // Sand colour is the pitch: a fixed tone by its Hz, a letter by its rank in
-    // the frequency order. Red at the low end up to violet at the high end.
+    // Sand colour is the pitch, always: the same hz the audio plays, through one
+    // log map. Letter, word, and fixed tone share it, so a colour can only come
+    // from the frequency sounding. Red at the low end to violet high.
     const dpr = dprSize(canvas)
-    const hue = toneHz
-      ? hueForHz(toneHz)
-      : hueForRank(rankOf[plate.letter], ranked.length)
+    const letterHz = plate.letter ? hzForLetter?.(plate.letter) : 0
+    const hue = hueForHz(toneHz || drive?.hz || letterHz || 0)
     plate.hue += (hue - plate.hue) * 0.2
     // Lightness comes from the theme background, so the sand lifts on dark and
     // deepens on light without hardcoding a colour.
@@ -218,6 +219,27 @@ export function useCymatics(canvasRef, morphSeconds) {
     plate.targetN = n
     plate.letter = ""
     activeNote.value = -1
+  }
+
+  // Word mode: one whole word is one frequency, so it is one figure and one
+  // colour, held. Reuses the tone path, but keeps the per-letter highlight off.
+  // Held as drive.hz rather than the fixed toneHz, so it does not fight the
+  // reference tone.
+  const startHzDrive = (hz) => {
+    if (!plate) return
+    const { m, n } = toneMode(hz)
+    plate.targetM = m
+    plate.targetN = n
+    plate.letter = ""
+    activeNote.value = -1
+    drive = { hz, start: 0, stepMs: 1e9 }
+  }
+
+  // Not playing: hold the word's figure so the plate is never blank. No pulse
+  // clock, so the idle plate stays still.
+  const showStaticHz = (hz) => {
+    if (drive) return
+    drive = hz ? { hz, start: 0, stepMs: 1e9 } : null
   }
 
   // Hand the plate the letters a word sounds. The frame loop walks them on a
@@ -308,6 +330,8 @@ export function useCymatics(canvasRef, morphSeconds) {
     setCounts,
     startDrive,
     showStatic,
+    startHzDrive,
+    showStaticHz,
     clearDrive,
     clear,
   }

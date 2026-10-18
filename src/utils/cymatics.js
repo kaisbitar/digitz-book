@@ -254,21 +254,41 @@ export const grainLook = (p, cfg) => {
 // The sand colour is the frequency spectrum, chakra-style: red at the lowest
 // pitch up through orange, yellow, green, blue to violet at the highest. Hue
 // runs 0..280 degrees, the range that reads as a full rainbow without wrapping
-// back to red. Hz maps onto the seven chakra tones (396..963), so a fixed tone
-// lands on its chakra colour; letters map by their frequency rank.
-export const SPECTRUM_HZ = [396, 963]
+// back to red.
+//
+// Pitch reads logarithmically (an octave is a constant step), so the map is log
+// over the hearing band. A linear map over a fixed 396..963 window left every
+// frequency below it — which is most of the real ones, letters at 4..284 Hz and
+// words at ~300 Hz — clamped to the same red. Log over the whole band gives each
+// frequency its own colour, and the same frequency always the same colour.
+export const HUE_MAX = 280
+const HUE_MIN_HZ = 20
+const HUE_MAX_HZ = 16000
+const LOG_MIN = Math.log(HUE_MIN_HZ)
+const LOG_SPAN = Math.log(HUE_MAX_HZ) - LOG_MIN
 
+// Letters are coloured by their own frequency, not by rank, so a word and the
+// letters it is the sum of share one scale. The hook is handed the same hz
+// function the audio uses, so the colour can never drift from the pitch.
 export const hueForHz = (hz) => {
-  const [lo, hi] = SPECTRUM_HZ
-  const t = Math.min(1, Math.max(0, (hz - lo) / (hi - lo)))
-  return t * 280
+  if (!Number.isFinite(hz) || hz <= 0) return 0
+  const f = Math.min(HUE_MAX_HZ, Math.max(HUE_MIN_HZ, hz))
+  return ((Math.log(f) - LOG_MIN) / LOG_SPAN) * HUE_MAX
 }
 
-// Letters have no Hz here; their pitch order is their rank among the Quran-wide
-// counts, so rank 0 (rarest, lowest pitch) is red and the top rank is violet.
-export const hueForRank = (rank, total) => {
-  if (!total || total < 2) return 0
-  const t = Math.min(1, Math.max(0, rank / (total - 1)))
-  return t * 280
+// Self-check: hue must be monotonic in frequency (low red, high violet), stay
+// inside the spectrum, and never hand back NaN on a bad input — a NaN hue
+// silently turns every grain's fillStyle invalid and the plate goes black.
+export const checkHue = () => {
+  const rising =
+    hueForHz(20) < hueForHz(150) &&
+    hueForHz(150) < hueForHz(300) &&
+    hueForHz(300) < hueForHz(3000)
+  const ends = hueForHz(20) === 0 && Math.abs(hueForHz(16000) - HUE_MAX) < 1e-9
+  const clamped = hueForHz(1) === 0 && hueForHz(1e9) === HUE_MAX
+  const finite = [hueForHz(0), hueForHz(-5), hueForHz(undefined), hueForHz(NaN)].every(
+    (h) => Number.isFinite(h),
+  )
+  return rising && ends && clamped && finite
 }
 
