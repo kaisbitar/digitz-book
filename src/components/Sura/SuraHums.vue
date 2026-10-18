@@ -77,6 +77,7 @@
       :verse-pause="versePause"
       :letter-seconds="letterSeconds"
       :word-seconds="wordSeconds"
+      :grain-defaults="grainDefaults"
       @play="play"
       @stop="stop"
       @seek="seek"
@@ -104,7 +105,7 @@ import {
 } from "@/utils/wordTone"
 import { useDataStore } from "@/stores/dataStore"
 import { useStore } from "@/stores/appStore"
-import { FIGURE_HOLD_MS } from "@/utils/cymatics"
+import { FIGURE_HOLD_MS, CYMATICS_DEFAULTS, CYMATICS_WORD_DEFAULTS } from "@/utils/cymatics"
 import { MULTIPLIERS } from "@/utils/wordTone"
 import { useCymatics } from "@/hooks/useCymatics"
 import { useHumsAudio } from "@/hooks/useHumsAudio"
@@ -191,6 +192,10 @@ const cym = useCymatics(
 // The physics values are owned by the canvas hook; the settings menu binds to
 // this same object, so a slider moves the sand directly.
 const grain = cym.tune
+// Which grain preset "افتراضي" restores, matching the active mode.
+const grainDefaults = computed(() =>
+  mode.value === "words" ? CYMATICS_WORD_DEFAULTS : CYMATICS_DEFAULTS,
+)
 // Lifted to a top-level binding: a ref reached through the cym object is not
 // unwrapped by the template, so comparing against it silently never matched.
 const activeNote = cym.activeNote
@@ -344,6 +349,9 @@ watch(mode, (next) => {
   wordsPerPulse.value = t.wordsPerPulse
   phrasePause.value = t.phrasePause
   versePause.value = t.versePause
+  // Grain physics is per mode too: word mode holds one figure per word, so it
+  // uses its own calmer, denser set.
+  Object.assign(grain, next === "words" ? CYMATICS_WORD_DEFAULTS : CYMATICS_DEFAULTS)
   if (tuneHz.value) return
   if (isPlaying.value) restart()
   else showWord(currentWord.value)

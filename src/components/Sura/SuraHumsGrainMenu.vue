@@ -35,6 +35,11 @@ import { CYMATICS_DEFAULTS, CYMATICS_FIELDS } from "@/utils/cymatics"
 
 // The live physics object, owned by useCymatics and passed straight through.
 const tune = defineModel({ type: Object, required: true })
+// The preset for the active mode, so "افتراضي" never jumps to the other mode's
+// grain set.
+const props = defineProps({
+  defaults: { type: Object, default: () => CYMATICS_DEFAULTS },
+})
 
-const reset = () => Object.assign(tune.value, CYMATICS_DEFAULTS)
+const reset = () => Object.assign(tune.value, props.defaults)
 </script>

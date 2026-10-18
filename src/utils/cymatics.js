@@ -21,18 +21,18 @@ const BOUNCE = 0.55
 // Every physics number lives here in the form the sliders show it, so the UI
 // binds straight to these keys and the render loop reads them live.
 export const CYMATICS_DEFAULTS = {
-  count: 3300,
+  count: 7700,
   // Pull towards the nearest node, as a speed rather than an acceleration.
   force: 0.5,
   // Velocity kept per frame. Lower settles but crawls; higher gives more flow.
-  damping: 0.7,
+  damping: 0.62,
   // Velocity kept while crossing onto a node. Below 1 the grain stops crossing.
   settledDamping: 0.04,
   // Share of the along-the-line drift kept while locked. This is what spreads
   // grains evenly along a nodal line instead of dotting them at the crossings.
   slide: 0.04,
   // |field| under which a grain counts as sitting on the line.
-  settleLevel: 0.28,
+  settleLevel: 0.2,
   // Scale the whole field by this. Bigger, lazier lobes read calmer.
   blobScale: 0.8,
   // How fast the figure eases to the next letter, as a fraction of a step.
@@ -40,8 +40,8 @@ export const CYMATICS_DEFAULTS = {
   // Share of grains lifted and dropped at a fresh spot each frame, in percent.
   // Grains that reach a line nodal for every mode are never released on their
   // own, so without churn the sand heaps up on those invariant lines and the
-  // figure stops forming. Above about 1.6 the plate visibly shimmers.
-  churn: 1.6,
+  // figure stops forming. Higher values make the plate shimmer and churn.
+  churn: 3.3,
   // Trail persistence: each frame fades the last by this instead of clearing.
   trail: 0.33,
   // Ambient glow behind the sand: alpha of a soft radial wash tinted with the
@@ -53,22 +53,45 @@ export const CYMATICS_DEFAULTS = {
   lockGlow: 0.6,
 }
 
+// Word mode sounds one held tone per word instead of stepping letters, so its
+// figure is static rather than morphing. A denser, calmer plate reads better
+// there than the letter default's motion, so it gets its own grain set.
+export const CYMATICS_WORD_DEFAULTS = {
+  ...CYMATICS_DEFAULTS,
+  count: 7500,
+  force: 3.5,
+  damping: 0.55,
+  settledDamping: 0.18,
+  slide: 0.43,
+  settleLevel: 0.11,
+  blobScale: 0.44,
+  morph: 2.4,
+  churn: 1.5,
+  trail: 0.16,
+  size: 1.7,
+  glow: 0.6,
+  lockGlow: 0.7,
+  ambient: 0.12,
+}
+
 // Slider bounds live with the labels, so a new control is one entry, not three.
+// Ranges are deliberately wide: every default sits well inside its range, so a
+// setting can be pushed hard in either direction before it runs out of travel.
 export const CYMATICS_FIELDS = [
-  { key: "count", label: "حبيبات", min: 400, max: 9000, step: 100 },
-  { key: "force", label: "قوة الجذب", min: 0.5, max: 14, step: 0.5 },
-  { key: "damping", label: "الاندفاع", min: 0.7, max: 0.97, step: 0.01 },
-  { key: "settledDamping", label: "ثبات الركود", min: 0, max: 0.9, step: 0.02 },
+  { key: "count", label: "حبيبات", min: 400, max: 12000, step: 100 },
+  { key: "force", label: "قوة الجذب", min: 0, max: 20, step: 0.5 },
+  { key: "damping", label: "الاندفاع", min: 0.5, max: 0.99, step: 0.01 },
+  { key: "settledDamping", label: "ثبات الركود", min: 0, max: 0.99, step: 0.02 },
   { key: "slide", label: "انسياب الخط", min: 0, max: 0.99, step: 0.01 },
-  { key: "settleLevel", label: "نطاق الخط", min: 0.02, max: 0.4, step: 0.01 },
-  { key: "blobScale", label: "اتساع الشكل", min: 0.25, max: 0.8, step: 0.01 },
-  { key: "morph", label: "سرعة التحول", min: 0.1, max: 2, step: 0.1 },
-  { key: "churn", label: "تجديد الحبيبات", min: 0, max: 1.6, step: 0.1 },
-  { key: "trail", label: "طول الأثر", min: 0.02, max: 0.6, step: 0.01 },
-  { key: "size", label: "حجم الحبة", min: 0.4, max: 3, step: 0.1 },
-  { key: "glow", label: "الوهج", min: 0.2, max: 2, step: 0.1 },
-  { key: "lockGlow", label: "توهج الركود", min: 0.2, max: 2, step: 0.1 },
-  { key: "ambient", label: "وهج محيط", min: 0, max: 0.6, step: 0.02 },
+  { key: "settleLevel", label: "نطاق الخط", min: 0.02, max: 0.6, step: 0.01 },
+  { key: "blobScale", label: "اتساع الشكل", min: 0.1, max: 1.2, step: 0.01 },
+  { key: "morph", label: "سرعة التحول", min: 0.1, max: 3, step: 0.1 },
+  { key: "churn", label: "تجديد الحبيبات", min: 0, max: 10, step: 0.1 },
+  { key: "trail", label: "طول الأثر", min: 0.02, max: 0.99, step: 0.01 },
+  { key: "size", label: "حجم الحبة", min: 0.2, max: 5, step: 0.1 },
+  { key: "glow", label: "الوهج", min: 0, max: 4, step: 0.1 },
+  { key: "lockGlow", label: "توهج الركود", min: 0, max: 4, step: 0.1 },
+  { key: "ambient", label: "وهج محيط", min: 0, max: 1, step: 0.02 },
 ]
 
 export const makeParticles = (count, w, h) => {
@@ -130,7 +153,10 @@ export const stepParticle = (p, m, n, w, h, cfg) => {
     const vn = p.vx * nx + p.vy * ny
     p.vx = (p.vx - vn * nx) * cfg.slide + vn * nx * cfg.settledDamping
     p.vy = (p.vy - vn * ny) * cfg.slide + vn * ny * cfg.settledDamping
-    p.intensity = Math.min(p.peak, p.intensity + SETTLE_INTENSITY * cfg.lockGlow)
+    p.intensity = Math.min(
+      p.peak,
+      p.intensity + SETTLE_INTENSITY * cfg.lockGlow,
+    )
     return finish(p, w, h, cfg)
   }
   // Step shrinks as the node approaches, so the sand eases onto the line instead
@@ -201,7 +227,12 @@ export const checkRefresh = () => {
   refreshParticles(none, 10, 10, 0)
   const some = seed()
   refreshParticles(some, 10, 10, 20)
-  return reset(all) === 100 && reset(none) === 0 && reset(some) > 0 && reset(some) < 100
+  return (
+    reset(all) === 100 &&
+    reset(none) === 0 &&
+    reset(some) > 0 &&
+    reset(some) < 100
+  )
 }
 
 // A letter's figure, from its rank among the letters by Quran-wide frequency.
@@ -221,22 +252,59 @@ export const letterMode = (rank, total, extra = 4) => {
 export const checkLetterModes = () => {
   const total = 28
   const extra = 4
-  const modes = Array.from({ length: total }, (_, i) => letterMode(i, total, extra))
-  const keys = new Set(modes.map(({ m, n }) => `${m.toFixed(6)},${n.toFixed(6)}`))
+  const modes = Array.from({ length: total }, (_, i) =>
+    letterMode(i, total, extra),
+  )
+  const keys = new Set(
+    modes.map(({ m, n }) => `${m.toFixed(6)},${n.toFixed(6)}`),
+  )
   const ordered = modes.every((x, i) => i === 0 || x.m > modes[i - 1].m)
   // n = m * 1.35, so n is always above m; m tops out at 1 + extra.
-  const inBand = modes.every(({ m, n }) => m >= 1 && m <= 1 + extra + 1e-9 && n > m)
+  const inBand = modes.every(
+    ({ m, n }) => m >= 1 && m <= 1 + extra + 1e-9 && n > m,
+  )
   return keys.size === total && ordered && inBand
 }
 
-// The figure a single fixed tone produces. The reference visualiser derives one
-// mode straight from Hz, so one tone is one fixed, comparable figure.
+// Shape and colour share one axis: pitch read logarithmically over the hearing
+// band. A linear map squashed every tone below ~375 Hz onto the same figure, and
+// word mode lives entirely down there, so the plate barely moved. Log gives each
+// frequency its own shape, and the same frequency always the same shape.
+export const BAND_MIN_HZ = 20
+export const BAND_MAX_HZ = 16000
+const LOG_MIN = Math.log(BAND_MIN_HZ)
+const LOG_SPAN = Math.log(BAND_MAX_HZ) - LOG_MIN
+
+// Pitch as 0..1 across the band, clamped, and 0 on a bad input so a NaN can
+// never reach the fillStyle (which blanks the plate).
+const pitchT = (hz) => {
+  if (!Number.isFinite(hz) || hz <= 0) return 0
+  const f = Math.min(BAND_MAX_HZ, Math.max(BAND_MIN_HZ, hz))
+  return (Math.log(f) - LOG_MIN) / LOG_SPAN
+}
+
+// The figure a fixed tone produces. m spans the orders across the band; n rides
+// above m so the mode is never m == n, which draws a plain cross rather than a
+// figure.
+const SHAPE_MIN = 1
+const SHAPE_MAX = 7
 export const toneMode = (hz) => {
-  const f = Math.max(20, hz)
-  return {
-    m: Math.max(1, Math.round(0.8 * (f / 200))),
-    n: Math.max(1, Math.round(0.6 * (f / 200))),
-  }
+  const m = SHAPE_MIN + Math.round(pitchT(hz) * (SHAPE_MAX - SHAPE_MIN))
+  return { m, n: m + 1 }
+}
+
+// Self-check: the shape must keep changing across the band (word mode sits at
+// the low end, where the old linear map collapsed everything onto one figure),
+// stay in band, and never go below 1.
+export const checkToneModes = () => {
+  const low = [1, 50, 150, 400, 1000, 4000].map((hz) => toneMode(hz).m)
+  const rises = low.every((m, i) => i === 0 || m >= low[i - 1])
+  const spread = new Set(low).size >= 5
+  const band = [1, 20, 300, 3000, 16000, 1e9].every((hz) => {
+    const { m, n } = toneMode(hz)
+    return m >= SHAPE_MIN && m <= SHAPE_MAX && n > m
+  })
+  return rises && spread && band
 }
 
 // Alpha and radius for a grain, from its own intensity. Settled sand grows and
@@ -251,30 +319,16 @@ export const grainLook = (p, cfg) => {
   }
 }
 
-// The sand colour is the frequency spectrum, chakra-style: red at the lowest
-// pitch up through orange, yellow, green, blue to violet at the highest. Hue
-// runs 0..280 degrees, the range that reads as a full rainbow without wrapping
-// back to red.
-//
-// Pitch reads logarithmically (an octave is a constant step), so the map is log
-// over the hearing band. A linear map over a fixed 396..963 window left every
-// frequency below it — which is most of the real ones, letters at 4..284 Hz and
-// words at ~300 Hz — clamped to the same red. Log over the whole band gives each
-// frequency its own colour, and the same frequency always the same colour.
+// Sand colour is the frequency spectrum, chakra-style: red at the lowest pitch
+// through orange, yellow, green, blue to violet at the highest. It reads the
+// same log pitch axis as the shape, so colour and figure always move together;
+// 0..280 degrees is the range that reads as a full rainbow without wrapping.
 export const HUE_MAX = 280
-const HUE_MIN_HZ = 20
-const HUE_MAX_HZ = 16000
-const LOG_MIN = Math.log(HUE_MIN_HZ)
-const LOG_SPAN = Math.log(HUE_MAX_HZ) - LOG_MIN
 
 // Letters are coloured by their own frequency, not by rank, so a word and the
 // letters it is the sum of share one scale. The hook is handed the same hz
 // function the audio uses, so the colour can never drift from the pitch.
-export const hueForHz = (hz) => {
-  if (!Number.isFinite(hz) || hz <= 0) return 0
-  const f = Math.min(HUE_MAX_HZ, Math.max(HUE_MIN_HZ, hz))
-  return ((Math.log(f) - LOG_MIN) / LOG_SPAN) * HUE_MAX
-}
+export const hueForHz = (hz) => pitchT(hz) * HUE_MAX
 
 // Self-check: hue must be monotonic in frequency (low red, high violet), stay
 // inside the spectrum, and never hand back NaN on a bad input — a NaN hue
@@ -286,9 +340,11 @@ export const checkHue = () => {
     hueForHz(300) < hueForHz(3000)
   const ends = hueForHz(20) === 0 && Math.abs(hueForHz(16000) - HUE_MAX) < 1e-9
   const clamped = hueForHz(1) === 0 && hueForHz(1e9) === HUE_MAX
-  const finite = [hueForHz(0), hueForHz(-5), hueForHz(undefined), hueForHz(NaN)].every(
-    (h) => Number.isFinite(h),
-  )
+  const finite = [
+    hueForHz(0),
+    hueForHz(-5),
+    hueForHz(undefined),
+    hueForHz(NaN),
+  ].every((h) => Number.isFinite(h))
   return rising && ends && clamped && finite
 }
-

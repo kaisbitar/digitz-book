@@ -149,7 +149,7 @@
         </v-btn>
       </v-list>
     </v-menu>
-    <SuraHumsGrainMenu v-model="grain" />
+    <SuraHumsGrainMenu v-model="grain" :defaults="grainDefaults" />
     <v-menu location="top" :close-on-content-click="false">
       <template #activator="{ props: menuProps }">
         <v-btn
@@ -282,6 +282,7 @@ defineProps({
   versePause: Number,
   letterSeconds: Number,
   wordSeconds: Number,
+  grainDefaults: Object,
 })
 
 // v-model targets, so the parent keeps ownership of the actual refs.
