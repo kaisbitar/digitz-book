@@ -78,6 +78,7 @@
       :letter-seconds="letterSeconds"
       :word-seconds="wordSeconds"
       :grain-defaults="grainDefaults"
+      :sound-tune="soundTune"
       @play="play"
       @stop="stop"
       @seek="seek"
@@ -95,7 +96,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, onUnmounted, ref, watch } from "vue"
+import { computed, onMounted, onUnmounted, reactive, ref, watch } from "vue"
 import { useTheme } from "vuetify"
 import {
   AUDIBLE_MAX_HZ,
@@ -177,6 +178,13 @@ const { timeline } = useHumsTimeline(
 const {
   tuneSounding,
   volume,
+  reverb,
+  echo,
+  echoTime,
+  tone,
+  attack,
+  release,
+  wave,
   play: playNotes,
   playHeld,
   playTone,
@@ -184,6 +192,10 @@ const {
   stopTone,
   dispose,
 } = useHumsAudio()
+// Handed to the sound menu as one object. reactive() unwraps the refs, so the
+// menu's sliders read and write the hook's own settings, and the hook's
+// watchers still fire.
+const soundTune = reactive({ reverb, echo, echoTime, tone, attack, release, wave })
 const cym = useCymatics(
   plateRef,
   computed(() => letterSeconds.value / speed.value),

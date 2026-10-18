@@ -149,6 +149,7 @@
         </v-btn>
       </v-list>
     </v-menu>
+      <SuraHumsSoundMenu :tune="soundTune" />
     <SuraHumsGrainMenu v-model="grain" :defaults="grainDefaults" />
     <v-menu location="top" :close-on-content-click="false">
       <template #activator="{ props: menuProps }">
@@ -260,6 +261,7 @@
 
 <script setup>
 import { MULTIPLIERS, LETTER_DIVISOR } from "@/utils/wordTone"
+import SuraHumsSoundMenu from "./SuraHumsSoundMenu.vue"
 import SuraHumsGrainMenu from "./SuraHumsGrainMenu.vue"
 
 defineProps({
@@ -283,6 +285,7 @@ defineProps({
   letterSeconds: Number,
   wordSeconds: Number,
   grainDefaults: Object,
+  soundTune: Object,
 })
 
 // v-model targets, so the parent keeps ownership of the actual refs.
