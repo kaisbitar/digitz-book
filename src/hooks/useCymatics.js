@@ -5,6 +5,7 @@ import { onUnmounted, reactive, ref, watch } from "vue"
 import {
   CYMATICS_DEFAULTS,
   grainLook,
+  hueForLetter,
   letterMode,
   makeParticles,
   refreshParticles,
@@ -17,6 +18,12 @@ import {
 // on the first frame, so an empty result is retried rather than cached as black.
 const canvasRgb = (canvas, name) =>
   getComputedStyle(canvas).getPropertyValue(name).trim() || ""
+
+// Rough perceived luminance of an "r, g, b" string, to pick sand lightness.
+const luminance = (rgb) => {
+  const [r, g, b] = rgb.split(",").map((n) => parseFloat(n) / 255)
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b
+}
 
 const dprSize = (canvas) => Number(canvas.dataset.dpr || 1)
 
@@ -77,6 +84,8 @@ export function useCymatics(canvasRef, morphSeconds) {
       n: 1,
       targetM: 1,
       targetN: 1,
+      hue: tune.sandHue,
+      lit: 0,
       particles: makeParticles(tune.count, size),
       sandColor: "",
       bgColor: "",
@@ -119,24 +128,49 @@ export function useCymatics(canvasRef, morphSeconds) {
     ctx.fillStyle = `rgba(${bgColor}, ${tune.trail})`
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
+    // Sand hue follows the letter when the counts are ranked, so rarer letters
+    // shift colour.
+    const dpr = dprSize(canvas)
+    const hue = hueForLetter(rankOf[plate.letter], ranked.length, tune)
+    plate.hue += (hue - plate.hue) * 0.2
+    // Lightness comes from the theme background, so the sand lifts on dark and
+    // deepens on light without hardcoding a colour.
+    if (!plate.lit) plate.lit = luminance(bgColor) < 0.5 ? 62 : 42
+
+    // Ambient halo behind the sand, in the sand hue, additive so it reads as
+    // light rather than paint. Drawn after the trail fade so it sits under the
+    // grains. A gradient per frame is cheap next to the particle loop.
+    if (tune.ambient > 0) {
+      const mid = (size * dpr) / 2
+      const halo = ctx.createRadialGradient(mid, mid, 0, mid, mid, mid * 1.15)
+      halo.addColorStop(0, `hsla(${plate.hue}, 80%, ${plate.lit}%, ${tune.ambient})`)
+      halo.addColorStop(1, `hsla(${plate.hue}, 80%, ${plate.lit}%, 0)`)
+      ctx.globalCompositeOperation = "lighter"
+      ctx.fillStyle = halo
+      ctx.fillRect(0, 0, canvas.width, canvas.height)
+      ctx.globalCompositeOperation = "source-over"
+    }
+
     // Continuous churn: a few grains per frame restart from a fresh spot, the
     // way a real plate keeps shedding and redepositing sand. This is what stops
     // grains camping on lines that are nodal for every mode and keeps the
     // figure redrawing itself instead of hardening into a heap.
     refreshParticles(particles, size, tune.churn)
 
-    // Physics + draw in one pass, scaled into device pixels.
-    const dpr = dprSize(canvas)
+    // Physics + draw in one pass, scaled into device pixels. One fillStyle for
+    // the whole batch; only alpha varies, set on the context per grain.
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+    ctx.fillStyle = `hsl(${plate.hue}, 78%, ${plate.lit}%)`
     for (let i = 0; i < particles.length; i++) {
       const p = particles[i]
       stepParticle(p, m, n, size, tune)
       const { r, alpha } = grainLook(p, tune)
-      ctx.fillStyle = `rgba(${sandColor}, ${alpha})`
+      ctx.globalAlpha = alpha
       ctx.beginPath()
       ctx.arc(p.x, p.y, r, 0, Math.PI * 2)
       ctx.fill()
     }
+    ctx.globalAlpha = 1
   }
 
   const start = () => {
@@ -217,6 +251,7 @@ export function useCymatics(canvasRef, morphSeconds) {
     if (!plate) return
     plate.sandColor = ""
     plate.bgColor = ""
+    plate.lit = 0
     const canvas = canvasRef.value
     if (canvas) {
       canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height)

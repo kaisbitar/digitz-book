@@ -21,33 +21,40 @@ const BOUNCE = 0.55
 // Every physics number lives here in the form the sliders show it, so the UI
 // binds straight to these keys and the render loop reads them live.
 export const CYMATICS_DEFAULTS = {
-  count: window.innerWidth < 480 ? 1800 : 4200,
+  count: 3300,
   // Pull towards the nearest node, as a speed rather than an acceleration.
-  force: 4,
+  force: 0.5,
   // Velocity kept per frame. Lower settles but crawls; higher gives more flow.
-  damping: 0.86,
+  damping: 0.7,
   // Velocity kept while crossing onto a node. Below 1 the grain stops crossing.
-  settledDamping: 0.4,
+  settledDamping: 0.04,
   // Share of the along-the-line drift kept while locked. This is what spreads
   // grains evenly along a nodal line instead of dotting them at the crossings.
-  slide: 0.9,
+  slide: 0.04,
   // |field| under which a grain counts as sitting on the line.
-  settleLevel: 0.14,
+  settleLevel: 0.28,
   // Scale the whole field by this. Bigger, lazier lobes read calmer.
-  blobScale: 0.4,
+  blobScale: 0.8,
   // How fast the figure eases to the next letter, as a fraction of a step.
   morph: 1,
   // Share of grains lifted and dropped at a fresh spot each frame, in percent.
   // Grains that reach a line nodal for every mode are never released on their
   // own, so without churn the sand heaps up on those invariant lines and the
   // figure stops forming. Above about 1.6 the plate visibly shimmers.
-  churn: 0.5,
+  churn: 1.6,
   // Trail persistence: each frame fades the last by this instead of clearing.
-  trail: 0.12,
+  trail: 0.33,
+  // Ambient glow behind the sand: alpha of a soft radial wash tinted with the
+  // sand hue at the centre of the plate. 0 leaves the theme background flat.
+  ambient: 0.16,
+  // Sand colour as a hue in degrees, and how far letter frequency spreads it.
+  // A spread of 0 makes every letter the same colour.
+  sandHue: 0,
+  hueSpread: 180,
   // Sand. Locked grains grow and brighten; flying ones stay a dim streak.
-  size: 1.4,
-  glow: 1,
-  lockGlow: 1,
+  size: 1.2,
+  glow: 0.3,
+  lockGlow: 0.6,
 }
 
 // Slider bounds live with the labels, so a new control is one entry, not three.
@@ -65,6 +72,9 @@ export const CYMATICS_FIELDS = [
   { key: "size", label: "حجم الحبة", min: 0.4, max: 3, step: 0.1 },
   { key: "glow", label: "الوهج", min: 0.2, max: 2, step: 0.1 },
   { key: "lockGlow", label: "توهج الركود", min: 0.2, max: 2, step: 0.1 },
+  { key: "ambient", label: "وهج محيط", min: 0, max: 0.6, step: 0.02 },
+  { key: "sandHue", label: "لون الرمل", min: 0, max: 360, step: 5 },
+  { key: "hueSpread", label: "تدرج التردد", min: 0, max: 180, step: 5 },
 ]
 
 export const makeParticles = (count, size) => {
@@ -245,3 +255,12 @@ export const grainLook = (p, cfg) => {
     alpha: Math.min(0.9, 0.18 + 0.75 * p.intensity),
   }
 }
+
+// Hue (degrees) for the sand on a given letter. The letter's rank among the
+// Quran-wide counts spreads the hue, so rarer letters shift colour; with no
+// rank (or zero spread) it is the base hue.
+export const hueForLetter = (rank, total, cfg) => {
+  if (!total || !cfg.hueSpread) return cfg.sandHue
+  return (cfg.sandHue + (cfg.hueSpread * rank) / Math.max(1, total - 1)) % 360
+}
+
