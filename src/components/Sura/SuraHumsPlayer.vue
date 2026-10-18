@@ -176,20 +176,40 @@
           color="primary"
           @update:model-value="$emit('update:letterSeconds', $event)"
         />
-        <div class="text-caption text-medium-emphasis mb-1">
-          مدة الكلمة {{ wordSeconds.toFixed(2) }} ث
-        </div>
-        <v-slider
-          :model-value="wordSeconds"
-          :min="0.2"
-          :max="1.5"
-          :step="0.05"
-          hide-details
-          density="compact"
-          thumb-label
-          color="primary"
-          @update:model-value="$emit('update:wordSeconds', $event)"
-        />
+        <!-- One mode's timing only, so letter mode is not bound by a word time
+             and word mode is not bound by a word stop. -->
+        <template v-if="mode === 'letters'">
+          <div class="text-caption text-medium-emphasis mb-1">
+            وقفة بين الكلمات {{ wordStop.toFixed(1) }} ث
+          </div>
+          <v-slider
+            :model-value="wordStop"
+            :min="0"
+            :max="1"
+            :step="0.1"
+            hide-details
+            density="compact"
+            thumb-label
+            color="primary"
+            @update:model-value="$emit('update:wordStop', $event)"
+          />
+        </template>
+        <template v-else>
+          <div class="text-caption text-medium-emphasis mb-1">
+            مدة الكلمة {{ wordSeconds.toFixed(2) }} ث
+          </div>
+          <v-slider
+            :model-value="wordSeconds"
+            :min="0.2"
+            :max="1.5"
+            :step="0.05"
+            hide-details
+            density="compact"
+            thumb-label
+            color="primary"
+            @update:model-value="$emit('update:wordSeconds', $event)"
+          />
+        </template>
         <div class="d-flex align-center justify-space-between">
           <v-icon size="small">mdi-volume-high</v-icon>
           <span class="text-caption text-medium-emphasis">
@@ -206,34 +226,36 @@
           color="primary"
           @update:model-value="$emit('update:volume', $event)"
         />
-        <div class="text-caption text-medium-emphasis mb-1">
-          كلمات في كل نبضة {{ wordsPerPulse }}
-        </div>
-        <v-slider
-          :model-value="wordsPerPulse"
-          :min="1"
-          :max="6"
-          :step="1"
-          hide-details
-          density="compact"
-          thumb-label
-          color="primary"
-          @update:model-value="$emit('update:wordsPerPulse', $event)"
-        />
-        <div class="text-caption text-medium-emphasis mb-1">
-          وقفة بين النبضات {{ phrasePause.toFixed(1) }} ث
-        </div>
-        <v-slider
-          :model-value="phrasePause"
-          :min="0.1"
-          :max="1"
-          :step="0.1"
-          hide-details
-          density="compact"
-          thumb-label
-          color="primary"
-          @update:model-value="$emit('update:phrasePause', $event)"
-        />
+        <template v-if="mode === 'words'">
+          <div class="text-caption text-medium-emphasis mb-1">
+            كلمات في كل نبضة {{ wordsPerPulse }}
+          </div>
+          <v-slider
+            :model-value="wordsPerPulse"
+            :min="1"
+            :max="6"
+            :step="1"
+            hide-details
+            density="compact"
+            thumb-label
+            color="primary"
+            @update:model-value="$emit('update:wordsPerPulse', $event)"
+          />
+          <div class="text-caption text-medium-emphasis mb-1">
+            وقفة بين النبضات {{ phrasePause.toFixed(1) }} ث
+          </div>
+          <v-slider
+            :model-value="phrasePause"
+            :min="0.1"
+            :max="1"
+            :step="0.1"
+            hide-details
+            density="compact"
+            thumb-label
+            color="primary"
+            @update:model-value="$emit('update:phrasePause', $event)"
+          />
+        </template>
         <div class="text-caption text-medium-emphasis mb-1">
           وقفة بين الآيات {{ versePause.toFixed(1) }} ث
         </div>
@@ -284,6 +306,7 @@ defineProps({
   versePause: Number,
   letterSeconds: Number,
   wordSeconds: Number,
+  wordStop: Number,
   grainDefaults: Object,
   soundTune: Object,
 })
@@ -306,6 +329,7 @@ defineEmits([
   "update:versePause",
   "update:letterSeconds",
   "update:wordSeconds",
+  "update:wordStop",
   "toggle-tone",
   "fullscreen",
 ])

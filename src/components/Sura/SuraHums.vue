@@ -77,6 +77,8 @@
       :verse-pause="versePause"
       :letter-seconds="letterSeconds"
       :word-seconds="wordSeconds"
+      :word-stop="wordStop"
+      :mode="mode"
       :grain-defaults="grainDefaults"
       :sound-tune="soundTune"
       @play="play"
@@ -89,6 +91,7 @@
       @update:verse-pause="versePause = $event"
       @update:letter-seconds="letterSeconds = $event"
       @update:word-seconds="wordSeconds = $event"
+      @update:word-stop="wordStop = $event"
       @toggle-tone="toggleTone"
       @fullscreen="toggleFullscreen"
     />
@@ -134,7 +137,7 @@ const isFullscreen = ref(false)
 // of its letters', so it sits well above a single letter and needs the step
 // down to land in the same audible band. Switching mode applies that mode's set.
 const TIMING = {
-  letters: { speed: 0.25, multiplier: 0.1, wordsPerPulse: 3, phrasePause: 0.3, versePause: 0.6 },
+  letters: { speed: 0.25, multiplier: 0.1, wordStop: 0.2, wordsPerPulse: 3, phrasePause: 0.3, versePause: 0.6 },
   words: { speed: 2.25, multiplier: 0.025, wordsPerPulse: 6, phrasePause: 0.3, versePause: 1 },
 }
 // 0.25 is the fastest speed at which the plate can still show one figure per
@@ -152,6 +155,9 @@ const versePause = ref(TIMING.letters.versePause)
 // word's time in word mode, so a long word no longer drags on.
 const letterSeconds = ref(LETTER_SECONDS)
 const wordSeconds = ref(0.55)
+// Letter mode only: the stop after each word, so words part instead of running
+// straight on. Word mode's own pause is the beat pause below.
+const wordStop = ref(0.2)
 let timer = null
 
 // Each letter plays its own Quran-wide frequency, scaled by the multiplier.
@@ -173,7 +179,7 @@ const { timeline } = useHumsTimeline(
   speed,
   letterSeconds,
   versePause,
-  { wordsPerPulse, phrasePause, wordSeconds },
+  { wordsPerPulse, phrasePause, wordSeconds, wordStop },
 )
 const {
   tuneSounding,
@@ -264,11 +270,15 @@ const step = () => {
     playHeld(wordHz(word), wordSeconds.value / speed.value)
     cym.startHzDrive(wordHz(word))
   } else {
+    // The letters run their course: the audio spans exactly the word's letters,
+    // at the same step the timeline used, so no letter is cut short.
     playNotes(word.notes, letterHz, stepSeconds.value)
-    // The audio keeps its fast per-letter clock, but the plate moves on a slower
-    // one: a figure needs about half a second to form, so retuning on every
-    // letter left it permanently mid-transition and no shape ever appeared.
-    cym.startDrive(word.notes, Math.max(FIGURE_HOLD_MS, stepSeconds.value * 1000))
+    // The plate still gets its letter clock so one figure lands per letter, but
+    // never longer than the word itself: letters × step is the word's true span.
+    cym.startDrive(
+      word.notes,
+      Math.min(word.notes.length * stepSeconds.value * 1000, Math.max(FIGURE_HOLD_MS, stepSeconds.value * 1000)),
+    )
   }
   // The tick only advances the index; the watch below starts the next word, so
   // a scrub and the timeline share one path.
@@ -358,6 +368,7 @@ watch(mode, (next) => {
   const t = TIMING[next] || TIMING.letters
   speed.value = t.speed
   multiplier.value = t.multiplier
+  if (t.wordStop !== undefined) wordStop.value = t.wordStop
   wordsPerPulse.value = t.wordsPerPulse
   phrasePause.value = t.phrasePause
   versePause.value = t.versePause
