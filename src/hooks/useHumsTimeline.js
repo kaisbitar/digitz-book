@@ -1,5 +1,7 @@
-// Turns verses into the word-by-word timeline the همس player walks. The letters
-// come from the source text, so the timeline only rebuilds on a speed change.
+// Turns verses into the slot-by-slot timeline the همس player walks. A slot is a
+// letter run (letter mode), a word (word mode), or a whole verse (verse mode).
+// The letters come from the source text, so the timeline only rebuilds on a
+// speed or mode change.
 import { computed } from "vue"
 import { getBaseChar, stripMarks } from "@/utils/letterUtils"
 
@@ -36,6 +38,26 @@ export function useHumsTimeline(
     const slots = []
     let cursor = 0
     verses.value.forEach((verse) => {
+      // Verse mode: the whole verse is one frequency, so the loop runs once for
+      // it and the word list is not walked. The verse's letters are its every
+      // word's letters in order.
+      if (phrase.verseMode?.value) {
+        const notes = notesFor(verse.verseText || "")
+        if (!notes.length) return
+        const duration = (phrase.verseSeconds?.value || 1) / speed.value
+        slots.push({
+          text: verse.verseText || "",
+          notes,
+          wordIndex: -1,
+          verseText: verse.verseText || "",
+          verseIndex: verse.verseIndex,
+          start: cursor,
+          // The verse gets its own slot, then the same pause as any verse end.
+          duration: duration + pause,
+        })
+        cursor += duration + pause
+        return
+      }
       const words = (verse.verseText || "").split(/\s+/).filter(Boolean)
       let sounded = 0
       words.forEach((word, index) => {

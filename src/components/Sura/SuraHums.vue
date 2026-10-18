@@ -17,7 +17,8 @@
            height. The panel is translucent, so the figure glows through it. -->
       <div class="hums-word text-center px-2">
         <!-- Word mode: the whole verse, with the sounding word lifted out of it.
-             Letter mode: the word alone, since the letters are the point there. -->
+             Verse mode: the verse alone, as one tone. Letter mode: the word
+             alone, since the letters are the point there. -->
         <div
           v-if="mode === 'words'"
           class="text-h6 hums-verse d-flex flex-wrap justify-center"
@@ -31,7 +32,7 @@
         </div>
         <div v-else class="text-h5">{{ currentWord?.text || "—" }}</div>
         <div
-          v-if="mode !== 'words'"
+          v-if="mode === 'letters'"
           class="hums-notes d-flex justify-center flex-wrap ga-1 mt-1"
         >
           <v-chip
@@ -45,9 +46,9 @@
           </v-chip>
         </div>
         <div class="text-caption text-medium-emphasis mt-1">
-          <template v-if="currentWord">
+          <template v-if="currentWord && !verseMode">
             آية {{ currentWord.verseIndex }}
-            <template v-if="mode !== 'words'">
+            <template v-if="mode === 'letters'">
               · {{ currentWord.notes.length }} حرف
             </template>
           </template>
@@ -78,6 +79,7 @@
       :letter-seconds="letterSeconds"
       :word-seconds="wordSeconds"
       :word-stop="wordStop"
+      :verse-seconds="verseSeconds"
       :mode="mode"
       :grain-defaults="grainDefaults"
       :sound-tune="soundTune"
@@ -92,6 +94,7 @@
       @update:letter-seconds="letterSeconds = $event"
       @update:word-seconds="wordSeconds = $event"
       @update:word-stop="wordStop = $event"
+      @update:verse-seconds="verseSeconds = $event"
       @toggle-tone="toggleTone"
       @fullscreen="toggleFullscreen"
     />
@@ -139,6 +142,9 @@ const isFullscreen = ref(false)
 const TIMING = {
   letters: { speed: 0.25, multiplier: 0.1, wordStop: 0.2, wordsPerPulse: 3, phrasePause: 0.3, versePause: 0.6 },
   words: { speed: 2.25, multiplier: 0.025, wordsPerPulse: 6, phrasePause: 0.3, versePause: 1 },
+  // A verse sums ~50 letters, so its frequency is ~100x a letter's: the step
+  // down has to go further than word mode's. One fixed tone per verse, held.
+  verses: { speed: 1, multiplier: 0.005, verseSeconds: 4, versePause: 0.6 },
 }
 // 0.25 is the fastest speed at which the plate can still show one figure per
 // letter (see FIGURE_HOLD_MS), so sound and shape stay in step in letter mode.
@@ -158,6 +164,8 @@ const wordSeconds = ref(0.55)
 // Letter mode only: the stop after each word, so words part instead of running
 // straight on. Word mode's own pause is the beat pause below.
 const wordStop = ref(0.2)
+// Verse mode only: how long the one tone for a whole verse is held.
+const verseSeconds = ref(4)
 let timer = null
 
 // Each letter plays its own Quran-wide frequency, scaled by the multiplier.
@@ -174,12 +182,22 @@ const multiplierWarning = computed(() => {
   return ""
 })
 
+// Three ways to sound the same verses: letter by letter (each letter its own
+// frequency), word by word, or a whole verse as one tone (the sum of every
+// letter in it). Everything else — timeline, audio, plate, colours — is shared.
+// Declared before useHumsTimeline, which branches on verseMode.
+const mode = ref("letters")
+const verseMode = computed(() => mode.value === "verses")
+// A verse slot is one big sum, so the same helper serves words and verses.
+const slotHz = (slot) =>
+  wordToneFor(slot?.notes, letterCounts.value, multiplier.value)
+
 const { timeline } = useHumsTimeline(
   computed(() => props.verses),
   speed,
   letterSeconds,
   versePause,
-  { wordsPerPulse, phrasePause, wordSeconds, wordStop },
+  { wordsPerPulse, phrasePause, wordSeconds, wordStop, verseSeconds, verseMode },
 )
 const {
   tuneSounding,
@@ -212,7 +230,7 @@ const cym = useCymatics(
 const grain = cym.tune
 // Which grain preset "افتراضي" restores, matching the active mode.
 const grainDefaults = computed(() =>
-  mode.value === "words" ? CYMATICS_WORD_DEFAULTS : CYMATICS_DEFAULTS,
+  mode.value === "letters" ? CYMATICS_DEFAULTS : CYMATICS_WORD_DEFAULTS,
 )
 // Lifted to a top-level binding: a ref reached through the cym object is not
 // unwrapped by the template, so comparing against it silently never matched.
@@ -244,12 +262,6 @@ const currentNotes = computed(() =>
   })),
 )
 
-// Two ways to sound the same timeline: letter by letter (each letter its own
-// frequency) or word by word (the word's frequency is the sum of its letters').
-// Everything else — timeline, audio, plate, colours — is shared.
-const mode = ref("letters")
-const wordHz = (word) => wordToneFor(word?.notes, letterCounts.value, multiplier.value)
-
 // Idle plate for the current mode, so a stopped player still shows a figure.
 // Playback drives the plate itself, so this only acts when stopped; it resets
 // the drive first so switching mode while stopped swaps the figure cleanly.
@@ -257,7 +269,7 @@ const showWord = (word) => {
   if (isPlaying.value) return
   cym.clearDrive()
   if (mode.value === "letters") return cym.showStatic(word?.notes)
-  cym.showStaticHz(wordHz(word))
+  cym.showStaticHz(slotHz(word))
 }
 
 const step = () => {
@@ -267,8 +279,12 @@ const step = () => {
   if (mode.value === "words") {
     // One frequency for the whole word, held for the word's fixed time (not the
     // slot, which also carries the pause); the plate shows one figure for it.
-    playHeld(wordHz(word), wordSeconds.value / speed.value)
-    cym.startHzDrive(wordHz(word))
+    playHeld(slotHz(word), wordSeconds.value / speed.value)
+    cym.startHzDrive(slotHz(word))
+  } else if (verseMode.value) {
+    // One frequency for the whole verse, held for its own time.
+    playHeld(slotHz(word), verseSeconds.value / speed.value)
+    cym.startHzDrive(slotHz(word))
   } else {
     // The letters run their course: the audio spans exactly the word's letters,
     // at the same step the timeline used, so no letter is cut short.
@@ -369,12 +385,14 @@ watch(mode, (next) => {
   speed.value = t.speed
   multiplier.value = t.multiplier
   if (t.wordStop !== undefined) wordStop.value = t.wordStop
-  wordsPerPulse.value = t.wordsPerPulse
-  phrasePause.value = t.phrasePause
+  if (t.verseSeconds !== undefined) verseSeconds.value = t.verseSeconds
+  if (t.wordsPerPulse !== undefined) wordsPerPulse.value = t.wordsPerPulse
+  if (t.phrasePause !== undefined) phrasePause.value = t.phrasePause
   versePause.value = t.versePause
-  // Grain physics is per mode too: word mode holds one figure per word, so it
-  // uses its own calmer, denser set.
-  Object.assign(grain, next === "words" ? CYMATICS_WORD_DEFAULTS : CYMATICS_DEFAULTS)
+  // Grain physics is per mode too: each held-tone mode keeps one figure for its
+  // whole slot, so it wants the calmer, denser set.
+  const isHeld = next === "words" || next === "verses"
+  Object.assign(grain, isHeld ? CYMATICS_WORD_DEFAULTS : CYMATICS_DEFAULTS)
   if (tuneHz.value) return
   if (isPlaying.value) restart()
   else showWord(currentWord.value)

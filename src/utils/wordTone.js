@@ -16,10 +16,10 @@ export const LETTER_DIVISOR = 20
 // past 16 kHz, so the UI flags them rather than silently going quiet.
 export const AUDIBLE_MIN_HZ = 20
 export const AUDIBLE_MAX_HZ = 16000
-// Verses sound at several times a letter's pitch, because a word's frequency is
-// its letters' summed. The list reaches low enough for word mode: 0.01 puts even
-// a long word back inside the audible band.
-export const MULTIPLIERS = [0.01, 0.025, 0.05, 0.075, 0.1, 1, 10, 100, 1000]
+// Verses sound at several times a letter's pitch, because a sum's frequency is
+// its letters' summed. The list reaches low enough for every mode: word sums sit
+// ~10x a letter, verse sums ~100x, so 0.0025 puts even a long verse in band.
+export const MULTIPLIERS = [0.0025, 0.005, 0.01, 0.025, 0.05, 0.075, 0.1, 1, 10, 100, 1000]
 
 export const toneForLetter = (letter, counts, multiplier = 1) => {
   const count = counts?.[letter]

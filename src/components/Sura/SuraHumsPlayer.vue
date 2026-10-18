@@ -29,19 +29,17 @@
       :title="isLooping ? 'تكرار: مفعّل' : 'تكرار: متوقف'"
       @click="$emit('update:isLooping', !isLooping)"
     />
-    <!-- Distinctive method switch: letters one by one, or the whole word. -->
+    <!-- Distinctive method switch: letters one by one, words, or whole verses. -->
     <v-btn
       class="hums-mode text-caption font-weight-bold"
       variant="flat"
       size="small"
       color="primary"
-      :title="mode === 'letters' ? 'حرف واحد لكل تردد' : 'مجموع الحروف لكل كلمة'"
-      @click="$emit('update:mode', mode === 'letters' ? 'words' : 'letters')"
+      :title="modeTitle"
+      @click="cycleMode"
     >
-      <v-icon start size="small">
-        {{ mode === "letters" ? "mdi-alphabetical" : "mdi-format-letter-case" }}
-      </v-icon>
-      {{ mode === "letters" ? "حرف" : "كلمة" }}
+      <v-icon start size="small">{{ modeIcon }}</v-icon>
+      {{ modeLabel }}
     </v-btn>
     <v-chip
       size="small"
@@ -194,7 +192,7 @@
             @update:model-value="$emit('update:wordStop', $event)"
           />
         </template>
-        <template v-else>
+        <template v-if="mode === 'words'">
           <div class="text-caption text-medium-emphasis mb-1">
             مدة الكلمة {{ wordSeconds.toFixed(2) }} ث
           </div>
@@ -208,6 +206,22 @@
             thumb-label
             color="primary"
             @update:model-value="$emit('update:wordSeconds', $event)"
+          />
+        </template>
+        <template v-else-if="mode === 'verses'">
+          <div class="text-caption text-medium-emphasis mb-1">
+            مدة الآية {{ verseSeconds.toFixed(1) }} ث
+          </div>
+          <v-slider
+            :model-value="verseSeconds"
+            :min="1"
+            :max="15"
+            :step="0.5"
+            hide-details
+            density="compact"
+            thumb-label
+            color="primary"
+            @update:model-value="$emit('update:verseSeconds', $event)"
           />
         </template>
         <div class="d-flex align-center justify-space-between">
@@ -282,6 +296,7 @@
 </template>
 
 <script setup>
+import { computed } from "vue"
 import { MULTIPLIERS, LETTER_DIVISOR } from "@/utils/wordTone"
 import SuraHumsSoundMenu from "./SuraHumsSoundMenu.vue"
 import SuraHumsGrainMenu from "./SuraHumsGrainMenu.vue"
@@ -307,6 +322,7 @@ defineProps({
   letterSeconds: Number,
   wordSeconds: Number,
   wordStop: Number,
+  verseSeconds: Number,
   grainDefaults: Object,
   soundTune: Object,
 })
@@ -330,11 +346,32 @@ defineEmits([
   "update:letterSeconds",
   "update:wordSeconds",
   "update:wordStop",
+  "update:verseSeconds",
   "toggle-tone",
   "fullscreen",
 ])
 
 const multipliers = MULTIPLIERS.map((value) => ({ title: `×${value}`, value }))
+
+// The three methods cycle in the fixed order the mode names read: letters, the
+// word, then the whole verse.
+const MODES = ["letters", "words", "verses"]
+const cycleMode = () => {
+  const next = MODES[(MODES.indexOf(mode.value) + 1) % MODES.length]
+  mode.value = next
+}
+const modeLabel = computed(() => ({ letters: "حرف", words: "كلمة", verses: "آية" })[mode.value])
+const modeIcon = computed(
+  () => ({ letters: "mdi-alphabetical", words: "mdi-format-letter-case", verses: "mdi-book-open-variant" })[mode.value],
+)
+const modeTitle = computed(
+  () =>
+    ({
+      letters: "حرف واحد لكل تردد",
+      words: "مجموع الحروف لكل كلمة",
+      verses: "مجموع كل حروف الآية",
+    })[mode.value],
+)
 
 // Reference tones, so a run is one tap instead of typing a number. The seven
 // Solfeggio/chakra tones, plus 432 (the "natural" tuning) and 440 (concert A).
