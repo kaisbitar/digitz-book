@@ -128,7 +128,8 @@ const handleSelectedSura = async (sura) => {
   const verse = verseForSura(sura.fileName)
   if (!verse) return
 
-  store.setActiveSuraTab("suraText")
+  // Picking a sura no longer forces the sura-text tab: the sura column keeps
+  // whatever tab the reader was already on (letters, frequency, همس, ...).
   const word = searchedWord.value
   store.setTarget({
     ...buildVerseObject(verse),

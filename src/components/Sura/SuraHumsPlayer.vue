@@ -29,18 +29,33 @@
       :title="isLooping ? 'تكرار: مفعّل' : 'تكرار: متوقف'"
       @click="$emit('update:isLooping', !isLooping)"
     />
-    <!-- Distinctive method switch: letters one by one, words, or whole verses. -->
-    <v-btn
-      class="hums-mode text-caption font-weight-bold"
-      variant="flat"
-      size="small"
-      color="primary"
-      :title="modeTitle"
-      @click="cycleMode"
-    >
-      <v-icon start size="small">{{ modeIcon }}</v-icon>
-      {{ modeLabel }}
-    </v-btn>
+    <!-- Method picker: letters one by one, words, or whole verses. -->
+    <v-menu location="top">
+      <template #activator="{ props: menuProps }">
+        <v-btn
+          v-bind="menuProps"
+          class="hums-mode text-caption font-weight-bold"
+          variant="flat"
+          size="small"
+          color="primary"
+          :title="modeTitle"
+        >
+          <v-icon start size="small">{{ modeIcon }}</v-icon>
+          {{ modeLabel }}
+          <v-icon end size="small">mdi-menu-down</v-icon>
+        </v-btn>
+      </template>
+      <v-list density="compact" min-width="180">
+        <v-list-item
+          v-for="item in modeItems"
+          :key="item.value"
+          :title="item.title"
+          :prepend-icon="item.icon"
+          :active="item.value === mode"
+          @click="mode = item.value"
+        />
+      </v-list>
+    </v-menu>
     <v-chip
       size="small"
       variant="text"
@@ -353,25 +368,17 @@ defineEmits([
 
 const multipliers = MULTIPLIERS.map((value) => ({ title: `×${value}`, value }))
 
-// The three methods cycle in the fixed order the mode names read: letters, the
-// word, then the whole verse.
-const MODES = ["letters", "words", "verses"]
-const cycleMode = () => {
-  const next = MODES[(MODES.indexOf(mode.value) + 1) % MODES.length]
-  mode.value = next
-}
-const modeLabel = computed(() => ({ letters: "حرف", words: "كلمة", verses: "آية" })[mode.value])
-const modeIcon = computed(
-  () => ({ letters: "mdi-alphabetical", words: "mdi-format-letter-case", verses: "mdi-book-open-variant" })[mode.value],
-)
-const modeTitle = computed(
-  () =>
-    ({
-      letters: "حرف واحد لكل تردد",
-      words: "مجموع الحروف لكل كلمة",
-      verses: "مجموع كل حروف الآية",
-    })[mode.value],
-)
+// The three methods, in the order the menu lists them. Icons and titles stay
+// with the values so the button and the list cannot disagree.
+const modeItems = [
+  { value: "letters", label: "حرف", icon: "mdi-alphabetical", title: "حرف واحد لكل تردد" },
+  { value: "words", label: "كلمة", icon: "mdi-format-letter-case", title: "مجموع الحروف لكل كلمة" },
+  { value: "verses", label: "آية", icon: "mdi-book-open-variant", title: "مجموع كل حروف الآية" },
+]
+const modeCurrent = computed(() => modeItems.find((item) => item.value === mode.value) || modeItems[0])
+const modeLabel = computed(() => modeCurrent.value.label)
+const modeIcon = computed(() => modeCurrent.value.icon)
+const modeTitle = computed(() => modeCurrent.value.title)
 
 // Reference tones, so a run is one tap instead of typing a number. The seven
 // Solfeggio/chakra tones, plus 432 (the "natural" tuning) and 440 (concert A).

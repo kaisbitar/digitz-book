@@ -132,7 +132,7 @@ const plateRef = ref(null)
 
 const currentIndex = ref(0)
 const isPlaying = ref(false)
-const isLooping = ref(false)
+const isLooping = ref(true)
 const isFullscreen = ref(false)
 // Timing defaults per mode. Letters need a slow clock for one figure per
 // letter; words are one tone per word, so they run fast with a longer verse
