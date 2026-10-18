@@ -5,7 +5,8 @@ import { onUnmounted, reactive, ref, watch } from "vue"
 import {
   CYMATICS_DEFAULTS,
   grainLook,
-  hueForLetter,
+  hueForHz,
+  hueForRank,
   letterMode,
   makeParticles,
   refreshParticles,
@@ -91,7 +92,7 @@ export function useCymatics(canvasRef, morphSeconds) {
       n: 1,
       targetM: 1,
       targetN: 1,
-      hue: tune.sandHue,
+      hue: 0,
       lit: 0,
       particles: makeParticles(tune.count, w, h),
       sandColor: "",
@@ -136,10 +137,12 @@ export function useCymatics(canvasRef, morphSeconds) {
     ctx.fillStyle = `rgba(${bgColor}, ${tune.trail})`
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-    // Sand hue follows the letter when the counts are ranked, so rarer letters
-    // shift colour.
+    // Sand colour is the pitch: a fixed tone by its Hz, a letter by its rank in
+    // the frequency order. Red at the low end up to violet at the high end.
     const dpr = dprSize(canvas)
-    const hue = hueForLetter(rankOf[plate.letter], ranked.length, tune)
+    const hue = toneHz
+      ? hueForHz(toneHz)
+      : hueForRank(rankOf[plate.letter], ranked.length)
     plate.hue += (hue - plate.hue) * 0.2
     // Lightness comes from the theme background, so the sand lifts on dark and
     // deepens on light without hardcoding a colour.

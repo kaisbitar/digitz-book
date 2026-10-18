@@ -47,10 +47,6 @@ export const CYMATICS_DEFAULTS = {
   // Ambient glow behind the sand: alpha of a soft radial wash tinted with the
   // sand hue at the centre of the plate. 0 leaves the theme background flat.
   ambient: 0.16,
-  // Sand colour as a hue in degrees, and how far letter frequency spreads it.
-  // A spread of 0 makes every letter the same colour.
-  sandHue: 0,
-  hueSpread: 180,
   // Sand. Locked grains grow and brighten; flying ones stay a dim streak.
   size: 1.2,
   glow: 0.3,
@@ -73,8 +69,6 @@ export const CYMATICS_FIELDS = [
   { key: "glow", label: "الوهج", min: 0.2, max: 2, step: 0.1 },
   { key: "lockGlow", label: "توهج الركود", min: 0.2, max: 2, step: 0.1 },
   { key: "ambient", label: "وهج محيط", min: 0, max: 0.6, step: 0.02 },
-  { key: "sandHue", label: "لون الرمل", min: 0, max: 360, step: 5 },
-  { key: "hueSpread", label: "تدرج التردد", min: 0, max: 180, step: 5 },
 ]
 
 export const makeParticles = (count, w, h) => {
@@ -257,12 +251,24 @@ export const grainLook = (p, cfg) => {
   }
 }
 
-// Hue (degrees) for the sand on a given letter. The letter's rank among the
-// Quran-wide counts spreads the hue, so rarer letters shift colour; with no
-// rank (or zero spread) it is the base hue. rank is undefined for a fixed tone
-// or an unmapped letter, which must fall back rather than produce NaN.
-export const hueForLetter = (rank, total, cfg) => {
-  if (!total || !cfg.hueSpread || !Number.isFinite(rank)) return cfg.sandHue
-  return (cfg.sandHue + (cfg.hueSpread * rank) / Math.max(1, total - 1)) % 360
+// The sand colour is the frequency spectrum, chakra-style: red at the lowest
+// pitch up through orange, yellow, green, blue to violet at the highest. Hue
+// runs 0..280 degrees, the range that reads as a full rainbow without wrapping
+// back to red. Hz maps onto the seven chakra tones (396..963), so a fixed tone
+// lands on its chakra colour; letters map by their frequency rank.
+export const SPECTRUM_HZ = [396, 963]
+
+export const hueForHz = (hz) => {
+  const [lo, hi] = SPECTRUM_HZ
+  const t = Math.min(1, Math.max(0, (hz - lo) / (hi - lo)))
+  return t * 280
+}
+
+// Letters have no Hz here; their pitch order is their rank among the Quran-wide
+// counts, so rank 0 (rarest, lowest pitch) is red and the top rank is violet.
+export const hueForRank = (rank, total) => {
+  if (!total || total < 2) return 0
+  const t = Math.min(1, Math.max(0, rank / (total - 1)))
+  return t * 280
 }
 
