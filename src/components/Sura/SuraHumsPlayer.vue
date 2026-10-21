@@ -80,9 +80,9 @@
         </div>
         <v-slider
           :model-value="speed"
-          :min="0.25"
-          :max="4"
-          :step="0.25"
+          :min="speedRange.min"
+          :max="speedRange.max"
+          :step="speedRange.step"
           hide-details
           density="compact"
           thumb-label
@@ -180,9 +180,9 @@
         </div>
         <v-slider
           :model-value="letterSeconds"
-          :min="0.05"
-          :max="0.5"
-          :step="0.01"
+          :min="letterRange.min"
+          :max="letterRange.max"
+          :step="letterRange.step"
           hide-details
           density="compact"
           thumb-label
@@ -229,9 +229,9 @@
           </div>
           <v-slider
             :model-value="verseSeconds"
-            :min="1"
-            :max="15"
-            :step="0.5"
+            :min="VERSE_SECONDS_RANGE.min"
+            :max="VERSE_SECONDS_RANGE.max"
+            :step="VERSE_SECONDS_RANGE.step"
             hide-details
             density="compact"
             thumb-label
@@ -367,6 +367,22 @@ defineEmits([
 ])
 
 const multipliers = MULTIPLIERS.map((value) => ({ title: `×${value}`, value }))
+
+// Slider travel per mode. A verse is one held tone, so its speed runs far past
+// a letter's pace and its duration needs a much wider band than one letter.
+const SPEED_RANGE = {
+  letters: { min: 0.25, max: 4, step: 0.25 },
+  words: { min: 0.25, max: 4, step: 0.25 },
+  verses: { min: 0.25, max: 12, step: 0.25 },
+}
+const LETTER_RANGE = {
+  letters: { min: 0.05, max: 0.5, step: 0.01 },
+  words: { min: 0.05, max: 0.5, step: 0.01 },
+  verses: { min: 0.05, max: 1, step: 0.01 },
+}
+const VERSE_SECONDS_RANGE = { min: 0.5, max: 15, step: 0.5 }
+const speedRange = computed(() => SPEED_RANGE[mode.value] || SPEED_RANGE.letters)
+const letterRange = computed(() => LETTER_RANGE[mode.value] || LETTER_RANGE.letters)
 
 // The three methods, in the order the menu lists them. Icons and titles stay
 // with the values so the button and the list cannot disagree.
