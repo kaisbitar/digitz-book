@@ -84,9 +84,11 @@
       :mode="mode"
       :grain-defaults="grainDefaults"
       :sound-tune="soundTune"
+      :rendering="rendering"
       @play="play"
       @stop="stop"
       @seek="seek"
+      @download="download"
       @update:is-looping="isLooping = $event"
       @update:volume="volume = $event"
       @update:words-per-pulse="wordsPerPulse = $event"
@@ -118,7 +120,7 @@ import {
   CYMATICS_WORD_DEFAULTS,
 } from "@/utils/cymatics"
 import { useCymatics } from "@/hooks/useCymatics"
-import { AUDIO_DEFAULTS, useHumsAudio } from "@/hooks/useHumsAudio"
+import { AUDIO_DEFAULTS, WAV_MAX_SECONDS, useHumsAudio } from "@/hooks/useHumsAudio"
 import { useHumsTimeline } from "@/hooks/useHumsTimeline"
 import SuraHumsPlayer from "./SuraHumsPlayer.vue"
 
@@ -249,6 +251,7 @@ const {
   wave,
   play: playNotes,
   playHeld,
+  renderWav,
   playTone,
   silence,
   stopTone,
@@ -353,6 +356,40 @@ const play = () => {
   if (!timeline.value.length) return
   isPlaying.value = true
   step()
+}
+
+const rendering = ref(false)
+
+// The sura as it sounds now: same timeline, same sliders, written to a file.
+const download = async () => {
+  if (rendering.value || !timeline.value.length) return
+  if (total.value > WAV_MAX_SECONDS) return
+  stop()
+  rendering.value = true
+  const held = verseMode.value
+    ? verseSeconds.value / speed.value
+    : wordSeconds.value / speed.value
+  const events = timeline.value.map((slot) => {
+    if (mode.value === "letters") {
+      return { kind: "phrase", notes: slot.notes, step: stepSeconds.value, at: slot.start }
+    }
+    return { kind: "held", hz: slotHz(slot), duration: held, at: slot.start }
+  })
+  try {
+    const blob = await renderWav({ seconds: total.value, hzFor: letterHz, events })
+    if (!blob) return
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement("a")
+    const label = { letters: "حرف", words: "كلمة", verses: "آية" }[mode.value]
+    link.href = url
+    link.download = `${store.getTarget?.suraName || "همس"}-${label}.wav`
+    link.click()
+    setTimeout(() => URL.revokeObjectURL(url), 1500)
+  } catch {
+    // The browser refuses an offline buffer past its own limit.
+  } finally {
+    rendering.value = false
+  }
 }
 
 const stop = () => {

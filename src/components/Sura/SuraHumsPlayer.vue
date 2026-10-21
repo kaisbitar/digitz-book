@@ -29,6 +29,15 @@
       :title="isLooping ? 'تكرار: مفعّل' : 'تكرار: متوقف'"
       @click="$emit('update:isLooping', !isLooping)"
     />
+    <v-btn
+      icon="mdi-download"
+      variant="text"
+      size="small"
+      :loading="rendering"
+      :disabled="!totalWords || rendering || total > WAV_MAX_SECONDS"
+      :title="total > WAV_MAX_SECONDS ? 'أطول من ١٥ دقيقة' : 'تنزيل'"
+      @click="$emit('download')"
+    />
     <!-- Method picker: letters one by one, words, or whole verses. -->
     <v-menu location="top">
       <template #activator="{ props: menuProps }">
@@ -197,9 +206,9 @@
           </div>
           <v-slider
             :model-value="wordStop"
-            :min="0"
-            :max="1"
-            :step="0.1"
+            :min="WORD_STOP_RANGE.min"
+            :max="WORD_STOP_RANGE.max"
+            :step="WORD_STOP_RANGE.step"
             hide-details
             density="compact"
             thumb-label
@@ -290,9 +299,9 @@
         </div>
         <v-slider
           :model-value="versePause"
-          :min="0.5"
-          :max="2"
-          :step="0.1"
+          :min="versePauseRange.min"
+          :max="versePauseRange.max"
+          :step="versePauseRange.step"
           hide-details
           density="compact"
           thumb-label
@@ -313,6 +322,7 @@
 <script setup>
 import { computed } from "vue"
 import { MULTIPLIERS, LETTER_DIVISOR } from "@/utils/wordTone"
+import { WAV_MAX_SECONDS } from "@/hooks/useHumsAudio"
 import SuraHumsSoundMenu from "./SuraHumsSoundMenu.vue"
 import SuraHumsGrainMenu from "./SuraHumsGrainMenu.vue"
 
@@ -340,6 +350,7 @@ defineProps({
   verseSeconds: Number,
   grainDefaults: Object,
   soundTune: Object,
+  rendering: Boolean,
 })
 
 // v-model targets, so the parent keeps ownership of the actual refs.
@@ -353,6 +364,7 @@ defineEmits([
   "play",
   "stop",
   "seek",
+  "download",
   "update:isLooping",
   "update:volume",
   "update:wordsPerPulse",
@@ -371,18 +383,25 @@ const multipliers = MULTIPLIERS.map((value) => ({ title: `×${value}`, value }))
 // Slider travel per mode. A verse is one held tone, so its speed runs far past
 // a letter's pace and its duration needs a much wider band than one letter.
 const SPEED_RANGE = {
-  letters: { min: 0.25, max: 4, step: 0.25 },
+  letters: { min: 0.25, max: 10, step: 0.25 },
   words: { min: 0.25, max: 4, step: 0.25 },
   verses: { min: 0.25, max: 12, step: 0.25 },
 }
 const LETTER_RANGE = {
-  letters: { min: 0.05, max: 0.5, step: 0.01 },
+  letters: { min: 0.01, max: 2, step: 0.01 },
   words: { min: 0.05, max: 0.5, step: 0.01 },
   verses: { min: 0.05, max: 1, step: 0.01 },
+}
+const WORD_STOP_RANGE = { min: 0, max: 5, step: 0.1 }
+const VERSE_PAUSE_RANGE = {
+  letters: { min: 0, max: 5, step: 0.1 },
+  words: { min: 0.5, max: 2, step: 0.1 },
+  verses: { min: 0.5, max: 2, step: 0.1 },
 }
 const VERSE_SECONDS_RANGE = { min: 0.5, max: 15, step: 0.5 }
 const speedRange = computed(() => SPEED_RANGE[mode.value] || SPEED_RANGE.letters)
 const letterRange = computed(() => LETTER_RANGE[mode.value] || LETTER_RANGE.letters)
+const versePauseRange = computed(() => VERSE_PAUSE_RANGE[mode.value] || VERSE_PAUSE_RANGE.letters)
 
 // The three methods, in the order the menu lists them. Icons and titles stay
 // with the values so the button and the list cannot disagree.

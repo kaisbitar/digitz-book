@@ -1,6 +1,7 @@
 // Web Audio for the همس player: one voice per word, plus a held test tone.
 // Every node created here is disconnected when it ends, so nothing leaks.
 import { ref, watch } from "vue"
+import { encodeWav } from "@/utils/wav"
 
 const VOLUME = 0.25
 // Fraction of a letter's step spent sliding from the previous pitch.
@@ -9,6 +10,11 @@ const GLIDE = 0.35
 const FADE = 0.1
 // The ear is least sensitive at the bottom, where the cheapest letters sit.
 const tiltFor = (frequency) => Math.min(1, Math.max(0.35, 900 / frequency))
+// A rendered file keeps the reverb tail, then stops. Longer than this and the
+// offline buffer is too big for the browser.
+export const WAV_MAX_SECONDS = 15 * 60
+const WAV_TAIL = 3
+const WAV_RATE = 44100
 
 // Sound shaping, in the form the menu shows. One set colours every voice.
 export const AUDIO_DEFAULTS = {
@@ -74,34 +80,56 @@ export function useHumsAudio() {
   let toneVoice = null
 
   // The effects bus: filter, then a dry path plus a reverb send and an echo
-  // send into the master. Built once with the context, then driven live by the
-  // refs below.
-  const buildBus = (ctx) => {
-    master = ctx.createGain()
-    master.gain.value = 1
-    master.connect(ctx.destination)
+  // send into the master. The live context keeps the nodes so sliders can move
+  // them; a render builds its own and throws it away with the context.
+  const makeBus = (ctx, cfg) => {
+    const bus = ctx.createGain()
+    bus.gain.value = 1
+    bus.connect(ctx.destination)
 
-    filter = ctx.createBiquadFilter()
-    filter.type = "lowpass"
-    filter.frequency.value = tone.value
-    filter.connect(master)
+    const lowpass = ctx.createBiquadFilter()
+    lowpass.type = "lowpass"
+    lowpass.frequency.value = cfg.tone
+    lowpass.connect(bus)
 
-    wet = ctx.createGain()
+    const wetGain = ctx.createGain()
     const convolver = ctx.createConvolver()
     convolver.buffer = impulseBuffer(ctx, 2.4, 2.8)
-    wet.gain.value = reverb.value
-    filter.connect(wet).connect(convolver).connect(master)
+    wetGain.gain.value = cfg.reverb
+    lowpass.connect(wetGain).connect(convolver).connect(bus)
 
-    echoNode = ctx.createDelay(1)
-    echoNode.delayTime.value = echoTime.value
-    echoFeedback = ctx.createGain()
-    echoFeedback.gain.value = Math.min(0.9, echo.value * 0.9)
-    echoMix = ctx.createGain()
-    echoMix.gain.value = echo.value
-    filter.connect(echoNode)
-    echoNode.connect(echoFeedback).connect(echoNode)
-    echoNode.connect(echoMix).connect(master)
+    const delay = ctx.createDelay(1)
+    delay.delayTime.value = cfg.echoTime
+    const feedback = ctx.createGain()
+    feedback.gain.value = Math.min(0.9, cfg.echo * 0.9)
+    const mix = ctx.createGain()
+    mix.gain.value = cfg.echo
+    lowpass.connect(delay)
+    delay.connect(feedback).connect(delay)
+    delay.connect(mix).connect(bus)
+    return { bus, lowpass, wetGain, delay, feedback, mix }
   }
+
+  const buildBus = (ctx) => {
+    const built = makeBus(ctx, shaping())
+    master = built.bus
+    filter = built.lowpass
+    wet = built.wetGain
+    echoNode = built.delay
+    echoFeedback = built.feedback
+    echoMix = built.mix
+  }
+
+  const shaping = () => ({
+    tone: tone.value,
+    reverb: reverb.value,
+    echo: echo.value,
+    echoTime: echoTime.value,
+    attack: attack.value,
+    release: release.value,
+    wave: wave.value,
+    level: VOLUME * volume.value,
+  })
 
   const init = () => {
     if (!audio) {
@@ -125,25 +153,23 @@ export function useHumsAudio() {
 
   // One oscillator per word: the pitch slides between letters, so a word is one
   // phrase instead of separate blips, while each letter still holds its own
-  // exact frequency for the rest of its step.
-  const play = (notes, hzFor, step) => {
+  // exact frequency for the rest of its step. `bin` is the live voice set;
+  // a render leaves it out and lets the context own the nodes.
+  const schedulePhrase = (ctx, dest, notes, hzFor, step, start, cfg, bin) => {
     const live = (notes || []).filter(hzFor)
     if (!live.length) return
-    const ctx = init()
-    const start = ctx.currentTime
     const end = start + live.length * step
-    const atk = Math.min(attack.value, step / 4)
-    const rel = Math.min(release.value, step / 4)
+    const atk = Math.min(cfg.attack, step / 4)
+    const rel = Math.min(cfg.release, step / 4)
     const glide = step * GLIDE
-    const level = VOLUME * volume.value
     const oscillator = ctx.createOscillator()
     const gain = ctx.createGain()
     const first = hzFor(live[0])
 
-    oscillator.type = wave.value
+    oscillator.type = cfg.wave
     oscillator.frequency.setValueAtTime(first, start)
     gain.gain.setValueAtTime(0, start)
-    gain.gain.linearRampToValueAtTime(level * tiltFor(first), start + atk)
+    gain.gain.linearRampToValueAtTime(cfg.level * tiltFor(first), start + atk)
 
     live.forEach((letter, index) => {
       if (!index) return
@@ -151,57 +177,88 @@ export function useHumsAudio() {
       const from = hzFor(live[index - 1])
       const to = hzFor(letter)
       const arrive = Math.min(at + glide, end)
-      // Hold the previous pitch until this step, then slide onto the new one.
       oscillator.frequency.setValueAtTime(from, at)
       oscillator.frequency.linearRampToValueAtTime(to, arrive)
-      gain.gain.setValueAtTime(level * tiltFor(from), at)
-      gain.gain.linearRampToValueAtTime(level * tiltFor(to), arrive)
+      gain.gain.setValueAtTime(cfg.level * tiltFor(from), at)
+      gain.gain.linearRampToValueAtTime(cfg.level * tiltFor(to), arrive)
     })
 
     const last = hzFor(live[live.length - 1])
     gain.gain.setValueAtTime(
-      level * tiltFor(last),
+      cfg.level * tiltFor(last),
       Math.max(end - rel, start + atk),
     )
     gain.gain.linearRampToValueAtTime(0, end)
 
-    oscillator.connect(gain).connect(filter)
+    oscillator.connect(gain).connect(dest)
     oscillator.start(start)
     oscillator.stop(end)
-    voices.add(gain)
+    if (!bin) return
+    bin.add(gain)
     oscillator.onended = () => {
-      voices.delete(gain)
+      bin.delete(gain)
       oscillator.disconnect()
       gain.disconnect()
     }
   }
 
-  // One tone per word, held for the word's whole duration. Same envelope as the
-  // letter voice, so word mode and letter mode sound like one instrument.
-  const playHeld = (hz, duration) => {
-    if (!hz) return
-    const ctx = init()
-    const start = ctx.currentTime
-    const atk = Math.min(attack.value, duration / 4)
-    const rel = Math.min(release.value, duration / 4)
-    const level = VOLUME * volume.value * tiltFor(hz)
+  const scheduleHeld = (ctx, dest, hz, duration, start, cfg, bin) => {
+    if (!hz || duration <= 0) return
+    const atk = Math.min(cfg.attack, duration / 4)
+    const rel = Math.min(cfg.release, duration / 4)
+    const level = cfg.level * tiltFor(hz)
     const oscillator = ctx.createOscillator()
     const gain = ctx.createGain()
-    oscillator.type = wave.value
+    oscillator.type = cfg.wave
     oscillator.frequency.setValueAtTime(hz, start)
     gain.gain.setValueAtTime(0, start)
     gain.gain.linearRampToValueAtTime(level, start + atk)
     gain.gain.setValueAtTime(level, Math.max(start + duration - rel, start + atk))
     gain.gain.linearRampToValueAtTime(0, start + duration)
-    oscillator.connect(gain).connect(filter)
+    oscillator.connect(gain).connect(dest)
     oscillator.start(start)
     oscillator.stop(start + duration)
-    voices.add(gain)
+    if (!bin) return
+    bin.add(gain)
     oscillator.onended = () => {
-      voices.delete(gain)
+      bin.delete(gain)
       oscillator.disconnect()
       gain.disconnect()
     }
+  }
+
+  const play = (notes, hzFor, step) => {
+    if (!(notes || []).filter(hzFor).length) return
+    const ctx = init()
+    schedulePhrase(ctx, filter, notes, hzFor, step, ctx.currentTime, shaping(), voices)
+  }
+
+  const playHeld = (hz, duration) => {
+    if (!hz) return
+    const ctx = init()
+    scheduleHeld(ctx, filter, hz, duration, ctx.currentTime, shaping(), voices)
+  }
+
+  // The current sura, with the sliders as they are now, written to a WAV.
+  // Same voices as playback, scheduled on the timeline instead of the speakers.
+  const renderWav = async ({ seconds, hzFor, events }) => {
+    if (!events?.length || seconds <= 0 || seconds > WAV_MAX_SECONDS) return null
+    const length = Math.ceil((seconds + WAV_TAIL) * WAV_RATE)
+    const ctx = new OfflineAudioContext({
+      numberOfChannels: 2,
+      length,
+      sampleRate: WAV_RATE,
+    })
+    const { lowpass } = makeBus(ctx, shaping())
+    const cfg = shaping()
+    events.forEach((event) => {
+      if (event.kind === "held") {
+        scheduleHeld(ctx, lowpass, event.hz, event.duration, event.at, cfg)
+        return
+      }
+      schedulePhrase(ctx, lowpass, event.notes, hzFor, event.step, event.at, cfg)
+    })
+    return encodeWav(await ctx.startRendering())
   }
 
   // A single tone held while the plate settles, so one frequency makes one
@@ -285,6 +342,7 @@ export function useHumsAudio() {
     wave,
     play,
     playHeld,
+    renderWav,
     playTone,
     silence,
     stopTone,
