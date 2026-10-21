@@ -59,5 +59,5 @@ const tune = props.tune
 const waves = ["sine", "triangle", "square", "sawtooth"]
 const waveLabels = { sine: "جيبية", triangle: "مثلثية", square: "مربعة", sawtooth: "منشارية" }
 
-const reset = () => Object.assign(tune.value, AUDIO_DEFAULTS)
+const reset = () => Object.assign(tune, AUDIO_DEFAULTS)
 </script>

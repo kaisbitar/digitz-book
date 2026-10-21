@@ -181,12 +181,6 @@ const finish = (p, w, h, cfg) => {
   if (p.y > h) ((p.y = h), (p.vy *= -BOUNCE))
 }
 
-// How long the plate holds one figure. The sand needs roughly half a second to
-// draw a shape and a letter lasts 140ms, so retuning on every letter leaves the
-// plate permanently mid-transition. Holding the figure plays each note for its
-// own length; the continuous churn now does the work of keeping it forming.
-export const FIGURE_HOLD_MS = 550
-
 // Lift a share of the grains (a percent) and drop them at fresh random spots.
 // Called every frame, this is the plate being tapped continuously: trapped
 // grains are released, the figure keeps redrawing itself, and the shape no

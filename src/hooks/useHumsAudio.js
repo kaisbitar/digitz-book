@@ -12,15 +12,15 @@ const tiltFor = (frequency) => Math.min(1, Math.max(0.35, 900 / frequency))
 
 // Sound shaping, in the form the menu shows. One set colours every voice.
 export const AUDIO_DEFAULTS = {
-  reverb: 0.25,
-  echo: 0,
-  echoTime: 0.25,
+  reverb: 0.65,
+  echo: 0.2,
+  echoTime: 0.02,
   // Low-pass cutoff: high keeps the tone bright, low dulls it to a hum.
-  tone: 4000,
+  tone: 2100,
   // Envelope fade in seconds. Longer attack swells, longer release lets a tone
   // ring out past its step.
-  attack: 0.008,
-  release: 0.05,
+  attack: 0.146,
+  release: 0.17,
 }
 
 // Slider bounds live with the labels, so a new control is one entry.

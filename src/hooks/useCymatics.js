@@ -157,7 +157,10 @@ export function useCymatics(canvasRef, morphSeconds, hzForLetter) {
       const my = (h * dpr) / 2
       const rr = Math.max(mx, my) * 1.15
       const halo = ctx.createRadialGradient(mx, my, 0, mx, my, rr)
-      halo.addColorStop(0, `hsla(${plate.hue}, 80%, ${plate.lit}%, ${tune.ambient})`)
+      halo.addColorStop(
+        0,
+        `hsla(${plate.hue}, 80%, ${plate.lit}%, ${tune.ambient})`,
+      )
       halo.addColorStop(1, `hsla(${plate.hue}, 80%, ${plate.lit}%, 0)`)
       ctx.globalCompositeOperation = "lighter"
       ctx.fillStyle = halo
@@ -202,9 +205,12 @@ export function useCymatics(canvasRef, morphSeconds, hzForLetter) {
   // frame loop can call it every frame for free. `note` is which occurrence in
   // the word this is, so a repeated letter highlights only the one sounding.
   const setLetter = (letter, note = -1) => {
-    if (!plate || letter === plate.letter) return
-    plate.letter = letter
+    if (!plate) return
+    // The note index moves even when the letter repeats, so the highlight still
+    // walks a word like ٱللَّه one letter at a time.
     activeNote.value = note
+    if (letter === plate.letter) return
+    plate.letter = letter
     if (!letter) return
     const { m, n } = letterFig(letter)
     plate.targetM = m
@@ -273,7 +279,9 @@ export function useCymatics(canvasRef, morphSeconds, hzForLetter) {
     counts = next || {}
     // Ascending by count, so rank 0 is the rarest letter. Ties keep a stable
     // order, which is what matters: two letters must not share a rank.
-    ranked = Object.keys(counts).sort((a, b) => counts[a] - counts[b] || a.localeCompare(b))
+    ranked = Object.keys(counts).sort(
+      (a, b) => counts[a] - counts[b] || a.localeCompare(b),
+    )
     rankOf = {}
     ranked.forEach((letter, index) => (rankOf[letter] = index))
     Object.keys(modeCache).forEach((key) => delete modeCache[key])

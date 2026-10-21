@@ -28,7 +28,8 @@
             :key="index"
             class="px-1"
             :class="{ 'hums-active': index === currentWord?.wordIndex }"
-          >{{ part }}</span>
+            >{{ part }}</span
+          >
         </div>
         <div v-else class="text-h5">{{ currentWord?.text || "—" }}</div>
         <div
@@ -112,14 +113,14 @@ import {
 } from "@/utils/wordTone"
 import { useDataStore } from "@/stores/dataStore"
 import { useStore } from "@/stores/appStore"
-import { FIGURE_HOLD_MS, CYMATICS_DEFAULTS, CYMATICS_WORD_DEFAULTS } from "@/utils/cymatics"
-import { MULTIPLIERS } from "@/utils/wordTone"
+import {
+  CYMATICS_DEFAULTS,
+  CYMATICS_WORD_DEFAULTS,
+} from "@/utils/cymatics"
 import { useCymatics } from "@/hooks/useCymatics"
-import { useHumsAudio } from "@/hooks/useHumsAudio"
+import { AUDIO_DEFAULTS, useHumsAudio } from "@/hooks/useHumsAudio"
 import { useHumsTimeline } from "@/hooks/useHumsTimeline"
 import SuraHumsPlayer from "./SuraHumsPlayer.vue"
-
-const LETTER_SECONDS = 0.14
 
 const props = defineProps({
   verses: Array,
@@ -140,14 +141,41 @@ const isFullscreen = ref(false)
 // of its letters', so it sits well above a single letter and needs the step
 // down to land in the same audible band. Switching mode applies that mode's set.
 const TIMING = {
-  letters: { speed: 0.25, multiplier: 0.1, wordStop: 0.2, wordsPerPulse: 3, phrasePause: 0.3, versePause: 0.6 },
-  words: { speed: 2.25, multiplier: 0.025, wordsPerPulse: 6, phrasePause: 0.3, versePause: 1 },
+  letters: {
+    speed: 0.25,
+    multiplier: 0.1,
+    letterSeconds: 0.05,
+    wordStop: 0,
+    wordsPerPulse: 3,
+    phrasePause: 0.3,
+    versePause: 0.5,
+    sound: AUDIO_DEFAULTS,
+  },
+  words: {
+    speed: 2.25,
+    multiplier: 0.025,
+    letterSeconds: 0.1,
+    wordSeconds: 0.4,
+    wordsPerPulse: 6,
+    phrasePause: 0.3,
+    versePause: 1,
+    sound: AUDIO_DEFAULTS,
+  },
   // A verse sums ~50 letters, so its frequency is ~100x a letter's: the step
   // down has to go further than word mode's. One fixed tone per verse, held.
-  verses: { speed: 1, multiplier: 0.005, verseSeconds: 4, versePause: 0.6 },
+  verses: {
+    speed: 4,
+    multiplier: 0.005,
+    letterSeconds: 0.14,
+    verseSeconds: 1,
+    versePause: 0.5,
+    // A held verse wants a wider echo and a duller, softer strike than the
+    // letter run, so its sound is set per mode like its timing.
+    sound: { reverb: 0.65, echo: 0.3, echoTime: 0.02, tone: 2000, attack: 0.078, release: 0.17 },
+  },
 }
-// 0.25 is the fastest speed at which the plate can still show one figure per
-// letter (see FIGURE_HOLD_MS), so sound and shape stay in step in letter mode.
+// The plate gets one figure per letter on the sound's own clock, so the fastest
+// speed still steps a figure for every letter rather than skipping.
 const speed = ref(TIMING.letters.speed)
 const multiplier = ref(TIMING.letters.multiplier)
 const tuneHz = ref(0)
@@ -159,11 +187,11 @@ const versePause = ref(TIMING.letters.versePause)
 // Sound lengths, in the form the UI shows and before the speed multiplier.
 // letterSeconds is one letter's time in letter mode; wordSeconds is the whole
 // word's time in word mode, so a long word no longer drags on.
-const letterSeconds = ref(LETTER_SECONDS)
-const wordSeconds = ref(0.55)
+const letterSeconds = ref(TIMING.letters.letterSeconds)
+const wordSeconds = ref(TIMING.words.wordSeconds)
 // Letter mode only: the stop after each word, so words part instead of running
 // straight on. Word mode's own pause is the beat pause below.
-const wordStop = ref(0.2)
+const wordStop = ref(TIMING.letters.wordStop)
 // Verse mode only: how long the one tone for a whole verse is held.
 const verseSeconds = ref(4)
 let timer = null
@@ -188,6 +216,8 @@ const multiplierWarning = computed(() => {
 // Declared before useHumsTimeline, which branches on verseMode.
 const mode = ref("letters")
 const verseMode = computed(() => mode.value === "verses")
+// Only word mode gives a word a fixed time; letter mode must span its letters.
+const wordMode = computed(() => mode.value === "words")
 // A verse slot is one big sum, so the same helper serves words and verses.
 const slotHz = (slot) =>
   wordToneFor(slot?.notes, letterCounts.value, multiplier.value)
@@ -197,7 +227,15 @@ const { timeline } = useHumsTimeline(
   speed,
   letterSeconds,
   versePause,
-  { wordsPerPulse, phrasePause, wordSeconds, wordStop, verseSeconds, verseMode },
+  {
+    wordsPerPulse,
+    phrasePause,
+    wordSeconds,
+    wordStop,
+    verseSeconds,
+    verseMode,
+    wordMode,
+  },
 )
 const {
   tuneSounding,
@@ -219,7 +257,15 @@ const {
 // Handed to the sound menu as one object. reactive() unwraps the refs, so the
 // menu's sliders read and write the hook's own settings, and the hook's
 // watchers still fire.
-const soundTune = reactive({ reverb, echo, echoTime, tone, attack, release, wave })
+const soundTune = reactive({
+  reverb,
+  echo,
+  echoTime,
+  tone,
+  attack,
+  release,
+  wave,
+})
 const cym = useCymatics(
   plateRef,
   computed(() => letterSeconds.value / speed.value),
@@ -289,12 +335,9 @@ const step = () => {
     // The letters run their course: the audio spans exactly the word's letters,
     // at the same step the timeline used, so no letter is cut short.
     playNotes(word.notes, letterHz, stepSeconds.value)
-    // The plate still gets its letter clock so one figure lands per letter, but
-    // never longer than the word itself: letters × step is the word's true span.
-    cym.startDrive(
-      word.notes,
-      Math.min(word.notes.length * stepSeconds.value * 1000, Math.max(FIGURE_HOLD_MS, stepSeconds.value * 1000)),
-    )
+    // One figure per letter on the sound's own clock, so the highlighted letter
+    // and the figure never run ahead of the note being heard.
+    cym.startDrive(word.notes, stepSeconds.value * 1000)
   }
   // The tick only advances the index; the watch below starts the next word, so
   // a scrub and the timeline share one path.
@@ -349,7 +392,10 @@ const toggleTone = () => {
 const toggleFullscreen = () => {
   if (document.fullscreenElement) return document.exitFullscreen()
   // Some browsers reject on certain elements; ignore it and stay windowed.
-  plateRef.value?.closest(".hums-stage")?.requestFullscreen()?.catch(() => {})
+  plateRef.value
+    ?.closest(".hums-stage")
+    ?.requestFullscreen()
+    ?.catch(() => {})
 }
 
 watch(timeline, (slots) => {
@@ -384,11 +430,16 @@ watch(mode, (next) => {
   const t = TIMING[next] || TIMING.letters
   speed.value = t.speed
   multiplier.value = t.multiplier
+  if (t.letterSeconds !== undefined) letterSeconds.value = t.letterSeconds
+  if (t.wordSeconds !== undefined) wordSeconds.value = t.wordSeconds
   if (t.wordStop !== undefined) wordStop.value = t.wordStop
   if (t.verseSeconds !== undefined) verseSeconds.value = t.verseSeconds
   if (t.wordsPerPulse !== undefined) wordsPerPulse.value = t.wordsPerPulse
   if (t.phrasePause !== undefined) phrasePause.value = t.phrasePause
   versePause.value = t.versePause
+  // Verse mode carries its own sound shaping; the letter and word sets are the
+  // shared defaults, so a mode with no sound key keeps whatever is already set.
+  if (t.sound) Object.assign(soundTune, t.sound)
   // Grain physics is per mode too: each held-tone mode keeps one figure for its
   // whole slot, so it wants the calmer, denser set.
   const isHeld = next === "words" || next === "verses"
@@ -414,7 +465,8 @@ watch(isFullscreen, async () => {
 
 // The browser is the source of truth for fullscreen: Esc or a system gesture
 // must update the flag, the button icon, and the plate size.
-const onFullscreenChange = () => (isFullscreen.value = !!document.fullscreenElement)
+const onFullscreenChange = () =>
+  (isFullscreen.value = !!document.fullscreenElement)
 document.addEventListener("fullscreenchange", onFullscreenChange)
 
 // A theme switch changes both the tint and the sand colour, so repaint them.

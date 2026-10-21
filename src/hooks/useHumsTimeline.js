@@ -15,10 +15,7 @@ const isToneLetter = (char) => /[\u0621-\u063A\u0641-\u064A\u0671]/.test(char)
 // The letters a word sounds, in order. Repeated letters replay, so a word is
 // the sequence of its letters, not its set of them.
 export const notesFor = (word) =>
-  stripMarks(word)
-    .split("")
-    .filter(isToneLetter)
-    .map(getBaseChar)
+  stripMarks(word).split("").filter(isToneLetter).map(getBaseChar)
 
 export function useHumsTimeline(
   verses,
@@ -30,7 +27,10 @@ export function useHumsTimeline(
   const timeline = computed(() => {
     if (!verses?.value?.length) return []
     const steps = letterSeconds.value / speed.value
-    const wordSecs = phrase.wordSeconds?.value
+    // Only word mode has a fixed word time. Letter mode must span letters × step,
+    // or a long word is cut off and the letter duration has no effect.
+    const isWordMode = !!phrase.wordMode?.value
+    const wordSecs = isWordMode ? phrase.wordSeconds?.value : 0
     const wordStop = (phrase.wordStop?.value || 0) / speed.value
     const pause = versePause.value / speed.value
     const perPulse = Math.max(1, phrase.wordsPerPulse?.value || 1)
@@ -66,12 +66,13 @@ export function useHumsTimeline(
         // Letter mode holds the word for as long as its letters take, so the
         // last letter is never cut off. Word mode is one tone for the whole
         // word, so every word gets the same fixed time however long it is.
-        const duration = wordSecs ? wordSecs / speed.value : notes.length * steps
+        const duration = isWordMode ? wordSecs / speed.value : notes.length * steps
         // Letter mode: the same stop after every word. Word mode: a beat pause
         // every perPulse-th word. Either way the verse end uses the longer pause.
         const isBeatEnd = sounded % perPulse === perPulse - 1
         const isVerseEnd = index === words.length - 1
-        const tail = isVerseEnd ? pause : wordSecs ? (isBeatEnd ? beatPause : 0) : wordStop
+        const beatTail = isBeatEnd ? beatPause : 0
+        const tail = isVerseEnd ? pause : isWordMode ? beatTail : wordStop
         sounded++
         slots.push({
           text: word,
