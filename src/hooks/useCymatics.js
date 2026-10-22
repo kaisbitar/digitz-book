@@ -27,7 +27,7 @@ const luminance = (rgb) => {
 
 const dprSize = (canvas) => Number(canvas.dataset.dpr || 1)
 
-export function useCymatics(canvasRef, morphSeconds, hzForLetter) {
+export function useCymatics(canvasRef, morphSeconds, hzForLetter, hzRange) {
   // Live physics values, bound directly by the settings sliders.
   const tune = reactive({ ...CYMATICS_DEFAULTS })
   // Which note of the word is sounding: a word can repeat a letter, and
@@ -143,7 +143,12 @@ export function useCymatics(canvasRef, morphSeconds, hzForLetter) {
     // from the frequency sounding. Red at the low end to violet high.
     const dpr = dprSize(canvas)
     const letterHz = plate.letter ? hzForLetter?.(plate.letter) : 0
-    const hue = hueForHz(toneHz || drive?.hz || letterHz || 0)
+    const range = hzRange?.value
+    const hue = hueForHz(
+      toneHz || drive?.hz || letterHz || 0,
+      range?.min,
+      range?.max,
+    )
     plate.hue += (hue - plate.hue) * 0.2
     // Lightness comes from the theme background, so the sand lifts on dark and
     // deepens on light without hardcoding a colour.

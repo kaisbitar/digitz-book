@@ -269,10 +269,23 @@ const soundTune = reactive({
   release,
   wave,
 })
+// The frequencies this mode actually sounds, so the colour spectrum spans the
+// set being played instead of the whole hearing band. A low multiplier would
+// otherwise use a few degrees of hue and the whole rainbow never shows.
+const hzRange = computed(() => {
+  const played =
+    mode.value === "letters"
+      ? timeline.value.flatMap((slot) => slot.notes.map(letterHz))
+      : timeline.value.map(slotHz)
+  const live = played.filter((hz) => hz > 0)
+  if (!live.length) return { min: AUDIBLE_MIN_HZ, max: AUDIBLE_MAX_HZ }
+  return { min: Math.min(...live), max: Math.max(...live) }
+})
 const cym = useCymatics(
   plateRef,
   computed(() => letterSeconds.value / speed.value),
   letterHz,
+  hzRange,
 )
 // The physics values are owned by the canvas hook; the settings menu binds to
 // this same object, so a slider moves the sand directly.

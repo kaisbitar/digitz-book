@@ -322,7 +322,16 @@ export const HUE_MAX = 280
 // Letters are coloured by their own frequency, not by rank, so a word and the
 // letters it is the sum of share one scale. The hook is handed the same hz
 // function the audio uses, so the colour can never drift from the pitch.
-export const hueForHz = (hz) => pitchT(hz) * HUE_MAX
+// min/max are the set actually sounding: a narrow set (a low multiplier) would
+// otherwise cover a few degrees of hue, so the spectrum is spread over it.
+export const hueForHz = (hz, min = BAND_MIN_HZ, max = BAND_MAX_HZ) => {
+  if (!Number.isFinite(hz) || hz <= 0) return 0
+  const lo = Math.log(Math.max(min, 1e-6))
+  const span = Math.log(Math.max(max, 1e-6)) - lo
+  if (!(span > 0)) return HUE_MAX / 2
+  const t = (Math.log(hz) - lo) / span
+  return Math.min(1, Math.max(0, t)) * HUE_MAX
+}
 
 // Self-check: hue must be monotonic in frequency (low red, high violet), stay
 // inside the spectrum, and never hand back NaN on a bad input — a NaN hue
