@@ -184,22 +184,24 @@
         />
       </template>
       <v-list density="compact" class="pa-3" min-width="300">
-        <div class="text-caption text-medium-emphasis mb-1">
-          مدة الحرف {{ letterSeconds.toFixed(2) }} ث
-        </div>
-        <v-slider
-          :model-value="letterSeconds"
-          :min="letterRange.min"
-          :max="letterRange.max"
-          :step="letterRange.step"
-          hide-details
-          density="compact"
-          thumb-label
-          color="primary"
-          @update:model-value="$emit('update:letterSeconds', $event)"
-        />
         <!-- One mode's timing only, so letter mode is not bound by a word time
              and word mode is not bound by a word stop. -->
+        <template v-if="mode !== 'words'">
+          <div class="text-caption text-medium-emphasis mb-1">
+            مدة الحرف {{ letterSeconds.toFixed(2) }} ث
+          </div>
+          <v-slider
+            :model-value="letterSeconds"
+            :min="letterRange.min"
+            :max="letterRange.max"
+            :step="letterRange.step"
+            hide-details
+            density="compact"
+            thumb-label
+            color="primary"
+            @update:model-value="$emit('update:letterSeconds', $event)"
+          />
+        </template>
         <template v-if="mode === 'letters'">
           <div class="text-caption text-medium-emphasis mb-1">
             وقفة بين الكلمات {{ wordStop.toFixed(1) }} ث
@@ -222,8 +224,8 @@
           </div>
           <v-slider
             :model-value="wordSeconds"
-            :min="0.2"
-            :max="1.5"
+            :min="0.1"
+            :max="3"
             :step="0.05"
             hide-details
             density="compact"
@@ -271,7 +273,7 @@
           <v-slider
             :model-value="wordsPerPulse"
             :min="1"
-            :max="6"
+            :max="20"
             :step="1"
             hide-details
             density="compact"
@@ -285,7 +287,7 @@
           <v-slider
             :model-value="phrasePause"
             :min="0.1"
-            :max="1"
+            :max="5"
             :step="0.1"
             hide-details
             density="compact"
@@ -384,7 +386,7 @@ const multipliers = MULTIPLIERS.map((value) => ({ title: `×${value}`, value }))
 // a letter's pace and its duration needs a much wider band than one letter.
 const SPEED_RANGE = {
   letters: { min: 0.25, max: 10, step: 0.25 },
-  words: { min: 0.25, max: 4, step: 0.25 },
+  words: { min: 0.25, max: 12, step: 0.25 },
   verses: { min: 0.25, max: 12, step: 0.25 },
 }
 const LETTER_RANGE = {

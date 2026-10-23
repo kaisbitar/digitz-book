@@ -115,6 +115,25 @@ export const CYMATICS_PRESETS = [
       ambient: 0.62,
     },
   },
+  {
+    name: "نسيم",
+    tune: {
+      count: 8500,
+      force: 1.5,
+      damping: 0.55,
+      settledDamping: 0.9,
+      slide: 0.33,
+      settleLevel: 0.2,
+      blobScale: 0.74,
+      morph: 3,
+      churn: 0.4,
+      trail: 0.71,
+      size: 2.4,
+      glow: 0,
+      lockGlow: 0,
+      ambient: 0.62,
+    },
+  },
 ]
 
 // Slider bounds live with the labels, so a new control is one entry, not three.
