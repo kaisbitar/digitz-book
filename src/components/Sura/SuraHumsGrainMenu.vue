@@ -14,6 +14,18 @@
         <span class="text-caption text-medium-emphasis">ضبط الحبيبات</span>
         <v-btn variant="text" size="small" @click="reset">افتراضي</v-btn>
       </div>
+      <v-select
+        :items="presets"
+        item-title="name"
+        item-value="name"
+        :model-value="null"
+        label="إعداد"
+        density="compact"
+        variant="outlined"
+        hide-details
+        class="mb-2"
+        @update:model-value="apply"
+      />
       <v-slider
         v-for="item in CYMATICS_FIELDS"
         :key="item.key"
@@ -31,7 +43,7 @@
 </template>
 
 <script setup>
-import { CYMATICS_DEFAULTS, CYMATICS_FIELDS } from "@/utils/cymatics"
+import { CYMATICS_DEFAULTS, CYMATICS_FIELDS, CYMATICS_PRESETS } from "@/utils/cymatics"
 
 // The live physics object, owned by useCymatics and passed straight through.
 const tune = defineModel({ type: Object, required: true })
@@ -41,5 +53,11 @@ const props = defineProps({
   defaults: { type: Object, default: () => CYMATICS_DEFAULTS },
 })
 
+const presets = CYMATICS_PRESETS
+
 const reset = () => Object.assign(tune.value, props.defaults)
+const apply = (name) => {
+  const preset = presets.find((p) => p.name === name)
+  if (preset) Object.assign(tune.value, preset.tune)
+}
 </script>

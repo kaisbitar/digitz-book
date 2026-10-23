@@ -225,7 +225,7 @@ export function useCymatics(canvasRef, morphSeconds, hzForLetter, hzRange) {
   // A fixed tone has no letter, so it only writes the target while it is on.
   const setTone = (hz) => {
     if (!plate) return
-    const { m, n } = toneMode(hz)
+    const { m, n } = toneMode(hz, hzRange?.value?.min, hzRange?.value?.max)
     plate.targetM = m
     plate.targetN = n
     plate.letter = ""
@@ -238,7 +238,7 @@ export function useCymatics(canvasRef, morphSeconds, hzForLetter, hzRange) {
   // reference tone.
   const startHzDrive = (hz) => {
     if (!plate) return
-    const { m, n } = toneMode(hz)
+    const { m, n } = toneMode(hz, hzRange?.value?.min, hzRange?.value?.max)
     plate.targetM = m
     plate.targetN = n
     plate.letter = ""

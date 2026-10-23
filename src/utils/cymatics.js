@@ -74,6 +74,49 @@ export const CYMATICS_WORD_DEFAULTS = {
   ambient: 0.12,
 }
 
+// Saved physics sets, picked from the grain menu. Each holds a full tune, so
+// applying one is a plain Object.assign and a preset can never half-apply.
+export const CYMATICS_PRESETS = [
+  {
+    name: "غبار",
+    tune: {
+      count: 12000,
+      force: 1.5,
+      damping: 0.99,
+      settledDamping: 0.99,
+      slide: 0.63,
+      settleLevel: 0.6,
+      blobScale: 0.38,
+      morph: 2.4,
+      churn: 1.7,
+      trail: 0.16,
+      size: 2,
+      glow: 2.2,
+      lockGlow: 0,
+      ambient: 0.04,
+    },
+  },
+  {
+    name: "لمعان",
+    tune: {
+      count: 8500,
+      force: 9,
+      damping: 0.61,
+      settledDamping: 0.9,
+      slide: 0.69,
+      settleLevel: 0.57,
+      blobScale: 0.74,
+      morph: 3,
+      churn: 1.8,
+      trail: 0.71,
+      size: 1.4,
+      glow: 0,
+      lockGlow: 0,
+      ambient: 0.62,
+    },
+  },
+]
+
 // Slider bounds live with the labels, so a new control is one entry, not three.
 // Ranges are deliberately wide: every default sits well inside its range, so a
 // setting can be pushed hard in either direction before it runs out of travel.
@@ -266,24 +309,26 @@ export const checkLetterModes = () => {
 // frequency its own shape, and the same frequency always the same shape.
 export const BAND_MIN_HZ = 20
 export const BAND_MAX_HZ = 16000
-const LOG_MIN = Math.log(BAND_MIN_HZ)
-const LOG_SPAN = Math.log(BAND_MAX_HZ) - LOG_MIN
 
-// Pitch as 0..1 across the band, clamped, and 0 on a bad input so a NaN can
-// never reach the fillStyle (which blanks the plate).
-const pitchT = (hz) => {
+// Pitch as 0..1 across a range, clamped, and 0 on a bad input so a NaN can
+// never reach the fillStyle (which blanks the plate). The range defaults to the
+// hearing band; callers pass the set actually sounding so a narrow set (a low
+// multiplier) still spans the whole figure and colour scale.
+const pitchT = (hz, min = BAND_MIN_HZ, max = BAND_MAX_HZ) => {
   if (!Number.isFinite(hz) || hz <= 0) return 0
-  const f = Math.min(BAND_MAX_HZ, Math.max(BAND_MIN_HZ, hz))
-  return (Math.log(f) - LOG_MIN) / LOG_SPAN
+  const lo = Math.log(Math.max(min, 1e-6))
+  const span = Math.log(Math.max(max, 1e-6)) - lo
+  if (!(span > 0)) return 0.5
+  return Math.min(1, Math.max(0, (Math.log(hz) - lo) / span))
 }
 
-// The figure a fixed tone produces. m spans the orders across the band; n rides
+// The figure a fixed tone produces. m spans the orders across the range; n rides
 // above m so the mode is never m == n, which draws a plain cross rather than a
 // figure.
 const SHAPE_MIN = 1
 const SHAPE_MAX = 7
-export const toneMode = (hz) => {
-  const m = SHAPE_MIN + Math.round(pitchT(hz) * (SHAPE_MAX - SHAPE_MIN))
+export const toneMode = (hz, min, max) => {
+  const m = SHAPE_MIN + Math.round(pitchT(hz, min, max) * (SHAPE_MAX - SHAPE_MIN))
   return { m, n: m + 1 }
 }
 
