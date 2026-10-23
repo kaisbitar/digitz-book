@@ -73,17 +73,23 @@
     >
       {{ multiplierWarning || `تردد الحرف ÷ ${LETTER_DIVISOR}` }}
     </v-chip>
-    <v-menu location="top">
+    <SuraHumsGrainMenu v-model="grain" :defaults="grainDefaults" />
+    <v-menu location="top" :close-on-content-click="false">
       <template #activator="{ props: menuProps }">
         <v-btn
           v-bind="menuProps"
-          icon="mdi-speedometer"
+          icon="mdi-tune"
           variant="text"
           size="small"
-          :title="`السرعة ${speed}x`"
+          title="إعدادات التشغيل"
         />
       </template>
-      <v-list density="compact" class="pa-3" min-width="240">
+      <v-list density="compact" class="pa-3" min-width="300">
+        <v-tabs v-model="tab" density="compact" align-tabs="center" class="mb-2">
+          <v-tab value="speed">سرعة</v-tab>
+          <v-tab value="sound">صوت</v-tab>
+        </v-tabs>
+        <template v-if="tab === 'speed'">
         <div class="text-caption text-medium-emphasis mb-1">
           السرعة {{ speed }}x
         </div>
@@ -94,47 +100,24 @@
           :step="speedRange.step"
           hide-details
           density="compact"
-          thumb-label
           color="primary"
           @update:model-value="$emit('update:speed', $event)"
         />
-      </v-list>
-    </v-menu>
-    <v-menu location="top">
-      <template #activator="{ props: menuProps }">
-        <v-btn
-          v-bind="menuProps"
-          variant="text"
-          size="small"
-          class="hums-multiplier"
-          :title="multiplierWarning || `تردد الحرف ÷ ${LETTER_DIVISOR}`"
-        >
-          ×{{ multiplier }}
-        </v-btn>
-      </template>
-      <v-list density="compact">
-        <v-list-item
-          v-for="item in multipliers"
-          :key="item.value"
-          :title="item.title"
-          :active="item.value === multiplier"
-          @click="$emit('update:multiplier', item.value)"
+        <div class="text-caption text-medium-emphasis mb-1">
+          تردد الحرف ×{{ multiplier }}
+        </div>
+        <v-slider
+          :model-value="multiplierIndex"
+          :min="0"
+          :max="MULTIPLIERS.length - 1"
+          :step="1"
+          hide-details
+          density="compact"
+          color="primary"
+          @update:model-value="$emit('update:multiplier', MULTIPLIERS[$event])"
         />
-      </v-list>
-    </v-menu>
-    <v-menu location="top" :close-on-content-click="false">
-      <template #activator="{ props: menuProps }">
-        <v-btn
-          v-bind="menuProps"
-          icon="mdi-sine-wave"
-          variant="text"
-          size="small"
-          :color="tuneActive ? 'primary' : undefined"
-          title="تردد ثابت للمقارنة"
-        />
-      </template>
-      <v-list density="compact" class="pa-3" min-width="260">
-        <div class="d-flex align-center justify-space-between mb-2">
+        <div class="d-flex align-center justify-space-between mb-1">
+          <v-icon size="small">mdi-sine-wave</v-icon>
           <span class="text-caption text-medium-emphasis">
             تردد ثابت {{ tuneHz || "—" }} هرتز
           </span>
@@ -154,36 +137,21 @@
           :step="1"
           hide-details
           density="compact"
-          thumb-label
           color="primary"
           @update:model-value="$emit('update:tuneHz', $event)"
         />
-        <v-btn
-          v-for="item in tunePresets"
-          :key="item.value"
-          block
-          variant="text"
-          size="small"
-          :active="item.value === tuneHz"
-          @click="$emit('update:tuneHz', item.value)"
-        >
-          {{ item.title }}
-        </v-btn>
-      </v-list>
-    </v-menu>
-      <SuraHumsSoundMenu :tune="soundTune" />
-    <SuraHumsGrainMenu v-model="grain" :defaults="grainDefaults" />
-    <v-menu location="top" :close-on-content-click="false">
-      <template #activator="{ props: menuProps }">
-        <v-btn
-          v-bind="menuProps"
-          icon="mdi-tune"
-          variant="text"
-          size="small"
-          title="إعدادات التشغيل"
-        />
-      </template>
-      <v-list density="compact" class="pa-3" min-width="300">
+        <div class="d-flex flex-wrap ga-1 mb-2">
+          <v-btn
+            v-for="item in tunePresets"
+            :key="item.value"
+            variant="text"
+            size="x-small"
+            :active="item.value === tuneHz"
+            @click="$emit('update:tuneHz', item.value)"
+          >
+            {{ item.value }}
+          </v-btn>
+        </div>
         <!-- One mode's timing only, so letter mode is not bound by a word time
              and word mode is not bound by a word stop. -->
         <template v-if="mode !== 'words'">
@@ -250,22 +218,6 @@
             @update:model-value="$emit('update:verseSeconds', $event)"
           />
         </template>
-        <div class="d-flex align-center justify-space-between">
-          <v-icon size="small">mdi-volume-high</v-icon>
-          <span class="text-caption text-medium-emphasis">
-            مستوى الصوت {{ Math.round(volume * 100) }}٪
-          </span>
-        </div>
-        <v-slider
-          :model-value="volume"
-          :min="0"
-          :max="1"
-          :step="0.05"
-          hide-details
-          density="compact"
-          color="primary"
-          @update:model-value="$emit('update:volume', $event)"
-        />
         <template v-if="mode === 'words'">
           <div class="text-caption text-medium-emphasis mb-1">
             كلمات في كل نبضة {{ wordsPerPulse }}
@@ -306,10 +258,11 @@
           :step="versePauseRange.step"
           hide-details
           density="compact"
-          thumb-label
           color="primary"
           @update:model-value="$emit('update:versePause', $event)"
         />
+        </template>
+        <SuraHumsSoundMenu v-else v-model:volume="volume" :tune="soundTune" />
       </v-list>
     </v-menu>
     <v-btn
@@ -322,7 +275,7 @@
 </template>
 
 <script setup>
-import { computed } from "vue"
+import { computed, ref } from "vue"
 import { MULTIPLIERS, LETTER_DIVISOR } from "@/utils/wordTone"
 import { WAV_MAX_SECONDS } from "@/hooks/useHumsAudio"
 import SuraHumsSoundMenu from "./SuraHumsSoundMenu.vue"
@@ -342,7 +295,6 @@ defineProps({
   tuneActive: Boolean,
   tuneSounding: Boolean,
   tuneHz: Number,
-  volume: Number,
   wordsPerPulse: Number,
   phrasePause: Number,
   versePause: Number,
@@ -361,6 +313,7 @@ const multiplier = defineModel("multiplier", { type: Number, required: true })
 const tuneHz = defineModel("tuneHz", { type: Number, required: true })
 const grain = defineModel("grain", { type: Object, required: true })
 const mode = defineModel("mode", { type: String, required: true })
+const volume = defineModel("volume", { type: Number, required: true })
 
 defineEmits([
   "play",
@@ -368,7 +321,6 @@ defineEmits([
   "seek",
   "download",
   "update:isLooping",
-  "update:volume",
   "update:wordsPerPulse",
   "update:phrasePause",
   "update:versePause",
@@ -380,7 +332,9 @@ defineEmits([
   "fullscreen",
 ])
 
-const multipliers = MULTIPLIERS.map((value) => ({ title: `×${value}`, value }))
+const tab = ref("speed")
+// A slider can only walk the multiplier ladder, so the index is what it binds to.
+const multiplierIndex = computed(() => Math.max(0, MULTIPLIERS.indexOf(multiplier.value)))
 
 // Slider travel per mode. A verse is one held tone, so its speed runs far past
 // a letter's pace and its duration needs a much wider band than one letter.
