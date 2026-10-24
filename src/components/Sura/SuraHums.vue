@@ -58,12 +58,11 @@
     </div>
 
     <SuraHumsPlayer
-      v-model:speed="speed"
-      v-model:multiplier="multiplier"
-      v-model:tuneHz="tuneHz"
       v-model:grain="grain"
       v-model:mode="mode"
       v-model:volume="volume"
+      v-model:tone-on="toneOn"
+      :timing="timing"
       :is-playing="isPlaying"
       :is-looping="isLooping"
       :is-fullscreen="isFullscreen"
@@ -72,16 +71,6 @@
       :position="position"
       :total="total"
       :multiplier-warning="multiplierWarning"
-      :tune-active="tuneActive"
-      :tune-sounding="tuneSounding"
-      :words-per-pulse="wordsPerPulse"
-      :phrase-pause="phrasePause"
-      :verse-pause="versePause"
-      :letter-seconds="letterSeconds"
-      :word-seconds="wordSeconds"
-      :word-stop="wordStop"
-      :verse-seconds="verseSeconds"
-      :mode="mode"
       :grain-defaults="grainDefaults"
       :sound-tune="soundTune"
       :rendering="rendering"
@@ -90,14 +79,6 @@
       @seek="seek"
       @download="download"
       @update:is-looping="isLooping = $event"
-      @update:words-per-pulse="wordsPerPulse = $event"
-      @update:phrase-pause="phrasePause = $event"
-      @update:verse-pause="versePause = $event"
-      @update:letter-seconds="letterSeconds = $event"
-      @update:word-seconds="wordSeconds = $event"
-      @update:word-stop="wordStop = $event"
-      @update:verse-seconds="verseSeconds = $event"
-      @toggle-tone="toggleTone"
       @fullscreen="toggleFullscreen"
     />
   </div>
@@ -195,6 +176,24 @@ const wordSeconds = ref(TIMING.words.wordSeconds)
 const wordStop = ref(TIMING.letters.wordStop)
 // Verse mode only: how long the one tone for a whole verse is held.
 const verseSeconds = ref(4)
+// The fixed reference tone is a switch, not a side effect of its slider: the
+// verse always sounds unless this is on.
+const toneOn = ref(false)
+// The player's settings as one object, so the panels bind to one prop instead of
+// a dozen. reactive() only unwraps the refs on access, so these stay the same
+// refs the timeline and the audio read.
+const timing = reactive({
+  speed,
+  multiplier,
+  tuneHz,
+  wordsPerPulse,
+  phrasePause,
+  versePause,
+  letterSeconds,
+  wordSeconds,
+  wordStop,
+  verseSeconds,
+})
 let timer = null
 
 // Each letter plays its own Quran-wide frequency, scaled by the multiplier.
@@ -239,14 +238,15 @@ const { timeline } = useHumsTimeline(
   },
 )
 const {
-  tuneSounding,
   volume,
   reverb,
   echo,
   echoTime,
   tone,
+  resonance,
   attack,
   release,
+  glide,
   wave,
   play: playNotes,
   playHeld,
@@ -264,8 +264,10 @@ const soundTune = reactive({
   echo,
   echoTime,
   tone,
+  resonance,
   attack,
   release,
+  glide,
   wave,
 })
 // The frequencies this mode actually sounds, so the colour spectrum spans the
@@ -300,7 +302,6 @@ const activeNote = cym.activeNote
 // Sound and plate share one clock, so a letter strikes exactly when its figure
 // retunes.
 const stepSeconds = computed(() => letterSeconds.value / speed.value)
-const tuneActive = computed(() => tuneHz.value > 0)
 
 const total = computed(() =>
   timeline.value.length
@@ -333,27 +334,35 @@ const showWord = (word) => {
   cym.showStaticHz(slotHz(word))
 }
 
-const step = () => {
-  const index = currentIndex.value
-  const word = timeline.value[index]
-  if (!word) return stop()
+// Sounds the step's own tone: one held tone per word or verse, or the letter
+// run. The plate follows it, so the figure and the note never disagree.
+const startStep = (word) => {
   if (mode.value === "words") {
     // One frequency for the whole word, held for the word's fixed time (not the
     // slot, which also carries the pause); the plate shows one figure for it.
     playHeld(slotHz(word), wordSeconds.value / speed.value)
-    cym.startHzDrive(slotHz(word))
-  } else if (verseMode.value) {
+    return cym.startHzDrive(slotHz(word))
+  }
+  if (verseMode.value) {
     // One frequency for the whole verse, held for its own time.
     playHeld(slotHz(word), verseSeconds.value / speed.value)
-    cym.startHzDrive(slotHz(word))
-  } else {
-    // The letters run their course: the audio spans exactly the word's letters,
-    // at the same step the timeline used, so no letter is cut short.
-    playNotes(word.notes, letterHz, stepSeconds.value)
-    // One figure per letter on the sound's own clock, so the highlighted letter
-    // and the figure never run ahead of the note being heard.
-    cym.startDrive(word.notes, stepSeconds.value * 1000)
+    return cym.startHzDrive(slotHz(word))
   }
+  // The letters run their course: the audio spans exactly the word's letters, at
+  // the same step the timeline used, so no letter is cut short.
+  playNotes(word.notes, letterHz, stepSeconds.value)
+  // One figure per letter on the sound's own clock, so the highlighted letter
+  // and the figure never run ahead of the note being heard.
+  cym.startDrive(word.notes, stepSeconds.value * 1000)
+}
+
+const step = () => {
+  const index = currentIndex.value
+  const word = timeline.value[index]
+  if (!word) return stop()
+  // A fixed tone replaces the verse's own sound, so a playing run only advances
+  // its timeline while that tone holds.
+  if (!toneOn.value) startStep(word)
   // The tick only advances the index; the watch below starts the next word, so
   // a scrub and the timeline share one path.
   timer = setTimeout(() => {
@@ -430,11 +439,6 @@ const seek = (index) => {
   currentIndex.value = index
 }
 
-const toggleTone = () => {
-  if (tuneSounding.value) stopTone()
-  else playTone(tuneHz.value)
-}
-
 // Real device fullscreen (like YouTube), not just a big CSS box: ask the browser
 // to fullscreen the stage. The fullscreenchange listener keeps the flag and the
 // button icon in step when the user exits with Esc or the system gesture.
@@ -459,17 +463,26 @@ watch(multiplier, restart)
 // Swapping suras while stopped should still show the new first word's figure.
 watch(currentWord, () => showWord(currentWord.value))
 
-watch(tuneHz, (hz) => {
-  if (hz > 0) {
-    playTone(hz)
-    cym.setToneHz(hz)
-    return
+// The fixed tone is a switch, not a slider side effect. Only the switch touches
+// the run: while it is on the frequency slider just retunes the one held tone.
+watch(toneOn, (on) => {
+  if (on) {
+    // A silent tone cannot be on, so an unset frequency falls back to the verse.
+    if (!tuneHz.value) return (toneOn.value = false)
+    playTone(tuneHz.value)
+    return cym.setToneHz(tuneHz.value)
   }
   stopTone()
-  // Drop the stale tone figure, then hand the plate back to the idle word.
   cym.setToneHz(0)
   cym.clearDrive()
+  if (isPlaying.value) return restart()
   showWord(currentWord.value)
+})
+// Retuning the held tone while it is on; ignored while the verse plays.
+watch(tuneHz, (hz) => {
+  if (!toneOn.value || !hz) return
+  playTone(hz)
+  cym.setToneHz(hz)
 })
 
 // Switching method mid-play restarts the word on the new path; while stopped it
@@ -493,7 +506,7 @@ watch(mode, (next) => {
   // whole slot, so it wants the calmer, denser set.
   const isHeld = next === "words" || next === "verses"
   Object.assign(grain, isHeld ? CYMATICS_WORD_DEFAULTS : CYMATICS_DEFAULTS)
-  if (tuneHz.value) return
+  if (toneOn.value) return
   if (isPlaying.value) restart()
   else showWord(currentWord.value)
 })

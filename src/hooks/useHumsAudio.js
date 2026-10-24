@@ -4,8 +4,6 @@ import { ref, watch } from "vue"
 import { encodeWav } from "@/utils/wav"
 
 const VOLUME = 0.25
-// Fraction of a letter's step spent sliding from the previous pitch.
-const GLIDE = 0.35
 // Fade used to silence everything, in seconds.
 const FADE = 0.1
 // The ear is least sensitive at the bottom, where the cheapest letters sit.
@@ -23,20 +21,29 @@ export const AUDIO_DEFAULTS = {
   echoTime: 0.02,
   // Low-pass cutoff: high keeps the tone bright, low dulls it to a hum.
   tone: 2100,
+  // Filter resonance: a peak at the cutoff, which makes the tone whistle.
+  resonance: 0.7,
   // Envelope fade in seconds. Longer attack swells, longer release lets a tone
   // ring out past its step.
   attack: 0.146,
   release: 0.17,
+  // Fraction of a letter's step spent sliding from the previous pitch.
+  glide: 0.35,
 }
 
 // Slider bounds live with the labels, so a new control is one entry.
 export const AUDIO_FIELDS = [
   { key: "reverb", label: "الصدى الغرفي", min: 0, max: 1, step: 0.05, decimals: 2 },
-  { key: "echo", label: "تردد الصدى", min: 0, max: 0.9, step: 0.05, decimals: 2 },
-  { key: "echoTime", label: "زمن الصدى", min: 0.02, max: 1, step: 0.01, decimals: 2 },
-  { key: "tone", label: "النقاء", min: 200, max: 16000, step: 100, decimals: 0 },
-  { key: "attack", label: "ظهور النغمة", min: 0.001, max: 0.3, step: 0.001, decimals: 3 },
-  { key: "release", label: "تلاشي النغمة", min: 0.01, max: 1, step: 0.01, decimals: 2 },
+  { key: "echo", label: "تردد الصدى", min: 0, max: 1, step: 0.05, decimals: 2 },
+  { key: "echoTime", label: "زمن الصدى", min: 0.01, max: 2, step: 0.01, decimals: 2 },
+  // Low-pass cutoff and resonance are both heard logarithmically, so their
+  // sliders walk octaves; a linear track hides the whole useful sweep in the
+  // first few pixels.
+  { key: "tone", label: "النقاء", min: 100, max: 20000, step: 50, decimals: 0, log: true },
+  { key: "resonance", label: "الرنين", min: 0.1, max: 20, step: 0.1, decimals: 1, log: true },
+  { key: "attack", label: "ظهور النغمة", min: 0.001, max: 1, step: 0.001, decimals: 3 },
+  { key: "release", label: "تلاشي النغمة", min: 0.01, max: 3, step: 0.01, decimals: 2 },
+  { key: "glide", label: "انسياب النغمة", min: 0, max: 1, step: 0.05, decimals: 2 },
 ]
 
 // A synthetic reverb impulse: decaying noise, so no audio asset has to ship.
@@ -64,8 +71,10 @@ export function useHumsAudio() {
   const echo = ref(AUDIO_DEFAULTS.echo)
   const echoTime = ref(AUDIO_DEFAULTS.echoTime)
   const tone = ref(AUDIO_DEFAULTS.tone)
+  const resonance = ref(AUDIO_DEFAULTS.resonance)
   const attack = ref(AUDIO_DEFAULTS.attack)
   const release = ref(AUDIO_DEFAULTS.release)
+  const glide = ref(AUDIO_DEFAULTS.glide)
   const wave = ref("sine")
   let audio = null
   let master = null
@@ -90,6 +99,7 @@ export function useHumsAudio() {
     const lowpass = ctx.createBiquadFilter()
     lowpass.type = "lowpass"
     lowpass.frequency.value = cfg.tone
+    lowpass.Q.value = cfg.resonance
     lowpass.connect(bus)
 
     const wetGain = ctx.createGain()
@@ -125,16 +135,21 @@ export function useHumsAudio() {
     reverb: reverb.value,
     echo: echo.value,
     echoTime: echoTime.value,
+    resonance: resonance.value,
     attack: attack.value,
     release: release.value,
+    glide: glide.value,
     wave: wave.value,
     level: VOLUME * volume.value,
   })
 
   const init = () => {
     if (!audio) {
-      audio = new (window.AudioContext || window.webkitAudioContext)()
-      buildBus(audio)
+      // Build the bus first: if a node throws, no context is kept, so the next
+      // play retries the whole thing instead of passing a null filter around.
+      const ctx = new (window.AudioContext || window.webkitAudioContext)()
+      buildBus(ctx)
+      audio = ctx
     }
     if (audio.state === "suspended") audio.resume()
     return audio
@@ -144,6 +159,7 @@ export function useHumsAudio() {
   // a rebuild-ish update: its feedback tracks the mix, so the tail dies with it.
   watch(reverb, (v) => wet && (wet.gain.value = v))
   watch(tone, (v) => filter && (filter.frequency.value = v))
+  watch(resonance, (v) => filter && (filter.Q.value = v))
   watch(echoTime, (v) => echoNode && (echoNode.delayTime.value = v))
   watch(echo, (v) => {
     if (!echoFeedback) return
@@ -159,9 +175,11 @@ export function useHumsAudio() {
     const live = (notes || []).filter(hzFor)
     if (!live.length) return
     const end = start + live.length * step
-    const atk = Math.min(cfg.attack, step / 4)
-    const rel = Math.min(cfg.release, step / 4)
-    const glide = step * GLIDE
+    // Capped at one letter's step, not a quarter of it: a quarter made the
+    // attack and release sliders inaudible at any normal speed.
+    const atk = Math.min(cfg.attack, step)
+    const rel = Math.min(cfg.release, step)
+    const glide = step * cfg.glide
     const oscillator = ctx.createOscillator()
     const gain = ctx.createGain()
     const first = hzFor(live[0])
@@ -204,8 +222,9 @@ export function useHumsAudio() {
 
   const scheduleHeld = (ctx, dest, hz, duration, start, cfg, bin) => {
     if (!hz || duration <= 0) return
-    const atk = Math.min(cfg.attack, duration / 4)
-    const rel = Math.min(cfg.release, duration / 4)
+    // Half the held note each, so both sliders have room to be heard.
+    const atk = Math.min(cfg.attack, duration / 2)
+    const rel = Math.min(cfg.release, duration / 2)
     const level = cfg.level * tiltFor(hz)
     const oscillator = ctx.createOscillator()
     const gain = ctx.createGain()
@@ -339,6 +358,8 @@ export function useHumsAudio() {
     tone,
     attack,
     release,
+    glide,
+    resonance,
     wave,
     play,
     playHeld,
